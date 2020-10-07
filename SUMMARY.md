@@ -4,7 +4,7 @@
 * [01 CPP笔记](./Cpp/README.md)
     -   [关键字总结](./Cpp/关键字总结.md)
     -   [函数总结](./Cpp/函数总结.md)
-    -   [继承总结](./Cpp/继承总结.md)
+    -   [类总结](./Cpp/类总结.md)
     -   [指针总结](./Cpp/指针总结.md)
     -   [流总结](./Cpp/流总结.md)
 * [02 Android手册](./Android手册/README.md)
