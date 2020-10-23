@@ -1,2 +1,4 @@
 *.DS_Store
 /_book
+generateSummary.jar
+SUMMARY_temp.md
