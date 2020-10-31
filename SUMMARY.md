@@ -17,6 +17,7 @@
 - [03 Kotlin总结](./03 Kotlin总结/README.md)
   - [Kotlin总结](./03 Kotlin总结/Kotlin总结.md)
   - [标准库总结](./03 Kotlin总结/标准库总结.md)
+  - [泛型总结](./03 Kotlin总结/泛型总结.md)
   - [运算符总结](./03 Kotlin总结/运算符总结.md)
 - [04 知识点](./04 知识点/README.md)
   - [01-Java](./04 知识点/01-Java/README.md)

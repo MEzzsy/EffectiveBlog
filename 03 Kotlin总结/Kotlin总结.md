@@ -16,3 +16,48 @@ lambda表达式会被编译成匿名类。每调用一次lambda表达式，一�
 
 >   类似于C++的内联函数
 
+## 在lambda中返回
+
+### 非局部返回
+
+```kotlin
+fun lookForAlice(people: List<Person>) {
+    for (person in people) {
+        if (person.name == "Alice") {
+            println("Found!")
+            return
+        }
+    }
+    println("Alice is not found")
+}
+```
+
+在lambda中使用return关键字，它会从调用lambda的函数中返回，并不只是从lambda中返回。这样的return语句叫作非局部返回。
+
+局部返回只适用于内联函数。
+
+### 局部返回
+
+局部返回需要用到标签。
+
+```kotlin
+fun lookForAlice(people: List<Person>) {
+    people.forEach label@{
+        if (it.name == "Alice") return@label
+    }
+    println("Alice might be somewhere")
+}
+```
+
+在lambda的花括号之前放一个标签名(可以是任何标识符)，接着放一个@符号。要从一个lambda返回，在return关键字后放一个@符号，接着放标签名。
+
+也使用lambda作为参数的函数的函数名可以作为标签。
+
+```kotlin
+fun lookForAlice(people: List<Person>) {
+    people.forEach {
+        if (it.name == "Alice") return@forEach
+    }
+    println("Alice might be somewhere")
+}
+```
