@@ -37,3 +37,5 @@
   - [10-计算机底层基础](./04 知识点/10-计算机底层基础.md)
   - [Android](./04 知识点/Android/README.md)
     - [Android进阶](./04 知识点/Android/Android进阶.md)
+- [05 Android结构梳理](./05 Android结构梳理/README.md)
+  - [Android系统启动过程](./05 Android结构梳理/Android系统启动过程.md)

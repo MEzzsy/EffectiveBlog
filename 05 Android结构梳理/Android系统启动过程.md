@@ -1,0 +1,150 @@
+# init进程启动过程
+
+init进程是Android系统中用户空间的第一个进程，进程号为1，是Android系统启动流程中一个关键的步骤，作为第一个进程， 它被赋予了很多极其重要的工作职责，比如创建Zygote(孵化器)和属性服务等。
+
+## Android系统启动流程
+
+1.  **启动电源以及系统启动**
+    当电源按下时引导芯片代码从预定义的地方(固化在ROM)开始执行。加载引导程序BooLoader到RAM中，然后执行。
+
+2.  **引导程序BootLoader**
+    引导程序BootL oader是在Android操作系统开始运行前的一个小程序， 它的主要作用是把系统OS拉起来并运行。
+
+3.  **Linux 内核启动**
+    当内核启动时，设置缓存、被保护存储器、计划列表、加载驱动。在内核完成系统设置后，它首先在系统文件中寻找init.c文件，并启动init进程。
+
+4.  **init 进程启动**
+    init进程做的工作比较多，主要用来初始化和启动属性服务，也用来启动Zygote进程。
+
+**小结**
+
+当按下启动电源时，系统启动后会加载引导程序，引导程序又启动Limux内核，在Linux内核加载完成后，第一件事就是要启动init进程。
+
+## init进程的入口函数
+
+在Linux内核加载完成后会启动init进程。入口函数为`init.cpp`的main方法。
+
+### signal_handler_init和僵尸进程
+
+`init.cpp`的main方法会调用一个函数——signal_handler_init()。
+
+signal_handler_init函数用于设置子进程信号处理函数，主要用于防止init进程的子进程成为僵尸进程。为了防止僵尸进程的出现，系统会在子进程暂停和终止的时候发出SIGCHLD信号，而signal_handler_init函数就是用来接收SIGCHLD信号的(其内部只处理进程终止的SIGCHLD信号)。
+
+>   **僵尸进程与危害**
+>
+>   在UNIX/Linux中，父进程使用fork创建子进程，在子进程终止之后，如果父进程并不知道子进程已经终止了，这时子进程虽然已经退出了，但是在系统进程表中还为它保留了一定的信息(比如进程号、退出状态、运行时间等)，这个子进程就被称作僵尸进程。系统进程表是项有限资源，如果系统进程表被僵尸进程耗尽的话，系统就可能无法创建新的进程了。
+
+### init.rc
+
+`init.cpp`的main方法还会解析init.rc配置文件。
+
+init.rc是一个非常重要的配置文件，它是由Android初始化语言(Android Init Language)编写的脚本。
+
+init.rc里定义了如何启动Zygote这个Service。Zygote十分重要，应用程序进程以及系统服务进程SystemServer都是从Zygote进程fork的。
+
+## 小结
+
+init进程启动做了很多的工作，总的来说主要做了以下三件事：
+
+1.  创建和挂载启动所需的文件目录。
+2.  初始化和启动属性服务。
+3.  解析init.rc配置文件并启动Zygote进程。
+
+# Zygote进程启动过程
+
+## Zygote概述
+
+在Android系统中，DVM和ART、应用程序进程以及运行系统的关键服务的SystemServer进程都是由Zygote进程来创建的，也将它称为孵化器。
+
+它通过fock(复制进程)的形式来创建应用程序进程和SystemServer进程，由于Zygote进程在启动时会创建DVM或者ART，因此通过fock而创建的应用程序进程和SystemServer进程可以在内部获取一个DVM或者ART的实例副本。
+
+## fork概念
+
+Zygote进程是通过fock自身来创建子进程的，这样Zygote进程以及它的子进程都可以进入`app_main.cpp`的main函数。
+
+main函数为了区分当前运行在哪个进程，会判断main函数的参数arg中是否包含了“--zygote”，如果包含了则说明main函数是运行在Zygote进程中，其余判断同理。
+
+## 启动过程
+
+Zygote启动过程中主要做了这么一些事情：
+
+1.  创建虚拟机实例，因为后续的应用程序进程是从Zygote进程fork的，所以应用程序进程内部有一个虚拟机实例。
+2.  为虚拟机注册JNI方法。并通过JNI调用ZygoteInit的main方法。后面就进入Java框架层。
+3.  创建一个名为zygote的Socket。（这个Socket用于等待AMS请求Zygote创建新的应用进程）
+4.  启动SystemServer进程。
+5.  等待AMS请求创建新的应用程序进程。
+
+# SystemServer处理过程
+
+SystemServer主要用于创建系统服务，如AMS、WMS、PMS。
+
+SystemServer进程被创建后，主要做了如下工作：
+
+1.  启动Binder线程池，这样就可以与其他进程进行通信。
+2.  创建SystemServiceManager，其用于对系统的服务进行创建、启动和生命周期管理。
+3.  启动各种系统服务。在每个系统服务在启动时，也会将自身注册到ServiceManager，ServiceManager在Binder通信机制会用到。
+
+## 系统服务及其作用
+
+| 引导服务                    | 作用                                                         |
+| --------------------------- | ------------------------------------------------------------ |
+| Installer                   | 系统安装APK时的一个服务类，启动Insaller服务之后才能启动其他的系统服务 |
+| ActivityManagerService      | 负责四大组件的启动、切换，调度                               |
+| PowerManagerService         | 计算系统中和Power相关的计算，然后决策系统应该如何反应        |
+| LightsService               | 管理和显示背光LED                                            |
+| DisplayManagerService       | 用来管理所有显示设备                                         |
+| UserManagerService          | 多用户模式管理                                               |
+| SensorService               | 为系统提供各种感应器服务                                     |
+| PackageManagerService       | 用来对APK进行安装、解析、删除、卸载等操作                    |
+| **核心服务**                |                                                              |
+| DropBoxManagerService       | 用于生成和管理系统运行时的一些日志文件                       |
+| BatteryService              | 管理电池相关的服务                                           |
+| UsageStatsService           | 收集用户使用每一个App的频率、使用时长                        |
+| WebViewUpdateService        | WebView更新服务                                              |
+| 其他服务                    |                                                              |
+| CameraService               | 摄像头相关服务                                               |
+| AlarmManagerService         | 全局定时器管理服务                                           |
+| InputManagerService         | 管理输入事件                                                 |
+| WindowManagerService        | 窗口管理服务                                                 |
+| VrManagerService            | VR模式管理服务                                               |
+| BluetoothService            | 蓝牙管理服务                                                 |
+| NotificationManagerService  | 通知管理服务                                                 |
+| DeviceStorageMonitorService | 存储相关管理服务                                             |
+| LocationManagerService      | 定位管理服务                                                 |
+| AudioService                | 音频相关管理服务                                             |
+
+# Launcher启动过程
+
+## 概述
+
+系统启动的最后一步是启动一个应用程序用来显示系统中已经安装的应用程序，这个应用程序就叫作Launcher。Launcher在启动过程中会请求PackageManagerService返回系统中已经安装的应用程序的信息，并将这些信息封装成一个快捷图标列表显示在系统屏幕上，这样用户可以通过点击这些快捷图标来启动相应的应用程序。
+
+通俗来讲Launcher就是Android系统的桌面，它的作用主要有以下两点：
+
+1.  作为Android系统的启动器，用于启动应用程序。
+2.  作为Android系统的桌面，用于显示和管理应用程序的快捷图标或者其他桌面组件。
+
+# 总结
+
+以上内容过于底层，对于目前我这种初级工程师帮助不大，所以这里的内容也是略看一遍，笔记也略作记录。这里对Android系统启动流程做一下总结：
+
+1.  **启动电源以及系统启动**
+    当电源按下时引导芯片代码从预定义的地方(固化在ROM)开始执行。加载引导程序BootLoader到RAM，然后执行。
+
+2.  **引导程序BootLoader**
+    引导程序BootLoader是在Android操作系统开始运行前的一个小程序，它的主要作用是把系统OS拉起来并运行。
+
+    3. **Linux内核启动**
+       当内核启动时，设置缓存、被保护存储器、计划列表、加载驱动。当内核完成系统设置时，它首先在系统文件中寻找init.rc文件，并启动init进程。
+
+    4. **init进程启动**
+       初始化和启动属性服务，并且启动Zygote进程。
+
+    5. **Zygote进程启动**
+       创建Java虚拟机并为Java虚拟机注册JNI方法，创建服务器端Socket，启动SystemServer进程。
+
+    6. **SystemServer进程启动**
+       启动Binder线程池和SystemServiceManager，并且启动各种系统服务。
+    7. **Launcher启动**
+       被SystemServer进程启动的AMS会启动Launcher，Launcher启动会将已安装的应用的快捷图标显示到界面上。
+
