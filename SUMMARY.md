@@ -16,6 +16,8 @@
     - [视图相关工具类](./02 Android手册/视图/视图相关工具类.md)
 - [03 Kotlin总结](./03 Kotlin总结/README.md)
   - [Lambda总结](./03 Kotlin总结/Lambda总结.md)
+  - [函数总结](./03 Kotlin总结/函数总结.md)
+  - [基础总结](./03 Kotlin总结/基础总结.md)
   - [标准库总结](./03 Kotlin总结/标准库总结.md)
   - [泛型总结](./03 Kotlin总结/泛型总结.md)
   - [注解和反射总结](./03 Kotlin总结/注解和反射总结.md)
