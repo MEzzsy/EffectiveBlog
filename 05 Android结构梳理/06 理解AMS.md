@@ -1,12 +1,8 @@
-# AMS家族
+# 介绍
 
-AMS的逻辑十分复杂，所以会有一些相关类帮助完成逻辑，Android7.0和8.0有些区别，如图：
+![3](assets/3.jpg)
 
--   Android7.0
-    ![267](assets/267.jpg)
-
--   Android8.0
-    ![268](assets/268.jpg)
+Android8.0后以AIDL的方式进行跨进程通信，AM通过getService获得AMS在本地的代理，通过此代理与AMS进行交互。
 
 # AMS的启动过程
 
@@ -98,7 +94,3 @@ enum ActivityState {
     DESTROYED
 }
 ```
-
-# 参考
-
-1.  《Android进阶解密》，刘望舒。
