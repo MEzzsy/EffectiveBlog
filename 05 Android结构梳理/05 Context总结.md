@@ -247,3 +247,89 @@ pending
 
 见装饰模式笔记[装饰模式](../07 设计模式/装饰模式.md)
 
+# 获取系统服务
+
+获取系统服务一般是通过Context的getSystemService方法，如获取WindowManager：
+
+```java
+WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+```
+
+Context的具体实现是ContextImpl：
+
+```java
+//ContextImpl.java
+@Override
+public Object getSystemService(String name) {
+    return SystemServiceRegistry.getSystemService(this, name);
+}
+```
+
+```java
+//SystemServiceRegistry.java
+public static Object getSystemService(ContextImpl ctx, String name) {
+    ServiceFetcher<?> fetcher = SYSTEM_SERVICE_FETCHERS.get(name);
+    return fetcher != null ? fetcher.getService(ctx) : null;
+}
+```
+
+SystemServiceRegistry在类初始化的时候会调用registerService来注册很多服务，如WindowManager：
+
+```java
+static {
+    //...
+	registerService(Context.WINDOW_SERVICE, WindowManager.class,
+                new CachedServiceFetcher<WindowManager>() {
+            @Override
+            public WindowManager createService(ContextImpl ctx) {
+                return new WindowManagerImpl(ctx);
+            }});
+    //...
+}
+```
+
+```java
+private static <T> void registerService(String serviceName, Class<T> serviceClass,
+        ServiceFetcher<T> serviceFetcher) {
+    SYSTEM_SERVICE_NAMES.put(serviceClass, serviceName);
+    SYSTEM_SERVICE_FETCHERS.put(serviceName, serviceFetcher);
+}
+```
+
+```java
+static abstract class CachedServiceFetcher<T> implements ServiceFetcher<T> {
+    private final int mCacheIndex;
+
+    public CachedServiceFetcher() {
+        mCacheIndex = sServiceCacheSize++;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public final T getService(ContextImpl ctx) {
+        final Object[] cache = ctx.mServiceCache;
+        synchronized (cache) {
+            // Fetch or create the service.
+            Object service = cache[mCacheIndex];
+            if (service == null) {
+                try {
+                    service = createService(ctx);
+                    cache[mCacheIndex] = service;
+                } catch (ServiceNotFoundException e) {
+                    onServiceNotFound(e);
+                }
+            }
+            return (T)service;
+        }
+    }
+
+    public abstract T createService(ContextImpl ctx) throws ServiceNotFoundException;
+}
+```
+
+## 小结
+
+1.  SystemServiceRegistry在类初始化时会注册系统服务的提取器（Fetcher）并进行缓存。提取器相当于懒加载，因为此时还没有创建系统服务需要的参数。
+2.  从SystemServiceRegistry的static块里也可以看出，系统服务接口的具体实现类，如WindowManger的具体实现是WindowManagerImpl。
+3.  当调用Context的获取系统服务方法时，就会从缓存里取出提取器，将Context自身作为参数传递进去，创建系统服务，并进行缓存。
+4.  从CachedServiceFetcher的getService方法的服务缓存可以看出，系统服务（xxxManager）是属于单个Context，不同Context有着不同的系统服务。

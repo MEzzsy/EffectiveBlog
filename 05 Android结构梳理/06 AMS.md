@@ -6,13 +6,15 @@ Android8.0后以AIDL的方式进行跨进程通信，AM通过getService获得AMS
 
 # AMS的启动过程
 
-AMS的启动是在SystemServer进程中启动的。
+在Zygote进程启动过程中会启动SystemServer进程，而AMS的启动是在SystemServer进程中进行的。
 
-具体启动过程暂不记录。
+SystemServer进程会创建SystemServiceManager，其用于对系统的服务进行创建、启动和生命周期管理。创建完SystemServiceManager就会创建并启动AMS。
 
 # AMS与应用程序进程
 
-Zygote的Java框架层中，会创建一个Server端的Socket，这个Socket用来等待AMS请求Zygote来创建新的应用程序进程。要启动一个应用程序，首先要保证这个应用程序所需要的应用程序进程已经存在。在启动应用程序时AMS会检查这个应用程序需要的应用程序进程是否存在，不存在就会请求Zygote进程创建需要的应用程序进程。
+Zygote的Java框架层中，会创建一个Server端的Socket，这个Socket用来等待AMS请求Zygote来创建新的应用程序进程。
+
+在启动应用程序时AMS会检查这个应用程序需要的应用程序进程是否存在，不存在就会请求Zygote进程创建需要的应用程序进程。
 
 # AMS的数据结构
 
@@ -20,7 +22,7 @@ AMS涉及了很多数据结构，如ActivityRecord、TaskRecord、ActivityStack�
 
 ## ActivityRecord
 
-ActivityRecord内部记录了Activity的所有信息，用来描述一个Activity。它是在启动Activity 时被创建的，见[Activity启动过程](Activity启动过程.md)。
+ActivityRecord内部记录了Activity的所有信息，用来描述一个Activity。它是在启动Activity 时被创建的，见[Activity启动过程](03 Activity启动过程.md)。
 
 **ActivityRecord的部分重要成员变量**
 
@@ -94,3 +96,19 @@ enum ActivityState {
     DESTROYED
 }
 ```
+
+# Activity 栈管理
+
+## 任务栈模型
+
+Activity任务栈并不是凭空想象出来的，它是由多种数据结构共同组合而成的。
+
+<img src="assets/4.jpg" alt="4" style="zoom:50%;" />
+
+## Launch Mode
+
+## 启动的Flags
+
+## taskAffinity
+
+以上具体见《四大组件》。
