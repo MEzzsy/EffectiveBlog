@@ -30,6 +30,7 @@
     - [Java基础知识](./04 知识点/01-Java/Java基础知识.md)
   - [02-Android](./04 知识点/02-Android/README.md)
     - [02-Android](./04 知识点/02-Android/02-Android.md)
+    - [Android消息机制](./04 知识点/02-Android/Android消息机制.md)
     - [Android的跨进程通信](./04 知识点/02-Android/Android的跨进程通信.md)
     - [IPC机制](./04 知识点/02-Android/IPC机制.md)
     - [四大组件](./04 知识点/02-Android/四大组件.md)
