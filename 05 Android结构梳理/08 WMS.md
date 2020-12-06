@@ -150,5 +150,33 @@ public int addWindow(Session session, IWindow client, int seq,
 
 ## WMS的删除Window
 
+```java
+void removeWindow(Session session, IWindow client) {
+    synchronized(mWindowMap) {
+        WindowState win = windowForClientLocked(session, client, false);
+        if (win == null) {
+            return;
+        }
+        win.removeIfPossible();
+    }
+}
+```
 
+```java
+void removeIfPossible() {
+    super.removeIfPossible();
+    removeIfPossible(false /*keepVisibleDeadWindow*/);
+}
+```
 
+```java
+private void removeIfPossible(boolean keepVisibleDeadWindow) {
+    //。。。判断条件
+    removeImmediately();
+    //。。。
+}
+```
+
+removeIfPossible方法并不是直接执行删除操作的，而是进行多个条件判断过滤，满足其中一个条件就会return，推迟删除操作。比如Window正在运行一个动画，这时就得推迟删除操作，直到动画完成。否则执行removeImmediately方法。
+
+removeImmediately方法主要是清理和释放和Window有关的资源。
