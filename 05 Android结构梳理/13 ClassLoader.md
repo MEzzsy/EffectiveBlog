@@ -57,48 +57,6 @@ DexPathList的构造函数是将一个个的程序文件（可能是dex、apk、
 
 BaseDexClassLoader中有个pathList对象，pathList中包含一个DexFile的数组dexElements ，dexPath传入的原始dex(.apk，.zip，.jar等)文件在optimizedDirectory文件夹中生成相应的优化后的odex文件，dexElements数组就是这些odex文件的集合，对于类加载呢，就是遍历这个集合。
 
-# 插件化
-
-插件化技术也叫动态加载技术。需要解决三个基础性问题：资源访问、Activity生命周期的管理和ClassLoader。
-
-宿主：指普通的APK。
-
-插件：指经过处理的dex或者apk。
-
-# hook机制
-
-hook，又叫钩子，通常是指对一些方法进行拦截。这样当这些方法被调用时，也能够执行我们自己的代码，这也是面向切面编程的思想（AOP）
-
-android中，本身并不提供这样的拦截机制，但是有时候，我们可以在一些特殊的场合实现一种的Hook方法。
-
-大致思路：
-
-1. 找到需要Hook方法的系统类
-
-2. 利用代理模式来代理系统类的运行拦截我们需要拦截的方法
-
-3. 使用反射的方法把这个系统类替换成你的代理类
-
-# 热修复
-
-| 平台       | HotFix阿里 | AndFix阿里 | Tinker腾讯 | Qzone腾讯 | Robust美团 |
-| ---------- | ---------- | ---------- | ---------- | --------- | ---------- |
-| 即时生效   | 是         | 是         | 否         | 否        | 是         |
-| 性能消耗   | 较小       | 较小       | 较大       | 较大      | 较小       |
-| 侵入式打包 | 否         | 否         | 是         | 是        | 是         |
-| Rom体积    | 较小       | 较小       | 较大       | 较小      | 较小       |
-| 接入复杂度 | 傻瓜式     | 简单       | 复杂       | 简单      | 复杂       |
-| 补丁大小   | 较小       | 较小       | 较小       | 较大      | 一般       |
-| 全平台支持 | 是         | 是         | 是         | 是        | 是         |
-| 类替换     | 是         | 是         | 是         | 是        | 否         |
-| so替换     | 是         | 否         | 是         | 否        | 否         |
-| 资源替换   | 是         | 否         | 是         | 是        | 否         |
-
-目前较火的热修复方案大致分为两派，分别是：
-
-1. 阿里系：DeXposed、andfix：从底层二进制入手（c语言）。
-2. 腾讯系：tinker：从java加载机制入手。
-
 # Java中的ClassLoader
 
 类加载子系统的主要作用就是通过多种类加载器(ClassLoader)来查找和加载Class文件到Java虚拟机中。
@@ -333,7 +291,7 @@ Android也分为系统类加载器和自定义类加载器。其中系统类加�
   -   librarySearchPath：包含C/C++库的路径集合，多个路径用文件分隔符分隔，可以为null。
   -   parent：父加载器。
 
-  DexClassLoader继承自BaseDexClassLoader，方法都在BaseDexClassLoader中实现。
+DexClassLoader继承自BaseDexClassLoader，方法都在BaseDexClassLoader中实现。
 
 3. **PathClassLoader**
     Android系统使用PathClassLoader来加载系统类和应用程序的类。PathClassLoader继承自BaseDexClassLoader，也都在BaseDexClassLoader中实现。在PathClassLoader的构造方法中没有参数optimizedDirectory，这是因为PathClassLoader已经默认了参数optimizedDirectory的值为`/data/dalvik-cache`，PathClassLoader无法定义解压的dex文件存储路径，因此PathClassLoader通常用来加载已经安装的apk的dex文件(安装的apk的dex文件会存储在`/data/dalvik-cache`中)。
@@ -347,7 +305,7 @@ Android也分为系统类加载器和自定义类加载器。其中系统类加�
 1.  DexClassLoader可以加载jar/apk/dex，可以从SD卡中加载未安装的apk
 2.  PathClassLoader只能加载系统中已经安装过的apk
 
-##ClassLoader的继承关系
+## ClassLoader的继承关系
 
 ```java
 protected void onCreate(Bundle savedInstanceState) {
@@ -529,7 +487,7 @@ Android的ClassLoader也遵循了双亲委托模式，如果类已经加载，�
 
 具体分析略，这里直接说结论。
 
-BootClassLoader是在Zygote入口方法中被创建的，用于加载preloaded-classes文件中存有的预加载类。
+BootClassLoader是在ZygoteInit入口方法中被创建的，用于加载preloaded-classes文件中存有的预加载类。
 
 ## PathClassLoader的创建
 
