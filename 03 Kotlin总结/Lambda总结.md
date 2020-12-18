@@ -380,3 +380,112 @@ fun test1() {
 
 >   函数类型也可以是空（null）的，用括号括起并添加？号
 
+函数类型也可以作为函数参数。
+
+Java调用Kotlin的函数参数：
+
+```kotlin
+fun testFunParam(funPamam: (Int, String) -> Char) {
+    println(funPamam(1, "2"))
+}
+```
+
+```java
+private static void test6() {
+    MainKt.testFunParam(new Function2 < Integer, String, Character > () {
+        @Override
+        public Character invoke(Integer integer, String s) {
+            return 'a';
+        }
+    });
+}
+```
+
+Kotlin的函数参数在Java会生成一个类FunctionN。如：有2个参数，那么就是Function2，类型参数有3个，前两个是函数参数的方法参数类型，最后一个是函数参数的返回类型。见上例子。
+
+## 内联函数
+
+每调用一次lambda表达式，一个额外的类就会被创建。并且如果lambda捕捉了某个变量，那么每次调用的时候都会创建一个新的对象。这会带来运行时的额外开销，导致使用lambda比使用一个直接执行相同代码的函数效率更低。
+
+使用内联函数可以消除lambda带来的运行时开销。
+
+### 内联函数的运作方式
+
+当一个函数被声明为inline时，函数并不是被调用，而是将函数体替换到被调用的地方。
+
+```kotlin
+fun testInlineFun() {
+    println("aaaa")
+    val l = ReentrantLock()
+    synchronized(l) {
+        println("bbbb")
+    }
+    println("cccc")
+}
+
+/**
+ * 内联函数
+ */
+inline fun synchronized(lock: Lock, action: () -> Unit) {
+    lock.lock()
+    try {
+        action()
+    } finally {
+        lock.unlock()
+    }
+}
+```
+
+其字节码相当于：
+
+```kotlin
+fun testInlineFun() {
+    println("aaaa")
+    val lock.lock = ReentrantLock()
+   lock.lock()
+    try {
+        println("bbbb")
+    } finally {
+        lock.unlock()
+    }
+    println("cccc")
+}
+```
+
+注意lambda表达式和synchronized函数的实现都被内联了。由lambda生成的字节码成为了函数调用者定义的一部分，而不是被包含在一个实现了函数接口的匿名类中。
+
+```kotlin
+fun testInlineFun2(action: () -> Unit) {
+    val lock = ReentrantLock()
+    synchronized(lock, action)
+}
+```
+
+如果是这样的，那么对应的字节码相当于：
+
+```kotlin
+fun testInlineFun2(action: () -> Unit) {
+    val lock = ReentrantLock()
+    lock.lock()
+    try {
+        action()
+    } finally {
+        lock.unlock()
+    }
+}
+```
+
+synchronized函数体实现了内联，但是lambda没有实现内联。
+
+如果在两个不同的位置使用同一个内联函数，但是用的是不同的lambda，那么内联函数会在每一个被调用的位置被分别内联。内联函数的代码会被拷贝到使用它的两个不同位置，并把不同的lambda替换到其中。
+
+### 内联函数的限制
+
+lambda参数如果被直接调用或者作为参数传递给另外一个inline函数，它是可以被内联的。但如果lambda参数在某个地方被保存起来，以便后面可以继续使用，lambda表达式的代码将不能被内联，因为必须要有一个包含这些代码的对象存在。
+
+如果一个函数期望两个或更多lambda参数，可以选择只内联其中一些参数。这是有道理的，因为一个lambda可能会包含很多代码或者以不允许内联的方式使用。接收这样的非内联lambda的参数，可以用noinline修饰符来标记它：
+
+```kotlin
+inline fun foo(inlined: () -> Unit, noinline notInlined: () -> Unit) { }
+```
+
