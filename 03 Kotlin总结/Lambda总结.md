@@ -34,9 +34,52 @@ fun lookForAlice(people: List<Person>) {
 }
 ```
 
+```kotlin
+fun testInlineFun3() {
+    println("testInlineFun3 before")
+    val i: Int = 1
+    inlinefun {
+        if (i == 1) {
+            return
+        }
+    }
+    println("testInlineFun3 after")
+}
+
+inline fun inlinefun(action: () -> Unit) {
+    println("inlinefun before")
+    action()
+    println("inlinefun after")
+}
+
+testInlineFun3 before
+inlinefun before
+```
+
 在lambda中使用return关键字，它会从调用lambda的函数中返回，并不只是从lambda中返回。这样的return语句叫作非局部返回。
 
-局部返回只适用于内联函数。
+局部返回只适用于内联函数。需要注意的是，只有在以lambda作为参数的函数是内联函数的时候才能从更外层的函数返回。forEach的函数体和lambda的函数体一起被内联了，所以在编译的时候能很容易做到从包含它的函数中返回。在一个非内联函数的lambda中使用return表达式是不允许的。一个非内联函数可以把传给它的lambda保存在变量中，以便在函数返回以后可以继续使用，这个时候lambda想要去影响函数的返回已经太晚了。
+
+```kotlin
+fun testInlineFun4(){
+    println("testInlineFun4 before")
+    val i: Int = 1
+    noInlineFun {
+        if (i == 1) {
+            return
+        }
+    }
+    println("testInlineFun4 after")
+}
+
+fun noInlineFun(action: () -> Unit){
+    println("noInlineFun before")
+    action()
+    println("noInlineFun after")
+}
+
+//上述代码会编译错误
+```
 
 ## 局部返回
 
@@ -63,6 +106,26 @@ fun lookForAlice(people: List<Person>) {
     println("Alice might be somewhere")
 }
 ```
+
+```kotlin
+fun testInlineFun4() {
+    println("testInlineFun4 before")
+    val i: Int = 1
+    inlinefun(fun() {
+        if (i == 1) {
+            return
+        }
+    })
+    println("testInlineFun4 after")
+}
+
+testInlineFun4 before
+inlinefun before
+inlinefun after
+testInlineFun4 after
+```
+
+在匿名函数中，不带标签的return表达式会从匿名函数返回，而不是从包含匿名函数的函数返回。这条规则很简单：return从最近的使用fun关键字声明的函数返回。lambda 表达式没有使用fun关键字，所以lambda中的return从最外层的函数返回。匿名函数使用了fun，因此，在前一个例子中匿名函数是最近的符合规则的函数。所以，return表达式从匿名函数返回，而不是从最外层的函数返回。
 
 # Lambda表达式和成员引用
 
@@ -489,3 +552,14 @@ lambda参数如果被直接调用或者作为参数传递给另外一个inline�
 inline fun foo(inlined: () -> Unit, noinline notInlined: () -> Unit) { }
 ```
 
+在Kotlin中，filter 函数被声明为内联函数。这意味着filter函数，以及传递给它的lambda的字节码会被一起内联到filter被调用的地方。map也一样。
+
+**什么时候需要inline？**
+
+使用inline关键字只能提高带有lambda参数的函数的性能，其他的情况需要额外的度量和研究。
+
+对于普通的函数调用，JVM已经提供了强大的内联支持。它会分析代码的执行，并在任何通过内联能够带来好处的时候将函数调用内联。这是在将字节码转换成机器代码时自动完成的。在字节码中，每一个函数的实现只会出现一次，并不需要跟
+
+Kotlin的内联函数一样，每个调用的地方都拷贝一次。再说，如果函数被直接调用，调用栈会更加清晰。
+
+另一方面，将带有lambda参数的函数内联能带来好处。首先，通过内联避免的运行时开销更明显了。不仅节约了函数调用的开销，而且节约了为lambda创建匿名类，以及创建lambda实例对象的开销。其次，JVM目前并没有聪明到总是能将函数调用内联。最后，内联使得我们可以使用一些不可能被普通lambda使用的特性，比如非局部返回。
