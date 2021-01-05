@@ -148,4 +148,579 @@ Unicode 为世界上所有字符都分配了一个唯一的数字编号，而UTF
 - `UTF-16`和`UTF-8`都是处理`Unicode`编码，`UTF-16`效率更高，它适合在本地磁盘和内存之间使用。
 - `UTF-16`不是在网络之间传输，因为网络传输容易损坏字节流，`UTF-8`更适合网络传输，对`ASCII`字符采用单字节存储，单字节损毁不会影响后面其它字符。
 
-# 
+# 对象
+
+## 引用
+
+即使没有对象，引用也可以独立存在。比如创建一个String引用：
+
+```java
+String s;
+```
+
+这里创建的只是引用，不是对象。
+
+# 操作符
+
+## 取模运算
+
+符号与被除数保持一致
+
+```
+2%5=2
+-2%5=-2
+2%(-5)=2
+-2%(-5)=-2
+5%2=1
+-5%2=-1
+5%(-2)=1
+-5%(-2)=-1
+```
+
+**判断是否是偶数**
+
+```java
+/**
+ * 测试是否为偶数
+ */
+private static void test2() {
+    for (int i = -3; i <= 3; i++) {
+        System.out.println(i + "是否是偶数：" + isEven(i));
+    }
+}
+
+private static boolean isEven(int n) {
+    return n % 2 == 0;
+}
+
+-3是否是偶数：false
+-2是否是偶数：true
+-1是否是偶数：false
+0是否是偶数：true
+1是否是偶数：false
+2是否是偶数：true
+3是否是偶数：false
+```
+
+没有问题。
+
+**判断是否为奇数**
+
+```java
+/**
+ * 测试是否为奇数
+ */
+private static void test3() {
+    for (int i = -3; i <= 3; i++) {
+        System.out.println(i + "是否是奇数：" + isOdd(i));
+    }
+}
+
+private static boolean isOdd(int n) {
+    return n % 2 == 1;
+}
+
+-3是否是奇数：false
+-2是否是奇数：false
+-1是否是奇数：false
+0是否是奇数：false
+1是否是奇数：true
+2是否是奇数：false
+3是否是奇数：true
+```
+
+如果判断奇数的方法是这样的：
+
+```java
+private static boolean isOdd(int n) {
+    return n % 2 == 1;
+}
+```
+
+那么结果就会出现问题，因为取模结果的符号与被除数有关。
+
+正确的方法：
+
+```java
+private static boolean isOdd(int n) {
+    return n % 2 != 0;
+}
+
+-3是否是奇数：true
+-2是否是奇数：false
+-1是否是奇数：true
+0是否是奇数：false
+1是否是奇数：true
+2是否是奇数：false
+3是否是奇数：true
+```
+
+## 短路现象
+
+&&和||是短路的。
+
+&&如果遇到false，那么后面的不再执行；||如果遇到true，那么后面的不再执行；|和&不管怎样都执行。
+
+## 按位操作符
+
+- **&**：与
+- **|**：或
+- **^**：异或
+- **~**：非
+
+有符号左移(<<)是在低位补0。
+
+有符号右移(>>)是，如果是负数，高位补1，正数补0。
+
+无符号右移(>>>)是高位补0。
+
+```java
+public static void main(String[] args) {
+    int i = -1;
+    // 1111 1111 1111 1111 1111 1111 1111 1111
+    System.out.println(Integer.toBinaryString(i));
+    i >>>= 10;
+    // 11 1111 1111 1111 1111 1111
+    System.out.println(Integer.toBinaryString(i));
+    // 4194303
+    System.out.println(i);
+//-----------------------------------------------------------------
+    long l = -1;
+    // 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111
+    System.out.println(Long.toBinaryString(l));
+    l >>>= 10;
+    // 11 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111
+    System.out.println(Long.toBinaryString(l));
+    // 18014398509481983
+    System.out.println(l);
+//---------------------------------------------------------------   
+    short s = -1;
+    // 1111 1111 1111 1111 1111 1111 1111 1111
+    System.out.println(Integer.toBinaryString(s));//这里被强转为int
+    
+    s >>>= 10;//如果对byte或short值进行移位运算，会先被转换成int类型，再进行右移操作，然后被截断，赋值给原来的类型。
+    // 1111 1111 1111 1111 1111 1111 1111 1111
+    System.out.println(Integer.toBinaryString(s));
+    // 例：这里short -1的二进制为 1111 1111 1111 1111，转为int：1111 1111 1111 1111 1111 1111 1111 1111，无符号右移10，得到结果0000 0000 0011 1111 1111 1111 1111 1111，截断变为1111 1111 1111 1111，值为-1.
+    // -1
+    System.out.println(s);
+    
+    s = -1;
+    s >>>= 20;
+    // 1111 1111 1111
+    System.out.println(Integer.toBinaryString(s));
+    // 例：-1的二进制为 1111 1111 1111 1111，转为int：1111 1111 1111 1111 1111 1111 1111 1111，无符号右移20，得到结果0000 0000 0000 0000 0000 1111 1111 1111，截断变为0000 1111 1111 1111，值为4095.
+    // 4095
+    System.out.println(s);
+//---------------------------------------------------------------   
+    byte b = -1;
+    // 1111 1111 1111 1111 1111 1111 1111 1111
+    System.out.println(Integer.toBinaryString(b));
+    b >>>= 10;
+    // 1111 1111 1111 1111 1111 1111 1111 1111
+    System.out.println(Integer.toBinaryString(b));
+    b = -1;
+    // 1111111111111111111111
+    System.out.println(Integer.toBinaryString(b >>> 10));//这里由于没有赋值给b，没有截断，所以结果正确。
+}
+```
+
+> 通过将比较小的类型传递给Integer的toBinaryString方法，则该类型会自动转为int。
+
+如果使用无符号右移，得到的结果可能不正确：
+
+```java
+public static void main(String[] args) {
+    byte b = -1;
+    System.out.println(b);
+    out.println(Integer.toBinaryString(b));
+    b >>>= 24;
+    System.out.println(b);
+    out.println(Integer.toBinaryString(b));
+    b = -1;
+    b >>>= 25;
+    System.out.println(b);
+    out.println(Integer.toBinaryString(b));
+    b = -1;
+    b >>>= 26;
+    System.out.println(b);
+    out.println(Integer.toBinaryString(b));
+}
+
+-1
+11111111111111111111111111111111
+-1
+11111111111111111111111111111111
+127
+1111111
+63
+111111
+```
+
+总结：比int短的类型进行位移操作时，先转为int，然后高低位添0/1，然后从低位截断成原来的类型。
+
+## 类型转换
+
+-   如果要执行窄化转换的操作(也就是说，将能容纳更多信息的数据类型转换成无法容纳那么多信息的类型)，就有可能面临信息丢失的危险。此时，需要强制进行类型转换。
+    对于扩展转换，则不必显式地进行类型转换，因为新类型肯定能容纳原来类型的信息，不会造成任何信息的丢失。
+
+-   布尔类型不能进行类型转换。
+
+-   在将float或double转型为整型值时，总是对该数字执行截尾（如0.7变为0，0.4也是0）。如果想要得到四舍五入的结果，就需要使用java.lang.Math中的round方法。
+-   表达式中出现的最大的数据类型决定了表达式最终结果的数据类型。如果将一个float值与一个double值相乘，结果就是double；如果将一个int和一个long值相加，则结果为long。
+
+### int和char
+
+```java
+int i = 100;
+char c = 'a';
+System.out.println((char) i);
+System.out.println(c);
+System.out.println((int) c);
+
+d
+a
+97
+```
+
+### short、byte和char的运算
+
+在char、byte和short中， 使用算术操作符会有数据类型提升的效果。对这些类型的任何一个进行算术运算，都会获得一个int结果， 必须将其显式地类型转换回原来的类型(窄化转换可能会造成信息的丢失)，以将值赋给原本的类型。但对于int值，却不必进行类型转化，因为所有数据都已经属于int类型。
+
+```java
+public static void main(String[] args) {
+    short a = 1;
+    short b = 2;
+    short c = (short) (a + b);//必须显式地类型转换
+}
+```
+
+# 控制执行流程
+
+## 迭代
+
+Java的迭代有for、foreach、Iterator的方式，for很好理解，这里看一下foreach和Iterator的区别：
+
+**Java代码**
+
+```java
+/**
+ * Iterator迭代
+ */
+private static void iterator1() {
+    ArrayList<Integer> list = new ArrayList<>();
+    list.add(1);
+
+    Iterator<Integer> iterator = list.iterator();
+    while (iterator.hasNext()) {
+        System.out.println(iterator.next());
+    }
+}
+
+/**
+ * foreach迭代
+ */
+private static void iterator2() {
+    ArrayList<Integer> list = new ArrayList<>();
+    list.add(1);
+
+    for (Integer i : list) {
+        System.out.println(i);
+    }
+}
+```
+
+编译成class文件后，利用IDEA进行查看：
+
+```java
+private static void iterator1() {
+    ArrayList var0 = new ArrayList();
+    var0.add(1);
+    Iterator var1 = var0.iterator();
+
+    while(var1.hasNext()) {
+        System.out.println(var1.next());
+    }
+
+}
+
+private static void iterator2() {
+    ArrayList var0 = new ArrayList();
+    var0.add(1);
+    Iterator var1 = var0.iterator();
+
+    while(var1.hasNext()) {
+        Integer var2 = (Integer)var1.next();
+        System.out.println(var2);
+    }
+
+}
+```
+
+可以看到对于可以使用Iterator的集合来说，foreach和Iterator底层实现上是一样的。
+
+数组没有Iterator的方式，这里看看数组的for和foreach的区别。
+
+**java代码**
+
+```java
+/**
+ * for方式
+ */
+private static void forr() {
+    int[] ints = new int[10];
+
+    for (int i = 0; i < ints.length; i++) {
+        System.out.println(ints[i]);
+    }
+}
+
+/**
+ * foreach方式
+ */
+private static void foreach() {
+    int[] ints = new int[10];
+
+    for (int anInt : ints) {
+        System.out.println(anInt);
+    }
+}
+```
+
+**class文件**
+
+```java
+private static void forr() {
+    int[] var0 = new int[10];
+
+    for(int var1 = 0; var1 < var0.length; ++var1) {
+        System.out.println(var0[var1]);
+    }
+
+}
+
+private static void foreach() {
+    int[] var0 = new int[10];
+    int[] var1 = var0;
+    int var2 = var0.length;
+
+    for(int var3 = 0; var3 < var2; ++var3) {
+        int var4 = var1[var3];
+        System.out.println(var4);
+    }
+
+}
+```
+
+可以看到，foreach这里先是获取数组长度，然后再利用for进行迭代，所以对于数组的迭代，for和foreach在底层上也是一样的。
+
+### 小结
+
+对于容器的迭代，foreach和Iterator在底层实现上是一样的。
+
+对于数组的迭代，for和foreach在底层实现上是一样的。
+
+## goto
+
+goto虽然是Java的关键字，但是Java没有使用goto。Java的跳转是利用标签：
+
+```java
+TAG1:
+for (int i = 0; i < 10; i++) {
+    for (int j = 0; j < 20; j++) {
+        if (i == 5 && j == 10) {
+            break TAG1;
+        }
+    }
+}
+```
+
+在for的头上加一个标签。break 标签很好理解，这里看一下continue 标签的结果：
+
+```java
+public static void main(String[] args) {
+
+    TAG1:
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 4; j++) {
+            if (i == 1 && j == 2) {
+                continue TAG1;
+            }
+            System.out.println(i + ":" + j);
+        }
+    }
+}
+```
+
+out:
+
+```
+0:0
+0:1
+0:2
+0:3
+1:0
+1:1
+2:0
+2:1
+2:2
+2:3
+```
+
+依然很好理解。
+
+## switch
+
+switch要求使用一个选择因子，并且必须是int或char那样的整数值。例如，假如将一个字符串（Java8以后可以）或者浮点数作为选择因子使用，那么它们在switch语句里是不会工作的。
+
+![11](/Users/mezzsy/Projects/Blog/Java/assets/11.jpg)
+
+看一下demo了解一下switch：
+
+**demo1，顺序的case：**
+
+```java
+public static void main(String[] args) {
+    for (int i = 0; i < 5; i++) {
+        switch (i) {
+            case 5:
+                System.out.println(5);
+            case 4:
+                System.out.println(4);
+            case 3:
+                System.out.println(3);
+            case 2:
+                System.out.println(2);
+            case 1:
+                System.out.println(1);
+            default:
+                System.out.println("default");
+                break;
+        }
+        System.out.println("------------");
+    }
+}
+```
+
+output：
+
+```
+default
+------------
+1
+default
+------------
+2
+1
+default
+------------
+3
+2
+1
+default
+------------
+4
+3
+2
+1
+default
+------------
+```
+
+**demo2，乱序的case：**
+
+```java
+public static void main(String[] args) {
+    for (int i = 1; i < 6; i++) {
+        switch (i) {
+            default:
+                System.out.println("default");
+                break;
+            case 4:
+                System.out.println(4);
+            case 5:
+                System.out.println(5);
+            case 1:
+                System.out.println(1);
+            case 3:
+                System.out.println(3);
+            case 2:
+                System.out.println(2);
+        }
+        System.out.println("------------");
+    }
+}
+```
+
+output：
+
+```
+1
+3
+2
+------------
+2
+------------
+3
+2
+------------
+4
+5
+1
+3
+2
+------------
+5
+1
+3
+2
+------------
+```
+
+对应的字节码：
+
+```
+ public static void main(java.lang.String[]);
+    Code:
+       0: iconst_1
+       1: istore_1
+       2: iload_1
+       3: bipush        6
+       5: if_icmpge     104
+       8: iload_1
+       9: tableswitch   { // 1 to 5
+                     1: 69
+                     2: 83
+                     3: 76
+                     4: 55
+                     5: 62
+               default: 44
+          }
+      44: getstatic     #2                  // Field java/lang/System.out:Ljava/io/PrintStream;
+      47: ldc           #3                  // String default
+      49: invokevirtual #4                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+      52: goto          90
+      55: getstatic     #2                  // Field java/lang/System.out:Ljava/io/PrintStream;
+      58: iconst_4
+      59: invokevirtual #5                  // Method java/io/PrintStream.println:(I)V
+      62: getstatic     #2                  // Field java/lang/System.out:Ljava/io/PrintStream;
+      65: iconst_5
+      66: invokevirtual #5                  // Method java/io/PrintStream.println:(I)V
+      69: getstatic     #2                  // Field java/lang/System.out:Ljava/io/PrintStream;
+      72: iconst_1
+      73: invokevirtual #5                  // Method java/io/PrintStream.println:(I)V
+      76: getstatic     #2                  // Field java/lang/System.out:Ljava/io/PrintStream;
+      79: iconst_3
+      80: invokevirtual #5                  // Method java/io/PrintStream.println:(I)V
+      83: getstatic     #2                  // Field java/lang/System.out:Ljava/io/PrintStream;
+      86: iconst_2
+      87: invokevirtual #5                  // Method java/io/PrintStream.println:(I)V
+      90: getstatic     #2                  // Field java/lang/System.out:Ljava/io/PrintStream;
+      93: ldc           #6                  // String ------------
+      95: invokevirtual #4                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+      98: iinc          1, 1
+     101: goto          2
+     104: return
+```
+
+在字节码层面上，switch是利用了goto的方式，先定义每个case的序号，对于每个i，获取对应的case的序号，然后执行goto语句，跳转到相应的case部分，由于没有break，按照字节码的执行流程，会继续执行下面的case部分。这也是为什么Java层面上，会继续执行后面的case语句。
