@@ -1,12 +1,391 @@
-# JNI原理
+1.  加载so库原理
+2.  native方法调用原理
+3.  JNI中的引用
 
-如果Java要调用native函数，就必须通过一个位于JNI层的动态库来实现。动态库就是运行时加载的库，那么在什么时候以及什么地方加载这个库呢？
+# JavaVM和JNIEnv
 
-答案不固定，原则上是：在调用native函数前，任何时候、任何地方加载都可以。通行的做法是在类的static语句中加载，调用System.loadLibrary方法就可以了。
+-   JavaVM：它代表Java虚拟机。每一个Java进程有一个全局唯一的JavaVM对象。
+-   JNIEnv：它是JNI运行环境的含义。每一个Java线程都有一个JNIEnv对象。Java线程在执行JNI相关操作时，都需要利用该线程对应的JNIEnv对象。
 
-## Native方法注册
+JavaVM和JNIEnv是jni.h里定义的数据结构，里边包含的都是函数指针成员变量。所以，这两个数据结构有些类似Java中的interface。不同虚拟机实现都会从它们派生出实际的实现类。
 
-### 静态注册
+# 加载so库原理
+
+//TODO
+
+1. so库是如何打到apk包的？
+2. 安装apk包是如何放置so库的？
+3. 打开App是如何读取so库的？
+
+加载so主要用到了System类的load和loadLibarary方法，如下所示：
+
+```java
+public final class System {
+    //... 
+    @CallerSensitive
+    public static void load(String filename) {
+        Runtime.getRuntime().load0(VMStack.getStackClass1(), filename);
+    }
+
+    @CallerSensitive
+    public static void loadLibrary(String libname) {
+        Runtime.getRuntime().loadLibrary0(VMStack.getCallingClassLoader(), libname);
+    }
+    //。。。
+}
+```
+
+>   上面的代码块中获取调用Class或者ClassLoader，是用VMStack.getStackClass1()和VMStack.getCallingClassLoader()，在其它版本用的是Reflection.getCallerClass()。
+>
+>   在自己使用Reflection.getCallerClass()方法时遇到了一些问题，然后查了资料，仅作参考：
+>
+>   **权限**
+>
+>   Reflection.getCallerClass()的调用者必须有权限，需要什么样的权限呢？
+>
+>   -   由bootstrap class loader加载的类可以调用
+>   -   由extension class loader加载的类可以调用
+>   -   都知道用户路径的类加载都是由 application class loader进行加载的，换句话说就是用户自定义的一些类中无法调用此方法
+>
+>   **作用**
+>
+>   `Reflection.getCallerClass()`方法调用所在的方法必须用@CallerSensitive进行注解，通过此方法获取class时会跳过链路上所有的有@CallerSensitive注解的方法的类，直到遇到第一个未使用该注解的类，避免了用`Reflection.getCallerClass(int n)` 这个过时方法来自己做判断。
+>
+>   小结：总而言之，Reflection.getCallerClass()不建议在开发中使用。
+
+System的load方法传入的参数是so在磁盘的完整路径，用于加载指定路径的so。
+
+System的loadLibrary方法传入的参数是so的名称，用于加载App安装后自动从apk包中复制到`/data/data/packagename/lib`下的so。
+
+目前so的修复都是基于这两个方法。
+
+## System的load方法
+
+```java
+public final class System {
+    @CallerSensitive
+    public static void load(String filename) {
+        Runtime.getRuntime().load0(VMStack.getStackClass1(), filename);
+    }
+}
+```
+
+Runtime.getRuntime()会得到当前Java应用程序的运行环境Runtime，Runtime的load()方法如下所示：
+
+```java
+synchronized void load0(Class<?> fromClass, String filename) {
+     if (!(new File(filename).isAbsolute())) {
+          throw new UnsatisfiedLinkError("Expecting an absolute path of the library: " + filename);
+     }
+
+    if (filename == null) {
+          throw new NullPointerException("filename == null");
+    }
+    String error = doLoad(filename, fromClass.getClassLoader());
+    if (error != null) {
+        throw new UnsatisfiedLinkError(error);
+    }
+}
+```
+
+```java
+private String doLoad(String name, ClassLoader loader) {
+        String librarySearchPath = null;
+        if (loader != null && loader instanceof BaseDexClassLoader) {
+                BaseDexClassLoader dexClassLoader = (BaseDexClassLoader) loader;
+                librarySearchPath = dexClassLoader.getLdLibraryPath();
+        }
+        synchronized (this) {
+                return nativeLoad(name, loader, librarySearchPath);
+        }
+}
+```
+
+doLoad方法会调用native方法nativeLoad。
+
+## System的loadLibrary方法
+
+```java
+public final class System {
+      @CallerSensitive
+    public static void loadLibrary(String libname) {
+        Runtime.getRuntime().loadLibrary0(VMStack.getCallingClassLoader(), libname);
+    }
+}
+```
+
+```java
+synchronized void loadLibrary0(ClassLoader loader, String libname) {
+    if (libname.indexOf((int)File.separatorChar) != -1) {
+        throw new UnsatisfiedLinkError("Directory separator should not appear in library name: " + libname);
+    }
+    String libraryName = libname;
+    if (loader != null) {
+        String filename = loader.findLibrary(libraryName);//注释1
+        if (filename == null) {
+            throw new UnsatisfiedLinkError(loader + " couldn't find \"" + System.mapLibraryName(libraryName) + "\"");
+        }
+        String error = doLoad(filename, loader);//注释2
+        if (error != null) {
+            throw new UnsatisfiedLinkError(error);
+        }
+        return;
+    }
+
+    String filename = System.mapLibraryName(libraryName);
+    List<String> candidates = new ArrayList<String>();
+    String lastError = null;
+    for (String directory : getLibPaths()) {//注释3
+        String candidate = directory + filename;//注释4
+        candidates.add(candidate);
+
+        if (IoUtils.canOpenReadOnly(candidate)) {
+            String error = doLoad(candidate, loader);//注释5
+            if (error == null) {
+                return; 
+            }
+            lastError = error;
+        }
+    }
+
+    if (lastError != null) {
+        throw new UnsatisfiedLinkError(lastError);
+    }
+    throw new UnsatisfiedLinkError("Library " + libraryName + " not found; tried " + candidates);
+}
+```
+
+loadLibrary0方法分为两个部分，一个是传入的ClassLoader不为null的部分，另一个是ClassLoader为null的部分。
+
+先来看ClassLoader 为null 的部分。 在**注释3**处遍历getLibPaths方法，这个方法会返回`java.library.path`选项配置的路径数组。 在**注释4**处拼接出so路径并传入**注释5**处调用的doLoad方法中。（TODO 为什么会有null情况）
+
+当ClassLoader不为null时。 在**注释2**处同样调用了doLoad方法，其中第一个参数是通过**注释1**处的ClassLoader的findLibrary方法来得到的。（具体分析见热修复原理，findLibrary方法内部可实现so库的替换）
+
+System的load方法和loadLibrary方法在Java FrameWork层最终调用的都是nativeLoad方法。
+
+```java
+private static native String nativeLoad(String filename, ClassLoader loader,
+                                        String librarySearchPath);
+```
+
+## nativeLoad方法分析
+
+**Runtime.c#Runtime_nativeLoad**
+
+```c
+JNIEXPORT jstring JNICALL
+Runtime_nativeLoad(JNIEnv* env, jclass ignored, jstring javaFilename,
+                   jobject javaLoader, jstring javaLibrarySearchPath)
+{
+    return JVM_NativeLoad(env, javaFilename, javaLoader, javaLibrarySearchPath);
+}
+```
+
+在Runtime_nativeLoad函数中调用了JVM_NativeLoad函数：
+
+```c
+JNIEXPORT jstring JVM_NativeLoad(JNIEnv* env,
+                                 jstring javaFilename,
+                                 jobject javaLoader,
+                                 jstring javaLibrarySearchPath) {
+  //将so的文件名转换为ScopeUtfChars
+  ScopedUtfChars filename(env, javaFilename);
+  if (filename.c_str() == NULL) {
+    return NULL;
+  }
+
+  std::string error_msg;
+  {
+    //获取当前运行时的虚拟机，JavaVMExt用于代表一个虚拟机实例
+    art::JavaVMExt* vm = art::Runtime::Current()->GetJavaVM();
+    //虚拟机加载so
+    bool success = vm->LoadNativeLibrary(env,
+                                         filename.c_str(),
+                                         javaLoader,
+                                         javaLibrarySearchPath,
+                                         &error_msg);
+    if (success) {
+      return nullptr;
+    }
+  }
+
+  // Don't let a pending exception from JNI_OnLoad cause a CheckJNI issue with NewStringUTF.
+  env->ExceptionClear();
+  return env->NewStringUTF(error_msg.c_str());
+}
+```
+
+## LoadNativeLibrary分析
+
+加载成功会返回true，加载失败返回false，同时JNI返回错误String。
+
+**java_vm_ext.cc#LoadNativeLibrary**
+
+```c
+bool JavaVMExt::LoadNativeLibrary(JNIEnv* env,
+                                  const std::string& path,
+                                  jobject class_loader,
+                                  jstring library_path,
+                                  std::string* error_msg)
+```
+
+path：代表目标动态库的文件名，不包含路径信息。Java层通过`System.loadLibrary`加载动态库时，只需指定动态库的名称(比如libxxx)，不包含路径和后缀名。
+
+class_loader：根据JNI规范，目标动态库必须和一个ClassLoader对象相关联，同一个目标动态库不能由不同的ClassLoader对象加载。
+
+library_path：动态库文件搜索路径。将在这个路径下搜索path对应的动态库文件。
+
+**第一部分**
+
+```c
+bool JavaVMExt::LoadNativeLibrary(JNIEnv* env,
+                                  const std::string& path,
+                                  jobject class_loader,
+                                  jstring library_path,
+                                  std::string* error_msg) {
+  error_msg->clear();
+  SharedLibrary* library;
+  Thread* self = Thread::Current();
+  {
+    MutexLock mu(self, *Locks::jni_libraries_lock_);
+    library = libraries_->Get(path);//根据so的名称从libraries中获取对应的SharedLibrary类型指针library
+  }
+  //...
+  if (library != nullptr) {//如果满足此处的条件就说明此前加载过该so
+    
+    if (library->GetClassLoaderAllocator() != class_loader_allocator) {//如果此前加载用的ClassLoader和当前传入的ClassLoader不相同的话，就会返回false
+      
+      StringAppendF(error_msg, "Shared library \"%s\" already opened by ClassLoader %p; can't open in ClassLoader %p", path.c_str(), library->GetClassLoader(), class_loader);
+      LOG(WARNING) << error_msg;
+      return false;
+    }
+    //。。。
+    
+    if (!library->CheckOnLoadResult()) {//判断上次加载so的结果，如果有异常也会返回false，中断so加载。
+      StringAppendF(error_msg, "JNI_OnLoad failed on a previous attempt to load \"%s\"", path.c_str());
+      return false;
+    }
+    
+    //以上条件满足，则不再重复加载so。
+    return true;
+  }
+	//...
+}
+```
+
+**第二部分**
+
+```c
+bool JavaVMExt::LoadNativeLibrary(JNIEnv* env,
+                                  const std::string& path,
+                                  jobject class_loader,
+                                  jstring library_path,
+                                  std::string* error_msg) {
+  //。。。
+  Locks::mutator_lock_->AssertNotHeld(self);
+  const char* path_str = path.empty() ? nullptr : path.c_str();
+  bool needs_native_bridge = false;
+  
+  //加载动态库，打开路径path_str的so库，得到so句柄handle。Linux平台是利用dlopen，但Android系统进行了相关定制，主要是出于安全考虑。如：一个应用不能加载另外一个应用的动态库。
+  void* handle = android::OpenNativeLibrary(env,
+                                            runtime_->GetTargetSdkVersion(),
+                                            path_str,
+                                            class_loader,
+                                            library_path,
+                                            &needs_native_bridge,
+                                            error_msg);
+	//。。。
+  if (handle == nullptr) {//如果获取so句柄失败就会返回false，中断so加载。
+    VLOG(jni) << "dlopen(\"" << path << "\", RTLD_NOW) failed: " << *error_msg;
+    return false;
+  }
+
+  if (env->ExceptionCheck() == JNI_TRUE) {
+    LOG(ERROR) << "Unexpected exception:";
+    env->ExceptionDescribe();
+    env->ExceptionClear();
+  }
+  bool created_library = false;
+  {
+    //新创建SharedLibrary, 并将so句柄作为参数传入进去。
+    std::unique_ptr<SharedLibrary> new_library(
+        new SharedLibrary(env,
+                          self,
+                          path,
+                          handle,
+                          needs_native_bridge,
+                          class_loader,
+                          class_loader_allocator));
+
+    MutexLock mu(self, *Locks::jni_libraries_lock_);
+    library = libraries_->Get(path);//获取传入path对应的library，如果library为空指针，就将新创建的SharedLibrary赋值给library，并将library存储到libraries中。
+    
+    //。。。
+}
+```
+
+**第三部分**
+
+```c
+bool JavaVMExt::LoadNativeLibrary(JNIEnv* env,
+                                  const std::string& path,
+                                  jobject class_loader,
+                                  jstring library_path,
+                                  std::string* error_msg) {
+  //。。。
+  
+  bool was_successful = false;
+  void* sym = library->FindSymbol("JNI_OnLoad", nullptr);//查找JNI_OnLoad函数的指针并赋值给空指针sym，JNI_OnLoad函数用于native方法的动态注册。
+  if (sym == nullptr) {//如果没有找到JNI_OnLoad函数就将was_successful赋值为true, 说明已经加载成功。没有找到JNI_OnLoad函数也算加载成功，这是因为并不是所有so都定义了JNI_OnLoad函数，因为native方法除了动态注册，还有静态注册。
+    
+    VLOG(jni) << "[No JNI_OnLoad found in \"" << path << "\"]";
+    was_successful = true;
+  } else {
+    ScopedLocalRef<jobject> old_class_loader(env, env->NewLocalRef(self->GetClassLoaderOverride()));
+    self->SetClassLoaderOverride(class_loader);
+    VLOG(jni) << "[Calling JNI_OnLoad in \"" << path << "\"]";
+    typedef int (*JNI_OnLoadFn)(JavaVM*, void*);
+    JNI_OnLoadFn jni_on_load = reinterpret_cast<JNI_OnLoadFn>(sym);
+    int version = (*jni_on_load)(this, nullptr);//如果找到了JNI_OnLoad函数，就在注释3处执行JNI_OnLoad函数并将结果赋值给version。
+
+    //。。。
+
+    if (version == JNI_ERR) {//如果version为JNI_ERR或者Bad JNI version，说明没有执行成功，was_successful的值仍旧为默认的false，否则就将was_successful赋值为true，最终会返回该was_successful。
+      
+      StringAppendF(error_msg, "JNI_ERR returned from JNI_OnLoad in \"%s\"", path.c_str());
+    } else if (JavaVMExt::IsBadJniVersion(version)) {
+      StringAppendF(error_msg, "Bad JNI version returned from JNI_OnLoad in \"%s\": %d", path.c_str(), version);
+    } else {
+      was_successful = true;
+    }
+    VLOG(jni) << "[Returned " << (was_successful ? "successfully" : "failure") << " from JNI_OnLoad in \"" << path << "\"]";
+  }
+
+  library->SetResult(was_successful);
+  return was_successful;
+}
+```
+
+### 小结
+
+LoadNativeLibrary函数主要做了如下3方面工作。
+
+1. 判断so是否被加载过，两次ClassLoader是否是同一个，避免so重复加载。
+2. 打开so并得到so句柄，如果so句柄获取失败，就返回false。创建新的SharedLibrary，如果传入path对应的library为空指针，就将新创建的SharedLibrary赋值给library，并将library存储到libraries中。
+3. 查找JNI_OnLoad的函数指针，根据不同情况设置was_successful的值，最终返回该was_successful。
+
+## 加载so库总结
+
+1.  Java层调用System的load或者loadLibrary方法，内部会寻找so文件的路径。
+2.  将搜索路径传给JNI函数，函数内部判断so是否被加载过，避免so重复加载。
+3.  根据搜索路径，创建SharedLibrary，并存储。
+4.  查找JNI_OnLoad的函数指针，如果存在就调用。根据不同情况设置was_successful的值，最终返回该was_successful。
+
+# Native方法调用
+
+# Native方法注册
+
+## 静态注册
 
 静态注册就是常见的写法，根据包名+类名+方法名寻找对应的函数，如创建项目初始生成的代码：
 
@@ -38,7 +417,7 @@ Java_com_mezzsy_myapplication_MainActivity_stringFromJNI(
 -   声明Native方法的类需要用javah生成头文件。
 -   初次调用Native方法时需要建立关联，影响效率。
 
-### 动态注册
+## 动态注册
 
 ```
 jint JNI_OnLoad(JavaVM *vm, void *) {
@@ -51,7 +430,7 @@ jint JNI_OnLoad(JavaVM *vm, void *) {
 
 动态注册的主要原理就是利用JNIEnv的RegisterNatives函数。
 
-## JNI引用
+# JNI引用
 
 甲骨文的文档：https://docs.oracle.com/javase/8/docs/technotes/guides/jni/spec/design.html#implementing_local_references
 
