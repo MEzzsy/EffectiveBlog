@@ -123,3 +123,5 @@
 - [08 git手册](./08 git手册/README.md)
 - [09 Gradle总结](./09 Gradle总结/README.md)
   - [Gradle总结](./09 Gradle总结/Gradle总结.md)
+- [10机器学习](./10机器学习/README.md)
+  - [动量和NAG](./10机器学习/动量和NAG.md)
