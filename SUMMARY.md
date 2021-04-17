@@ -44,6 +44,8 @@
     - [类型总结](./01 语言/03 Kotlin总结/类型总结.md)
     - [类总结](./01 语言/03 Kotlin总结/类总结.md)
     - [运算符总结](./01 语言/03 Kotlin总结/运算符总结.md)
+  - [04 Python](./01 语言/04 Python/README.md)
+    - [Python学习](./01 语言/04 Python/Python学习.md)
 - [02 计算机系统](./02 计算机系统/README.md)
   - [01-计算机系统漫游](./02 计算机系统/01-计算机系统漫游.md)
 - [03 Android手册](./03 Android手册/README.md)
