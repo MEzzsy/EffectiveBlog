@@ -48,6 +48,7 @@
     - [Python学习](./01 语言/04 Python/Python学习.md)
 - [02 计算机系统](./02 计算机系统/README.md)
   - [01-计算机系统漫游](./02 计算机系统/01-计算机系统漫游.md)
+  - [02-信息的表示和处理](./02 计算机系统/02-信息的表示和处理.md)
 - [03 Android手册](./03 Android手册/README.md)
   - [架构组件](./03 Android手册/架构组件/README.md)
     - [LiveData](./03 Android手册/架构组件/LiveData.md)
