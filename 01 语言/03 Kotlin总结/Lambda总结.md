@@ -2,9 +2,99 @@
 
 Lambda表达式，或简称lambda，本质上就是可以传递给其他函数的一小段代码。
 
-Kotlin的lambda语句可以修改外部可变变量，其原理是外部包了一层包装类，包装类实例的引用不会被改变，但是可以改变其中的值。
+# Lambda表达式和成员引用
 
-不可变(final)变量和Java一样，进行值的拷贝。
+## Lambda 表达式的语法
+
+<img src="assets/11.png" alt="11" style="zoom:50%;" />
+
+**Kotlin的lambda表达式始终用花括号包围。**
+
+可以把lambda表达式存储在一个变量中， 把这个变量当作普通函数对待(即通过相应实参调用它)：
+
+```kotlin
+fun main() {
+    val sum = { x: Int, y: Int -> x + y }
+    println(sum(1,2))
+}
+
+3
+```
+
+还可以直接调用lambda表达式
+
+```kotlin
+fun main() {
+    { println("aa")}()
+}
+
+aa
+```
+
+**精简表达式**
+
+```kotlin
+people.maxBy{{ P: Person -> p.age })
+```
+
+可以精简为：
+
+```kotlin
+println(people.maxBy { it.age })
+```
+
+## 在作用域中访问变量
+
+和Java不一样，Kotlin允许在lambda内部访问非final 变量甚至修改它们。
+
+```kotlin
+fun chapter5Test1() {
+    var num = 1
+    val lambda = { num++ }
+    run(lambda)
+    println("num = $num")
+}
+
+num = 2
+```
+
+注意，默认情况下，局部变量的生命期被限制在声明这个变量的函数中。但是如果它被lambda捕捉了，使用这个变量的代码可以被存储并稍后再执行。
+
+**原理**
+
+当捕捉final变量时，它的值和使用这个值的lambda代码一起存储。而对非final变量来说，它的值被封装在一个特殊的包装器中，这样就可以改变这个值，而对这个包装器的引用会和lambda代码起存储。
+
+这里有一个重要的注意事项，如果lambda被用作事件处理器或者用在其他异步执行的情况，对局部变量的修改只会在lambda执行的时候发生。
+
+## 成员引用
+
+Kolin和Java8一样，如果把函数转换成一个值，就可以传递它。使用::运算符来转换：
+
+```kotlin
+val getAge = Person::age
+```
+
+这种表达式称为成员引用，它提供了简明语法，来创建一个调用单个方法或者访问单个属性的函数值。
+
+注意，不管引用的是函数还是属性，都不要在成员引用的名称后面加括号。成员引用和调用该函数的lambda具有一样的类型， 所以可以互换使用：
+
+```kotlin
+people.maxBy (Person::age)
+```
+
+还可以引用顶层函数(不是类的成员)：
+
+```kotlin
+fun salute() = println("Salute")
+
+fun main() {
+    run(::salute)
+}
+
+Salute
+```
+
+省略了类名称，直接以::开头。
 
 # 内联函数
 
@@ -127,89 +217,6 @@ testInlineFun4 after
 
 在匿名函数中，不带标签的return表达式会从匿名函数返回，而不是从包含匿名函数的函数返回。这条规则很简单：return从最近的使用fun关键字声明的函数返回。lambda 表达式没有使用fun关键字，所以lambda中的return从最外层的函数返回。匿名函数使用了fun，因此，在前一个例子中匿名函数是最近的符合规则的函数。所以，return表达式从匿名函数返回，而不是从最外层的函数返回。
 
-# Lambda表达式和成员引用
-
-## Lambda 表达式的语法
-
-<img src="assets/11.png" alt="11" style="zoom:50%;" />
-
-**Kotlin的lambda表达式始终用花括号包围。**
-
-可以把lambda表达式存储在一个变量中， 把这个变量当作普通函数对待(即通过相应实参调用它)：
-
-```kotlin
-fun main() {
-    val sum = { x: Int, y: Int -> x + y }
-    println(sum(1,2))
-}
-
-3
-```
-
-还可以直接调用lambda表达式
-
-```kotlin
-fun main() {
-    { println("aa")}()
-}
-
-aa
-```
-
-**精简表达式**
-
-```kotlin
-people.maxBy{{ P: Person -> p.age })
-```
-
-可以精简为：
-
-```kotlin
-println(people.maxBy { it.age })
-```
-
-## 在作用域中访问变量
-
-和Java不一样，Kotlin 允许在lambda内部访问非final 变量甚至修改它们。
-
-注意，默认情况下，局部变量的生命期被限制在声明这个变量的函数中。但是如果它被lambda捕捉了，使用这个变量的代码可以被存储并销后再执行。
-
-**原理**
-
-当捕捉final变量时，它的值和使用这个值的lambda代码一起存储。而对非final变量来说，它的值被封装在一个特殊的包装器中，这样就可以改变这个值，而对这个包装器的引用会和lambda代码起存储。
-
-这里有一个重要的注意事项，如果lambda被用作事件处理器或者用在其他异步执行的情况，对局部变量的修改只会在lambda执行的时候发生。
-
-## 成员引用
-
-Kolin和Java8一样，如果把函数转换成一个值，就可以传递它。使用::运算符来转换：
-
-```kotlin
-val getAge = Person::age
-```
-
-这种表达式称为成员引用，它提供了简明语法，来创建一个调用单个方法或者访问单个属性的函数值。
-
-注意，不管引用的是函数还是属性，都不要在成员引用的名称后面加括号。成员引用和调用该函数的lambda 具有一样的类型， 所以可以互换使用：
-
-```kotlin
-people.maxBy (Person::age)
-```
-
-还可以引用顶层函数(不是类的成员)：
-
-```kotlin
-fun salute() = println("Salute")
-
-fun main() {
-    run(::salute)
-}
-
-Salute
-```
-
-省略了类名称，直接以::开头。
-
 # 序列
 
 map和filter这些函数会及早地创建中间集合，也就是说每一步的中间结果都被存储在一个临时列表。序列可以避免创建这些临时中间对象。
@@ -223,7 +230,7 @@ people.asSequence().// 把初始集合转换成序列
 
 这个例子没有创建任何用于存储元素的中间集合，所以元素数量巨大的情况下性能将显著提升。
 
-Kotlin惰性集合操作的入口就是Sequence接口。这个接口表示的就是个可以逐个列举元素的元素序列。Sequence 只提供了一个方法，iterator，用来从序列中获取值。
+Kotlin惰性集合操作的入口就是Sequence接口。这个接口表示的就是个可以逐个列举元素的元素序列。Sequence只提供了一个方法，iterator，用来从序列中获取值。
 
 Sequence接口的强大之处在于其操作的实现方式。序列中的元素求值是惰性的。因此，可以使用序列更高效地对集合元素执行链式操作，而不需要创建额外的集合来保存过程中产生的中间结果。
 
@@ -338,7 +345,7 @@ fun main() {
 
 这种方式可以工作的原因是OnClickListener接口只有一个抽象方法。**这种接口被称为函数式接口，或者SAM接口**，SAM代表单抽象方法。Java API中随处可见像Runnable和Callable这样的函数式接口，以及支持它们的方法。Kotlin允许你在调用接收函数式接口作为参数的方法时使用lambda，来保证你的Kotin代码既整洁又符合习惯。
 
-> 注意和Java不同，Kotlin 拥有完全的函数类型。正因为这样，需要接收lambda作为参数的Kotlin函数应该使用函数类型而不是函数式接口类型，作为这些参数的类型。Kotlin 不支持把lambda自动转换成实现Kotlin接口的对象。
+> 注意和Java不同，Kotlin拥有完全的函数类型。正因为这样，需要接收lambda作为参数的Kotlin函数应该使用函数类型而不是函数式接口类型，作为这些参数的类型。Kotlin不支持把lambda自动转换成实现Kotlin接口的对象。
 
 ## 把 lambda当作参数传递给Java方法
 
@@ -365,6 +372,7 @@ fun main() {
 
 ```kotlin
 fun main() {
+    // 每次调用都会创建一个新的实例
     Chapter5.postponeComputation(1000,object :Runnable{//把对象表达式作为函数式接口的实现传递
         override fun run() {
             //TODO
@@ -373,7 +381,7 @@ fun main() {
 }
 ```
 
-但是这里有一点不一样。当你显式地声明对象时，每次调用都会创建一个新的实例。使用lambda的情况不同：**如果lambda没有访问任何来自定义它的函数的变量，相应的匿名类实例可以在多次调用之间重用。**
+但是这里有一点不一样。当显式地声明对象时，每次调用都会创建一个新的实例。使用lambda的情况不同：如果lambda没有访问任何来自定义它的函数的变量，相应的匿名类实例可以在多次调用之间重用。
 
 因此，完全等价的实现应该是下面这段代码中的显式object声明，它把Runnable实例存储在一个变量中，并且每次调用的时候都使用这个变量
 
@@ -386,7 +394,7 @@ fun main() {
 }
 ```
 
-**如果lambda从包围它的作用域中捕捉了变量，每次调用就不再可能重用同一个实例了。这种情况下，每次调用时编译器都要创建一个新对象，其中存储着被捕捉的变量的值。**
+如果lambda从包围它的作用域中捕捉了变量，每次调用就不再可能重用同一个实例了。这种情况下，每次调用时编译器都要创建一个新对象，其中存储着被捕捉的变量的值。
 
 > **Lambda的实现细节**
 >
@@ -394,11 +402,11 @@ fun main() {
 >
 > 编译器给每个被捕捉的变量生成了一个字段和一个构造方法参数。
 
-请注意这里讨论的为lambda创建一个匿名类，以及该类的实例的方式只对期望函数式接口的Java方法有效，但是对集合使用Kotlin扩展方法的方式并不适用。如果你把lambda传给了标记成inline的Kotlin函数，是不会创建任何匿名类的。而大多数的库函数都标记成了inline
+请注意这里讨论的为lambda创建一个匿名类，以及该类的实例的方式只对期望函数式接口的Java方法有效，但是对集合使用Kotlin扩展方法的方式并不适用。如果你把lambda传给了标记成inline的Kotlin函数，是不会创建任何匿名类的。而大多数的库函数都标记成了inline。
 
 ## SAM构造方法：显式地把lambda转换成函数式接口
 
-SAM构造方法是编译器生成的函数，让你执行从lambda到函数式接口实例的显式转换。可以在编译器不会自动应用转换的上下文中使用它。例如，如果有一个方法返回的是一个函数式接口的实例，不能直接返回一个 lambda，要用 SAM构造方法把它包装起来。
+SAM构造方法是编译器生成的函数，执行从lambda到函数式接口实例的显式转换。可以在编译器不会自动应用转换的上下文中使用它。例如，如果有一个方法返回的是一个函数式接口的实例，不能直接返回一个 lambda，要用 SAM构造方法把它包装起来。
 
 这里有一个简单的例子。
 
@@ -414,7 +422,7 @@ fun createAllDoneRunnable(): Runnable {
 All done!
 ```
 
-SAM构造方法的名称和底层函数式接口的名称一样。SAM构造方法只接收一个参数——一个被用作函数式接口单抽象方法体的lambda并返回实现了这个接口的类的一个实例。
+SAM构造方法的名称和底层函数式接口的名称一样。SAM构造方法只接收一个参数：一个被用作函数式接口单抽象方法体的lambda并返回实现了这个接口的类的一个实例。
 
 除了返回值外，SAM构造方法还可以用在需要把从lambda生成的函数式接口实例存储在一个变量中的情况。
 
@@ -425,6 +433,149 @@ SAM构造方法的名称和底层函数式接口的名称一样。SAM构造方�
 > 如果你的事件监听器在处理事件时还需要取消它自己，不能使用lambda这样做。这种情况使用实现了接口的匿名对象。在匿名对象内，this 关键字指向该对象实例，可以把它传给移除监听器的API。
 
 还有尽管方法调用中的SAM转换一般都自动发生，但是当把lambda作为参数传给一个重载方法时，也有编译器不能选择正确的重载的情况。这时，使用显式的SAM构造方法是解决编译器错误的好方法。
+
+## 几个例子
+
+### demo1
+
+```java
+/**
+ * Runnable：Java函数式接口
+ *
+ * @param runnable
+ */
+public static void invokeRunnable(Runnable runnable) {
+    if (runnable != null) {
+        runnable.run();
+        System.out.println("runnable hashcode = " + runnable.hashCode());
+    }
+}
+```
+
+```kotlin
+/**
+ * 测试调用Java函数式接口
+ */
+fun chapter5Test2() {
+    // 多次调用也只会创建一次
+    val runnable1: Runnable = Runnable {
+        println("runnable1")
+    }
+    Chapter5Java.invokeRunnable(runnable1)
+    // 和runnable1一样，这种调用方式只会创建一次
+    Chapter5Java.invokeRunnable {
+        println("runnable2")
+    }
+    val runnable3 = object : Runnable {
+        override fun run() {
+            println("runnable3")
+        }
+    }
+    Chapter5Java.invokeRunnable(runnable3)
+    println("-----------")
+}
+
+// 调用2次chapter5Test2
+runnable1
+runnable hashcode = 1950409828
+runnable2
+runnable hashcode = 1229416514
+runnable3
+runnable hashcode = 2016447921
+-----------
+runnable1
+runnable hashcode = 1950409828
+runnable2
+runnable hashcode = 1229416514
+runnable3
+runnable hashcode = 666988784
+-----------
+```
+
+### demo2
+
+```java
+/**
+ * Runnable：Java函数式接口
+ *
+ * @param runnable
+ */
+public static void invokeRunnable(Runnable runnable) {
+    if (runnable != null) {
+        runnable.run();
+        System.out.println("invokeRunnable：runnable hashcode = " + runnable.hashCode());
+    }
+}
+```
+
+```kotlin
+fun chapter5Test3() {
+    // 函数类型
+    val lambda: () -> Unit = {
+        println("lambda")
+    }
+    println("lambda hash = ${lambda.hashCode()}")
+    // 成员引用
+    val member = ::run
+    println("member hash = ${member.hashCode()}")
+    // 用SAM构造方法构建一个lambda
+    val runnable = Runnable {
+        println("runnable1")
+    }
+    println("runnable hash = ${runnable.hashCode()}")
+    // 可以传入函数类型
+    Chapter5Java.invokeRunnable(lambda)
+    Chapter5Java.invokeRunnable(::run)
+    // 可以传入一个函数式接口
+    Chapter5Java.invokeRunnable(runnable)
+}
+
+fun run() {
+    println("run in chapter5")
+}
+```
+
+```
+lambda hash = 746292446
+member hash = -1826123828
+runnable hash = 303563356
+lambda
+invokeRunnable：runnable hashcode = 1044036744
+run in chapter5
+invokeRunnable：runnable hashcode = 1826771953
+runnable1
+invokeRunnable：runnable hashcode = 303563356
+```
+
+可以看到，除了runnable的hashcode是一样，其它的都不同，可以猜测是用一个Runnable对象包装了一下。
+
+### demo3
+
+从demo2可以看出，对于Java的Runnable类型，Kotlin即可以传函数类型，也可以传函数式接口对象。但对于Kotlin不一样：
+
+```kotlin
+/**
+ * 测试lambda和Kotlin的交互
+ */
+fun chapter5Test4() {
+    // 函数类型
+    val lambda: () -> Unit = {
+        println("lambda")
+    }
+    // 用SAM构造方法构建一个lambda
+    val runnable = Runnable {
+        println("runnable1")
+    }
+//    invokeRunnableInKotlin(lambda) // 编译错误
+    invokeRunnableInKotlin(runnable)
+}
+
+fun invokeRunnableInKotlin(runnable: Runnable) {
+    runnable.run()
+}
+```
+
+如果指定了传Runnable对象，就不能传函数类型。
 
 # 高阶函数
 
