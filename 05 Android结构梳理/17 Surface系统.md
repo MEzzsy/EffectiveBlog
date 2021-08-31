@@ -378,7 +378,7 @@ performTraversals方法会在注释2、3、4处分别调用performMeasure、perf
 3.   ViewRootImpl实现了ViewParent接口，它有两个重要的成员变量，一个是mView，它指向Activity顶层UI单元的DecorView，另外一个是mSurface，这个Surface包含了一个Canvas。除此之外，ViewRootImpl还通过Binder系统和WindowManagerService进行了跨进程交互。
 4.   整个Activity的绘图流程就是从mSurface中lock一块Canvas，然后交给mView去自由发挥画画的才能，最后unlockCanvasAndPost释放这块Canvas。
 
-# 初识Surface
+# 简单分析Surface
 
 ## 和Surface有关的流程总结
 
@@ -410,7 +410,7 @@ performTraversals方法会在注释2、3、4处分别调用performMeasure、perf
 
 5.   ViewRootImpl调用Surface的unlockCanvasAndPost释放这块画布。
 
-## Surface应用进程与WMS的交互
+## Surface的Java层分析
 
 ViewRootImpl在performTraversals会调用IWindowSession的relayout：
 
@@ -534,6 +534,24 @@ WindowSurfaceController createSurfaceLocked(int windowType, int ownerUid) {
 frameworks/base/services/core/java/com/android/server/wm/WindowSurfaceController.java
 
 ```java
+WindowSurfaceController(String name, int w, int h, int format,
+                        int flags, WindowStateAnimator animator, int windowType, int ownerUid) {
+    // ...
+    final SurfaceControl.Builder b = win.makeSurface()
+            .setParent(win.getSurfaceControl())
+            .setName(name)
+            .setBufferSize(w, h)
+            .setFormat(format)
+            .setFlags(flags)
+            .setMetadata(METADATA_WINDOW_TYPE, windowType)
+            .setMetadata(METADATA_OWNER_UID, ownerUid)
+            .setCallsite("WindowSurfaceController");
+    mSurfaceControl = b.build();
+    //。。。
+}
+```
+
+```java
 void getSurfaceControl(SurfaceControl outSurfaceControl) {
         outSurfaceControl.copyFrom(mSurfaceControl, "WindowSurfaceController.getSurfaceControl");
 }
@@ -585,6 +603,7 @@ private int relayoutWindow(WindowManager.LayoutParams params, int viewVisibility
 ViewRootImpl内部有Surface和SurfaceControl变量，其创建用的无参构造方法。在通过IWindowSession与WMS交互过程中，将SurfaceControl传入到WMS中。
 这部分涉及到aidl，aosp里没有aidl编译过的源码。书中提到，输入的对象实际上没有传到WMS中，而是WMS new了一个新对象。这部分我没有用aidl验证，但也可以理解，因为不是同一个进程，同一个对象不能随意的传输。
 调用完成，调用Surface的copyFrom，将SurfaceControl的内容拷贝到Surface中。
+SurfaceControl实现了Parcelable接口，说明此对象可以IPC。
 
 WMS的流程：
 IWindowSession的实例Session接收到SurfaceControl对象（out）后，创建一个WMS中的WindowSurfaceController，这个WindowSurfaceController内部持有了SurfaceControl对象。然后通过SurfaceControl的copyFrom方法将WindowSurfaceController的内容拷贝到out中。
@@ -605,12 +624,14 @@ Android画图的四大要素：
 
 1.   Bitmap：用于存储像素，也就是画布。可把它当做一块数据存储区域。
 2.   Canvas：用于记载画图的动作，比如画一个圆，画一个矩形等。Canvas类提供了这些基本的绘图函数。
-3.   Drawingprimitive：绘图基元，例如矩形、圆、弧线、文本、图片等。
+3.   Drawing primitive：绘图基元，例如矩形、圆、弧线、文本、图片等。
 4.   Paint：它用来描述绘画时使用的颜色、风格（如实线、虚线等）等。
 
 在一般情况下，Canvas会封装一块Bitmap，而作图就是基于这块Bitmap的。前面所说的画布，其实指的就是Canvas中的这块Bitmap。
 
-### SurfaceSession的构造方法
+### SurfaceSession的无参构造方法
+
+在前面addWindow过程中，WMS会创建一个SurfaceSession：
 
 ```java
 private long mNativeClient; // SurfaceComposerClient*
@@ -630,212 +651,257 @@ static jlong nativeCreate(JNIEnv* env, jclass clazz) {
     // 创建一个SurfaceComposerClient对象
     SurfaceComposerClient* client = new SurfaceComposerClient();
     client->incStrong((void*)nativeCreate);
-    return reinterpret_cast<jlong>(client);// 将该对象的指针转完long类型返回给Java层
+    return reinterpret_cast<jlong>(client);// Java层保存该对象的指针
 }
 ```
 
+### SurfaceControl的无参构造方法
 
-3。Surface的有参构造
-下一个调用的是Surface的有参构造，其参数中有一个SurfaceSession。先看Java层的
-代码，如下所示：
-[-->Surface。java]
-publicSurface(SurfaceSessions，//#^-ASurfaceSession。
-intpid，Stringname，intdisplay，intw，inth，intformat，
-throwsOutofResourcesException{
-intflags)
-mCanvas=
-newCompatibleCanvas();
-1/又一个native函教，注意传递的参数：display，以后再说。w，h代表绘图区域的寬高值。
+```java
+public long mNativeObject;
+private long mNativeHandle;
+
+public SurfaceControl() {
+}
+```
+
+### SurfaceControl的有参构造方法
+
+```java
+public long mNativeObject;
+private long mNativeHandle;
+
+private SurfaceControl(SurfaceSession session, String name, int w, int h, int format, int flags, SurfaceControl parent, SparseIntArray metadata, WeakReference<View> localOwnerView, String callsite) throws OutOfResourcesException, IllegalArgumentException {
+    // ...
+    Parcel metaParcel = Parcel.obtain();
+    try {
+        // ...
+        mNativeObject = nativeCreate(session, name, w, h, format, flags,
+                parent != null ? parent.mNativeObject : 0, metaParcel);
+    } finally {
+        metaParcel.recycle();
+    }
+    // ...
+    mNativeHandle = nativeGetHandle(mNativeObject);
+}
+```
+
+frameworks/base/core/jni/android_view_SurfaceControl.cpp
+
+```cpp
+static jlong nativeCreate(JNIEnv* env, jclass clazz, jobject sessionObj,
+                          jstring nameStr, jint w, jint h, jint format, jint flags, jlong parentObject,
+                          jobject metadataParcel) {
+    // SurfaceSession里会创建一个SurfaceComposerClient（见上），这里就是获取传入的参数sessionObj的SurfaceComposerClient
+    sp<SurfaceComposerClient> client;
+    if (sessionObj != NULL) {
+        client = android_view_SurfaceSession_getClient(env, sessionObj);
+    } else {
+        client = SurfaceComposerClient::getDefault();
+    }
+    SurfaceControl *parent = reinterpret_cast<SurfaceControl*>(parentObject);
+    sp<SurfaceControl> surface;
+    // 创建一个SurfaceControl类型的对象
+    status_t err = client->createSurfaceChecked(
+    String8(name.c_str()), w, h, format, &surface, flags, parent, std::move(metadata));
+    // ...
+    surface->incStrong((void *)nativeCreate);
+    // 将此SurfaceControl对象的指针返回给Java对象
+    return reinterpret_cast<jlong>(surface.get());
+}
+```
+
+### SurfaceControl的copyFrom
+
+```java
+public void copyFrom(@NonNull SurfaceControl other, String callsite) {
+    mName = other.mName;
+    mWidth = other.mWidth;
+    mHeight = other.mHeight;
+    mLocalOwnerView = other.mLocalOwnerView;
+    assignNativeObject(nativeCopyFromSurfaceControl(other.mNativeObject), callsite);
+}
+```
+
+WMS进程会把WMS进程的SurfaceControl拷贝到out中，而copyFrom主要也是native方法：
+
+```java
+static jlong nativeCopyFromSurfaceControl(JNIEnv* env, jclass clazz, jlong surfaceControlNativeObj) {
+    sp<SurfaceControl> surface(reinterpret_cast<SurfaceControl *>(surfaceControlNativeObj));
+    if (surface == nullptr) {
+        return 0;
+    }
+
+    sp<SurfaceControl> newSurface = new SurfaceControl(surface);
+    newSurface->incStrong((void *)nativeCreate);
+    return reinterpret_cast<jlong>(newSurface.get());
+}
+```
+
+就是简单的clone一下。
+
+### SurfaceControl的IPC
+
+上面分析到，这里的创建、拷贝的对象都是在WMS进程中的，不能直接传输到应用进程。而我这无法使用AIDL工具，所以就照着书里的内容推测一下实际的做法。
+
+1.   write把SurfaceControl中的信息写到Parcel包中，然后利用Binder通信传递到对端，对端通过readFromParcel来处理Parcel包。
+2.   根据服务端传递的Parcel包来构造一个新的SurfaceControl。
+
+### Surface的copyFrom
+
+```java
+public void copyFrom(SurfaceControl other) {
+    // ...
+
+    long surfaceControlPtr = other.mNativeObject;
+    long newNativeObject = nativeGetFromSurfaceControl(mNativeObject, surfaceControlPtr);
+	// ...
+}
+```
+
+```cpp
+static jlong nativeGetFromSurfaceControl(JNIEnv* env, jclass clazz,
+                                         jlong nativeObject,
+                                         jlong surfaceControlNativeObj) {
+    Surface* self(reinterpret_cast<Surface *>(nativeObject));
+    sp<SurfaceControl> ctrl(reinterpret_cast<SurfaceControl *>(surfaceControlNativeObj));
+
+    // If the underlying IGBP's are the same, we don't need to do anything.
+    if (self != nullptr &&
+            IInterface::asBinder(self->getIGraphicBufferProducer()) ==
+            IInterface::asBinder(ctrl->getIGraphicBufferProducer())) {
+        return nativeObject;
+    }
+
+    sp<Surface> surface(ctrl->getSurface());
+    if (surface != NULL) {
+        surface->incStrong(&sRefBaseOwner);
+    }
+
+    return reinterpret_cast<jlong>(surface.get());
+}
+```
+
+也没有什么复杂的逻辑，就是新创建一个Native Surface对象。
+
+### 小结
+
+ViewRootImpl在performTraversals调用的relayoutWindow方法，实际上是通过IPC机制，得到了一个新的Native Surface对象。
+
+## Surface和画图
+
+```java
+private void performTraversals() {
+    if (!cancelDraw) {
+        // ...
+        performDraw();
+    }
+	// ..
+}
+```
+
+```java
+private void performDraw() {
+    try {
+         // ...
+         boolean canUseAsync = draw(fullRedrawNeeded);
+         // ...
+     }
+}
+```
+
+```java
+private boolean draw(boolean fullRedrawNeeded) {
+    Surface surface = mSurface;
+    
+    boolean useAsyncReport = false;
+    if (!dirty.isEmpty() || mIsAnimating || accessibilityFocusDirty) {
+        if (mAttachInfo.mThreadedRenderer != null && mAttachInfo.mThreadedRenderer.isEnabled()) {
+			// ...
+        } else {
+            if (!drawSoftware(surface, mAttachInfo, xOffset, yOffset,
+                    scalingRequired, dirty, surfaceInsets)) {
+                return false;
+            }
+        }
+    }
+	// ...
+    return useAsyncReport;
+}
+```
+
+```java
+private boolean drawSoftware(Surface surface, AttachInfo attachInfo, int xoff, int yoff,
+        boolean scalingRequired, Rect dirty, Rect surfaceInsets) {
+    final Canvas canvas;
+	// ...
+    try {
+        // ...
+        canvas = mSurface.lockCanvas(dirty);
+		// ...
+    }
+
+    try {
+        // ...
+    } finally {
+        try {
+            surface.unlockCanvasAndPost(canvas);
+        } 
+        // ...
+    }
+    return true;
+}
+```
+
+在ViewRootImpl的performTraversals的draw方法里，最终会调用Surface的lockCanvas和unlockCanvasAndPost。
+
+### lockCanvas
+
+```java
+public Canvas lockCanvas(Rect inOutDirty)
+        throws Surface.OutOfResourcesException, IllegalArgumentException {
+    synchronized (mLock) {
+        // ...
+        mLockedObject = nativeLockCanvas(mNativeObject, mCanvas, inOutDirty);
+        return mCanvas;
+    }
+}
+```
+
+```cpp
+static jlong nativeLockCanvas(JNIEnv* env, jclass clazz,
+                              jlong nativeObject, jobject canvasObj, jobject dirtyRectObj) {
+    // 从Java中的Surface对象中，取出费尽千辛万苦得到的Native的Surface对象。
+    sp<Surface> surface(reinterpret_cast<Surface *>(nativeObject));
+	// ...
+
+    Rect dirtyRect(Rect::EMPTY_RECT);
+    Rect* dirtyRectPtr = NULL;
+
+    // dirtyRectObj表示需要重绘的矩形块，下面根据这个dirtyRectObj设置dirtyRect
+    if (dirtyRectObj) {
+        dirtyRect.left   = env->GetIntField(dirtyRectObj, gRectClassInfo.left);
+        dirtyRect.top    = env->GetIntField(dirtyRectObj, gRectClassInfo.top);
+        dirtyRect.right  = env->GetIntField(dirtyRectObj, gRectClassInfo.right);
+        dirtyRect.bottom = env->GetIntField(dirtyRectObj, gRectClassInfo.bottom);
+        dirtyRectPtr = &dirtyRect;
+    }
+
+    ANativeWindow_Buffer buffer;
+    status_t err = surface->lock(&buffer, dirtyRectPtr);
+    // ...
+    graphics::Canvas canvas(env, canvasObj);
+    canvas.setBuffer(&buffer, static_cast<int32_t>(surface->getBuffersDataSpace()));
+	// ...
+    sp<Surface> lockedSurface(surface);
+    lockedSurface->incStrong(&sRefBaseOwner);
+    return (jlong) lockedSurface.get();
+}
+```
+
+先获得一块存储区域，然后将它和Canvas绑定到一起，这样，UI绘画的结果就记录在这块存储区域里了。
 
 
-Page323
-第8章深入理解Surface系统
-305
-init(s，pid，name，display，w，h，format，flags);
-mName
-=name;
-}
-SurfacefjnativeinitJNI*，EÆandroid_view_Surface。cpp，-*
-[-->android_view_Surface。cpp]
-staticvoidSurface_init(
-JNIEnv*env，jobjectclazz，
-jobjectsession，
-jintpid，jstringjname，jintdpy，jintw，jinth，jintformat，jintflags)
-{
-1/从SurfaceSession对象中取出之前创建的那个SurfaceComposerclient对象。
-SurfaceComposerClient*client=
-(SurfaceComposerClient*)env->GetIntField(session，sso。client);
-sp<SurfaceControl>surface;//à*SurfaceControl。
-if(jname
-==NULL){
-/*
-SurfaceComposerClientjcreateSurface#，asurface-
-SurfaceControl。
-*/
-surface
-client->createSurface(pid，dpy，w，h，format，flags);
-%3D
-}else{
-}
-//把这个surfaceControl对象设置到Java层的Surface对象中，对这个函数就不再分析了。
-setSurfaceControl(env，clazz，surface);
-}
-4。copyFrom
-现在要分析的就是copyFrom了。它是一个native函数。看它的JNI层代码：
-[-->android_view_Surface。cpp]
-staticvoidSurface_copyFrom(JNIENV*env，jobjectclazz，jobjectother)
-{
-/根据JNI函数的规则可知，clazz是copyFrom的调用对象，而other是copyFrom的参数。
-1/目标对象此时还没有设置SurfaceControl，而源对象在前面已经创建了SurfaceControl。
-constsp<SurfaceControl>&surface=getSurfaceControl(env，clazz);
-constsp<SurfaceControl>&rhs=getSurfaceControl(env，other);
-if(!SurfaceControl：：isSameSurface(surface，rhs)){
-1/把源SurfaceControl1对象设置到目标Surface中。
-setSurfaceControl(env，clazz，rhs);
-}
-}
-这一步还是比较简单的，下面看第5步writeToParcel函数的调用。
-
-
-Page324
-306
-深入理解Android：卷!
-5。writeToParcelT
-多亏了必杀技aidl工具的帮忙，才挖出这个隐藏的writeToParcel函数调用，下面就来看
-看它，代码如下所示：
-[-->android_view_Surface。cpp]
-staticvoidSurface_writeToParcel(JNIEnv*env，jobjectclazz，
-jobjectargParcel，jintflags)
-{
-Parcel*parcel=
-(Parcel*)env->GetIntField(argParcel，no。native_parce1);
-//clazz就是Surface对象，从这个Surface对象中取出保存的SurfaceControl对象。
-constsp<SurfaceControl>&control(getSurfaceControl(env，clazz));
-/*
-把SurfaceControl中的信息写到Parcel包中，然后利用Binder通信传递到对端，
-对端通过readFromParcel来处理Parcel包。
-*/
-SurfaceControl：：writeSurfaceToParcel(control，parcel);
-if(flags&PARCELABLE_WRITERETURN_VALUE){
-//iEiZPARCELABLE_WRITE_RETURN_VALUE3?flagsi*È，
-1/所以本地Surface对象的SurfaceControl值被置空了。
-setSurfaceControl(env，clazz，0);
-}
-}
-6。readFromParcelF
-再看作为客户端的ViewRoot所调用的readFromParcel函数。它也是一个native函数，
-JNI层的代码如下所示：
-[-->android_view_Surface。cpp]
-staticvoidSurfacereadFromParcel(
-JNIEnv*env，jobjectclazz，jobjectargParcel)
-{
-Parcel*parcel=
-(Parcel*)env->GetIntField(argParcel，
-no。native_parcel);
-1/注意，下面定义的变量类型是Surface，而不是SurfaceControl。
-constsp<Surface>&control(getSurface(env，clazz));
-//根据服务端传递的Parcel包来构造一个新的surface。
-sp<Surface>rhs=newSurface(*parcel);
-if(!Surface：：isSameSurface(control，rhs)){
-//把这个新surface賦给ViewRoot中的mSurface对象。
-setSurface(env，clazz，rhs);
-}
-}
-7。Surface乾坤大挪移的小结
-可能有人会问，乾坤大挪移怎么这么复杂?这期间出现了多少对象?来总结一下，在此
-
-
-Page325
-第8章深入理解Surface系统
-307
-期间一共有三个关键对象(注意我们这里只考虑JNI层的Native对象)，它们分别是：
-OSurfaceComposerClient。
-OSurfaceControl。
-口Surface，这个Surface对象属于Native层，和Java层的Surface相对应。
-其中转移到ViewRoot成员变量mSurface中的，就是最后这个Surface对象了。这一路
-走来，真是异常坎坷，来回
-后要破解SurfaceFlinger，靠的就是这个精简的流程。
-OĐ-↑SurfaceComposerClient。
-OISurfaceComposerClientýcreateSurface-SurfaceControlXf。
-口调用SurfaceControl的writeToParcel把一些信息写到Parcel包中。
-口根据Parcel包的信息构造一个Surface对象。把这个Surface对象保存到Java
-层的mSurface对象中。这样，大挪移的结果是ViewRoot得到一个Native的
-并概括总结一下这段历程。至于它的作用应该是很清楚了，以
-Surface对象。
-注意精筒流程后，寥寥数语就可把过程说清楚。以后我们在研究代码时，也可以采取这种
-方式。
-这个Surface对象非常重要，可它到底有什么用呢?这正是下一节要讲的内容。
-8。3。4Surface和画图
-下面来看最后两个和Surface相关的函数调用：一个是lockCanvas;另外一个是
-unlockCanvasAndPost。
-1。lockCanvasA
-要对lockCanvas进行分析，须先来看Java层的函数，代码如下所示：
-[-->Surface。java：：lockCanvas()]
-publicCanvaslockCanvas(Rectdirty)
-throwsOutOfResourcesException，IllegalArgumentException
-{
-returnlockCanvasNative(dirty);//nativelockCanvasNative*。
-[-->android_view_Surface。cpp：：Surface_lockCanvas()J
-staticjobjectSurface_lockCanvas(JNIEnv*env，jobjectclazz，jobjectdirtyRect)
-{
-1/从Java中的Surface对象中，取出费尽千辛万苦得到的Native的Surface对象。
-constsp<Surface>&surface(getSurface(env，clazz));
-
-
-Page326
-308
-深入理解Android：卷1
-//dirtyRect表示需要重绘的矩形块，下面根据这个dirtyRect设置dirtyRegion。
-RegiondirtyRegion;
-if(dirtyRect){
-Rectdirty;
-env->GetIntField(dirtyRect，ro。1);
-dirty。left
-dirty。top
-%3D
-=env->GetIntField(dirtyRect，ro。t);
-env->GetIntField(dirtyRect，ro。r);
-dirty。right
-dirty。bottom=env->GetIntField(dirtyRect，ro。b);
-if(!dirty。isEmpty()){
-dirtyRegion。set(dirty);
-}
-}else{
-dirtyRegion。set(Rect(0×3FFF，0×3FFF));
-1/调用NativeSurface对象的1ock函数，
-1/传入了一个参数Surface：：SurfaceInfoinfo和一块表示脏区域的dirtyRegion。
-Surface：：SurfaceInfoinfo;
-statusterr
-=surface->lock(&info，&dirtyRegion);
-1/Java的Surface对象构造的时候会创建一个CompatibleCanvas。
-1/这里就取出这个CompatibleCanvas对象。
-jobjectcanvas
-env->GetObjectField(clazz，so。canvas);
-env->SetIntField(canvas，co。surfaceFormat，info。format);
-1/从Canvas对象中取出SkCanvas对象。
-SkCanvas*nativeCanvas
-(SkCanvas*)env->GetIntField(
-%3D
-canvas，no。native_canvas);
-SkBitmapbitmap;
-ssize_tbpr
-=info。s*
-bytesPerPixel(info。format);
-bitmap。setConfig(convertPixelFormat(info。format)，info。w，info。h，bpr);
-if(info。w>0&&info。h>0){
-1/info。bits指向一块存储区域。
-bitmap。setPixels(info。bits);
-}else{
-bitmap。setPixels(NULL);
-}
-//给这个SkCanvas设置一个Bitmap，还记得前面说的画图需要的四大金刚吗?
-1/这里将Bitmap设置到这个Canvas中，这样进UI绘画时就有画布了。
-nativeCanvas->setBitmapDevice(bitmap);
-returncanvas;
-}
-lockCanvas还算比较简单：
-先获得一块存储猪区域，然后将它和Canvas绑定到一起，这样，UI绘画的结果就记录在
-这块存储区域里了。
 
 
 Page327
