@@ -11,1235 +11,630 @@ Surface系统主要处理：
 
 -   Surface向SurfaceFlinger提供数据，而SurfaceFlinger则混合数据。
 
-目标已清楚，让我们开始“运功”破解代码吧!
-说明为了书写方便，后文将SurfaceFlinger简写为SF。
-8。2一个Activity的显示
-一般来说，应用程序的外表是通过Activity来展示的。那么，Activity是如何完成界面
-绘制工作的呢?根据前面所讲的知识可知，应用程序的显示和Surface有关，那么具体到
-Activity上，它和Surface又是什么关系呢?
-本节就来讨论这些问题。首先从Activity的创建说起。
-8。2。1Activity的创建
-我们已经知道了Activity的生命周期，如onCreate表示创建、onDestroy表示销毁等，
-但大家是否考虑过这样一个问题：
+# Activity的显示
 
+## Activity的创建
 
-Page294
-276
-深入理解Android：卷」
-如果没有创建Activity，那么onCreate和onDestroy就没有任何意义了，可这个Activity
-究竟是在哪里创建的呢?
-第4章中的“zygote分裂”一节已讲过，zygote在响应请求后会fork一个子进程，这个
-子进程是APP对应的进程，它的入口函数是ActivityThread类的main函数。ActivityThread
-类中有一个handleLaunchActivity函数，它就是创建Activity的地方。一起来看这个函数，
-代码如下所示：
-[-->ActivityThread。java]
-privatefinalvoidhandleLaunchActivity(ActivityRecordr，
-IntentcustomIntent){
-//OperformLaunchActivityiá--AActivity
-Activitya
-performLaunchActivity(r，customIntent);
-if(a!=null){
-r。createdConfig
-newConfiguration(mConfiguration);
-BundleoldState=r。state;
-//®handleResumeActivity
-handleResumeActivity(r。token，false，r。isForward);
-}
-handleLaunchActivity函数中列出了两个关键点(即①和②)，下面对其分别进行介绍。
-1。创建Activity
-第一个关键函数performLaunchActivity返回一个Activity，这个Activity就是App中
-的那个Activity(仅考虑App中只有一个Activity的情况)，它是怎么创建的呢?其代码如
-下所示：
-[-->ActivityThread。java]
-privatefinalActivityperformLaunchActivity(ActivityRecordr，
-IntentcustomIntent){
-ActivityInfoaInfo=r。activityInfo;
-。。//完成一些准备工作。
-//ActivityÀLEActivity。java+。
-Activityactivity
-=null;
-try{
-java。lang。ClassLoadercl
-=r。packageInfo。getClassLoader();
-/*
-mInstrumentationInstrumentation，iInstrumentation。java。
-它在newActivity函数中根据Activity的类名通过Java反射机制来创建对应的Activity，
-这个函数比较复杂，待会我们再分析它。
-*/
-activity
-mInstrumentation。newActivity(
-cl，component。getClassName()，r。intent);
+一般会在Activity的onCreate回调中设置视图：setContentView。
 
+```java
+public void setContentView(@LayoutRes int layoutResID) {
+    getWindow().setContentView(layoutResID);
+    initWindowDecorActionBar();
+}
+```
 
-Page295
-第8章深入理解Surface系统277
-r。intent。setExtrasClassLoader(cl);
-if(r。state!=nul1){
-r。state。setClassLoader(cl);
-}
-}catch(Exceptione){
-}
-try{
-Applicationapp=
-r。packageInfo。makeApplication(false，mInstrumentation);
-if(activity!=null){
-1/在Activity中getContext函数返回的就是这个ContextImpl类型的对象。
-ContextImplappContext
-newContextImpl();
-1/下面这个函数会调用Activity的onCreate函数。
-mīnstrumentation。callActivityOnCreate(activity，r。state);
-。。。。。
-returnactivity;
-好了，performLaunchActivity函数的作用明白了吧?
-口根据类名以Java反射的方法创建一个Activity。
-口调用Activity的onCreate函数，开始在SDK中大书特书Activity的生命周期。
-那么，在onCreate函数中，我们一般会做什么呢?在这个函数中，和UI相关的重要工
-作就是调用setContentView来设置UI的外观。接下去，需要看handleLaunchActivity中的第
-E^**handleResumeActivity。
-2。handleResumeActivity*
-上面已创建好了一个Activity，再来看handleResumeActivity。它的代码如下所示：
-[-->ActivityThread。java]
-finalvoidhandleResumeActivity(IBindertoken，booleanclearHide，
-booleanisForward){
-booleanwillBeVisible=
-!a。mStartedActivity;
-if(r。window==null&&!a。mFinished&&willBeVisible){
-r。window=
-r。activity。getWindow();
-1/①获得一个View对象。
-Viewdecor=r。window。getDecorView();
-decor。setisibility(View。INVISIBLE);
-//®R#ViewManager。
-ViewManagerwm
-a。getWindowManager();
-%3D
+setContentView出现了两个和UI有关系的类：View和Window。
 
+-   Window是一个抽象基类，用于控制顶层窗口的外观和行为。作为顶层窗口它有什么特殊的职能呢？即绘制背景和标题栏、默认的按键处理等。
+-   View是一个基本的UI单元，占据屏幕的一块矩形区域，可用于绘制，并能处理事件。
 
-Page296
-278
-深入理解Android：卷1
-1/③把刚才的decor对象加入到ViewManager中。
-wm。addView(decor，1);
-}
--//其他处理
-}
-上面有三个关键点(即①~③)。这些关键点似乎已经和UI部分(如View、、Window)
-有联系了。那么这些联系是在什么时候建立的呢?在分析上面代码中的三个关键点之前，请
-大家想想在前面的过程中，哪些地方会和UI挂上钩呢?
-答案是就在onCreate函数中，Activity一般都在这个函数中通过setContentView设置
-UI界面。
-看来，必须先分析setContentView，才能继续后面的征程了。
-3。setContentView
-setContentView有好几个同名函数，现在只看其中的一个就可以了。代码如下所示：
-[-->Activity。java]
-publicvoidsetContentView(Viewview){
-//getwindow返回的是什么呢?一起来看看。
-getWindow()。setContentView(view);
-}
-publicWindowgetWindow(){
-returnmWindow;//ig9-AindowmWindow，t4?
-}
-上面出现了两个和UI有关系的类：View和Window。来看SDK文档是怎么描述这两
-个类的。这里先给出原文描述，然后进行对应的解释：
-Window：abstractbaseclassforatop-levelwindowlookandbehaviorpolicy。An
-instanceofthisclassshouldbeusedasthetop-levelviewaddedtothewindowmanager。
-ItprovidesstandardUIpoliciessuchasabackground，titlearea，defaultkeyprocessing，
-etc。
-中文的意思是：Window是一个抽象基类，用于控制顶层窗口的外观和行为。作为顶层
-窗口它有什么特殊的职能呢?即绘制背景和标题栏、默认的按键处理等。
-这里面有一句比较关键的话：它将作为一个顶层的view加入到WindowManager中。
-OView：Thisclassrepresentsthebasicbuildingblockforuserinterfacecomponents。A
-Viewoccupiesarectangularareaonthescreenandisresponsiblefordrawingandevent
-handling。
-说实话，我刚接触AndroidUI的时候也有点分不清楚View和Window的区别。
+### Window的创建
 
+Window是一个抽象类 ，它的具体实现类为PhoneWindow。在Activity启动过程中会调用ActivityThread的performLaunchActivity方法，performLaunchActivity方法中又会调用Activity的attach方法，PhoneWindow就是在Activity的attach方法中创建的。
 
-Page297
-第8章深入理解Surface系统
-279
-View的概念就比较简单了，它是一个基本的UI单元，占据屏幕的一块矩形区域，可用
-于绘制，并能处理事件。
-根据上面对View和Window的描述，再加上setContentView的代码，我们可以想象一
-下这三者的关系，如图8-2所示：
-WindowManager
-Window
-View
-图8-2Window/View的假想关系图
-看了上面的介绍，大家可能会产生两个疑问：
-ロWindow是一个抽象类，它实际的对象到底是什么类型?
-OWindowManagerA?
-如果能有这样的疑问，就说明我们非常细心了。下面来试着解决这两个问题。
-(1)ActivityfjWindow
-据上文的讲解可知，Window是一个抽象类。它实际的对象到底属于什么类型型?先回到
-Activity创建的地方去看看。下面正是创建Activity时的代码，可当时没有深入地分析。
-activity
-mInstrumentation。newActivity(
-cl，component。getClassName()，r。intent);
-代码中调用了Instrumentation的newActivity，再去那里看看，如下所示：
-[-->Instrumentation。java]
-publicActivitynewActivity(Class<?>clazz，Contextcontext，
-IBindertoken，Applicationapplication，Intentintent，
-ActivityInfoinfo，CharSequencetitle，Activityparent，
-Stringid，ObjectlastNonConfigurationInstance)
-throwsInstantiationException，IllegalAccessException{
-Activityactivity=(Activity)clazz。newInstance();
-%3D
-ActivityThreadaThread=null;
-1/关键函数attach!!
-activity。attach(context，aThread，this，token，application，intent，
-info，title，parent，id，lastNonConfigurationInstance，
-newConfiguration());
-returnactivity;
+```java
+final void attach(Context context, ActivityThread aThread, Instrumentation instr, IBinder token, int ident, Application application, Intent intent, ActivityInfo info, CharSequence title, Activity parent, String id, NonConfigurationInstances lastNonConfigurationInstances, Configuration config, String referrer, IVoiceInteractor voiceInteractor, Window window, ActivityConfigCallback activityConfigCallback) {
+    //...
+    //创建Window，mWindow是Activity的成员变量，说明一个Activity对应一个Window
+    mWindow = new PhoneWindow(this, window, activityConfigCallback);
+    //...
+    //Window关联WindowManager
+    mWindow.setWindowManager((WindowManager)context.getSystemService(Context.WINDOW_SERVICE), mToken, mComponent.flattenToString(), (info.flags & ActivityInfo.FLAG_HARDWARE_ACCELERATED) != 0);
+    //...
 }
+```
 
+这里创建了一个PhoneWindow ，并调用setWindowManager方法设置一个Manager。
 
-Page298
-280
-深入理解Android：卷」
-看到关键函数attach了吧?Window的真相马上就要揭晓了，让我们用咆哮体。来表达
-内心的激动之情吧!!!!
-[-->Activity。java]
-finalvoidattach(Contextcontext，ActivityThreadaThread，
-Instrumentationinstr，IBindertoken，intident，
-Applicationapplication，Intentintent，ActivityInfoinfo，
-CharSequencetitle，Activityparent，Stringid，
-ObjectlastNonConfigurationInstance，
-HashMap<String，Object>lastNonConfigurationChildInstances，
-Configurationconfig){
-7/利用PolicyManager来创建Window对象。
-mwindow=PolicyManager。makeNewWindow(this);
-mWindow。setCallback(this);
-//€WindowManagert。
-mWindow。setWindowManager(null，mToken，mComponent。flattenToString());
-if(mParent!=null){
-mWindow。setContainer(mParent。getWindow());
-1/保存这个WindowManager对象。
-mWindowManager
-mWindow。getWindowManager();
-mCurrentConfig
-config;
-}
-此刻又有一点失望吧?这里冒出了个PolicyManager类，Window是由它的makeNewWindow
-函数所创建的，因此还必须再去看看这个PolicyManager。
-(2)水面下的冰山一一PolicyManager
-PolicyManager定义于PolicyManager。java文件，该文件在一个非常独立的目录下，现将
-其单独列出来：
-frameworks/policies/base/phone/com/android/internal/policy/impl
-注意上面路径中的灰色目录phone是针对智能手机这种小屏幕的;另外还有一个平级的目
-录叫mid，是针对Mid设备的。mid目录的代码比较少，可能目前还没有开发完毕。
-下面来看这个PolicyManager，它比较简单，代码如下所示：
-(-->PolicyManager。java]
-publicfinalclassPolicyManager{
-privatestaticfinalStringPOLICY_IMPL_CLASS_NAME=
-"com。android。internal。policy。impl。Policy";
-O近期网络中流行的一种文体，其特点就是会用很多感叹号。
+### WindowManager的创建
 
+在Window关联WM时会调用setWindowManager方法。
 
-Page299
-第8章深入理解Surface系统
-281
-privatestaticfinalIPolicysPolicy;
-static{
-//
-try{
-ClasspolicyClass
-//创建Policy对象。
-=Class。forName(POLICYIMPL_CLASSNAME);
-sPolicy
-(IPolicy)policyClass。newInstance();
-%3D
-}catch(ClassNotFoundExceptionex){
+```java
+public void setWindowManager(WindowManager wm, IBinder appToken, String appName, boolean hardwareAccelerated) {
+    mAppToken = appToken;
+    mAppName = appName;
+    mHardwareAccelerated = hardwareAccelerated || SystemProperties.getBoolean(PROPERTY_HARDWARE_UI, false);
+    if (wm == null) {
+        //类型为WindowManagerImpl
+        wm = (WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE);
+    }
+    mWindowManager = ((WindowManagerImpl)wm).createLocalWindowManager(this);
 }
-privatePolicyManager(){}
-7/通过Policy对象的makeNewWindow创建一个Window。
-publicstaticWindowmakeNewWindow(Contextcontext){
-returnsPolicy。makeNewWindow(context);
-}
-这里有一个单例的sPolicy对象，它是Policy类型，请看它的定义。
-(3)真正的Window
-Policy类型的定义代码如下所示：
-(->Policy。java]
-{-->Policy。java]
-publicclassPolicyimplementsIPolicy{
-privatestaticfinalStringTAG=“PhonePolicy";
-privatestaticfinalString[]preload_classes=
-“com。android。internal。policy。impl。PhoneLayoutInflater"，
-com。android。internal。policy。impl。PhoneWindow"
-com。android。internal。policy。impl。PhoneWindow$1"
-com。android。internal。policy。impl。PhoneWindow$ContextMenuCallback"，
-com。android。internal。policy。impl。PhoneWindow$DecorView"，
-'com。android。internal。policy。impl。PhoneWindow$PanelFeatureState"，
-'com。android。internal。policy。impl。PhoneWindow$PanelFeatureState$SavedState"
-};
-static{
-1/加载所有的类。
-for(Strings：preload_classes){
-try{
-Class。forName(s);
-}catch(ClassNotFoundExceptionex){
-}
-}
+```
 
+这里会获取一个WindowManagerImpl实例，是WindowManager的具体实现。
 
-Page300
-282
-深入理解Android;卷1
-publicPhoneWindowmakeNewWindow(Contextcontext){
-//makeNewwindowigEéAPhoneWindowt。
-returnnewPhoneWindow(context};
-}
-}
-至此，终于知道了代码：
-mWindow=
-PolicyManager。makeNewWindow(this);
-返回的Window，原来是一个PhoneWindow对象。它的定义在PhoneWindow。java中。
-mWindow的真实身份搞清楚了，还剩下个WindowManager。现在就来揭示其真面目。
-(4)真正的WindowManager
-先看WindowManager创建的代码，如下所示：
-[-->Activity。java]
-。//创建mWindow对象。
-//iAmWindowthsetWindowManagerk*。
-mWindow。setWindowManager(null，mToken，mComponent。flattenToString());
-上面的函数设置了PhoneWindow的WindowManager，不过第一个参数是null，这是什
-么意思?在回答此问题之前，先来看PhoneWindow的定义，它是从Window类派生的。
-[-->PhoneWindow。java：：PhoneWindowX]
-publicclassPhoneWindowextendsWindowimplementsMenuBuilder。Callback
-前面调用的setWindowManager函数，其实是由PhoneWindow的父类Window类来实现
-的，来看其代码，如下所示：
-[-->Window。java]
-publicvoidsetWindowManager(WindowManagerwm，IBinderappToken，StringappName)
-{
-1/注意，传入的wm值为null。
-MAppToken
-appToken;
-mAppName=appName;
-if(wm==null){
-1/如果wm为空的话，则创建WindowManagerImpl对象。
-=WindowManagerImpl。getDefault();
-wm
-}
-//mWindowManager-LocalWindowManager。
-mWindowManager=newLocalWindowManager(wm);
-}
+setWindowManager方法会调用createLocalWindowManager方法，createLocalWindowManager同样也是创建新的WindowManagerImpl，不同的是这次创建WindowManagerlmpl时将创建它的Window作为参数传了进来，**这WindowManagerImpl就持有了Window的引用，可以对Window进行操作**。如addView方法：
 
+```java
+public void addView(@NonNull View view, @NonNull ViewGroup.LayoutParams params) {
+    applyDefaultToken(params);
+    mGlobal.addView(view, params, mContext.getDisplay(), mParentWindow);
+}
+```
 
-Page301
-第8章深入理解Surface系统
-283
-LocalWindowManager是在Window中定义的内部类，请看它的构造函数，其定义如下
-所示：
-[-->Window。java：：LocalWindowManager]
-privateclassLocalWindowManagerimplementsWindowManager{
-LocalWindowManager(WindowManagerwm){
-=wm;//还好，只是简单地保存了传入的wm参数。
-mContext。getResources()。getDefaultDisplay(
-mWindowManager
-mDefaultDisplay
-mWindowManager。getDefaultDisplay());
-}
-如上面代码所示，LocalWindowManager将保存一个WindowManager类型的对象，这个
-对象的实际类型是WindowManagerImpl。而WindowManagerimpl又是什么呢?来看它的代
-码，如下所示：
-[-->WindowManagerImpl。java]
-publicclassWindowManagerImplimplementsWindowManager{
-publicstaticWindowManagerImplgetDefault()
-{
-returnmWindowManager;//iWindowManagerImplt。
-}
-privatestaticWindowManagerImplmWindowManager
-}
-newWindowManagerImpl();
-%3D
-看到这里是否有点头晕眼花?很多朋友读了我所写的与此相关的一篇博客后，普遍也有
-此反应。所以，我试着配制了一剂治晕药方，如图8-3所示：
-WindowManager
-Activity
-mWindowManager
-mwindow
-Window
-LocalWindowManager
-WindowManagerImpi
-+setWindowManager0
-PhoneWindow
-图8-3
-WindowFuWindowManagerfa
+调用了WindowManagerGlobal的addView 方法，其中最后一个参数mParentWindow就是上面提到的Window，可以看出WindowManagerlmpl虽然是WindowManager的实现类，但是没有实现什么功能，而是将功能实现委托给了WindowManagerGlobal。
 
+```java
+public final class WindowManagerImpl implements WindowManager {
+    //WindowManagerGlobal 是一个单例，说明在一个进程中只有一个WindowManagerGlobal实例。
+    private final WindowManagerGlobal mGlobal = WindowManagerGlobal.getInstance();
+    private final Context mContext;
+    private final Window mParentWindow;//注释2
+        //...
+    private WindowManagerImpl(Context context, Window parentWindow) {
+        mContext = context;
+        mParentWindow = parentWindow;//注释3
+    }
+      //...
+}
+```
 
-Page302
-284
-深入理解Android：卷」
-根据上图可得出以下结论：
-口Activity的mWindow成员变量其真实类型是PhoneWindow，而mWindowManager成
-员变量的真实类型是LocalWindowManager。
-OLocalWindowManagerFuWindowManagerImpl*WindowManagerA。¿1
-的是Proxy模式，表明LocalWindowManager将把它的工作委托给WindowManagerImpl来
-完成。
-(5)关于setContentView的总结
-了解了上述知识后，重新回到setContentView函数。这次希望能分析得更深入些。代码
-如下所示：
-(-->Activity。java]
-publicvoidsetContentView(Viewview){
-getWindow()。setContentview(view);//getWindowikOZPhoneWindow。
-一起来看PhoneWindow的setContentView函数，代码如下所示：
-[-->PhoneWindow]
-publicvoidsetContentView(Viewview){
-//调用另一个setContentView。
-setContentView(view，
-newViewGroup。LayoutParams(MATCH_PARENT，MATCH_PARENT));
-}
-publicvoidsetContentView(Viewview，ViewGroup。LayoutParamsparams){
-//mContentParent*ViewGroup，null。
-if(mContentParent
-==null){
-installDecor();
-}else{
-mContentParent。removeAllViews();
-}
-1/把view加入到ViewGroup中。
-mContentParent。addView(view，params);
-}
-mContentParent是一个ViewGroup类型，它从View中派生，所以也是一个UU单元。从它名字
-“Group”中所表达的意思来看，它应该还可以包含其他的View元素。这又是什么意思呢?
-也就是说，在绘制一个ViewGroup时，它不仅需要把自己的样子画出来，还需要把它包
-含的View元素的样子也画出来。读者可将它想象成一个容器，容器中的元素就是View。
-注意这里采用的是23种设计模式中的Composite模式，它是UI編程中常用的模式之一。
+注释2处的代码结合注释3处的代码说明这个WindowManagerlmpl实例会作为哪个Window的子Window，这也就说明在一个进程中WindowManagerlmpl可能会有多个实例。
 
+WindowManager的关联类如图所示：
 
-Page303
-第8章深入理解Surface系统
-285
-再来看installDecor函数，其代码如下所示：
-[-->PhoneWindow。java]
-privatevoidinstallDecor(){
-if(mDecor==nul1){
-1/创建mDecor，它为Decorview类型，从FrameLayout派生。
-mDecor=generateDecor();
-}
-null){
-//AmContentParent。
-if(mContentParent
-mContentParent
-generateLayout(mDecor);
-%3D
-1/创建标题栏。
-mTitleView
-(TextView)findViewById(com。android。internal。R。id。title);
-generateLayout函数的输入参数为mDecor，输出为mContentParent，代码如下所示：
-[-->PhoneWindow]
-protectedViewGroupgenerateLayout(DecorViewdecor){
-intlayoutResource;
-intfeatures=getLocalFeatures();
-!=0){
-((features&((1<<FEATURE_LEFT_ICON)|(1«FEATURE_RIGHT_ICON))}
-if(mIsFloating){
-if
-1/根据情况取得对应标题栏的资源id。
-layoutResource
-com。android。internal。R。layout。dialog_title_icons;
-}
-}
-mDecor。startChanging();
-Viewin=
-mLayoutInflater。inflate(layoutResource，null);
-7/加入标题栏
-decor。addView(in，newViewGroup。LayoutParams(MATCH_PARENT，MATCH_PARENT));
-IDANDROID_CONTENT5i"com。android。internal。R。id。content"，
-这个contentParent由findViewById返回，实际上就是mDecorView的一部分。
-*/
-ViewGroupcontentParent
-(ViewGroup)findViewById(ID_ANDROID_CONTENT);
-%3D
-mDecor。finishChanging();
-returncontentParent;
-}
+![285](assets/285.jpg)
 
+### DecorView
 
-Page304
-286
-深入理解Android;卷」
-下面看findViewByld是如何实现的。它定义在Window。java中，代码如下所示：
-[-->Window。java]
-publicViewfindViewById(intid){
-//getDecorView#iEmDecorView，PfvlcontentParent*DecorViewég-。
-returngetDecorView()。findViewById(id);
-}
-大家还记得图8-2吗?介绍完上面的知识后，可在图8-2的基础上绘制出更细致的图
-8-4：
-LocalWindowManager
-PhoneWindow
-DecorView
-MyView
-MyViewEsetContentView*I
-图8-4一个Activity中的UI组件
-从上图中可看出，在Activity的onCreate函数中，通过setContentView设置的View，
-其实只是DecorView的子View。DecorView还处理了标题栏显示等一系列的工作。
-注意这里使用了设计模式中的Decorator(装饰)模式，它也是UI编程中常用的模式之一。
-4。OhandleResumeActivity
-看完setContentView的分析后，不知大家是否还记得我们为什么要分析这个setContentView
-函数?在继续前行之前，先来回顾一下被setContentView打断的流程。
-当时，我们正在分析handleResumeActivity，代码如下所示：
-(-->ActivityThread。java]
-finalvoidhandleResumeActivity(IBindertoken，booleanclearHide，
-booleanisForward){
-booleanwillBeVisible=!a。mStartedActivity;
-if(r。window==null&&!a。mFinished&&willBeVisible){
-r。window=
-r。activity。getWindow();
-1/①获得一个View对象。现在知道这个view就是Decorview了。
-Viewdecor=r。window。getDecorView();
+Window是以View的形式存在的，所以Activity里的Window也需要一个View，这个View就是DecorView，它分为title部分和content部分：
 
+<img src="assets/5.jpg" alt="5" style="zoom:33%;" />
 
-Page305
-第8章深入理解Surface系统
-287
-decor。setVisibility(View。INVISIBLE);
-//®##viewManager，it↑wmLocalWindowManager。
-ViewManagerwm=a。getWindowManager();
-WindowManager。LayoutParams1=r。window。getAttributes();
-a。mDecor=
-decor;
-1。type
-WindowManager。LayoutParams。TYPE_BASE_APPLICATION;
-if(a。mVisibleFromClient){
-a。mWindowAdded=
-true;
-1/③把刚才的decor对象加入到ViewManager中。
-wm。addView(decor，1);
-}
-。//其他处理
-}
-在上面的代码中，由于出现了多个之前不熟悉的东西，如View、ViewManager等，而
-这些东西的来源又和setContentView有关，所以我们才转而去分析setContentView了。想起
-来了吧?
-注意由于代码比较长，跳转关系也很多，在分析代码时，请读者把握流程，在大脑中建立
-一个代码分析的堆栈。
-下面就从addView的分析开始。如前面所介绍的，它的调用方法是：
-wm。addView(decor，1);//wmKŁLocalWindowManager。
-来看这个addView函数，它的代码如下所示：
-[-->Window。javaLocalWindowManager]
-publicfinalvoidaddview(Viewview，ViewGroup。LayoutParamsparams){
-WindowManager。LayoutParamswp=(WindowManager。LayoutParams)params;
-wp。getTitle();
-CharsequencecurTitle=
-1/做一些操作，可以不管它。
-1/还记得前面提到过的Proxy模式吗?mWindowManager对象实际上是WindowManagerImpl类型。
-mWindowManager。addView(view，params);
-}
-看来，要搞清楚这个addView函数还是比较麻烦的，因此现在必须到WindowManagerImpl
-中去看看。它的代码如下所示：
-[-->WindowManagerImpl。java]
-privatevoidaddView(Viewview，ViewGroup。LayoutParamsparams，booleannest)
-{
-ViewRootroot;//ViewRoot，6Èat!
-synchronized(this){
-//OViewRoot
+content部分一般是在onCreate里通过setContentView来设置的，里面会调用getDecorView方法：
 
+```java
+//PhoneWindow.java
+@Override
+public final View getDecorView() {
+    if (mDecor == null || mForceDecorInstall) {
+        installDecor();
+    }
+    return mDecor;
+}
+```
 
-Page306
-288
-深入理解Android：卷!
-root
-newViewRoot(view。getContext0);
-root。mAddNesting
-1;
-view。setLayoutParams(wparams);
-if(mViews==null){
-index=1;
-mViews=newView[1];
-mRoot
-newViewRoot[1];
-mParams
-newWindowManager。LayoutParams(1];
-}else{
-}
-index--;
-mViews[index]
-=view;
-mRoots[index]
-root;//保存这个root
-mParams(index]
-=wparams;
-//®setView，*+viewgDecorView。
-root。setView(view，wparams，panelParentView);//
-“ViewRoot，ViewRoot…”，主角终于出场了!即使没介绍它的真实身份，不禁也想欢
-呼几声。为了避免高兴得过早，还是先冷静地分析一下它吧!代码中列出了ViewRoot的两
-个重要关键点(即①和②)。
-(1)ViewRoot是什么?
-ViewRoot是什么?看起来好像和View有些许关系，至少名字非常像。事实上，它的确
-和View有关系，因为它实现了ViewParent接口。SDK的文档中有关于ViewParent的介绍。
-但它和Android基本绘图单元中的View却不太一样，比如：ViewParent不处理绘画，因为它
-没有onDraw函数。
-如上所述，ViewParent和绘画没有关系，那么，它的作用是什么?先来看它的代码，如
-下所示：
-[-->ViewRoot。java：：ViewRootàX]
-publicfinalclassViewRootextendsHandlerimplementsViewParent，
-View。AttachInfo。Callbacks//AHandler。
-{
-privatefinalSurfacemSurface=
-newSurface();//这里创建了一个Surface对象。
-finalWmWindow;
-1/这个是什么?
-ViewmView;
-上面这段代码传达出了一些重要信息：
-ロViewRoot继承了Handler类，看来它能处理消息。ViewRoot果真重写了handleMessage
-函数。稍后再来看它。
+当不存在DecorView就会创建一个。即使没有在onCreate调用setContentView方法，最终也会创建DecorView。performLaunchActivity执行完，界面要与用户进行交互时，会调用ActivityThread的handleResumeActivity方法：
 
+```java
+final void handleResumeActivity(IBinder token, boolean clearHide, boolean isForward, boolean reallyResume, int seq, String reason) {
+    //...
+    r = performResumeActivity(token, clearHide, reason);//performResumeActivity方法最终会调用Activity的onResume方法
+        //...
+        if (r.window == null && !a.mFinished && willBeVisible) {
+            r.window = r.activity.getWindow();
+            View decor = r.window.getDecorView();
+            decor.setVisibility(View.INVISIBLE);
+            ViewManager wm = a.getWindowManager();//得到ViewManager类型的wm对象
+            WindowManager.LayoutParams l = r.window.getAttributes();
+            a.mDecor = decor;
+            l.type = WindowManager.LayoutParams.TYPE_BASE_APPLICATION;
+            l.softInputMode |= forwardBit;
+            if (r.mPreserveWindow) {
+                a.mWindowAdded = true;
+                r.mPreserveWindow = false;
+                ViewRootImpl impl = decor.getViewRootImpl();
+                if (impl != null) {
+                    impl.notifyChildRebuilt();
+                }
+            }
+            if (a.mVisibleFromClient) {
+                if (!a.mWindowAdded) {
+                    a.mWindowAdded = true;
+                    wm.addView(decor, l);//调用了ViewManager的addView方法，而addView方法则是在WindowManagerlmpl中实现的，此后的过程在上面的系统窗口的添加过程中已经讲过，唯一需要注意的是ViewManager的addView方法的第一个参数为DecorView，这说明Acitivty窗口中会包含DecorView。
+                } else {
+                    a.onWindowAttributesChanged(l);
+                }
+            }
+            //...
+}
+```
 
-Page307
-第8章深入理解Surface系统
-289
-ロViewRoot有一个成员变量叫mSurface，它是Surface类型。
-ロViewRoot还有一个W类型型的mWindow和一个View类型的mView变量。
-其中，W是ViewRoot定义的一个静态内部类：
-staticclassWextendsIWindow。Stub
-这个类将参与Binder的通信，以后再对此做讲解，先来介绍Surface类。
-(2)Android是神笔马良吗?
-这里冒出来一个Surface类。它是什么?在回答此问题之前，先来考虑这样一个问题：
-前文介绍的View、DecorView等都是UI单元，这些UI单元的绘画工作都在onDraw
-函数中完成。如果把onDraw想象成画图过程，那么画布是什么?
-Android肯定不是“马良”，它也没有那支可以在任何物体上作画的“神笔”，所以我们
-需要一块实实在在的画布，这块画布就是Surface。SDK文档对Surface类的说明是：Handle
-ontoarawbufferthatisbeingmanagedbythescreencompositor，iji：
-口有一块Rawbuffer，至于是内存还是显存，不必管它。
-OSurfaceFxRawbuffer。
-OScreencompositor(*SurfaceFlinger)Rawbuffer。
-Surface和SF、ViewRoot有什么关系呢?相信聪明的你此时已经有些明白了，这里用图
-8-5描绘一下心中的想法：
-ViewRoot
-SurfaceFlinger
-Surface
-RawBuffer
-T券
-图8-5马良的神笔工作原理
-结合之前所讲的知识来看图8-5可知其清晰地传达了如下几条信息：
-ロViewRoot有一个成员变量mSurface，它是Surface类型，它和一块RawBuffer有
-关联。
-ViewRoot是一个ViewParent，它的子View的绘画操作，是在画布Surface上展开的。
-ロSurface和SurfaceFlinger有交互，这非常类似AudioTrack和AudioFlinger之间的
-交互。
-既然本章题目为“深入理解Surface系统”，那么就需要重点关注Surface和SurfaceFlinger
-间的关系。建立这个关系需要ViewRoot的参与，所以应先来分析ViewRoot的创建和它的
-setViewA。
+在handleResumeActivity方法中会获取DecorView（如果没有就创建），并通过WM的addView展现出来。这样Activity的Window是以DecorView的形式展现的。
 
+### ViewRootImpl
 
-Page308
-290
-深入理解Android：卷!
-(3)ViewRoot的创建和对setView的分析
-来分析ViewRoot的构造。它所包含内容的代码如下所示：
-[-->ViewRoot。java]
-publicViewRoot(Contextcontext){
-super();
-//getWindowSession?i1。
-getWindowSession(context。getMainLooper());
-。//viewRoot的mWindow是一个W类型，注意它不是Window类型，而是IWindow类型。
-mWindow=newW(this，context);
-}
-getWindowsession，*tÌActivityViewRootfuWindowManagerServicej*
-系。代码如下所示：
-[-->ViewRoot。java]
-ublicstaticIWindowSessiongetWindowSession(LoopermainLooper){
-synchronized(mStaticInit){
-if(!mInitialized){
-try{
-InputMethodManagerimm=
-InputMethodManager。getInstance(mainLooper);
-1/下西这个函数先得到WindowManagerservice的Binder代理，然后调用它的opensession。
-sWindowSession=IWindowManager。Stub。asInterface(
-ServiceManager。getService("window"))
-。openSession(imm。getClient()，imm。getInputContext());
-mInitialized=true;
-}catch(RemoteExceptione){
-}
-}
-returnsWindowSession;
-}
-}
-WindowSession?WindowManagerService?第一次看到这些东西时，我快疯了。复杂，
-太复杂，无比复杂!要攻克这些难题，应先来回顾一下与zygote相关的知识：
-WindowManagerService(WEWMS)ESystem_Server#A，SurfaceFlinger
-服务也在这个进程中。
-看来，Activity的显示还不单纯是它自己的事，还需要和WMS建立联系才行。继续往
-下看，先看setView的处理。这个函数很复杂，注意其中关键的几句。
-注意openSession的操作是一个使用Binder通信的跨进程调用，暫且记住这个函数，在精
-简流程之后再来分析。
+在WM的addView时会创建ViewRootImpl，然后调用ViewRootImpl的setView。
 
+```java
+public void setView(View view, WindowManager.LayoutParams attrs, View panelParentView,
+                    int userId) {
+    synchronized (this) {
+        if (mView == null) {
+            mView = view;
 
-Page309
-第8章深入理解Surface系统
-291
-代码如下所示：
-[-->ViewRoot。java]
-publicvoidsetView(Viewview，WindowManager。LayoutParamsattrs，
-ViewpanelParentView){//*-^*viewDecorView。
-mView=
-view;//保存这个view。
-synchronized(this){
-requestLayout();//待会先看看这个。
-try{
-1/调用IWindowSession的add函数，第一个参数是mWindow。
-res
-=sWindowSession。add(mWindow，mWindowAttributes，
-getHostVisibility()，mAttachInfo。mContentInsets);
+            // Schedule the first layout -before- adding to the window
+            // manager, to make sure we do the relayout before receiving
+            // any other events from the system.
+            requestLayout();
+            
+            try {
+                // ...
+                res = mWindowSession.addToDisplayAsUser(mWindow, mSeq, mWindowAttributes,
+                        getHostVisibility(), mDisplay.getDisplayId(), userId, mTmpFrame,
+                        mAttachInfo.mContentInsets, mAttachInfo.mStableInsets,
+                        mAttachInfo.mDisplayCutout, inputChannel,
+                        mTempInsets, mTempControls);
+                // ...
+            } catch (RemoteException e) {
+                // ...
+            } finally {
+                // ...
+            }
+	}
 }
-ViewRoot的setView函数做了三件事：
-口保存传入的view参数为mView，这个mView指向PhoneWindow的DecorView。
-OrequestLayout。
-口调用IWindowSession的add函数，这是一个跨进程的Binder通信，第一个参数是
-mWindow，它是W类型，从IWindow。stub派生。
-先来看这个requestLayout函数，它非常简单，就是往handler中发送了一个消息。注
-意，ViewRoot是从handler派生的，所以这个消息最后会由ViewRoot自己处理，代码如下
-所示：
-[-->ViewRoot。java]
-publicvoidrequestLayout(){
-checkThread();
-MLayoutRequested
-scheduleTraversals();
-true;
-}
-publicvoidscheduleTraversals(){
-if(!mTraversalScheduled){
-mTraversalscheduled=
-true;
-sendEmptyMessage(DO_TRAVERSAL);//£DO_TRAVERSAL
-}
-}
-那么requestLayout就分析完毕了。
-从上面的代码可发现，ViewRoot和远端进程SystemServer的WMS有交互，先来总结
-一下它和WMS的交互流程：
-ViewRootiopenSession，N-^IWindowSession。
+```
 
+ViewRootImpl主要做这些事：
 
-Page310
-292
-深入理解Android：卷」
-口调用WindowSession对象的add函数，把一个W类型的mWindow对象作为参数
-传人。
-5。ViewRoot和WMS的关系
-上面总结了ViewRoot和WMS的交互流程，其中一共有两个跨进程的调用，一起去看看。
-(1)调用流程分析
-WMS的代码在WindowManagerService。java中，如下所示：
-[-->WindowManagerService。java]
-publicIWindowSessionopenSession(IInputMethodClientclient，
-IInputContextinputContext){
-returnnewSession(client，inputContext);
+-   View树的根并管理View树。（代码中的mView，即DecorView）
+-   触发View的测量、布局和绘制。（requestLayout）
+-   输入事件的中转站。
+-   管理Surface。
+-   负责与WMS进行进程间通信。
+
+### ViewRootImpl和WMS的交互
+
+frameworks/base/services/core/java/com/android/server/wm/Session.java
+
+```java
+public int addToDisplayAsUser(IWindow window, int seq, WindowManager.LayoutParams attrs,
+                              int viewVisibility, int displayId, int userId, Rect outFrame,
+                              Rect outContentInsets, Rect outStableInsets,
+                              DisplayCutout.ParcelableWrapper outDisplayCutout, InputChannel outInputChannel,
+                              InsetsState outInsetsState, InsetsSourceControl[] outActiveControls) {
+    return mService.addWindow(this, window, seq, attrs, viewVisibility, displayId, outFrame,
+            outContentInsets, outStableInsets, outDisplayCutout, outInputChannel,
+            outInsetsState, outActiveControls, userId);
 }
-Session是WMS定义的内部类。它支持Binder通信，并且属于Bn端，即响应请求的服
-务端。
-再来看它的add函数。代码如下所示：
-[-->WindowManagerService。java：Session]
-publicintadd(IWindowwindow，WindowManager。LayoutParamsattrs，
-intviewVisibility，RectoutContentInsets){
-//调用外部奏对象的addWindow，也就是WMS的addWindow。
-returnaddWindow(this，window，attrs，viewVisibility，
-outContentInsets);
+```
+
+然后调用WMS的addWindow：
+
+```java
+public int addWindow(Session session, IWindow client, int seq,
+                     LayoutParams attrs, int viewVisibility, int displayId, Rect outFrame,
+                     Rect outContentInsets, Rect outStableInsets,
+                     DisplayCutout.ParcelableWrapper outDisplayCutout, InputChannel outInputChannel,
+                     InsetsState outInsetsState, InsetsSourceControl[] outActiveControls,
+                     int requestUserId) {
+    // ...
+    synchronized (mGlobalLock) {
+        // ...
+        final WindowState win = new WindowState(this, session, client, token, parentWindow,
+                appOp[0], seq, attrs, viewVisibility, session.mUid, userId,
+                session.mCanAddInternalSystemWindow);
+        // ...
+        win.attach();
+        // ...
+    }
+	// ...
+    return res;
 }
-[-->WindowManagerService。java]
-publicintaddwindow(Sessionsession，IWindowclient，
-WindowManager。LayoutParamsattrs，intviewVisibility，
-RectoutContentInsets){
-//-AWindowState。
-win=newWindowState(session，client，token，
-attachedWindow，attrs，viewVisibility);
-1/调用attach函数。
-win。attach();
-returnres;
+```
+
+frameworks/base/services/core/java/com/android/server/wm/WindowState.java
+
+```java
+void attach() {
+    // mSession是Session类型
+    mSession.windowAddedLocked(mAttrs.packageName);
 }
-WindowState类也是在WMS中定义的内部类，直接看它的attach函数，代码如下所示：
+```
 
-
-Page311
-第8章深入理解Surface系统
-293
-[-->WMS。java：：WindowState]
-voidattach(){
-//mSessionSessiont，eÝwindowAddedLocked*。
-mSession。windowAddedLocked();
-一
-[-->WMS。java：：Session]
-voidwindowAddedLocked(){
-if(mSurfaceSession==null){
-7/创建一个SurfaceSession对象。
-mSurfaceSession=newSurfaceSession();
+```java
+void windowAddedLocked(String packageName) {
+    // ...
+    if (mSurfaceSession == null) {
+        // ...
+        mSurfaceSession = new SurfaceSession();
+        // ...
+    }
+    mNumWindow++;
 }
-mNumWindow++;
+```
+
+ViewRootImpl通过IWindowSession与WMS联系，而WMS通过W与ViewRootImpl联系。W是ViewRootImpl的内部静态类，是一个Binder类型。
+
+IWindowSession.aidl的描述：
+
+```
+System private per-application interface to the window manager.
+```
+
+每个App进程都会和WMS建立一个IWindowSession会话。这个会话被App进程用于和WMS通信。
+
+IWindow.aidl的描述：
+
+```
+API back to a client window that the Window Manager uses to inform it of interesting things happening.
+```
+
+大意是IWindow是WMS用来进行事件通知的。每当发生一些事情时，WMS就会把这些事情告诉某个IWindow。可以把IWindow想象成一个回调函数。比如按键、触屏等事件。
+
+那么，一个按键事件是如何被分发的呢？下面是它大致的流程：
+
+1.   WMS所在的SystemServer进程接收到按键事件。
+2.   WMS找到UI位于屏幕顶端的进程所对应的IWindow对象，这是一个Bp端对象。
+3.   调用这个IWindow对象的dispatchKey。IWindow对象的Bn端位于ViewRoot中，ViewRootImpl再根据内部View的位置信息找到真正处理这个事件的View，最后调用dispatchKey函数完成按键的处理。
+
+### Surface
+
+View、DecorView等都是UI单元，这些UI单元的绘画工作都在onDraw函数中完成。如果把onDraw想象成画图过程，那么画布是什么？这块画布就是Surface。SDK文档对Surface类的说明是：
+
+```
+Handle onto a raw buffer that is being managed by the screen compositor.
+```
+
+这句话的意思是：
+
+-   有一块Raw buffer（内存/显存）
+-   Surface操作这块Raw buffer
+-   screen compositor（SurfaceFlinger）管理这块Raw buffer。
+
+Surface和SF、ViewRootImpl的关系：
+
+<img src="assets/9.jpg" alt="9" style="zoom:50%;" />
+
+## Activity的UI绘制
+
+ViewRoot的setView函数中会有一个requestLayout：
+
+```java
+public void requestLayout() {
+    if (!mHandlingLayoutInLayoutRequest) {
+        //...
+        scheduleTraversals();
+    }
 }
-这里出现了另外一个重要的对象SurfaceSession。在讲解它之前，急需理清一下现有的
-知识点，否则可能会头晕。
-(2)ViewRoot和WMS的关系梳理
-ViewRoot和WMS之间的关系，可用图8-6来表示：
-SystemServer
-Activity所在的进程
-IWindowSession
-ViewRoot
-WindowManagerService
-mView
-Session
-W
-IWindow
-DecorView
-图8-6
-ViewRootfAWMS**
-总结一下图8-6中的知识点：
-ロViewRoot通过IWindowSession和WMS进程进行跨进程通信。IWindowSession定义
-在IWindowSession。aidl文件中。这个文件在编译时由aidl工具处理，最后会生成类
-似于NativeBinder中Bn端和Bp端的代码，后文会介绍它。
-ロViewRoot内部有一个W类型的对象，它也是一个基于Binder通信的类，W是
-IWindow的Bn端，用于响应请求。IWindow定义在另一个aidl文件IWindow。aidl中。
-为什么需要这两个特殊的类呢?下面简单介绍一下。
+```
 
-
-Page312
-294
-深入理解Android：卷」
-首先，来看IWindowSession。aidl对自己的描述：
-Systemprivateper-applicationinterfacetothewindowmanager：ŁAppi#
-都会和WMS建立一个IWindowSession会话。这个会话被App进程用于和WMS通信。后
-面会介绍它的requestLayout函数。
-再看对IWindow。adil的描述：
-APIbacktoaclientwindowthattheWindowManagerusestoinformitofinterestingthings
-happening：这句话的大意是IWindow是WMS用来进行事件通知的。每当发生一些事情时，
-WMS就会把这些事情告诉某个IWindow。可以把IWindow想象成一个回调函数。
-IWindow的描述表达了什么意思呢?不妨看看它的内容，代码如下所示：
-[-->IWindow。aidl定义]
-voiddispatchKey(inKeyEventevent);
-voiddispatchPointer(inMotionEventevent，longeventTime，
-booleancallWhenDone);
-voiddispatchTrackball(inMotionEventevent，longeventTime，
-booleancallWhenDone);
-明白了?这里的事件指的就是按键、触屏等事件。那么，一个按键事件是如何被分发的
-呢?下面是它大致的流程：
-WMS所在的SystemServer进程接收到按键事件。
-ロWMS找到UI位于屏幕顶端的进程所对应的IWindow对象，这是一个Bp端对象。
-口调用这个IWindow对象的dispatchKey。IWindow对象的Bn端位于ViewRoot中，
-ViewRoot再根据内部View的位置信息找到真正处理这个事件的View，最后调用
-dispatchKey函数完成按键的处理。
-其实这些按键事件的分发机制可以拿Windows的UI编程来做类比，在Windows中应用
-程序的按键处理流程是：
-每一个按键事件都会转化成一个消息，这个消息将由系统加入到对应进程的消息队列
-中。该进程的消息在派发处理时，会根据消息的句柄找到对应的Window(窗口)，继而该消
-息就由这个Window处理了。
-注意上面的描述实际上大大简化了真实的处理流程，读者可在大体了解相关知识后进行更
-深入的研究。
-上面介绍的是ViewRoot和WMS的交互，但是我们最关心的Surface还没有正式介绍，
-不过在此之前，还是要先介绍Activity的流程。
-8。2。2Activity的UI绘制
-ViewRoot的setView函数中会有一个requestLayout。根据前面的分析可知，它会向
-
-
-Page313
-第8章深入理解Surface系统
-295
-ViewRoot发送一个DO_TRAVERSAL消息，来看它的handleMessage函数，代码如下所示：
-[-->ViewRoot。java]
-publicvoidhandleMessage(Messagemsg){
-switch(msg。what){
-caseDOTRAVERSAL：
-performTraversals();//performTraversals。
-break;
+```java
+void scheduleTraversals() {
+    if (!mTraversalScheduled) {
+        // ...
+        mChoreographer.postCallback(
+                Choreographer.CALLBACK_TRAVERSAL, mTraversalRunnable, null);
+        // ...
+    }
 }
-再去看performTraversals函数，这个函数比较复杂，先只看它的关键部分，代码如下
-所示：
-[-->ViewRoot。java]
-privatevoidperformTraversals(){
-finalViewhost
-=mView;//还记得这mView吗?它就是DecorView哦
-booleaninitialized=false;
-booleancontentInsetsChanged
-=false;
-booleanvisibleInsetsChanged;
-try{
-relayoutResult=//0***relayoutWindow。
-relayoutWindow(params，viewVisibility，insetsPending);
-}
-draw(fullRedrawNeeded);//®#te
-}
-1。relayoutWindow
-performTraversals函数比较复杂，暂时只关注其中的两个函数relayoutWindow和draw
-即可。先看第一个relayoutWindow，代码如下所示：
-[-->ViewRoot。java]
-privateintrelayoutWindow(WindowManager。LayoutParamsparams，
-intviewVisibility，booleaninsetsPending)throwsRemoteException{
-1/原来是调用IWindowsession的relayout，暂且记住这个调用。
-intrelayoutResult
-=sWindowSession。relayout(
-mWindow，params，
+```
 
+Choreographer用于接收显示系统的VSync信号，在下一个帧渲染时控制执行一些操作。Choreographer的postCallback方法用于发起添加回调，这个添加的回调将在下一帧被渲染时执行。这个添加的回调是TraversalRunnable类型的mTraversalRunnable：
 
-Page314
-296
-深入理解Android：卷!
-(int)
-(mView。mMeasuredWidth*appScale+0。5f)，
-(int)
-(mView。mMeasuredHeight*appScale+0。5f)，
-viewVisibility，insetsPending，mWinFrame，
-mPendingContentInsets，mPendingVisibleInsets，
-mPendingConfiguration，mSurface);mSurface**T。
+```java
+final class TraversalRunnable implements Runnable {
+    @Override
+    public void run() {
+        doTraversal();
+    }
 }
-relayoutWindow中会调用IWindowSession的relayout函数，暂且记住这个调用，在精
-简流程后再进行分析。
-2。draw4f
-再来看draw函数。这个函数非常重要，它可是Activity漂亮脸蛋的塑造大师啊，代码
-如下所示：
-[-->ViewRoot。java]
-privatevoiddraw(booleanfullRedrawNeeded){
-Surfacesurface=mSurface;//mSurfaceviewRoot1£t。
-Canvascanvas;
-try{
-intleft=
-dirty。left;
-inttop
-dirty。top;
-%3D
-intright
-dirty。right;
-%3D
-intbottom=
-dirty。bottom;
-//thmSurface+lock*Canvas。
-canvas
-=surface。lockCanvas(dirty);
-mView。draw(canvas);//DecorViewdraw*，canvas**S*!
-//unlock画布，屏幕上马上就会见到漂亮宝贝的长相了。
-surface。unlockCanvasAndPost(canvas);
+```
+
+```java
+void doTraversal() {
+    if (mTraversalScheduled) {
+        // ...
+        performTraversals();
+        // ...
+    }
 }
-UI的显示好像很简单嘛!真的是这样的吗?在揭露这个“惊天秘密”之前我们先总结一
-下Activity的显示流程。
-8。2。3关于Activity的总结
-不得不承认的是前面几节的内容很多也很繁杂，为了让后面分析的过程更流畅轻松一
-些，所以我们必须总结一下。关于Activity的创建和显示，前面几节的信息可提炼成如下
-几条：
+```
 
+```java
+private void performTraversals() {
+        //...
+    relayoutResult = relayoutWindow(params, viewVisibility, insetsPending);//relayoutWindow方法内部会调用IWindowSession的relayout方法来更新Window视图，最终会调用WMS的relayoutWindow方法。
+        //。。。
 
-Page315
-第8章深入理解Surface系统
-297
-OActivity的顶层View是DecorView，而我们在onCreate函数中通过setContentView
-设置的View只不过是这个DecorView中的一部分罢了。DecorView是一个
-FrameLayout*YOViewGroup。
-OActivity和UI有关，它包含一个Window(真实类型是PhoneWindow)和一个
-WindowManager(真实类型是LocalWindowManager)对象。这两个对象将控制整个
-Activity
-OLocalWindowManager使用了WindowManagerimpl作为最终的处理对象(Proxy模
-式)，这个WindowManagerImpl中有一个ViewRoot对象。
-ロViewRoot实现了ViewParent接口，它有两个重要的成员变量，一个是mView，它指
-向Activity顶层UI单元的DecorView，另外一个是mSurface，这个Surface包含了一个
-Canvas(画布)。除此之外，ViewRoot还通过Binder系统和WindowManagerService进
-行了跨进程交互。
-ロViewRoot能处理Handler的消息，Activity的显示就是由ViewRoot在它的
-performTraversalsa。
-口整个Activity的绘图流程就是从mSurface中lock一块Canvas，然后交给mView去自
-由发挥画画的才能，最后后unlockCanvasAndPost释放这块Canvas。
-这里和显示有关的就是最后三条了，其中最重要的内容都和Surface相关，既然
-mSurface是ViewRoot的本地变量，那就直接去看Surface。上面的代码分析似乎一路都比较
-流畅，波澜不惊，可事实果真如此吗?
-8。3初识Surface
-本节将介绍Surface对象。它可是纵跨Java/JNI层的对象，想必读者已经摩拳擦掌，跃
-跃欲试了。
-8。3。1和Surface有关的流程总结
-这里先总结一下前面讲解中和Surface有关的流程：
-口在ViewRoot构造时，会创建一个Surface，它使用无参构造函数，代码如下所示：
-privatefinalSurfacemSurface=newSurface();
-ViewRoot通过IWindowSession和WMS交互，而WMS中调用的一个attach函数会
-构造一个SurfaceSession，代码如下所示：
-voidwindowAddedLocked(){
-if(mSurfaceSession==null){
-mSurfaceSession=
-newSurfaceSession();
-mNumWindow++;
+    if (!mStopped || mReportNextDraw) {
+          //。。
+        int childWidthMeasureSpec = getRootMeasureSpec(mWidth, lp.width);
+        int childHeightMeasureSpec = getRootMeasureSpec(mHeight, lp.height);
+        performMeasure(childWidthMeasureSpec, childHeightMeasureSpec);//注释2
+    }
+
+    if (didLayout) {
+          //。。。
+        performLayout(lp, mWidth, mHeight);//注释3
+    }
+
+    if (!cancelDraw && !newSurface) {
+          //。。。
+        performDraw();//注释4
+    }
+}
+```
+
+performTraversals方法会在注释2、3、4处分别调用performMeasure、performLayout和performDraw方法，这样就完成了View的工作流程。
+
+## 总结
+
+1.   Activity的顶层View是DecorView，在onCreate函数中通过setContentView设置的View只不过是这个DecorView中的一部分（Content）。DecorView是一个FrameLayout类型。
+2.   Activity和UI有关，它包含一个Window（真实类型是PhoneWindow）和一个WindowManager（真实类型是WindowManagerImpl）对象。这两个对象将控制整个Activity
+3.   ViewRootImpl实现了ViewParent接口，它有两个重要的成员变量，一个是mView，它指向Activity顶层UI单元的DecorView，另外一个是mSurface，这个Surface包含了一个Canvas。除此之外，ViewRootImpl还通过Binder系统和WindowManagerService进行了跨进程交互。
+4.   整个Activity的绘图流程就是从mSurface中lock一块Canvas，然后交给mView去自由发挥画画的才能，最后unlockCanvasAndPost释放这块Canvas。
+
+# 初识Surface
+
+## 和Surface有关的流程总结
+
+先总结中和Surface有关的流程：
+
+1.   在ViewRoot构造时，会创建一个Surface，它使用无参构造函数，代码如下所示：
+
+     ```java
+     public final Surface mSurface = new Surface();
+     ```
+
+2.   ViewRootImpl通过IWindowSession和WMS交互，而WMS中调用的一个attach函数会构造一个SurfaceSession。
+
+     ```java
+     void windowAddedLocked(String packageName) {
+         // ...
+         if (mSurfaceSession == null) {
+             // ...
+             mSurfaceSession = new SurfaceSession();
+             // ...
+         }
+         mNumWindow++;
+     }
+     ```
+
+3.   ViewRootImpl在performTraversals会调用IWindowSession的relayout。
+
+4.   ViewRootImpl调用Surface的lockCanvas，得到一块画布。
+
+5.   ViewRootImpl调用Surface的unlockCanvasAndPost释放这块画布。
+
+## Surface应用进程与WMS的交互
+
+ViewRootImpl在performTraversals会调用IWindowSession的relayout：
+
+ViewRootImpl的代码：
+
+```java
+private void performTraversals() {
+    relayoutResult = relayoutWindow(params, viewVisibility, insetsPending);
+}
+```
+
+```java
+private int relayoutWindow(WindowManager.LayoutParams params, int viewVisibility,
+        boolean insetsPending) throws RemoteException {
+    int relayoutResult = mWindowSession.relayout(mWindow, mSeq, params,
+            (int) (mView.getMeasuredWidth() * appScale + 0.5f),
+            (int) (mView.getMeasuredHeight() * appScale + 0.5f), viewVisibility,
+            insetsPending ? WindowManagerGlobal.RELAYOUT_INSETS_PENDING : 0, frameNumber,
+            mTmpFrame, mPendingOverscanInsets, mPendingContentInsets, mPendingVisibleInsets,
+            mPendingStableInsets, mPendingOutsets, mPendingBackDropFrame, mPendingDisplayCutout,
+            mPendingMergedConfiguration, mSurfaceControl, mTempInsets);
+    if (mSurfaceControl.isValid()) {
+		mSurface.copyFrom(mSurfaceControl);
+    } else {
+		destroySurface();
+    }
+    return relayoutResult;
+}
+```
+
+>   mWindowSession是IWindowSession类型，是一个Binder对象，其aidl文件为frameworks/base/core/java/android/view/IWindowSession.aidl，我尝试生成此文件对应的Java文件，但是没有成功。
+>
+>   书中提到，在IPC过程中，out并没有传入到服务端，而是传了一个空的对象。在服务端接收的onTransact回调方法中，创建了out对象。
+
+frameworks/base/services/core/java/com/android/server/wm/Session.java的代码：
+
+```java
+public int relayout(IWindow window, int seq, WindowManager.LayoutParams attrs,
+                    int requestedWidth, int requestedHeight, int viewFlags, int flags, long frameNumber,
+                    Rect outFrame, Rect outContentInsets, Rect outVisibleInsets,
+                    Rect outStableInsets, Rect outBackdropFrame,
+                    DisplayCutout.ParcelableWrapper cutout, MergedConfiguration mergedConfiguration,
+                    SurfaceControl outSurfaceControl, InsetsState outInsetsState,
+                    InsetsSourceControl[] outActiveControls, Point outSurfaceSize,
+                    SurfaceControl outBLASTSurfaceControl) {
+    // ...
+    int res = mService.relayoutWindow(this, window, seq, attrs,
+            requestedWidth, requestedHeight, viewFlags, flags, frameNumber,
+            outFrame, outContentInsets, outVisibleInsets,
+            outStableInsets, outBackdropFrame, cutout,
+            mergedConfiguration, outSurfaceControl, outInsetsState, outActiveControls,
+            outSurfaceSize, outBLASTSurfaceControl);
+    // ...
+    return res;
+}
+```
+
+frameworks/base/services/core/java/com/android/server/wm/WindowManagerService.java的代码：
+
+```java
+public int relayoutWindow(Session session, IWindow client, int seq, LayoutParams attrs,
+                          int requestedWidth, int requestedHeight, int viewVisibility, int flags,
+                          long frameNumber, Rect outFrame, Rect outContentInsets,
+                          Rect outVisibleInsets, Rect outStableInsets, Rect outBackdropFrame,
+                          DisplayCutout.ParcelableWrapper outCutout, MergedConfiguration mergedConfiguration,
+                          SurfaceControl outSurfaceControl, InsetsState outInsetsState,
+                          InsetsSourceControl[] outActiveControls, Point outSurfaceSize,
+                          SurfaceControl outBLASTSurfaceControl) {
+    
+    synchronized (mGlobalLock) {
+        final WindowState win = windowForClientLocked(session, client, false);
+        if (shouldRelayout) {
+            try {
+                result = createSurfaceControl(outSurfaceControl, outBLASTSurfaceControl,
+                        result, win, winAnimator);
+            }
+        }
+    }
+    return result;
+}
+```
+
+```java
+private int createSurfaceControl(SurfaceControl outSurfaceControl,
+                                 SurfaceControl outBLASTSurfaceControl, int result,
+                                 WindowState win, WindowStateAnimator winAnimator) {
+    WindowSurfaceController surfaceController;
+    try {
+        // 创建本地的WindowSurfaceController对象，内部持有一个SurfaceControl对象
+        surfaceController = winAnimator.createSurfaceLocked(win.mAttrs.type, win.mOwnerUid);
+    }
+    if (surfaceController != null) {
+		surfaceController.getSurfaceControl(outSurfaceControl);
+		surfaceController.getBLASTSurfaceControl(outBLASTSurfaceControl);
+	} else {
+       outSurfaceControl.release();
+	}
+    return result;
+}
+```
+
+frameworks/base/services/core/java/com/android/server/wm/WindowStateAnimator.java的代码：
+
+```java
+WindowSurfaceController createSurfaceLocked(int windowType, int ownerUid) {
+    final WindowState w = mWin;
+    if (mSurfaceController != null) {
+        return mSurfaceController;
+    }
+    // 。。。
+    try {
+        mSurfaceController = new WindowSurfaceController(attrs.getTitle().toString(), width,
+                height, format, flags, this, windowType, ownerUid);
+        // 。。。
+    }
+    // 。。。
+    return mSurfaceController;
+}
+```
+
+frameworks/base/services/core/java/com/android/server/wm/WindowSurfaceController.java
+
+```java
+void getSurfaceControl(SurfaceControl outSurfaceControl) {
+        outSurfaceControl.copyFrom(mSurfaceControl, "WindowSurfaceController.getSurfaceControl");
+}
+```
+
+将本地的SurfaceControl信息拷贝到outSurfaceControl。
+
+```java
+public void copyFrom(@NonNull SurfaceControl other, String callsite) {
+    mName = other.mName;
+    mWidth = other.mWidth;
+    mHeight = other.mHeight;
+    mLocalOwnerView = other.mLocalOwnerView;
+    // 主要调用了Native方法
+    assignNativeObject(nativeCopyFromSurfaceControl(other.mNativeObject), callsite);
+}
+```
+
+最后回到ViewRootImpl的relayoutWindow：
+
+```java
+private int relayoutWindow(WindowManager.LayoutParams params, int viewVisibility,
+        boolean insetsPending) throws RemoteException {
+    int relayoutResult = mWindowSession.relayout(mWindow, mSeq, params,
+            (int) (mView.getMeasuredWidth() * appScale + 0.5f),
+            (int) (mView.getMeasuredHeight() * appScale + 0.5f), viewVisibility,
+            insetsPending ? WindowManagerGlobal.RELAYOUT_INSETS_PENDING : 0, frameNumber,
+            mTmpFrame, mPendingOverscanInsets, mPendingContentInsets, mPendingVisibleInsets,
+            mPendingStableInsets, mPendingOutsets, mPendingBackDropFrame, mPendingDisplayCutout,
+            mPendingMergedConfiguration, mSurfaceControl, mTempInsets);
+    if (mSurfaceControl.isValid()) {
+		mSurface.copyFrom(mSurfaceControl);
+    } else {
+		destroySurface();
+    }
+    return relayoutResult;
+}
+```
+
+调用Surface的copyFrom，将SurfaceControl的内容拷贝到Surface中。
+
+### 小结
+
+>   以上代码和书中的代码差别很大，书中是对Surface进行操作。而Android 11（看的是Android 11源码，不一定是从Android 11开始的）的代码是对SurfaceController进行操作。
+>
+>   TODO 最新代码涉及到的类和书中的大不相同，有时间再次整理一下。
+
+应用进程的流程：
+ViewRootImpl内部有Surface和SurfaceControl变量，其创建用的无参构造方法。在通过IWindowSession与WMS交互过程中，将SurfaceControl传入到WMS中。
+这部分涉及到aidl，aosp里没有aidl编译过的源码。书中提到，输入的对象实际上没有传到WMS中，而是WMS new了一个新对象。这部分我没有用aidl验证，但也可以理解，因为不是同一个进程，同一个对象不能随意的传输。
+调用完成，调用Surface的copyFrom，将SurfaceControl的内容拷贝到Surface中。
+
+WMS的流程：
+IWindowSession的实例Session接收到SurfaceControl对象（out）后，创建一个WMS中的WindowSurfaceController，这个WindowSurfaceController内部持有了SurfaceControl对象。然后通过SurfaceControl的copyFrom方法将WindowSurfaceController的内容拷贝到out中。
+这个out虽然是在WMS中新创建的，但是通过aidl，内容又重新写回到应用进程中的SurfaceControl。
+
+## Surface的JNI层分析
+
+### Surface的无参构造方法
+
+```java
+private final Canvas mCanvas = new CompatibleCanvas();
+
+public Surface() {
+}
+```
+
+Android画图的四大要素：
+
+1.   Bitmap：用于存储像素，也就是画布。可把它当做一块数据存储区域。
+2.   Canvas：用于记载画图的动作，比如画一个圆，画一个矩形等。Canvas类提供了这些基本的绘图函数。
+3.   Drawingprimitive：绘图基元，例如矩形、圆、弧线、文本、图片等。
+4.   Paint：它用来描述绘画时使用的颜色、风格（如实线、虚线等）等。
+
+在一般情况下，Canvas会封装一块Bitmap，而作图就是基于这块Bitmap的。前面所说的画布，其实指的就是Canvas中的这块Bitmap。
+
+### SurfaceSession的构造方法
+
+```java
+private long mNativeClient; // SurfaceComposerClient*
+
+private static native long nativeCreate();
+
+public SurfaceSession() {
+    mNativeClient = nativeCreate();
 }
 
+```
 
-Page316
-298
-深入理解Android：卷1
-OViewRootÆEperformTransvalIaaWindowSessionfJrelayout。
-这个函数目前还没有分析。
-ロViewRoot调用Surface的lockCanvas，得到一块画布。
-ロViewRoot调用Surface的unlockCanvasAndPost释放这块画布。
-下面从relayout函数开始分析。
-8。3。2Surface之乾坤大挪移
-1。乾坤大挪移的表象
-relayout的函数是一个跨进程的调用，由WMS完成实际处理。先到ViewRoot中看看调
-用方的用法，代码如下所示：
-[-->ViewRoot。java]
-privateintrelayoutWindow(WindowManager。LayoutParamsparams，
-intviewVisibility，booleaninsetsPending)
-throwsRemoteException{
-intrelayoutResult
-=sWindowSession。relayout(
-mWindow，params，
-(int)(mView。mMeasuredWidth*appScale+0。5f)，
-(int)(mView。mMeasuredHeight*appScale+0。5f)，
-viewVisibility，insetsPending，mWinFrame，
-mPendingContentInsets，mPendingVisibleInsets，
-mPendingConfiguration，mSurface);//mSurface#*。
-returnrelayoutResult;
-再看接收方的处理。它在WMS的Session中，代码如下所示：
-[-->WindowManagerService。java：Session]
-publicintrelayout(IWindowwindow，WindowManager。LayoutParamsattrs，
-intrequestedWidth，intrequestedHeight，intviewFlags，
-booleaninsetsPending，RectoutFrame，RectoutContentInsets，
-RectoutVisibleInsets，ConfigurationoutConfig，
-SurfaceoutSurface){
-//注意最后这个参数的名字，叫outSurface。
-1/调用外部类对象的relayoutwindow。
-returnrelayoutWindow(this，window，attrs，
-requestedWidth，requestedHeight，viewFlags，insetsPending，
-outFrame，outContentInsets，outVisibleInsets，outConfig，
-outSurface);
+nativeCreate的JNI实现，frameworks/base/core/jni/android_view_SurfaceSession.cpp：
+
+```cpp
+static jlong nativeCreate(JNIEnv* env, jclass clazz) {
+    // 创建一个SurfaceComposerClient对象
+    SurfaceComposerClient* client = new SurfaceComposerClient();
+    client->incStrong((void*)nativeCreate);
+    return reinterpret_cast<jlong>(client);// 将该对象的指针转完long类型返回给Java层
 }
+```
 
 
-Page317
-第8章深入理解Surface系统
-299
-[-->WindowManagerService。java]
-publicintrelayoutWindow(Sessionsession，IWindowclient，
-WindowManager。LayoutParamsattrs，intrequestedWidth，
-intrequestedHeight，intviewVisibility，booleaninsetsPending，
-RectoutFrame，RectoutContentInsets，RectoutVisibleInsets，
-ConfigurationoutConfig，SurfaceoutSurface){
-try{
-//win就是Winstate，这里将创建一个本地的Surface对象。
-Surfacesurface
-win。createSurfaceLocked();
-%3D
-if(surface!=null){
-1/先创建一个本地surface，然后在outSurface的对象上调用copyProm。
-//将本地Surface的信息拷贝到outSurface中，为什么要这么麻煩呢?
-outSurface。copyFrom(surface);
-}
-}
-}
-[-->WindowManagerService。java：：WindowState]
-SurfacecreateSurfaceLocked(){
-try{
-//mSurfaceSessionSessionŁtSurfaceSessiontR。
-//这里以它为参数，构造一个新的Surface对象。
-mSurface=newSurface(
-mSession。mSurfaceSession，mSession。mPid，
-mAttrs。getTitle()。toString()，
-0，w，h，mMAttrs。format，flags);
-}
-Surface。openTransaction();//ts#-A。
-Surface。closeTransaction();//关闭一个事务处理。关于事务处理以后再分析。
-}
-上面的代码段好像有点混乱。用图8-7来表示一下这个流程：
-根据图8-7可知：
-ロWMS中的Surface是“乾坤”中的“乾”，它的构造使用了带SurfaceSession参数的
-构造函数。
-IViewRoot中的Surface是“乾坤”中的“坤”，它的构造使用了无参构造函数。
-copyFrom就是挪移，它将乾中的Surface信息，拷贝到坤中的Surface即utSurface里。
-要是觉得乾坤大挪移就是这两三下，未免就太小看它了。为了彻底揭示这期间的复杂过
-程，我们将使用必杀技-aidl工具。
-
-
-Page318
-300
-深入理解Android：卷1
-WindowManagerImol
-1：创建ViewRoot0
-ViewRoot
-2：newSurface0
-WindowManagerService
-3：openSession0
-4：构造Session0
-Session
-5：addo
-add导致SurfaceSession被创建
-6：relayout0
-7：relayoutWindow0
-|8：以SurfaceSession为参数构造一个Surface0
-9：AMoutSurfacecopyFrom0
-图8-7复杂的Surface创建流程
-2。揭秘Surface的乾坤大挪移
-aidl可以把XXX。aidl文件转换成对应的Java文件。刚才所说的乾坤大挪移发生在
-ViewRoot调用IWindowSession的relayout函数中，它在IWindowSession。adil中的定义
-如下：
-[-->IWindowSesson。aidl]
-interfaceIWindowSession{
-intrelayout(IWindowwindow，inWindowManager。LayoutParamsattrs，
-intrequestedWidth，intrequestedHeight，intviewVisibility，
-booleaninsetsPending，outRectoutFrame，outRectoutContentInsets，
-outRectoutVisibleInsets，outConfigurationoutConfig，
-outSurfaceoutSurface);
-下面，拿必杀技aidl来编译一下这个aidl文件，使用方法如下：
-在命令行下可以输入：
-aidl-Ie：\froyo\source\frameworks\base\core\java\-Ie：\froyo\source\frameworks\
-
-
-Page319
-第8章深入理解Surface系统
-301
-base\Graphics\javae：\froyo\source\frameworks\base\core\java\android\view\
-IWindowSession。aidltest。java
-新生成的Java文件叫test。java。其中，-I参数指定include目录，这是因为aidl文件中可能使用了别
-的Java文件中的类，所以需要指定这些Java文件所在的目录。
-先看ViewRoot这个客户端生成的代码，如下所示：
-[-->test。java：：Bp：：relayout]
-publicintrelayout(android。view。IWindowwindow，
-android。view。WindowManager。LayoutParamsattrs，
-intrequestedWidth，intrequestedHeight，
-intviewvisibility，booleaninsetsPending，
-android。graphics。RectoutFrame，
-android。graphics。RectoutContentInsets，
-android。graphics。RectoutVisibleInsets，
-android。content。res。ConfigurationoutConfig，
-android。view。SurfaceoutSurface)//outSurface11*。
-throwsandroid。os。RemoteException
-android。os。Parcel
-android。os。Parcel_reply
-data=android。os。Parcel。obtain();
-=android。os。Parcel。obtain();
-int
-result;
-try{
-data。writeInterfaceToken(DESCRIPTOR);
-data。writeStrongBinder((((window!=null))?(window。asBinder())：(null)));
-if((attrs!=null)){
-data。writeInt(1);
-attrs。writeToParcel(_data，0);
-}
-else{
-data。writeInt(0);
-}
-data。writeInt(requestedWidth);
-data。writeInt(requestedHeight);
-data。writeInt(viewVisibility);
-data。writeInt(((insetsPending)?(1)：(0)}};
-1/奇怪，outSurface的信息没有写到请求包_data中，就直接发送请求消息了。
-mRemote。transact(Stub。TRANSACTION_relayout，
-_data，_reply，0);
-_reply。readException();
-result=
-_reply。readInt();
-if((0!=_reply。readInt())){
-outFrame。readFromParcel(_reply);
-if((0!=_reply。readInt()))
-outSurface。readFromParcel(_reply);//tAParcel+**outSurface。
-}
-}
-
-
-Page320
-302
-深入理解Android：卷!
-return
-result;
-}
-奇怪!ViewRoot调用requestlayout竟然没有把outSurface信息传进去，这么说，服务
-端收到的Surface对象应该就是空吧?那怎么能调用copyFrom呢?还是来看服务端的处理，
-首先看收到消息的onTransact函数，代码如下所示：
-[-->test。java：：Bn：：onTransact]
-publicbooleanonTransact(intcode，android。os。Parceldata，
-android。os。Parcelreply，intflags)
-throwsandroid。os。RemoteException
-{
-switch(code)
-{
-caseTRANSACTION_relayout：
-{
-data。enforceInterface(DESCRIPTOR);
-android。view。IWindow_arg0;
-android。view。Surface_arg10;
-1/剛才讲了，Surface信息并没有传过来，那么在relayout中看到的outSurface是怎么
-1/出来的呢?看下面这句话便可知，原来在服务端这边竟然new了一个断的Surface!!!
-arg10=newandroid。view。Surface();
-int
-result=
-this。relayout(_arg0，
-_argl，
-arg2，_arg3，_arg4，
-_arg5，arg6，arg7，_arg8，_arg9，_arg10);
-reply。writeNOException();
-reply。writeInt(_result);
-1/_arg10就是调用copyFrom的那个outSurface，那怎么传到客戶端呢?
-if((_arg10!=null)){
-reply。writeInt(1);
-//SurfacewriteToParcel，eitreplyé+。
-//ż*-ARRPARCELABLE_WRITE_RETURN_VALUE。
-arg10。writeToParcel(reply，
-android。os。Parcelable。PARCELABLE_WRITE_RETURN_VALUE);
-}
-}
-returntrue;
-}
-看完这个你是否会觉得大吃一惊?我最开始一直在JNI文件中寻找大挪移的踪迹，但是
-有几个关键点始终不能明白，万不得已就使用了这个aidi必杀技，终于揭露了真相。
-3。乾坤大挪移的真相
-这里总结一下乾坤大挪移的整个过程，如图8-8表示：
-上图非常清晰地列出了乾坤大挪移的过程，我们可结合代码来加深理解。
-注意
-这里将BpWindowSession作为了IWindowSessionBinder在客戶端的代表。
-
-
-Page321
-第8章深入理解Surface系统
-303
-|彩T券券
-普个一间國个一而
-ViewRoot
-BpWindowSession
-WindowSession
-1：relayout)
-文
-2：onTransact)
-3：构造一个本地Surface0
-公益益。
-4：调用relayoutO
-5：构造一个以SrfaceSession为参数的Surface0
-6：copyFrom0
-7：writeToParcei0
-8：返回
-9：readFromParcel
-图8-8乾坤大挪移的真面目
-8。3。3乾坤大挪移的JNI层分析
-前文讲述的内容都集中在Java层，按照流程顺序下面要分析JNI层的内容了。
-1。Surface的无参构造分析
-在JNI层，第一个被调用的是Surface的无参构造函数，其代码如下所示：
-[-->Surface。java]
-publicSurface(){
-//CompatibleCanvasACanvasA。
-mCanvas
-=newCompatibleCanvas();
-}
-Canvas是什么?根据SDK文档的介绍可知，画图需要“四大金刚”相互合作，这四大
-金刚是：
-OBitmap;用于存储像素，也就是画布。可把它当做一块数据存储区域。
-ト…
-
-
-Page322
-304
-深入理解Android：卷!
-ロCanvas：用于记载画图的动作，比如画一个圆，画一个矩形等。Canvas类提供了这
-些基本的绘图函数。
-ロDrawingprimitive：绘图基元，例如矩形、圆、弧线、文本、图片等。
-ロPaint：它用来描述绘画时使用的颜色、风格(如实线、虚线等)等。
-在一般情况下，Canvas会封装一块Bitmap，而作图就是基于这块Bitmap的。前面所说
-的画布，其实指的就是Canvas中的这块Bitmap。
-这些知识稍微了解一下即可，不必深究。Surface的无参构造函数没有什么有价值的内
-容，接着看下面的内容。
-2。SurfaceSession#9AE
-现在要分析的是SurfaceSession，其构造函数如下所示：
-[-->SurfaceSession。java]
-publicSurfaceSession(){
-init();//这是一个native函数。
-一
-init是一个native函数。去看看它的JNI实现，它在android_view_Surface。cpp中，代码
-如下所示：
-[-->android_view_Surface。cpp]
-staticvoidSurfaceSession_init(JNIEnv*env，jobjectclazz)
-{
-1/创建一个SurfaceComposerclient对象。
-sp<SurfaceComposerClient>client=newSurfaceComposerClient;
-client->incStrong(clazz);
-1/在Java对象中保存这个client对象的指针，类型为SurfaceComposerclient。
-env->SetIntField(clazz，sso。client，(int)client。get());
-}
-这里先不讨论SurfaceComposerClient的内容，咱们还是继续把乾坤大挪移的流程走完。
 3。Surface的有参构造
 下一个调用的是Surface的有参构造，其参数中有一个SurfaceSession。先看Java层的
 代码，如下所示：
