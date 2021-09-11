@@ -160,8 +160,7 @@ final void handleResumeActivity(IBinder token, boolean clearHide, boolean isForw
 在WM的addView时会创建ViewRootImpl，然后调用ViewRootImpl的setView。
 
 ```java
-public void setView(View view, WindowManager.LayoutParams attrs, View panelParentView,
-                    int userId) {
+public void setView(View view, WindowManager.LayoutParams attrs, View panelParentView, int userId) {
     synchronized (this) {
         if (mView == null) {
             mView = view;
@@ -375,40 +374,14 @@ performTraversals方法会在注释2、3、4处分别调用performMeasure、perf
 
 1.   Activity的顶层View是DecorView，在onCreate函数中通过setContentView设置的View只不过是这个DecorView中的一部分（Content）。DecorView是一个FrameLayout类型。
 2.   Activity和UI有关，它包含一个Window（真实类型是PhoneWindow）和一个WindowManager（真实类型是WindowManagerImpl）对象。这两个对象将控制整个Activity
-3.   ViewRootImpl实现了ViewParent接口，它有两个重要的成员变量，一个是mView，它指向Activity顶层UI单元的DecorView，另外一个是mSurface，这个Surface包含了一个Canvas。除此之外，ViewRootImpl还通过Binder系统和WindowManagerService进行了跨进程交互。
+3.   ViewRootImpl实现了ViewParent接口，它有两个重要的成员变量，一个是mView，它指向Activity顶层UI单元的DecorView，另外一个是mSurface，这个Surface包含了一个Canvas。
 4.   整个Activity的绘图流程就是从mSurface中lock一块Canvas，然后交给mView去自由发挥画画的才能，最后unlockCanvasAndPost释放这块Canvas。
 
+**个人额外总结**
+
+在ViewRootImpl的DecorView（mView）初始化时，会触发View树的重绘（requestLayout）。除此之外，还会将创建的Window和WMS建立联系（`mWindowSession.addToDisplayAsUser`）
+
 # 简单分析Surface
-
-## 和Surface有关的流程总结
-
-先总结中和Surface有关的流程：
-
-1.   在ViewRoot构造时，会创建一个Surface，它使用无参构造函数，代码如下所示：
-
-     ```java
-     public final Surface mSurface = new Surface();
-     ```
-
-2.   ViewRootImpl通过IWindowSession和WMS交互，而WMS中调用的一个attach函数会构造一个SurfaceSession。
-
-     ```java
-     void windowAddedLocked(String packageName) {
-         // ...
-         if (mSurfaceSession == null) {
-             // ...
-             mSurfaceSession = new SurfaceSession();
-             // ...
-         }
-         mNumWindow++;
-     }
-     ```
-
-3.   ViewRootImpl在performTraversals会调用IWindowSession的relayout。
-
-4.   ViewRootImpl调用Surface的lockCanvas，得到一块画布。
-
-5.   ViewRootImpl调用Surface的unlockCanvasAndPost释放这块画布。
 
 ## Surface的Java层分析
 
@@ -901,1026 +874,538 @@ static jlong nativeLockCanvas(JNIEnv* env, jclass clazz,
 
 先获得一块存储区域，然后将它和Canvas绑定到一起，这样，UI绘画的结果就记录在这块存储区域里了。
 
+### unlockCanvasAndPost
 
+```java
+public void unlockCanvasAndPost(Canvas canvas) {
+    synchronized (mLock) {
+        checkNotReleasedLocked();
 
-
-Page327
-第8章深入理解Surface系统
-309
-注意
-本书不打算讨论Android系统上Skia和OpenGL方面的知识，有兴趣的读者可自行
-研究。
-接下来看unlockCanvasAndPost函数，它也是一个native函数。
-2。unlockCanvasAndPost
-来看unlockCanvasAndPost的代码，如下所示：
-[->android_view_Surface。cpp]
-staticvoidSurface_unlockCanvasAndPost(JNIEnv*env，jobjectclazz，
-jobjectargCanvas)
-{
-jobjectcanvas
-//NativehSurface。
-constsp<Surface>&surface(getSurface(env，clazz));
-1/下面这些内容就讨论了，读者若有兴趣，可结合Skia库自行研究。
-env->GetObjectField(clazz，so。canvas);
-(SkCanvas*)env->GetIntField(canvas，
-no。native_canvas);
-SkCanvas*nativeCanvas=
-intsaveCount=env->GetIntField(clazz，so。saveCount);
-nativeCanvas->restoreToCount(saveCount);
-nativeCanvas->setBitmapDevice(SkBitmap0);
-env->SetIntField(clazz，so。saveCount，0);
-//SurfaceunlockAndPost*。
-=surface->unlockAndPost();
-statusterr
+        if (mHwuiContext != null) {
+            mHwuiContext.unlockAndPost(canvas);
+        } else {
+            unlockSwCanvasAndPost(canvas);
+        }
+    }
 }
-unlockCanvasAndPost也很简单，这里就不再多说了。
-8。3。5初识Surface小结
-在本节的最后，我们来概括总结一下这一节所涉及的和Surface相关的调用流程，以备
-攻克下一个难关，如图8-9所示：
-E-ASurfaceComposerClient
-ASurfaceá)unlockAndPost
-UI画图
-iSurfaceComposerClient#9createSurface
-得到一个SurfaceControl对象
-调用Surface的lock
-igHSurfaceControlwriteToParcel
-G根据Parcel包信息构造一个Surface
-图8-9
-Surface的精简流程图
+```
 
+对应的native方法：
 
-Page328
-310深入理解Android：卷!
-8。4深入分析Surface
-这一节将基于图8-9中的流程，对Surface进行深入分析。在分析之前，还需要介绍一
-些Android平台上图形/图像显示方面的知识，这里统称为与Surface相关的基础知识。
-8。4。1与Surface相关的基础知识介绍
-1。显示层(Layer)和屏幕组成
-你了解屏幕显示的漂亮界面是如何组织的吗?来看图8-10所展示的屏幕组成示意图。
-X
-图8-10屏幕组成示意图
-从图8-10中可以看出：
-口屏幕位于一个三维坐标系中，其中Z轴从屏幕内指向屏幕外。
-口编号为①O③的矩形块叫显示层(Layer)。每一层有自己的属性，例如颜色、透明
-度、所处屏幕的位置、宽、高等。除了属性之外，每一层还有自己对应的显示内容，
-也就是需要显示的图像。
-在Android中，Surface系统工作时，会由SurfaceFlinger对这些按照Z轴排好序的显示
-层进行图像混合，混合后的图像就是在屏幕上看到的美妙画面了。这种按Z轴排序的方式符
-合我们在日常生活中的体验，例如前面的物体会遮挡住后面的物体。
-注意Surface系统中定义了一个名为Layer奏型的类，为了区分广义概念上的Layer和代码
-中的Layer，这里称广义层的Layer为显示层，以免混淆。
+```cpp
+static void nativeUnlockCanvasAndPost(JNIEnv* env, jclass clazz,
+                                     jlong nativeObject, jobject canvasObj) {
+    // 取出Native的Surface对象
+    sp<Surface> surface(reinterpret_cast<Surface *>(nativeObject));
+    if (!isSurfaceValid(surface)) {
+        return;
+    }
+
+    // 释放Surface中的buffer
+    graphics::Canvas canvas(env, canvasObj);
+    canvas.setBuffer(nullptr, ADATASPACE_UNKNOWN);
+
+    // 解锁Surface
+    status_t err = surface->unlockAndPost();
+    if (err < 0) {
+        jniThrowException(env, IllegalArgumentException, NULL);
+    }
+}
+```
+
+# 深入分析Surface
+
+## 与Surface相关的基础知识介绍
+
+### 显示层（Layer）和屏幕组成
+
+<img src="assets/10.jpg" alt="10" style="zoom:50%;" />
+
+-   屏幕位于一个三维坐标系中，其中Z轴从屏幕内指向屏幕外。
+-   编号为1、2、3的矩形块叫显示层（Layer）。每一层有自己的属性，例如颜色、透明度、所处屏幕的位置、宽、高等。除了属性之外，每一层还有自己对应的显示内容，也就是需要显示的图像。
+
+在Android中，Surface系统工作时，会由SurfaceFlinger对这些按照Z轴排好序的显示层进行图像混合，混合后的图像就是在屏幕上看到的美妙画面了。
+
+>   注意Surface系统中定义了一个名为Layer类型的类，为了区分广义概念上的Layer和代码中的Layer，这里称广义层的Layer为显示层，以免混淆。
+
 Surface系统提供了三种属性，一共四种不同的显示层。简单介绍一下：
-口第一种属性是eFXSurfaceNormal属性，大多数的UI界面使用的就是这种属性。它有
-两种模式：
-1)Normal模式，这种模式的数据，是通过前面的mView。draw(canvas)画上去的。这
-也是绝大多数UI所采用的方式。
-2)PushBuffer模式，这种模式对应于视频播放、摄像机摄录/预览等应用场景。以摄
 
+-   第一种属性是eFXSurfaceNormal属性，大多数的UI界面使用的就是这种属性。它有两种模式：
+    1.   Normal模式，这种模式的数据，是通过前面的`mView.draw(canvas)`画上去的。这也是绝大多数UI所采用的方式。
+    2.   PushBuffer模式，这种模式对应于视频播放、摄像机摄录/预览等应用场景。以摄像机为例，当摄像机运行时，来自Camera的预览数据将直接push到Buffer中，无须应用层自己再去draw了。
+-   第二种属性是eFXSurfaceBlur属性，这种属性的UI有点朦胧美，看起来很像隔着一层毛玻璃。
+-   第三种属性是eFXSurfaceDim属性，这种属性的UI看起来有点暗，好像隔了一层深色玻璃。从视觉上讲，虽然它的UI看起来有点暗，但并不模糊。而eFXSurfaceBlur不仅暗，还有些模糊。
 
-Page329
-第8章深入理解Surface系统
-311
-像机为例，当摄像机运行时，来自Camera的预览数据将直接push到Buffer中，无
-须应用层自己再去draw了。
-口第二种属性是eFXSurfaceBlur属性，这种属性的UI有点朦胧美，看起来很像隔着一
-层毛玻璃。
-口第三种属性是eFXSurfaceDim属性，这种属性的UI看起来有点暗，好像隔了一层深
-色玻璃。从视觉上讲，虽然它的UI看起来有点暗，但并不模糊。而eFXSurfaceBlur
-不仅暗，还有些模糊。
-图8-11展示了最后两种类型的视觉效果图，其中左边的是Blur模式，右边的是Dim
-模式。
-4中
-下午1：20
-120
-下午1：20
-O输人网址
-人搜索
-Sna
-新浪
-淘
-电源选项
-O退出提示
-关机
-确定要退出UC浏览器吗?
-一键清除所有浏览记录
-关机
-飞行模式
-“飞行模式巴关闭
-确定
-取消
-重新启动
-关闭所有应用程序并重启电话
-AndroidX
-小说达人必看，玄幻穿越控
-玩乐园麻iPhone4
-图8-11
-Blur和Dim效果图
-注意关于Surface系统的显示层属性定义，读者可参考ISurfaceComposer。h。
-本章将重点分析第一种属性的两类显示层的工作原理。
-2。FrameBufferAPageFlipping
-我们知道，在Audio系统中音频数据传输的过程是：
-口由客户端把数据写到共享内存中。
-口然后由AudioFlinger从共享内存中取出数据再往AudioHAL中发送。
-根据以上介绍可知，在音频数据传输的过程中，共享内存起到了数据承载的重要作用。
-无独有偶，Surface系统中的数据传输也存在同样的过程，但承载图像数据的是鼎鼎大名的
+### FrameBuffer和PageFlipping
 
+在Audio系统中音频数据传输的过程是：
 
-Page330
-312
-深入理解Android：卷」
-FrameBuffer(简称FB)。下面先来介绍FrameBuffer，然后再介绍Surface的数据传输过程。
-(1)FrameBufferfr
+-   由客户端把数据写到共享内存中。
+-   然后由AudioFlinger从共享内存中取出数据再往AudioHAL中发送。
+
+根据以上介绍可知，在音频数据传输的过程中，共享内存起到了数据承载的重要作用。无独有偶，Surface系统中的数据传输也存在同样的过程，但承载图像数据的是鼎鼎大名的FrameBuffer(简称FB)。
+
+**FrameBuffer**
+
 FrameBuffer的中文名叫帧缓冲，它实际上包括两个不同的方面：
-OFrame：帧，就是指一幅图像。在屏幕上看到的那幅图像就是一帧。
-口Buffer：缓沖，就是一段存储区域，不过这个区域存储的是帧。
-FrameBuffer的概念很清晰，它就是一个存储图形/图像帧数据的缓冲。这个缓冲来自哪
-里?理解这个问题，需要简单介绍一下Linux平台的虚拟显示设备FrameBufferDevice(简
-称FBD)。FBD是Linux系统中的一个虚拟设备，设备文件对应为/dev/fb%d(比如/dev/
-fb0)。这个虚拟设备将不同硬件厂商实现的真实设备统一在一个框架下，这样应用层就可以
-通过标准的接口进行图形/图像的输入和输出了。图8-12展示了FBD示意图：
-应用程序
-iocti
-mmap
-readwrite
-{LinuxKermel
-FrameBufferDevice
-真实Device0
-真实Devicel
-真实Device2
-真实Device3
-图8-12Linux系统中的FBD示意图
-从上图中可以看出，应用层通过标准的ioctl或mmap等系统调用，就可以操作显示
-设备了，用起来非常方便。这里把mmap的调用列出来，相信大部分读者都知道它的作
-用了。
-FrameBuffer中的Buffer，就是通过mmap把设备中的显存映射到用户空间的，在这块
-缓冲上写数据，就相当于在屏幕上绘画。
-注意上面所说的框架将引出另外一个概念LinuxFrameBuffer(简称LFB)。LFB是Linux
-平台提供的一种可直接操作FB的机制，依托这个机制，应用层通过标准的系统调用，就可
-以操作显示设备了。从使用的角度来看，它和LinuxAudio中的OSS有些类似。
-为了加深读者对此节内容的理解，这里给出一个小例子，就是在DDMS工具中实现屏
-幕截图功能，其代码在framebuffer_service。c中，如下所示：
-[-->framebuffer_service。c]
-structfbinfo{//定义一一个结构体。
-unsignedintversion;
 
+-   Frame：帧，就是指一幅图像。在屏幕上看到的那幅图像就是一帧。
+-   Buffer：缓沖，就是一段存储区域，不过这个区域存储的是帧。
 
-Page331
-第8章深入理解Surface系统
-313
-unsignedintbpp;
-unsignedintsize;
-unsignedintwidth;
-unsignedintheight;
-unsignedintred_offset;
-unsignedintred_length;
-unsignedintblue_offset;
-unsignedintblue_length;
-unsignedintgreen_offset;
-unsignedintgreen_length;
-unsignedintalpha_offset;
-unsignedintalpha_length;
-}_attribute_((packed));
-1/fd是一个文件的描述符，这个函数的目的，是把当前屏幕的內容写到一个文件中。
-voidframebufferservice(intfd，void*cookie)
+FrameBuffer的概念很清晰，它就是一个存储图形/图像帧数据的缓冲。Linux平台的虚拟显示设备FrameBuffer Device(简称FBD)。FBD是Linux系统中的一个虚拟设备，设备文件对应为/dev/fb%d(比如/dev/fb0)。这个虚拟设备将不同硬件厂商实现的真实设备统一在一个框架下，这样应用层就可以通过标准的接口进行图形/图像的输入和输出了。
+
+<img src="assets/11.jpg" alt="11" style="zoom:50%;" />
+
+FrameBuffer中的Buffer，就是通过mmap把设备中的显存映射到用户空间的，在这块缓冲上写数据，就相当于在屏幕上绘画。
+
+**PageFlipping**
+
+图形/图像数据和音频数据不太一样，一般把音频数据叫音频流，它是没有边界的，而图形/图像数据是一帧一帧的，是有边界的。这一点非常类似UDP和TCP之间的区别。所以在图形/图像数据的生产/消费过程中，人们使用了一种叫PageFlipping的技术。PageFlipping的中文名叫画面交换，其操作过程如下所示：
+
+-   分配一个能容纳两帧数据的缓冲，前面一个缓冲叫FrontBuffer，后面一个缓冲叫BackBuffer。
+-   消费者使用FrontBuffer中的旧数据，而生产者用新数据填充BackBuffer，二者互不干扰。
+-   当需要更新显示时，BackBuffer变成FrontBuffer，FrontBuffer变成BackBuffer。如此循环，这样就总能显示最新的内容了。这个过程很像平常的翻书动作，所以它被形象地称为PageFlipping。
+
+>   PageFlipping其实就是使用了一个只有两个成员的帧缓冲队列，以后在分析数据传输的时候还会见到诸如dequeue和queue的操作。
+
+### 图像混合
+
+Surface系统支持软硬两个层面的图像混合：
+
+-   软件层面的混合：例如使用copyBlt进行源数据和目标数据的混合。
+-   硬件层面的混合：使用Overlay系统提供的接口。
+
+简单介绍一下copyBlt和Overlay：
+
+-   copyBlt，从名字上看是数据拷贝，它也可以由硬件实现，例如现在很多的2D图形加速就是将copyBlt改由硬件来实现，以提高速度的。
+-   Overlay方法必须有硬件支持才可以，它主要用于视频的输出，例如视频播放、摄像机摄像等，因为视频的内容往往变化很快，所以如改用硬件进行混合效率会更高。
+
+## SurfaceComposerClient分析
+
+### SurfaceSession构造方法
+
+addWindow过程中，WMS会创建一个SurfaceSession。SurfaceSession构造方法，主要目的就是创建SurfaceComposerClient。
+
+```java
+private long mNativeClient; // SurfaceComposerClient*
+
+private static native long nativeCreate();
+
+public SurfaceSession() {
+    mNativeClient = nativeCreate();
+}
+
+```
+
+nativeCreate的JNI实现，frameworks/base/core/jni/android_view_SurfaceSession.cpp：
+
+```cpp
+static jlong nativeCreate(JNIEnv* env, jclass clazz) {
+    // 创建一个SurfaceComposerClient对象
+    SurfaceComposerClient* client = new SurfaceComposerClient();
+    client->incStrong((void*)nativeCreate);
+    return reinterpret_cast<jlong>(client);// Java层保存该对象的指针
+}
+```
+
+system/core/libutils/RefBase.cpp
+
+SurfaceComposerClient的基类是RefBase，incStrong方法如下：
+
+```cpp
+void RefBase::incStrong(const void* id) const
+    {
+        weakref_impl* const refs = mRefs;
+        refs->incWeak(id);
+
+        refs->addStrongRef(id);
+    const int32_t c = refs->mStrong.fetch_add(1, std::memory_order_relaxed);
+        ALOG_ASSERT(c > 0, "incStrong() called on %p after last strong ref", refs);
+#if PRINT_REFS
+        ALOGD("incStrong of %p from %p: cnt=%d\n", this, id, c);
+#endif
+        if (c != INITIAL_STRONG_VALUE)  {
+            return;
+        }
+
+        int32_t old __unused = refs->mStrong.fetch_sub(INITIAL_STRONG_VALUE, std::memory_order_relaxed);
+        // A decStrong() must still happen after us.
+        ALOG_ASSERT(old > INITIAL_STRONG_VALUE, "0x%x too small", old);
+        refs->mBase->onFirstRef();
+    }
+```
+
+在incStrong函数中，会调用SurfaceComposerClient的onFirstRef函数。
+
+### SurfaceComposerClient构造函数
+
+SurfaceComposerClient这个对象会和SurfaceFlinger进行交互，因为SurfaceFlinger派生于SurfaceComposer。
+
+```cpp
+SurfaceComposerClient::SurfaceComposerClient()
+: mStatus(NO_INIT)
+{}
+
+void SurfaceComposerClient::onFirstRef() {
+    // getComposerService返回SF的Binder代理端的BpSurfaceFlinger对象。
+    sp<ISurfaceComposer> sf(ComposerService::getComposerService());
+    if (sf != nullptr && mStatus == NO_INIT) {
+        sp<ISurfaceComposerClient> conn;
+        // 调用SF的createConnection()
+        conn = sf->createConnection();
+        if (conn != nullptr) {
+            mClient = conn;
+            mStatus = NO_ERROR;
+        }
+    }
+}
+```
+
+frameworks/native/libs/gui/include/private/gui/ComposerService.h
+
+```cpp
+// This holds our connection to the composer service (i.e. SurfaceFlinger).
+// If the remote side goes away, we will re-establish the connection.
+// Users of this class should not retain the value from
+// getComposerService() for an extended period.
+//
+// (It's not clear that using Singleton is useful here anymore.)
+    class ComposerService : public Singleton<ComposerService>
+    {
+        // ....
+        friend class Singleton<ComposerService>;
+        public:
+
+        // Get a connection to the Composer Service.  This will block until
+        // a connection is established.
+        static sp<ISurfaceComposer> getComposerService();
+    };
+```
+
+从ComposerService的注释中可以看出SF运行在composer service中。
+
+SurfaceComposerClient建立了和SF的交互通道。
+
+### createConnection
+
+frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp：
+
+```cpp
+sp<ISurfaceComposerClient> SurfaceFlinger::createConnection() {
+	const sp<Client> client = new Client(this);
+    return client->initCheck() == NO_ERROR ? client : nullptr;
+}
+```
+
+### 小结
+
+一个Activity对应一个Window，在将创建的Window与WMS建立联系时，WMS创建了SurfaceSession。JNI层则创建了SurfaceComposerClient。
+
+SurfaceComposerClient的创建建立了与SF的联系。
+
+## SurfaceControl分析
+
+SurfaceControl在Java层的创建有2处。一处是在应用层，用的是无参构造方法，另一个是在WMS中，用的是有参构造方法。
+
+```java
+public long mNativeObject;
+private long mNativeHandle;
+
+private SurfaceControl(SurfaceSession session, String name, int w, int h, int format, int flags, SurfaceControl parent, SparseIntArray metadata, WeakReference<View> localOwnerView, String callsite) throws OutOfResourcesException, IllegalArgumentException {
+    // ...
+    Parcel metaParcel = Parcel.obtain();
+    try {
+        // ...
+        mNativeObject = nativeCreate(session, name, w, h, format, flags,
+                parent != null ? parent.mNativeObject : 0, metaParcel);
+    } finally {
+        metaParcel.recycle();
+    }
+    // ...
+    mNativeHandle = nativeGetHandle(mNativeObject);
+}
+```
+
+frameworks/base/core/jni/android_view_SurfaceControl.cpp
+
+```cpp
+static jlong nativeCreate(JNIEnv* env, jclass clazz, jobject sessionObj,
+                          jstring nameStr, jint w, jint h, jint format, jint flags, jlong parentObject,
+                          jobject metadataParcel) {
+    // SurfaceSession里会创建一个SurfaceComposerClient，这里就是获取传入的参数sessionObj的SurfaceComposerClient
+    sp<SurfaceComposerClient> client;
+    if (sessionObj != NULL) {
+        client = android_view_SurfaceSession_getClient(env, sessionObj);
+    } else {
+        client = SurfaceComposerClient::getDefault();
+    }
+    SurfaceControl *parent = reinterpret_cast<SurfaceControl*>(parentObject);
+    sp<SurfaceControl> surface;
+    // 创建一个SurfaceControl类型的对象
+    status_t err = client->createSurfaceChecked(
+    String8(name.c_str()), w, h, format, &surface, flags, parent, std::move(metadata));
+    // ...
+    surface->incStrong((void *)nativeCreate);
+    // 将此SurfaceControl对象的指针返回给Java对象
+    return reinterpret_cast<jlong>(surface.get());
+}
+```
+
+在Java层的有参构造方法中，最终调用了SurfaceComposerClient的createSurfaceChecked函数创建SurfaceControl对象。
+
+```cpp
+status_t SurfaceComposerClient::createSurfaceChecked(const String8& name, uint32_t w, uint32_t h, PixelFormat format, sp<SurfaceControl>* outSurface, uint32_t flags, SurfaceControl* parent, LayerMetadata metadata, uint32_t* outTransformHint) {
+    sp<SurfaceControl> sur;
+    status_t err = mStatus;
+
+    if (mStatus == NO_ERROR) {
+        sp<IBinder> handle;
+        sp<IBinder> parentHandle;
+        sp<IGraphicBufferProducer> gbp;
+        // ...
+        // 这个Client就是上面分析中的，与SF交互的Client
+        err = mClient->createSurface(name, w, h, format, flags, parentHandle, std::move(metadata), &handle, &gbp, &transformHint);
+        // ...
+        if (err == NO_ERROR) {
+        *outSurface = new SurfaceControl(this, handle, gbp, transformHint);
+        }
+    }
+    return err;
+}
+```
+
+创建SurfaceControl之前调用了Client的createSurface函数。
+
+### SurfaceFlinger的createLayer
+
+frameworks/native/services/surfaceflinger/Client.cpp
+
+```cpp
+status_t Client::createSurface(const String8& name, uint32_t w, uint32_t h, PixelFormat format,
+                               uint32_t flags, const sp<IBinder>& parentHandle,
+                               LayerMetadata metadata, sp<IBinder>* handle,
+                               sp<IGraphicBufferProducer>* gbp, uint32_t* outTransformHint) {
+    return mFlinger->createLayer(name, this, w, h, format, flags, std::move(metadata), handle, gbp, parentHandle, nullptr, outTransformHint);
+}
+```
+
+通过IPC，在SF进程中执行createLayer函数：
+
+frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp
+
+```cpp
+status_t SurfaceFlinger::createLayer(const String8& name, const sp<Client>& client, uint32_t w, uint32_t h, PixelFormat format, uint32_t flags, LayerMetadata metadata, sp<IBinder>* handle, sp<IGraphicBufferProducer>* gbp, const sp<IBinder>& parentHandle, const sp<Layer>& parentLayer, uint32_t* outTransformHint) {
+    // 。。。
+    status_t result = NO_ERROR;
+    sp<Layer> layer;
+    // 。。。
+    switch (flags & ISurfaceComposerClient::eFXSurfaceMask) {
+        case ISurfaceComposerClient::eFXSurfaceBufferQueue:
+            result = createBufferQueueLayer(client, std::move(uniqueName), w, h, flags, std::move(metadata), format, handle, gbp, &layer);
+            break;
+        case ISurfaceComposerClient::eFXSurfaceBufferState:
+            result = createBufferStateLayer(client, std::move(uniqueName), w, h, flags, std::move(metadata), handle, &layer);
+            break;
+        case ISurfaceComposerClient::eFXSurfaceEffect:
+            //。。。
+            result = createEffectLayer(client, std::move(uniqueName), w, h, flags, std::move(metadata), handle, &layer);
+            break;
+        case ISurfaceComposerClient::eFXSurfaceContainer:
+            // 。。。
+            result = createContainerLayer(client, std::move(uniqueName), w, h, flags, std::move(metadata), handle, &layer);
+            break;
+        default:
+            result = BAD_VALUE;
+            break;
+    }
+	// 。。。
+    result = addClientLayer(client, *handle, *gbp, layer, parentHandle, parentLayer, addToCurrentState, outTransformHint);
+    return result;
+}
+```
+
+```cpp
+status_t SurfaceFlinger::addClientLayer(const sp<Client>& client, const sp<IBinder>& handle, const sp<IGraphicBufferProducer>& gbc, const sp<Layer>& lbc, const sp<IBinder>& parentHandle, const sp<Layer>& parentLayer, bool addToCurrentState, uint32_t* outTransformHint) {
+    // add this layer to the current state list
+    {
+        // 。。。
+        if (parent == nullptr && addToCurrentState) {
+            mCurrentState.layersSortedByZ.add(lbc);
+        } else if (parent == nullptr) {
+            lbc->onRemovedFromCurrentState();
+        } else if (parent->isRemovedFromCurrentState()) {
+            parent->addChild(lbc);
+            lbc->onRemovedFromCurrentState();
+        } else {
+            parent->addChild(lbc);
+        }
+
+        if (gbc != nullptr) {
+            mGraphicBufferProducerList.insert(IInterface::asBinder(gbc).get());
+            LOG_ALWAYS_FATAL_IF(mGraphicBufferProducerList.size() >
+                                        mMaxGraphicBufferProducerListSize,
+                                "Suspected IGBP leak: %zu IGBPs (%zu max), %zu Layers",
+                                mGraphicBufferProducerList.size(),
+                                mMaxGraphicBufferProducerListSize, mNumLayers.load());
+        }
+
+        if (const auto display = getDefaultDisplayDeviceLocked()) {
+            lbc->updateTransformHint(display->getTransformHint());
+        }
+        if (outTransformHint) {
+            *outTransformHint = lbc->getTransformHint();
+        }
+
+        mLayersAdded = true;
+    }
+
+    // attach this layer to the client
+    client->attachLayer(handle, lbc);
+
+    return NO_ERROR;
+}
+```
+
+frameworks/native/services/surfaceflinger/Client.cpp
+
+```cpp
+void Client::attachLayer(const sp<IBinder>& handle, const sp<Layer>& layer)
 {
-structfbvarscreeninfovinfo;
-intfb，offset;
-charx[256];
-structfbinfofbinfo;
-unsignedi，bytespp;
-1/Android系统上的fb设备路径在/dev/graphics目录下。
-fb=open("/dev/graphics/fb0"，O_RDONLY);
-if(fb<0)gotodone;
-1/取出屏幕的属性。
-if(ioctl(fb，FBIOGET_VSCREENINFO，&vinfo)
-<0)gotodone;
-fcntl(fb，F_SETFD，FD_CLOEXEC);
-=vinfo。bits_per_pixel/8;
-1/根据屏幕的属性填充fbinfo结构，这个结构要写到输出文件的头部。
-bytespp
-fbinfo。version=DDMS_RAWIMAGE_VERSION;
-fbinfo。bpp
-vinfo。bits_per_pixel;
-fbinfo。size=vinfo。xres*vinfo。yres
-*bytespp;
-fbinfo。width=vinfo。xres;
-fbinfo。height=vinfo。yres;
-/*
-下面几个变量和颜色格式有关，以RGB565为例简单介绍一下。
-RGB565表示一个像素点中的R分量为5位，G分量为6位，B分量为5位，并且没有Alpha分量。
-这样一个像素点的大小为16位，占两个字节，比RGB888格式的一个像素少一个字节(它一个像素是三个字节)。
-x_length的值为x分量的位数，例如，RGB565中R分量就是5位。
-x_offset的值代表x分量在内存中的位置。如RGB565一个像素占两个字节，那么x_offeset
-表示x分量在这两个字节内存区域中的起始位置，但这个顺序是反的，也就是B分量在前，
-R在最后。所以red_offset的值就是11，而blue_offset的值是0，green_offset的值是6。
-这些信息在做格式转换时(例如从RGB565转到RGB888的时候)有用。
-*/
-fbinfo。red_offset
-vinfo。red。offset;
-%3D
-fbinfo。red_length
-vinfo。red。length;
-fbinfo。green_offset
-fbinfo。green_length
-vinfo。green。offset;
-%3D
-vinfo。green。length;
-
-
-Page332
-314
-深入理解Android：卷!
-=vinfo。blue。offset;
-vinfo。blue。length;
-fbinfo。blue_offset
-fbinfo。blue_length=
-=vinfo。transp。offset;
-vinfo。transp。length;
-fbinfo。alpha_offset
-fbinfo。alpha_length
-offset=vinfo。xoffset*bytespp;
-offset
-+=vinfo。xres*vinfo。yoffset*bytespp;
-1/将fb信息写到文件头部。
-if(writex(fd，&fbinfo，sizeof(fbinfo)))gotodone;
-1seek(fb，offset，SEEK_SET);
-for(i=0;i<fbinfo。size;i+=256){
-if(readx(fb，&x，256))gotodone;//读取FBD中的数据。
-if(writex(fd，&x，256))gotodone;//将数据写到文件中。
-一
-if(readx(fb，&x，fbinfo。size%256))gotodone;
-if(writex(fd，&x，fbinfo。size%256))gotodone;
-done：
-if(fb>=0)close(fb);
-close(fd);
+    Mutex::Autolock _l(mLock);
+    mLayers.add(handle, layer);
 }
-上面函数的目的就是截屏，这个例子可加深我们对FB的直观感受，相信读者下次再碰
-到FB时就不会犯怵了。
-注意我们可根据这段代码，写一个简单的Native可执行程序，然后adbpush到设备上运
-行。注意上面写到文件中的是RGB565格式的原始数据，如想在台式机上看到这幅图片，可
-将它转换成BMP格式。我的个人博客上提供一个RGB565转BMP的程序，读者可以下载或
-自己另写一个，这样或许有助于更深入地理解图形/图像方面的知识。
-在继续分析前，先来问一个问题：
-前面在Audio系统中讲过，CB对象通过读写指针来协调生产者/消费者的步调，那么
-Surface系统中的数据传输过程，是否也需通过读写指针来控制呢?
-答案是肯定的，但不像Audio中的CB那样复杂。
-(2)PageFlipping
-图形/图像数据和音频数据不太一样，我们一般把音频数据叫音频流，它是没有边界的，
-而图形/图像数据是一帧一帧的，是有边界的。这一点非常类似UDP和TCP之间的区别。
-所以在图形/图像数据的生产/消费过程中，人们使用了一种叫PageFlipping的技术。
-PageFlipping的中文名叫画面交换，其操作过程如下所示：
-ロ分配一个能容纳两帧数据的缓冲，前面一个缓冲叫FrontBuffer，后面一个缓冲叫
-BackBuffer。
+```
 
+createLayer根据flag创建不同的Layer，Layer用于标示一个图层。
 
-Page333
-第8章深入理解Surface系统
-315
-口消费者使用FrontBuffer中的旧数据，而生产者用新数据填充BackBuffer，二者互不
-干扰。
-口当需要更新显示时，BackBuffer变成FrontBuffer，FrontBuffer变成BackBuffer。如
-此循环，这样就总能显示最新的内容了。这个过程很像我们平常的翻书动作，所以它
-被形象地称为PageFlipping。
-说明说白了，PageFlipping其实就是使用了一个只有两个成员的帧缓冲队列，以后在分析析
-数据传输的时候还会见到诸如dequeue和queue的操作。
-3。图像混合
-我们知道，在AudioFlinger中有混音线程，它能将来自多个数据源的数据混合后输出，
-那么，SurfaceFlinger是不是也具有同样的功能呢?
-答案是肯定的，否则它就不会叫Flinger了。Surface系统支持软硬两个层面的图像混合：
-口软件层面的混合：例如使用copyBlt进行源数据和目标数据的混合。
-口硬件层面的混合：使用Overlay系统提供的接口。
-无论是硬件还是软件层面，都需将源数据和目标数据进行混合，混合需考虑很多内容，
-例如源的颜色和目标的颜色叠加后所产生的颜色。关于这方面的知识，读者可以学习计算机
-图形/图像学。这里只简单介绍一下copyBlt和Overlay。
-口copyBlt，从名字上看是数据拷贝，它也可以由硬件实现，例如现在很多的2D图形加
-速就是将copyBlt改由硬件来实现，以提高速度的。但不必关心这些，我们只需关心
-如何调用copyBlt相关的函数进行数据混合即可。
-口Overlay方法必须有硬件支持才可以，它主要用于视频的输出，例如视频播放、摄像
-机摄像等，因为视频的内容往往变化很快，所以如改用硬件进行混合效率会更高。
-总体来说，Surface是一个比较庞大的系统，由于篇幅和精力所限，本章后面的内容将
-重点关注Surface系统的框架和工作流程。在掌握框架和流程后，读者就可以在大的脉络中
-迅速定位到自己感兴趣的地方，然后展开更深人的研究了。
-下面通过图8-9所示的精简流程，深入分析Android的Surface系统。
-8。4。2SurfaceComposerClient
-SurfaceComposerClientjHL：
-Java层SurfaceSession对象的构造函数会调用Native的SurfaceSession_init函数，而该
-函数的主要目的就是创建SurfaceComposerClient。
-先回顾一下SurfaceSession_init函数，代码如下所示：
-[-->android_view_Surface。cpp]
-staticvoidSurfaceSession_init(JNIEnv*env，jobjectclazz)
-{
+addClientLayer将创建的Layer保存到当前State的Z秩序列表layersSortedByZ中，同时将这个Layer所对应的IGraphicBufferProducer本地Binder对象gbp保存到SurfaceFlinger的成员变量mGraphicBufferProducerList中。
 
+除了SurfaceFlinger需要统一管理系统中创建的所有Layer对象外，专门为每个应用程序进程服务的Client也需要统一管理当前应用程序进程所创建的Layer，因此在addClientLayer函数里还会通过`Client::attachLayer`将创建的Layer保存到Client的成员变量mLayers表中。
 
-Page334
-316
-深入理解Android：卷!
-//new-AsurfaceComposerClientR。
-sp<SurfaceComposerClient>client=newSurfaceComposerClient;
-//sp的使用也有让人烦恼的地方，有时需要显式地增加强弱引用计数，要是忘记可就麻烦了。
-client->incStrong(clazz);
-env->SetIntField(clazz，sso。client，
-(int)client。get());
+### 创建SurfaceControl对象
+
+```cpp
+status_t SurfaceComposerClient::createSurfaceChecked(const String8& name, uint32_t w, uint32_t h, PixelFormat format, sp<SurfaceControl>* outSurface, uint32_t flags, SurfaceControl* parent, LayerMetadata metadata, uint32_t* outTransformHint) {
+    sp<SurfaceControl> sur;
+    status_t err = mStatus;
+
+    if (mStatus == NO_ERROR) {
+        // ...
+        // 这个Client就是上面分析中的，与SF交互的Client
+        err = mClient->createSurface(name, w, h, format, flags, parentHandle, std::move(metadata), &handle, &gbp, &transformHint);
+        // ...
+        if (err == NO_ERROR) {
+        *outSurface = new SurfaceControl(this, handle, gbp, transformHint);
+        }
+    }
+    return err;
 }
-上面代码中，显式地构造了一个SurfaceComposerClient对象。接下来看它是何方神圣。
-1。£JSurfaceComposerClient
-SurfaceComposerClient这个名字隐含的意思是：
-这个对象会和SurfaceFlinger进行交互，因为SurfaceFlinger派生于SurfaceComposer。
-通过它的构造函数来看是否是这样的。代码如下所示：
-[-->SurfaceComposerClient。cpp]
-SurfaceComposerClient：：SurfaceComposerClient()
-{
-//getComposerService()*SFBinderA*BpSurfaceFlingert。
-sp<ISurfaceComposer>sm(getComposerService());
-//tASF4createConnection，init。
-init(sm，sm->createConnection());
-if(mClient!=0){
-Mutex：：Autolock_1(gLock);
-7/gActiveConnections是全局变量，把刚才创建的client保存到这个map中去。
-gActiveConnections。add(mClient->asBinder()，this);
+```
+
+创建完Layer后，执行SurfaceControl构造函数，创建SurfaceControl对象。
+
+```cpp
+SurfaceControl::SurfaceControl(const sp<SurfaceComposerClient>& client, const sp<IBinder>& handle, const sp<IGraphicBufferProducer>& gbp, uint32_t transform)
+      : mClient(client),
+        mHandle(handle),
+        mGraphicBufferProducer(gbp),
+        mTransformHint(transform) {}
+```
+
+### 创建Layer对象
+
+在`SurfaceFlinger::createLayer`中会根据不同的flag创建不同的Layer。以createBufferQueueLayer为例进行分析：
+
+```cpp
+status_t SurfaceFlinger::createBufferQueueLayer(const sp<Client>& client, std::string name, uint32_t w, uint32_t h, uint32_t flags, LayerMetadata metadata, PixelFormat& format, sp<IBinder>* handle, sp<IGraphicBufferProducer>* gbp, sp<Layer>* outLayer) {
+    // ...
+    sp<BufferQueueLayer> layer;
+    // ...
+    layer = getFactory().createBufferQueueLayer(args);
+
+    status_t err = layer->setDefaultBufferProperties(w, h, format);
+    if (err == NO_ERROR) {
+        *handle = layer->getHandle();
+        *gbp = layer->getProducer();
+        *outLayer = layer;
+    }
+    
+    return err;
 }
+```
+
+frameworks/native/services/surfaceflinger/SurfaceFlingerDefaultFactory.cpp
+
+```cpp
+sp<BufferQueueLayer> DefaultFactory::createBufferQueueLayer(const LayerCreationArgs& args) {
+    return new BufferQueueLayer(args);
 }
-果然如此，SurfaceComposerClient建立了和SF的交互通道，下面直接转到SF的
-createConnection函数去观察。
-(1)createConnection
-直接看代码，如下所示：
-[-->SurfaceFlinger。cpp]
-sp<ISurfaceFlingerClient>SurfaceFlinger：：createConnection()
-{
-Mutex：：Autolock_1(mStateLock);
-uint32_ttoken=mTokens。acquire();
-1/先创建一个Client。
-sp<Client>client=
-1/把这个Client对象保存到mClientsMap中，token是它的标识。
-statusterr=mClientsMap。add(token，client);
-/*
-newClient(token，this);
-创建一个用于Binder通信的BClient，BClient派生于ISurfaceFlingerclient，
-它的作用是接受客戶端的请求，然后把处理提交给SF，注意，并不是提交给Client。
+```
+
+frameworks/native/services/surfaceflinger/BufferQueueLayer.cpp
+
+```cpp
+BufferQueueLayer::BufferQueueLayer(const LayerCreationArgs& args) : BufferLayer(args) {}
+
+void BufferQueueLayer::onFirstRef() {
+    BufferLayer::onFirstRef();
+
+    // Creates a custom BufferQueue for SurfaceFlingerConsumer to use
+    sp<IGraphicBufferProducer> producer;
+    sp<IGraphicBufferConsumer> consumer;
+    mFlinger->getFactory().createBufferQueue(&producer, &consumer, true);
+    mProducer = mFlinger->getFactory().createMonitoredProducer(producer, mFlinger, this);
+    mConsumer = mFlinger->getFactory().createBufferLayerConsumer(consumer, mFlinger->getRenderEngine(), mTextureName, this);
+    // ...
+}
+```
+
+frameworks/native/services/surfaceflinger/SurfaceFlingerDefaultFactory.cpp
+
+```cpp
+void DefaultFactory::createBufferQueue(sp<IGraphicBufferProducer>* outProducer,
+                                       sp<IGraphicBufferConsumer>* outConsumer,
+                                       bool consumerIsSurfaceFlinger) {
+    BufferQueue::createBufferQueue(outProducer, outConsumer, consumerIsSurfaceFlinger);
+}
+```
+
+frameworks/native/libs/gui/BufferQueue.cpp
+
+```cpp
+void BufferQueue::createBufferQueue(sp<IGraphicBufferProducer>* outProducer,
+        sp<IGraphicBufferConsumer>* outConsumer,
+        bool consumerIsSurfaceFlinger) {
+    // ...
+    sp<BufferQueueCore> core(new BufferQueueCore());
+    // ...
+    sp<IGraphicBufferProducer> producer(new BufferQueueProducer(core, consumerIsSurfaceFlinger));
+    // ...
+    sp<IGraphicBufferConsumer> consumer(new BufferQueueConsumer(core));
+    // ...
+    *outProducer = producer;
+    *outConsumer = consumer;
+}
+```
+
+>   TODO 看上面的代码，应该只是创建producer和consumer对象，但具体生产buffer和消费buffer应该在别的地方。
+
+### 小结
+
+1.   BufferQueue
+     可以认为BufferQueue是一个服务中心，IGraphicBufferProducer和IGraphicBufferConsumer
+     所需要使用的buffer必须要通过它来管理。
+2.   IGraphicBufferProducer
+     IGraphicBufferProducer就是“填充”buffer空间的人，通常情况下是应用程序。因为应用程序不断地刷新UI，从而将产生的显示数据源源不断地写到buffer中。当IGraphicBufferProducer需要使用一块buffer时，它首先会向BufferQueue发起dequeueBuffer申请，然后才能对指定的buffer进行操作。此时buffer就只属于IGraphicBufferProducer一个人的了，它可以对buffer进行任何必要的操作，而IGraphicBufferConsumer此刻绝不能操作这块buffer。当IGraphicBufferProducer认为一块buffer已经写入完成后，它进一步调用queueBuffer函数。从字面上看这个函数是“入列”的意思，形象地表达了buffer此时的操作，把buffer归还到BufferQueue的队列中。一旦queue成功后，buffer的owner也就随之改变为BufferQueue了。
+3.   IGraphicBufferConsumer
+     IGraphicBufferConsumer是与IGraphicBufferProducer相对应的，它的操作同样受到BufferQueue的管控。当一块buffer已经就绪后，IGraphicBufferConsumer就可以开始工作了。
+
+![12](assets/12.jpg)
 
 
-Page335
-第8章深入理解Surface系统
-317
-Client会创建一块共享內存，该内存由getControlBlockMemory函数返回。
-*/
-sp<BClient>bclient=
-newBClient(this，token，client->getControlBlockMemory());
-returnbclient;
-}
-上面代码中提到，Client会创建一块共享内存。熟悉Audio的读者或许会想到，这可能
-是Surface的ControlBlock对象!确实是的。CB对象在协调生产/消费步调时，起到了决定
-性的控制作用，所以非常重要，下面来看：
-[-->SurfaceFlinger。cpp]
-Client：：Client(ClientIDclientID，constsp<SurfaceFlinger>&flinger)
-：ctrlblk(0)，cid(clientID)，mPid(0)，mBitmap(0)，mFlinger(flinger)
-{
-constintpgsize
-1/下面这个操作会使cblksize为页的大小，目前是4096字节。
-getpagesize();
-((sizeof(SharedClient)+(pgsize-1))&~(pgsize-1));
-/MemoryHeapBase是我们的老朋友了，不熟悉的读者可以回顾Audio系统中所介绍的内容。
-constintcblksize=
-newMemoryHeapBase(cblksize，0，
-"SurfaceFlingerClientcontrol-block");
-mCb1kHeap
-%3D
-ctriblk
-=staticcast<SharedClient*>(mCblkHeap->getBase());
-if(ctrlblk){
-new(ctrlblk)SharedClient;//-**Re?placementnew。
-}
-原来，Surface的CB对象就是在共享内存中创建的这个SharedClient对象。先来认识一
-下这个SharedClient。
-(2)SharedClient
-SharedClient定义了一些成员变量，代码如下所示：
-classSharedClient
-{
-public：
-SharedClient();
--SharedClient();
-statustvalidate(sizettoken)const;
-uint32_tgetIdentity(size_ttoken)const;//etihClienttoken。
-private：
-Mutexlock;
-Conditioncv;//支持跨进程的同步对象。
-//NUM_LAYERSMAX31，SharedBufferStackZH4?
-SharedBufferStacksurfaces[NUM_LAYERS_MAX];
-};
-//sharedClient的构造函数，没什么新意，不如Audio的CB对象复杂。
-SharedClient：：SharedClient()
 
 
-Page336
-318
-深入理解Android：卷」
-lock(Mutex：：SHARED)，
-cv(Condition：：SHARED)
-{
-}
-SharedClient的定义似乎简单到极致了，不过不要高兴得过早，在这个SharedClient的
-定义中，没有发现和读写控制相关的变量，那怎么控制读写呢?
-答案就在看起来很别扭的SharedBufferStack数组中，它有31个元素。关于它的作用就
-不必卖关子了，答案是：
-一个Client最多支持31个显示层。每一个显示层的生产/消费步调都由会对应的
-SharedBufferStack来控制。而它内部就是用几个成员变量来控制读写位置的。
-认识一下SharedBufferStack的这几个控制变量，如下所示：
-[-->SharedBufferStack。h]
-class
-SharedBufferStack{
-//Buffer是按块使用的，每个Buffer都有自己的编号，其实就是数组中的索引号。
-volatileint32_thead;
-volatileint32tavailable;//ÈBufferA。
-volatileint32_tqueued;
-//FrontBuffert。
-1/脏Buffer的个数，有脏Buffer表示有新数据的Buffer。
-volatileint32_tinUse;//SFEEBuffert。
-volatilestatus_tstatus;//*
-一
-注意，上面定义的SharedBufferStack是一个通用的控制结构，而不仅是针对于只有
-两个Buffer的情况。根据前面介绍的PageFlipping知识可知，如果只有两个FB，那么，
-SharedBufferStack的控制就比较简单了：
-要么SF读1号Buffer，客户端写0号Buffer，要么SF读0号Buffer，客户端写1号Buffer。
-图8-13是展示了SharedClient的示意图：
-FrontBuffer
-BackBuffer
-Layer0
-SharedBufferStack0
-Client
-SharedBufferStack1
-Layerl
-客户端进程
-3D
-SharedBufferStack30
-SurfaceFlinger#
-跨进程共享SharedClient
-图8-13SharedClient的示意图
 
-
-Page337
-第8章深入理解Surface系统
-319
-从上图可知：
-ロSF的一个Client分配一个跨进程共享的SharedClient对象。这个对象有31个
-SharedBufferStack元素，每一个SharedBufferStack对应于一个显示层。
-ロー个显示层将创建两个Buffer，后续的PageFlipping就是基于这两个Buffer展开的。
-另外，每一个显示层中，其数据的生产和消费并不是直接使用SharedClient对象来进行
-具体控制的，而是基于SharedBufferServer和SharedBufferClient两个结构，由这两个结构来
-对该显示层使用的SharedBufferStack进行操作，这些内容在以后的分析中还会碰到。
-注意这里的显示层指的是Normal类型的显示层。
-来接着分析后面的_init函数。
-(3)_init函数分析
-先回顾一下之前的调用，代码如下所示：
-[-->SurfaceComposerClient。cpp]
-SurfaceComposerClient：：SurfaceComposerClient()
-{
-init(sm，sm->createConnection()};
-}
-来看这个_init函数，代码如下所示：
-[-->SurfaceComposerClient。cpp]
-voidSurfaceComposerClient：：_init(
-constsp<ISurfaceComposer>&sm，
-constsp<ISurfaceFlingerClient>&conn)
-{
-mPrebuiltLayerState=
-0;
-mTransactionOpen
-=0;
-mStatus
-NO_ERROR;
-%3!
-mControl
-=0;
-mClient=conn;//mClient*BClient
-mControlMemory
-mClient->getControlBlock();
-mSignalServer
-sm;//mSignalServer#*BpSurfaceFlinger。
-1/mControl就是那个创建于共享內存之中的SharedClient。
-mControl
-static_cast<SharedClient*>(mControlMemory->getBase());
-%3D
-}
-init函数的作用，就是初始化SurfaceComposerClient中的一些成员变量。最重要的是
-得到了三个成员：
-OmSignalServer，它其实是SurfaceFlinger在客户端的代理BpSurfaceFlinger，它的
-
-
-Page338
-320
-深入理解Android：卷
-主要作用是，在客户端更新完BackBuffer后(也就是刷新了界面后)，通知SF进行
-PageFlipping和输出等工作。
-OmControl，它是跨进程共享的SharedClient，是Surface系统的ControlBlock对象。
-OmClient，它是BClient在客户端的对应物。
-2。到底有多少种对象?
-这一节出现了好几种类型的对象，通过图8-14来看看它们：
-使用Binder的跨进程通信
-BpSurfaceComposer
-BnSurfaceComposer
-Thread
-WAF
-使用Binder的跨进程通信
-mSignalServer
-的
-SurfaceFlinger
-BpSurfaceFlingerClient
-BnSurfaceFlingerClient
-SurfaceComposerClientmClient
-mFlinger
-mClients
-BClient
-Client
-mControl
-SharedClient
-使用共享内存選函个音來
-图8-14类之间关系的展示图
-从上图中可以看出：
-OSurfaceFlinger是从Thread派生的，所以它会有一个单独运行的工作线程。
-口BClient和SF之间采用了Proxy模式，BClient支持Binder通信，它接收客户端的请
-求，并派发给SF执行。
-ロSharedClient构建于一块共享内存中，SurfaceComposerClient和Client对象均持有这
-块共享内存。
-在精筒流程中，关于SurfaceComposerClient就分析到这里，下面分析第二个步骤中的
-SurfaceControl。
-8。4。3SurfaceControl分析
-1。SurfaceControl的来历
-根据精简的流程可知，这一节要分析的是SurfaceControl对象。先回顾一下这个对象的
-创建过程，代码如下所示：
-
-
-Page339
-第8章深入理解Surface系统
-321
-[-->android_view_Surface。cpp]
-staticvoidSurface_init(JNIEnv*env，jobjectclazz，jobjectsession，
-jintpid，jstringjname，jintdpy，jintw，jinth，jintformat，jintflags)
-{
-SurfaceComposerClient*client=
-(SurfaceComposerClient*)env->GetIntField(session，sso。client);
-1/注意这个变量，类型是SurfaceControl，名字却叫surface，稍不留神就出错了。
-sp<SurfaceControl>surface;
-if(jname
-//AClientcreateSurface*，-SurfaceControl†。
-surface=client->createSurface(pid，dpy，w，h，format，flags);
-}
-==NULL){
-1/将这个SurfaceControl对象设置到Java层的对象中保存。
-setSurfaceControl(env，clazz，surface);
-}
-通过上面的代码可知，SurfaceControl对象由createSurface得来，下面看看这个函数。
-注意此时，读者或许会被代码中随意起的变量名搞糊涂，而我的处理方法是碰到了容易混
-清的地方，尽量以对象类型来表示这个对象。
-(1)createSurface的请求端分析
-在createSurface内部会使用Binder通信将请求发给SF，所以它分为请求和响应两端，
-先看请求端，代码如下所示：
-[-->SurfaceComposerClient。cpp]
-sp<SurfaceControl>SurfaceComposerClient：：createSurface(
-ntpid，
-DisplayIDdisplay，//DisplayIDAH2*?
-uint32_tw，
-uint32_th，
-PixelFormatformat，
-uint32_tflags)
-{
-String8name;
-constsizetSIZE=128;
-charbuffer[SIZE);
-snprintf(buffer，SIZE，"<pid_%d>"，getpid());
-name。append(buffer);
-1/调用另外一个createSurface，多一个name参数。
-returnSurfaceComposerClient：：createSurface(pid，name，display，
-w，h，format，flags);
-}
-
-
-Page340
-322
-深入理解Android：卷!
-在分析另外一个createSurface之前，应先介绍一下DisplayID的含义：
-typedefint32_t
-DisplayID;
-DisplayID是一个int整型，它的意义是屏幕编号，例如双屏手机就有内屏和外屏两块屏
-幕。由于目前Android的Surface系统只支持一块屏幕，所以这个变量的取值都是0。
-再分析另外一个createSurface函数，它的代码如下所示：
-[-->SurfaceComposerClient。cpp]
-sp<SurfaceControl>SurfaceComposerClient：：createSurface(
-intpid，constString8&name，DisplayIDdisplay，uint32_tw，
-uint32_th，PixelFormatformat，uint32_tflags)
-{
-sp<SurfaceControl>result;
-if(mStatus==NOERROR){
-ISurfaceFlingerClient：：surface_data_tdata;
-//BpSurfaceFlingerClientcreateSurface*
-sp<ISurface>surface
-=mClient->createSurface(&data，pid，name，
-display，w，h，format，flags);
-if(surface!=0){
-if(uint32t(data。token)
-1/以返回的ISurface对象创建一个SurfaceContro1对象。
-<NUMLAYERSMAX){
-result=newSurfaceControl(this，surface，data，w，h，
-format，flags);
-}
-}
-}
-returnresult;//igažSurfaceControl。
-}
-请求端的处理比较简单：
-口调用跨进程的createSurface函数，得到一个ISurface对象，根据第6章的Binder相
-关知识可知，这个对象的真实类型是BpSurface。不过以后统称为ISurface。
-ロ以这个ISurface对象为参数，构造一个SurfaceControl对象。
-createSurface函数的响应端在SurfaceFlinger进程中，下面去看这个函数。
-注意在Surface系统定义了很多类型，咱们也中途休息一下，不妨来看看和字符串
-“Surface”有关的类有多少个，权当小小的娱乐：
-NativeESurface，ISurface，SurfaceControl，SurfaceComposerClient。
-JavaASurface，SurfaceSession。
-上面还只列出了一部分，后面还有呢!*&@&*%Y*
-(2)createSurface的响应端分析
-前面讲过，可把BClient看作是SF的Proxy，它会把来自客户端的请求派发给SF处理，
-
-
-Page341
-第8章深入理解Surface系统
-323
-通过代码来看看是不是这样的。如下所示：
-[-->SurfaceFlinger。cpp]
-sp<ISurface>BClient：：createSurface(
-ISurfaceFlingerClient：：surface_data_t*params，intpid，
-constString8&name，
-DisplayIDdisplay，uint32_tw，uint32_th，PixelFormatformat，
-uint32_tflags)
-{
-1/果然是交给SF处理，以后我们将跳过BC1ient这个代理。
-returnmFlinger->createSurface(MId，pid，name，params，display，w，h，
-format，flags);
-}
-来看createSurface函数，它的目的就是创建一个ISurface对象，不过这中间的玄机还挺
-多，代码如下所示：
-[-->SurfaceFlinger。cpp]
-sp<ISurface>SurfaceFlinger：：createSurface(ClientIDclientId，intpid，
-constString8&name，ISurfaceFlingerClient：：surface_data_t*params，
-DisplayIDd，uint32_tw，uint32_th，PixelFormatformat，
-uint32_tflags)
-{
-sp<LayerBaseClient>layer;//LayerBaseClientALayer****。
-1/这里又冒出一个LayerBaseclient的内部类，它也叫Surface，是不是有点头晕了?
-sp<LayerBaseClient：：Surface>surfaceHandle;
-Mutex：：Autolock_1(mStateLock);
-//REclientIdR#createConnectionAAClient#。
-sp<Client>client=mClientsMap。valueFor(clientId);
-1/注意这个id，它的值表示Client创建的是第几个显示层，根据图8-14可以看出，这个id
-1/同时也表示将使用SharedBufferstatck数组的第id个元素。
-int32_tid=client->generateId(pid);
-//一个C1ient不能创建多于NUM_LAYERS_MAX个的Layer。
-if(uint32_t(id)
->=NUM_LAYERSMAX}{
->returnsurfaceHandle;
->}
->7/根据flags参数来创建不同类型的显示层，我们在8。4。1节介绍过相关知识。
->switch(flags&eFXSurfaceMask){
->caseeFXSurfaceNormal：
->if(UNLIKELY(flags&ePushBuffers)){
->1/创建PushBuffer奏型的显示层，我们将在本章的拓展思考部分分析它。
->layer
->createPushBuffersSurfaceLocked(client，d，id，
->w，h，flags);
->}else{
-
-
-Page342
-324
-深入理解Android：卷1
-1/①创建Normal类型的显示层，我们待会儿分析这个。
-layer=createNormalSurfaceLocked(client，d，id，
-w，h，flags，format);
-}
-break;
-caseeFXSurfaceBlur：
-1/创建Blur类型的显示层。
-layer
-=createBlurSurfaceLocked(client，d，id，w，h，flags);
-break;
-caseeFXSurfaceDim：
-1/创建Dim类型的显示层。
-layer
-createDimSurfaceLocked(client，d，id，w，h，flags);
-%3D
-break;
-}
-if(layer!=0){
-layer->setName(name);
-setTransactionFlags(eTransactionNeeded);
-/从显示层对象中取出一个ISurface对象赋值给SurfaceHandle。
-surfaceHandle=
-layer->getSurface();
-if(surfaceHandle!=0){
-params->token=surfaceHandle->getToken();
-params->identity
-surfaceHandle->getIdentity();
-%3D
-params->width=w;
-params->height
-=h;
-params->format
-format;
-%3D
-}
-}
-returnsurfaceHandle;//ISurface#hBnit
-}
-上面代码中的函数倒是很简单，只是代码里面冒出来的几个新类型和它们的名字让人有
-点头晕。先用文字总结一下：
-口LayerBaseClient：前面提到的显示层在代码中的对应物就是这个LayerBaseClient，不
-过这是一个大家族，不同类型的显示层将创建不同类型的LayerBaseClient。
-ロLayerBaseClient中有一个内部类，名字叫Surface，这是一个支持特Binder通信的类，
-它派生于ISurface。
-关于Layer的故事，后面会有单独的章节来介绍。这里先继续分析createNomalSurfaceLocked
-函数。它的代码如下所示：
-[-->SurfaceFlinger。cpp]
-sp<LayerBaseClient>SurfaceFlinger：：createNormalSurfaceLocked(
-constsp<Client>&client，DisplayIDdisplay，
-int32_tid，uint32_tw，uint32_th，uint32_tflags，
-PixelFormat&format)
-{
-
-
-Page343
-第8章深入理解Surface系统
-325
-switch(format){//一些图像方面的参数设置，可以不去管它。
-casePIXELFORMATTRANSPARENT：
-casePIXELFORMATTRANSLUCENT：
-format=PIXELFORMATRGBA8888;
-break;
-casePIXEL_FORMATOPAQUE：
-format
-PIXEL_FORMAT_RGB_565;
-%3D
-break;
-}
-11①创建一个Layer美型的对象。
-sp<Layer>layer
-newLayer(this，display，client，id);
-//DitIBuffer。
-statusterr
-layer->setBuffers(w，h，format，flags);
-%3D
-if(LIKELY(err==NOERROR)){
-1/初始化这个新layer的一些状态。
-layer->initStates(w，h，flags);
-1/O还记得在图8-10中提到的2轴吗?下面这个函数把这个layer加入到Z轴大军中。
-addLayer_l(layer);
-}
-returnlayer;
-}
-createNormalSurfaceLocked函数有三个关键点，它们是：
-口构造一个Layer对象。
-口调用Layer对象的setBuffers函数。
-口调用SF的addLayer_l函数。
-暂且记住这三个关键点，后面有单独的章节分析它们。先继续分析SurfaceControl的流程。
-(3)创建SurfaceControl对象
-当跨进程的createSurface调用返回一个ISurface对象时，将通过下面的代码创建一个
-SurfaceControl：
-result=
-newSurfaceControl(this，surface，data，w，h，format，flags);
-下面来看这个SurfaceControl对象为何物。它的代码如下所示：
-[-->SurfaceControl。cpp]
-SurfaceControl：：SurfaceControl(
-constsp<SurfaceComposerClient>&client，
-constsp<ISurface>&surface，
-constISurfaceFlingerClient：：surface_data_t&data，
-uint32_tw，uint32_th，PixelFormatformat，uint32_tflags)
-//mclient*SurfaceComposerClient，FomSurfacecreateSurfaceA
-1/返回的ISurface对象。
-：mClient(client)，mSurface(surface)，
-
-
-Page344
-326
-深入理解Android：卷!
-mToken(data。token)，mIdentity(data。identity)，
-mWidth(data。width)，mHeight(data。height)，mFormat(data。format)，
-mFlags(flags)
-{
-SurfaceControl类可以看作是一个wrapper类：
-它封装了一些函数，通过这些函数可以方便地调用mClient或ISurface提供的函数。
-在分析SurfaceControl的过程中，还遗留了和Layer相关的部分，下面就来解决它们。
-2。Layer和它的家族
-我们在createSurface中创建的是Normal的Layer，下面先看这个Layer的构造函数。
-(1)Layer的构造
-Layer是从LayerBaseClient派生的，其代码如下所示：
-(-->Layer。cpp)
-Layer：：Layer(SurfaceFlinger*flinger，DisplayIDdisplay，
-constsp<Client>&c，int32_ti}//i±AikiSharedBufferStack#ta4Ý*3)。
-LayerBaseClient(flinger，display，c，i)，//t*it。
-msecure(false)，
-：
-MNOEGLImageForSwBuffers(false)，
-mNeedsBlending(true)，
-mNeedsDithering(false)
-{
-//getFrontBuffer$K*FrontBuffer#ài。
-mFrontBufferIndex=lcblk->getFrontBuffer();
-}
-再来看基类LayerBaseClient的构造函数，代码如下所示：
-[-->LayerBaseClient。cpp]
-LayerBaseclient：：LayerBaseClient(SurfaceFlinger*flinger，DisplayIDdisplay，
-constsp<Client>&client，int32_ti)
-：LayerBase(flinger，display)，lcblk(NULL)，client(client)，mIndex(i)，
-mIdentity(uint32_t(android_atomic_inc(&sIdentity)))
-创建一个SharedBufferserver对象，注意它使用了Sharedclient对象，
-并且传入了表示SharedBufferstack教组索引的i和一个常量NUM_BUFFERS。
-*/
-1cblk=
-newSharedBufferServer(
-client->ctrlblk，i，NUM_BUFFERS，//**2，ELayer。h+L
-mIdentity);
-}
-
-
-Page345
-第8章深入理解Surface系统
-327
-SharedBufferServer是什么?它和SharedClient有什么关系?
-其实，之前在介绍SharedClient时曾提过与此相关的内容，这里再来认识一下，先看图
-8-15：
-Laver
-SharedBufferStacko
-Layer
-SharedBufferClient
-SharedBufferServer
-SharedBufferStack1
-客户端进程
-SF中的Client对象
-SharedBufferStack30
-跨进程共享SharedClient
-图8-15ShardBufferServer的示意图
-根据上图并结合前面的介绍，可以得出以下结论：
-口在SF进程中，Client的一个Layer将使用SharedBufferStack数组中的一个成员，并
-通过SharedBufferServer结构来控制这个成员，我们知道SF是消费者，所以可由
-SharedBufferServer来控制数据的读取。
-口与之相对应的是，客户端的进程也会有一个对象来使用这个SharedBufferStatck，
-可它是通过另外一个叫SharedBufferClient的结构来控制的。客户端为SF提供
-数据，所以可由SharedBufferClient控制数据的写入。在后文的分析中还会碰到
-SharedBufferClient。
-注意在本章的拓展思考部分，会有单独小节来分析生产/消费过程中的读写控制。
-通过前面的代码可知，Layer对象被new出来后，传给了一个sp对象，读者还记得
-sp中的onFirstRef函数吗?Layer家族在这个函数中还有一些处理。但这个函数是由基类
-LayerBaseClient实现的，一起去看看。
-[-->LayerBase。cpp]
-voidLayerBaseClient：：onFirstRef()
-{
-sp<Client>client(this->client。promote());
-if(client!=0){
-//把自己加入到client对象的mLayers数组中，这部分内容比校筒单，读者可以自行研究。
-client->bindLayer(this，mIndex);
-}
-}
-Layer创建完毕，下面来看第二个重要的函数setBuffers。
-(2)setBuffers分析
-setBuffers、Layer类以及Layer的基类都有实现。由于创建的是Layer类型的对
-
-
-Page346
-328
-深入理解Android：卷」
-象，所以请读者直接到Layer。cpp中寻找setBuffers函数。这个函数的目的就是创建用于
-PageFlipping的FrontBuffer和BackBuffer。一起来看，代码如下所示：
-[-->Layer。cpp]
-status_tLayer：：setBuffers(uint32_tw，uint32_th，
-PixelFormatformat，uint32_tflags)
-{
-PixelFormatInfoinfo;
-status_terr=getPixelFormatInfo(format，&info);
-if(err)
-returnerr;
-7/DisplayHardware是代表显示设备的HAL对象，0代表第一块屏幕的显示设备。
-1/这里将从HAL中取出一些和显示相关的信息。
-constDisplayHardware&hw(graphicPlane(0)。displayHardware());
-uint32_tconstmaxSurfaceDims
-min(
-hw。getMaxTextureSize()，hw。getMaxViewportDims());
-PixelFormatInfodisplayInfo;
-getPixelFormatInfo(hw。getFormat()，&displayInfo);
-constuint32_thwFlags
-hw。getFlags();
-创建Buffer，这里将创建两个GraphicBuffer。这两个GraphicBuffer就是我们前面
-所说的FrontBuffer和BackBuffer。
-*/
-for(size_ti=0;i<NUM_BUFFERS;i++){
-1/注意，这里调用的是GraphicBuffer的无参构造函数，mBuffers是一个二元数组。
-mBuffers[i]
-=newGraphicBuffer();
-}
-1/又冒出来一个SurfaceLayer类型，#Y*……&*!@
-mSurface=
-newSurfaceLayer(mFlinger，clientIndex()，this);
-returnNO_ERROR;
-}
-setBuffers函数的工作内容比较简单，就是：
-口创建一个GraphicBuffer缓冲数组，元素个数为2，即FrontBuffer和BackBuffer。
-创建一个SurfaceLayer，关于它的身世我们后面再介绍。
-注意GraphicBuffer是Android提供的显示内存管理的类，关于它的故事将在8。4。7节中介
-绍。我们暂把它当作普通的Buffer即可。
-setBuffers中出现的SurfaceLayer类是什么?读者可能对此感觉有些晕乎。待把最后一
-个关键函数addLayer_1介绍完，或许就不太晕了。
-(3)addLayer_1分析
-addLayer_1把这个新创建的layer加入到自己的Z轴大军，下面来看：
-
-
-Page347
-第8章深入理解Surface系统
-329
-[-->SurfaceFlinger。cpp]
-status_tSurfaceFlinger：：addLayer_l(constsp<LayerBase>&layer)
-{
-/*
-mCurrentstate是SurfaceFlinger定义的一个结构，它有一个成员变量叫
-layersSortedByz，其实就是一个排序数组。下面这个add函数将把这个断的1ayer按照
-它在Z轴的位置加入到排序数组中。mCurrentstate保存了所有的显示层。
-*/
-ssize_ti=mCurrentState。layersSortedByZ。add(
-layer，&LayerBase：：compareCurrentStatez);
-sp<LayerBaseClient>lbc=
-LayerBase：：dynamicCast<LayerBaseclient*>(layer。get());
-if(lbc!=0){
-mLayerMap。add(lbc->serverIndex(0，lbc);
-returnNOERROR;
-}
-对Layer的三个关键函数都已分析过了，下面正式介绍Layer家族。
-(4)Layer家族介绍
-前面的内容确让人头晕眼花，现在应该帮大家恢复清晰的头脑。先来“一剂猛药”，见
-图8-16：
-LayerBase
-+draw0
-+onDraw)
-LayerDim
-LayerBaseClient
-ISurface
-Surface
-+requestBuffer0
-+postBuffer0
-+createOverlay0
-LayerBlur
-LayerBuffer
-Layer
-Surfacelayer
-SurfacelayerBuffer
-图8-16Layer家族
-
-
-Page348
-330*深入理解Android：卷1
-通过上图可知：
-LayerBaseClientALayerBase**4。
-OLayerBaseClientahaa*，HLayer，LayerBuffer，LayerDimfLayerBlur。
-口LayerBaseClient定义了一个内部类Surface，这个Surface从ISurface类派生，它支持
-Binder通信。
-口针对不同的类型，Layer和LayerBuffer分别有一个内部类SurfaceLayer和
-SurfaceLayerBuffer，ÈŢLayerBaseClientjSurface*。FLlNormal*
-显示层来说，getSurface返回的ISurface对象的真正类型是SurfaceLayer。
-OLayerDim和LayerBlur类没有定义自己的内部类，所以对于这两种类型的显示层来
-说，它们直接使用了LayerBaseClient的Surface。
-口ISurface接口提供了非常简单的函数，如requestBuffer、postBuffer等。
-这里大量使用了内部类。我们知道，内部类最终都会把请求派发给外部类对象来
-处理，既然如此，在以后的分析中，如果没有特殊情况，就会直接跳到外部类的处理
-函数中。
-注意强烈建议Google把Surface相关的代码好好整理一下，至少让类型名取得更直观些，
-现在这样确实有点让人头晕。好了，咱们来小小娱乐一下。之前介绍的和“Surface”有关的
-名字为：
-NativeASurface，ISurface，SurfaceControl，SurfaceComposerClient。
-JavaSurface，SurfaceSession。
-在介绍完Layer家族后，看看与它相关的名字又多了几个，它们是：
-LayerBaseClient：：Surface，Layer：：SurfaceLayer，LayerBuffer：：SurfaceLayerBuffer。
-3。关于SurfaceControl的总结
-SurfaceControl创建后得到了什么呢?可用图8-17来表示：
-SurfaceComposerClient)
-Layer
-SurfaceControl
-mSurface，
-mOwner
-mClient
-SurfaceLayer
-mSurface
-图8-17SurfaceControl创建后的结果图
-通过上图可以知道：
-mClientAA*6SurfaceComposerClient，
-
-
-Page349
-第8章深入理解Surface系统
-331
-OmSurfaceJBinderaSurfaceLayer，
-ロSurfaceLayer有一个变量mOwner指向它的外部类Layer，而Layer有一个成员变量
-mSurfaceSurfaceLayer。iš↑SurfaceLayerfgetSurfaceED。
-EmOwnerSurfaceLayertSurface(LayBaseClienttj)ŽL。
-接下来就是writeToParcel分析和NativeSurface对象的创建了。注意，这个Native的
-Surface可不是LayBaseClient的内部类Surface。
-8。4。4writeToParcel和Surface对象的创建
-从乾坤大挪移的知识可知，前面创建的所有对象都在WindowManagerService所在的进
-程system_server中，而writeToParcel则需要把一些信息打包到Parcel后，发送到Activity
-所在的进程中。到底哪些内容需要回传给Activity所在的进程呢?
-注意后文将Activity所在的进程筒称为Activity端。
 1。writeToParcel
 writeToParcel比较简单，就是把一些信息写到Parcel中去。代码如下所示：
 [-->SurfaceControl。cpp]
