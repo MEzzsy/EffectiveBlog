@@ -1402,588 +1402,460 @@ void BufferQueue::createBufferQueue(sp<IGraphicBufferProducer>* outProducer,
 
 ![12](assets/12.jpg)
 
+## lockCanvas
 
+在ViewRootImpl的performTraversals的draw方法里，最终会调用Surface的lockCanvas和unlockCanvasAndPost。
 
-
-
-1。writeToParcel
-writeToParcel比较简单，就是把一些信息写到Parcel中去。代码如下所示：
-[-->SurfaceControl。cpp]
-status_tSurfaceControl：：writeSurfaceToParcel(
-constsp<SurfaceControl>&control，Parcel*parcel)
-{
-uint32_tflags=0;
-uint32_tformat=0;
-SurfaceIDtoken=-1;
-uint32_tidentity
-0;
-%3D
-uint32_twidth
-uint32_theight
-0;
-%3D
-0;
-sp<SurfaceComposerClient>client;
-sp<ISurface>sur;
-if(SurfaceControl：：isValid(control)){
-=control->mToken;
-control->mIdentity;
-token
-identity
-%3D
-client
-control->mClient;
-=control->mSurface;
-=control->mWidth;
-sur
-width
-height
-control->mHeight;
-=control->mFormat;
-=control->mFlags;
-format
-flags
+```java
+public Canvas lockCanvas(Rect inOutDirty) {
+    synchronized (mLock) {
+        // ...
+        mLockedObject = nativeLockCanvas(mNativeObject, mCanvas, inOutDirty);
+        return mCanvas;
+    }
 }
-1/surfaceComposerClient的信息需要传递到Activity端，这样客户端那边会构造一个
-//SurfaceComposerClient。
-parcel->writeStrongBinder(client!=0
-?client->connection()
-：NULL);
+```
 
-
-Page350
-332
-深入理解Android：卷」
-//把ISurface对象信息也写到Parcel中，这样Activity端那边也会构造一个ISurface对象。
-parcel->writeStrongBinder(sur!=0?sur->asBinder()：NULL);
-parcel->writeInt32(token);
-parcel->writeInt32(identity);
-parcel->writeInt32(width);
-parcel->writeInt32(height);
-parcel->writeInt32(format);
-parcel->writeInt32(flags);
-returnNOERROR;
+```cpp
+static jlong nativeLockCanvas(JNIEnv* env, jclass clazz, jlong nativeObject, jobject canvasObj, jobject dirtyRectObj) {
+    // 从Java中的Surface对象中，取出Native的Surface对象。
+    sp<Surface> surface(reinterpret_cast<Surface *>(nativeObject));
+	// ...
+    Rect dirtyRect(Rect::EMPTY_RECT);
+    Rect* dirtyRectPtr = NULL;
+    //...
+    ANativeWindow_Buffer buffer;
+    status_t err = surface->lock(&buffer, dirtyRectPtr);
+    // ...
+    graphics::Canvas canvas(env, canvasObj);
+    canvas.setBuffer(&buffer, static_cast<int32_t>(surface->getBuffersDataSpace()));
+	// ...
+    sp<Surface> lockedSurface(surface);
+    lockedSurface->incStrong(&sRefBaseOwner);
+    return (jlong) lockedSurface.get();
 }
-Parce包发到Activity端后，readFromParcel将根据这个Parcel包构造一个Native的
-Surface对象，一起来看相关代码。
-2。分析Native的Surface创建过程
-[-->android_view_Surface。cpp]
-staticvoidSurface_re
-FromParcele
-JNIEnv*env，jobjectclazz，jobjectargParcel)
-{
-Parcel*parcel
-(Parcel*)env->GetIntField(argParcel，no。native_parcel);
-constsp<Surface>&control(getSurface(env，clazz));
-1/根据服务端的parcel信惠来构造客户端的Surface。
-sp<Surface>rhs=newSurface(*parcel);
-if(!Surface：：isSameSurface(control，rhs)){
-setSurface(env，clazz，rhs);
+```
+
+UI在绘制前都需要通过lockCanvas得到一块存储空间。这个过程中最终会调用Surface的lock函数。
+
+```cpp
+status_t err = surface->lock(&buffer, dirtyRectPtr);
+```
+
+frameworks/native/libs/gui/Surface.cpp
+
+```cpp
+status_t Surface::lock(ANativeWindow_Buffer* outBuffer, ARect* inOutDirtyBounds) {
+    // ...
+    ANativeWindowBuffer* out;
+    // 从2个元素的缓冲队列dequeueBuffer取出一个空闲缓冲
+    status_t err = dequeueBuffer(&out, &fenceFd);
+    
+    if (err == NO_ERROR) {
+        // 注意这个backBuffer
+        sp<GraphicBuffer> backBuffer(GraphicBuffer::getSelf(out));
+    	const Rect bounds(backBuffer->width, backBuffer->height);
+        // 。。。
+
+    	const sp<GraphicBuffer>& frontBuffer(mPostedBuffer);
+    	const bool canCopyBack = ...;
+        if (canCopyBack) {
+            // copy the area that is invalid and not repainted this round
+        	const Region copyback(mDirtyRegion.subtract(newDirtyRegion));
+            if (!copyback.isEmpty()) {
+                // 把frontBuffer中的数据拷贝到BackBuffer中
+                copyBlt(backBuffer, frontBuffer, copyback, &fenceFd);
+            }
+        } else {
+            // if we can't copy-back anything, modify the user's dirty
+            // region to make sure they redraw the whole buffer
+            newDirtyRegion.set(bounds);
+            mDirtyRegion.clear();
+            Mutex::Autolock lock(mMutex);
+            for (size_t i=0 ; i<NUM_BUFFER_SLOTS ; i++) {
+                mSlots[i].dirtyRegion.clear();
+            }
+        }
+		// ...
+        void* vaddr;
+        // 内存地址被赋值给了vaddr，后续的作画将在这块内存上展开。
+        status_t res = backBuffer->lockAsync(
+                GRALLOC_USAGE_SW_READ_OFTEN | GRALLOC_USAGE_SW_WRITE_OFTEN,
+        newDirtyRegion.bounds(), &vaddr, fenceFd);
+
+        // ...
+        if (res != 0) {
+            err = INVALID_OPERATION;
+        } else {
+            mLockedBuffer = backBuffer;
+            outBuffer->width  = backBuffer->width;
+            outBuffer->height = backBuffer->height;
+            outBuffer->stride = backBuffer->stride;
+            outBuffer->format = backBuffer->format;
+            outBuffer->bits   = vaddr;// 最重要的是这个内存地址
+        }
+    }
+    return err;
 }
-}
-Native的Surface是怎么利用这个Parcel包的呢?代码如下所示：
-[-->Surface。cpp]
-Surface：：Surface(constParcel&parcel)
-：mBufferMapper(GraphicBufferMapper：：get())，
-mSharedBufferClient(NULL)
-{
-Surface定义了一个mBuffers变量，它是一个sp<GraphicBuffer>的二元数组，也就是说Surface
-也存在两个GraphicBuffer，可之前在创建Layer的时候也有两个GraphicBuffer，难道一共有四个
-GraphicBuffer?这个问題后面再解答。
-*/
-sp<IBinder>clientBinder=parcel。readStrongBinder();
-1/得到ISurface的Bp端BpSurface。
-interface_cast<ISurface>(parcel。readStrongBinder());
-=parcel。readInt32();
-=parcel。readInt32();
-mSurface
-%3D
-mToken
-mIdentity
+```
 
-
-Page351
-第8章深入理解Surface系统
-333
-parcel。readInt32();
-parcel。readInt32();
-parcel。readInt32();
-mWidth
-MHeight
-mFormat
-%3D
-mFlags
-parcel。readInt32();
-if(clientBinder!=NULL){
-/*
-根据ISurfaceFlingerclient对象构造一个SurfaceComposerclient对象，注意我们
-現在位于Activity端，这里还没有创建SurfaceComposerClient对象，所以需要创建一个。
-*/
-mClient=
-SurfaceComposerClient：：clientForConnection(clientBinder);
-//SharedBufferR**6-RShardBufferClient*t*。
-mSharedBufferClient=newSharedBufferClient(
-mClient->mControl，mToken，2，mIdentity);
-一
-init();//做一些初始化工作。
-}
-在Surface创建完后，得到什么了呢?看图8-18就可知道：
-Surface(Native)
-Layer
-Binder通信
-BpSurface
-SurfaceLayer
-跨进程共享SharedClient
-SharedBufferClient
-SharedBufferServer
-通过SharedBufferStack控制：
-读写位置
-GraphicBuffer0GraphicBufferl
-图8-18NativeSurface的示意图
-上图很清晰地说明：
-OShardBuffer家族依托共享内存结构SharedClient与它共同组成了Surface系统生产/
-消费协调的中枢控制机构，它在SF端的代表是SharedBufferServer，在Activity端的
-代表是SharedBufferClient。
-ONative的Surface将和SF中的SurfaceLayer建立Binder联系。
-另外，图中还特意画出了承载数据的GraphicBuffer数组，在代码的注释中也针对
-GraphicBuffer提出了一个问题：Surface中有两个GraphicBuffer，Layer中也有两个，一共就
-有四个GraphicBuffer了，可是为什么这里只画出了两个呢?
-答案是，咱们不是有共享内存吗?这四个GraphicBuffer其实操纵的是同一段共享内存，
-
-
-Page352
-334
-深入理解Android：卷」
-为了简单，所以就只画了两个GraphicBuffer。在8。4。7节再介绍GraphicBuffer的故事。
-下面，来看中枢控制机构的SharedBuffer家族。
-3。SharedBuffer家族介绍
-(1)SharedBuffer家族成员
-SharedBuffer是一个家族名称，它包括多少成员呢?来看SharedBuffer的家族图谱，如
-图8-19所示：
-SharedBufferBase
-Kト
-UpdateBase
-ConditionBase
-SharedBufferServer
-SharedBufferClient
-+dequeue0
-+undoDequeue)
-Hock0
-+queue0
-+retireAndLock0
-+unlock0
-+setStatus0
-+reallocate0
-UnlockUpdate
-QueueUpdate
-UndoDequeueUpdate
-RetireUpdate
-DequeueCondition
-StatusUpdate
-LockCondition
-ReallocateCondition
-限音永的sda
-图8-19SharedBuffer家族介绍
-从上图可以知道：
-ロXXXCondition、XXXUpdate等都是内部类，它们主要是用来更新读写位置的。不过
-这些操作为什么要通过类来封装呢?因为SharedBuffer的很多操作都使用了C++中
-的FunctionObject(函数对象)，而这些内部类的实例就是函数对象。函数对象是什
-么?它怎么使用?对此，在以后的分析中会介绍。
-(2)SharedBuffer*ASharedClient**
-HTT，SharedBufferServerfuSharedBufferClientSharedBufferStack
-数组中的一个，下面通过SharedBufferBase的构造函数，来看是否如此。代码如下所示：
-
-
-Page353
-第8章深入理解Surface系统
-335
-[-->SharedBufferStack。cpp]
-SharedBufferBase：：SharedBufferBase(SharedClient*sharedClient，
-intsurface，intnum，int32_tidentity)
-：mSharedClient(sharedClient)，
-mSharedStack(sharedCclient->surfaces+surface)，
-mNumBuffers(num)，//根据前面PageFlipping的知识可知，num值为2
-mIdentity(identity)
-{
-/*
-上面的賦值语句中最重要的是第二句：
-mSharedStack(sharedClient->surfaces+surface)
-iL#ż↑SharedBufferXXXfoSharedClient+SharedBufferStack#a
-的第surface个元素建立了关系。
-4。关于NativeSurface的总结
-至此，Activity端Java的Surface对象，终于和一个NativeSurface对象挂上了钩，并且
-这个NativeSurface还准备好了绘图所需的一切，其中包括：
-口两个GraphicBuffer，这就是PageFlipping所需的FrontBuffer和BackBuffer。
-ロSharedBufferServer和SharedBufferClient结构，这两个结构将用于生产/消费的过程
-控制。
-ロー个ISurface对象，这个对象连接着SF中的一个SurfaceLayer对象。
-ロー个SurfaceComposerClient对象，这个对象连接着SF中的一个BClient对象。
-资源都已经准备好了，可以开始绘制UI了。下面，分析两个关键的函数lockCanvas和
-unlockCanvasAndPost。
-8。4。5lockCanvas0unlockCanvasAndPost
-这一节，分析精简流程中的最后两个函数lockCanvas和unlockCanvasAndPost。
-1。lockCanvas4
-根据前文的分析可知，UI在绘制前都需要通过lockCanvas得到一块存储空间，也就是
-所说的BackBuffer。这个过程中最终会调用Surface的lock函数。其代码如下所示：
-[-->Surface。cpp]
-status_tSurface：：lock(SurfaceInfo*other，Region*dirtyIn，boolblocking)
-{
-1/传入的参数中，other用来接收一些返回信息，dirtyIn表示需要重绘的区域。
-if(mApiLock。tryLock(()
-!=NO_BRROR){//多线程的情况下要销住。
-returnWOULDBLOCK;
-
-
-Page354
-336
-深入理解Android：卷!
-}
-1/设置usage标志，这个标志在GraphicBuffer分配缓冲时有指导作用。
-setUsage(GRALLOC_USAGE_SW_READ_OFTEN|GRALLOC_USAGE_SW_WRITE_OFTEN);
-//R2-^GraphicBuffer，%$backBuffer。
-sp<GraphicBuffer>backBuffer;
-1/①还记得我们说的2个元素的緩冲队列吗?下面的dequeueBuffer将取出一个空闲缓冲。
-statusterr
-dequeueBuffer(&backBuffer);
-if(err==NO_ERROR){
-//0锁住这块buffer。
-=lockBuffer(backBuffer。get());
-err
-if(err==NO_ERROR){
-constRectbounds(backBuffer->width，backBuffer->height);
-Regionscratch(bounds);
-Region&newDirtyRegion(dirtyIn?*dirtyIn：scratch);
-1/mPostedBuffer是上一次绘画时使用的Buffer，也就是現在的frontBuffer。
-constsp<GraphicBuffer>&frontBuffer(mPostedBuffer);
-if(frontBuffer!=0&&
-backBuffer->width
-==frontBuffer->width&&
-backBuffer->height==
-frontBuffer->height&&
-!(mFlags&ISurfaceComposer：：eDestroyBackbuffer))
-{
-constRegioncopyback(moldDirtyRegion。subtract(newDirtyRegion));
-if(!copyback。isEmpty()&&frontBuffer!=0){
-1O把frontBuffer中的數据烤贝到BackBuffer中，这是为什么?
-copyBlt(backBuffer，frontBuffer，copyback);
-}
-}
-mDirtyRegion
-moldDirtyRegion
-newDirtyRegion;
-newDirtyRegion;
-void*vaddr;
-1/调用GraphicBuffer的1ock得到一块内存，内存地址被赋值給了vaddr，
-1/后续的作画将在这块内存上展开。
-statustres
-backBuffer->lock(
-GRALLOC_USAGE_SW_READ_OFTEN|GRALLOC_USAGE_Sw_WRITE_OFTEN，
-newDirtyRegion。bounds()，&vaddr);
-mLockedBuffer=backBuffer;
-//other用来接收一些信息
-other->w
-backBuffer->width;
-1/寬度信息
-backBuffer->height;
-=backBuffer->stride;
-=backBuffer->usage;
-other->h
-%3D
-other->s
-other->usage
-other->format=backBuffer->format;
-other->bits
-=vaddr;//最重要的是这个内存地址
-
-
-Page355
-第8章深入理解Surface系统
-337
-}
-}
-mApiLock。unlock();
-returnerr;
-}
 在上面的代码中，列出了三个关键点：
-口调用dequeueBuffer得到一个空闲缓冲，也可以叫空闲缓冲出队。
-口调用lockBuffer。
-口调用copyBlt函数，把frontBuffer数据拷贝到backBuffer中，这是为什么?
-来分析这三个关键点。
-(1)dequeueBuffer
-dequeueBuffer的目的很简单，就是选取一个空闲的GraphicBuffer，其代码如下所示：
-[-->Surface。cpp]
-status_tSurface：：dequeueBuffer(sp<GraphicBuffer>*buffer){
-android_native_buffer_t*out;
-status_terr
-dequeueBuffer(&out);//A3-AdequeueBuffer。
-%3D
-if(err==NO_ERROR){
-*buffer=
-GraphicBuffer：：getSelf(out);
+
+-   调用dequeueBuffer得到一个空闲缓冲，也可以叫空闲缓冲出队。
+-   调用lockAsync。
+-   调用copyBlt函数，把frontBuffer数据拷贝到backBuffer中。
+
+### dequeueBuffer
+
+dequeueBuffer的目的很简单，就是选取一个空闲的Buffer，其代码如下所示：
+
+```cpp
+int Surface::dequeueBuffer(android_native_buffer_t** buffer, int* fenceFd) {
+    // ...
+    int buf = -1;
+    // 调用了另外一个dequeueBuffer函数
+    status_t result = mGraphicBufferProducer->dequeueBuffer(&buf, &fence, dqInput.width, dqInput.height, dqInput.format, dqInput.usage, &mBufferAge, dqInput.getTimestamps ? &frameTimestamps : nullptr);
+    // ...
+    sp<GraphicBuffer>& gbuf(mSlots[buf].buffer);
+    // ...
+    *buffer = gbuf.get();
+	// ...
+    mDequeuedSlots.insert(buf);
+    return OK;
 }
-returnerr;
+```
+
+frameworks/native/libs/gui/include/gui/IGraphicBufferProducer.h
+
+客户端类型：BpGraphicBufferProducer （代码也在IGraphicBufferProducer.cpp中）
+
+```cpp
+virtual status_t dequeueBuffer(int* buf, sp<Fence>* fence, uint32_t width, uint32_t height, PixelFormat format, uint64_t usage, uint64_t* outBufferAge, FrameEventHistoryDelta* outTimestamps) {
+    Parcel data, reply;
+    bool getFrameTimestamps = (outTimestamps != nullptr);
+	data.writeInterfaceToken(IGraphicBufferProducer::getInterfaceDescriptor());
+    data.writeUint32(width);
+    data.writeUint32(height);
+    data.writeInt32(static_cast<int32_t>(format));
+    data.writeUint64(usage);
+    data.writeBool(getFrameTimestamps);
+
+    status_t result = remote()->transact(DEQUEUE_BUFFER, data, &reply);
+    // 。。。
+    result = reply.readInt32();
+    return result;
 }
-这其中又调用了另外一个dequeueBuffer函数。它的代码如下所示：
-[-->Surface。cpp]
-intSurface：：dequeueBuffer(android_native_buffer_t**buffer)
-{
-sp<SurfaceComposerclient>client(getclient());
-11①调用SharedBufferC1ient的degueue函数，它返回当前空用的缓冲号。
-ssize_tbufIdx=mSharedBufferClient->dequeue();
-constuint32_tusage(getUsage());
-/*
-mBuffers就是我们前面在Surface创建中介绍的那个二元sp<GraphicBuffer>数组。
-这里定义的backBuffer是一个引用类型，也就是说如果修改backBuffer的信息，
-就相当于修改了mBuffers[bufIdx]。
-*/
-constsp<GraphicBuffer>&backBuffer(mBuffers(bufIdx]);
-1/mBuffers定义的GraphicBuffer使用的也是无参构造函数，所以此时还没有真实的存储被创建。
-if(backBuffer==
-0||//第一次进来满足backBuffer为空这个条件。
-((uint32_t(backBuffer->usage)&usage)!=usage)||
-mSharedBufferClient->needNewBuffer(bufIdx))
-{
-1/调用getBufferLocked，鸡要进去看看。
+```
+
+通过Binder传输到SurfaceFlinger进程中。
+
+服务端类型：BnGraphicBufferProducer （代码也在IGraphicBufferProducer.cpp中）
+
+```cpp
+status_t BnGraphicBufferProducer::onTransact(uint32_t code, const Parcel& data, Parcel* reply, uint32_t flags) {
+    switch(code) {
+        // ...
+        case DEQUEUE_BUFFER: {
+            // ...
+            // 在服务进程中调用了dequeueBuffer
+            int result = dequeueBuffer(&buf, &fence, width, height, format, usage, &bufferAge, getTimestamps ? &frameTimestamps : nullptr);
+            // ...
+            reply->writeInt32(result);
+            return NO_ERROR;
+        }
+        // ...
+    }
+}
+```
+
+最终调用了BufferQueueProducer的dequeueBuffer
+frameworks/native/libs/gui/BufferQueueProducer.cpp
+
+```cpp
+status_t BufferQueueProducer::dequeueBuffer(int* outSlot, sp<android::Fence>* outFence, uint32_t width, uint32_t height, PixelFormat format, uint64_t usage, uint64_t* outBufferAge, FrameEventHistoryDelta* outTimestamps) {
+    ATRACE_CALL();
+    { // Autolock scope
+        std::lock_guard<std::mutex> lock(mCore->mMutex);
+        mConsumerName = mCore->mConsumerName;
+
+        if (mCore->mIsAbandoned) {
+            BQ_LOGE("dequeueBuffer: BufferQueue has been abandoned");
+            return NO_INIT;
+        }
+
+        if (mCore->mConnectedApi == BufferQueueCore::NO_CONNECTED_API) {
+            BQ_LOGE("dequeueBuffer: BufferQueue has no connected producer");
+            return NO_INIT;
+        }
+    } // Autolock scope
+
+    BQ_LOGV("dequeueBuffer: w=%u h=%u format=%#x, usage=%#" PRIx64, width, height, format, usage);
+
+    if ((width && !height) || (!width && height)) {
+        BQ_LOGE("dequeueBuffer: invalid size: w=%u h=%u", width, height);
+        return BAD_VALUE;
+    }
+
+    status_t returnFlags = NO_ERROR;
+    EGLDisplay eglDisplay = EGL_NO_DISPLAY;
+    EGLSyncKHR eglFence = EGL_NO_SYNC_KHR;
+    bool attachedByConsumer = false;
+
+    { // Autolock scope
+        std::unique_lock<std::mutex> lock(mCore->mMutex);
+
+        // If we don't have a free buffer, but we are currently allocating, we wait until allocation
+        // is finished such that we don't allocate in parallel.
+        if (mCore->mFreeBuffers.empty() && mCore->mIsAllocating) {
+            mDequeueWaitingForAllocation = true;
+            mCore->waitWhileAllocatingLocked(lock);
+            mDequeueWaitingForAllocation = false;
+            mDequeueWaitingForAllocationCondition.notify_all();
+        }
+
+        if (format == 0) {
+            format = mCore->mDefaultBufferFormat;
+        }
+
+        // Enable the usage bits the consumer requested
+        usage |= mCore->mConsumerUsageBits;
+
+        const bool useDefaultSize = !width && !height;
+        if (useDefaultSize) {
+            width = mCore->mDefaultWidth;
+            height = mCore->mDefaultHeight;
+            if (mCore->mAutoPrerotation &&
+                (mCore->mTransformHintInUse & NATIVE_WINDOW_TRANSFORM_ROT_90)) {
+                std::swap(width, height);
+            }
+        }
+
+        int found = BufferItem::INVALID_BUFFER_SLOT;
+        while (found == BufferItem::INVALID_BUFFER_SLOT) {
+            status_t status = waitForFreeSlotThenRelock(FreeSlotCaller::Dequeue, lock, &found);
+            if (status != NO_ERROR) {
+                return status;
+            }
+
+            // This should not happen
+            if (found == BufferQueueCore::INVALID_BUFFER_SLOT) {
+                BQ_LOGE("dequeueBuffer: no available buffer slots");
+                return -EBUSY;
+            }
+
+            const sp<GraphicBuffer>& buffer(mSlots[found].mGraphicBuffer);
+
+            // If we are not allowed to allocate new buffers,
+            // waitForFreeSlotThenRelock must have returned a slot containing a
+            // buffer. If this buffer would require reallocation to meet the
+            // requested attributes, we free it and attempt to get another one.
+            if (!mCore->mAllowAllocation) {
+                if (buffer->needsReallocation(width, height, format, BQ_LAYER_COUNT, usage)) {
+                    if (mCore->mSharedBufferSlot == found) {
+                        BQ_LOGE("dequeueBuffer: cannot re-allocate a sharedbuffer");
+                        return BAD_VALUE;
+                    }
+                    mCore->mFreeSlots.insert(found);
+                    mCore->clearBufferSlotLocked(found);
+                    found = BufferItem::INVALID_BUFFER_SLOT;
+                    continue;
+                }
+            }
+        }
+
+        const sp<GraphicBuffer>& buffer(mSlots[found].mGraphicBuffer);
+        if (mCore->mSharedBufferSlot == found &&
+                buffer->needsReallocation(width, height, format, BQ_LAYER_COUNT, usage)) {
+            BQ_LOGE("dequeueBuffer: cannot re-allocate a shared"
+                    "buffer");
+
+            return BAD_VALUE;
+        }
+
+        if (mCore->mSharedBufferSlot != found) {
+            mCore->mActiveBuffers.insert(found);
+        }
+        *outSlot = found;
+        ATRACE_BUFFER_INDEX(found);
+
+        attachedByConsumer = mSlots[found].mNeedsReallocation;
+        mSlots[found].mNeedsReallocation = false;
+
+        mSlots[found].mBufferState.dequeue();
+
+        if ((buffer == nullptr) ||
+                buffer->needsReallocation(width, height, format, BQ_LAYER_COUNT, usage))
+        {
+            mSlots[found].mAcquireCalled = false;
+            mSlots[found].mGraphicBuffer = nullptr;
+            mSlots[found].mRequestBufferCalled = false;
+            mSlots[found].mEglDisplay = EGL_NO_DISPLAY;
+            mSlots[found].mEglFence = EGL_NO_SYNC_KHR;
+            mSlots[found].mFence = Fence::NO_FENCE;
+            mCore->mBufferAge = 0;
+            mCore->mIsAllocating = true;
+
+            returnFlags |= BUFFER_NEEDS_REALLOCATION;
+        } else {
+            // We add 1 because that will be the frame number when this buffer
+            // is queued
+            mCore->mBufferAge = mCore->mFrameCounter + 1 - mSlots[found].mFrameNumber;
+        }
+
+        BQ_LOGV("dequeueBuffer: setting buffer age to %" PRIu64,
+                mCore->mBufferAge);
+
+        if (CC_UNLIKELY(mSlots[found].mFence == nullptr)) {
+            BQ_LOGE("dequeueBuffer: about to return a NULL fence - "
+                    "slot=%d w=%d h=%d format=%u",
+                    found, buffer->width, buffer->height, buffer->format);
+        }
+
+        eglDisplay = mSlots[found].mEglDisplay;
+        eglFence = mSlots[found].mEglFence;
+        // Don't return a fence in shared buffer mode, except for the first
+        // frame.
+        *outFence = (mCore->mSharedBufferMode &&
+                mCore->mSharedBufferSlot == found) ?
+                Fence::NO_FENCE : mSlots[found].mFence;
+        mSlots[found].mEglFence = EGL_NO_SYNC_KHR;
+        mSlots[found].mFence = Fence::NO_FENCE;
+
+        // If shared buffer mode has just been enabled, cache the slot of the
+        // first buffer that is dequeued and mark it as the shared buffer.
+        if (mCore->mSharedBufferMode && mCore->mSharedBufferSlot ==
+                BufferQueueCore::INVALID_BUFFER_SLOT) {
+            mCore->mSharedBufferSlot = found;
+            mSlots[found].mBufferState.mShared = true;
+        }
+
+        if (!(returnFlags & BUFFER_NEEDS_REALLOCATION)) {
+            if (mCore->mConsumerListener != nullptr) {
+                mCore->mConsumerListener->onFrameDequeued(mSlots[*outSlot].mGraphicBuffer->getId());
+            }
+        }
+    } // Autolock scope
+
+    if (returnFlags & BUFFER_NEEDS_REALLOCATION) {
+        BQ_LOGV("dequeueBuffer: allocating a new buffer for slot %d", *outSlot);
+        sp<GraphicBuffer> graphicBuffer = new GraphicBuffer(
+                width, height, format, BQ_LAYER_COUNT, usage,
+                {mConsumerName.string(), mConsumerName.size()});
+
+        status_t error = graphicBuffer->initCheck();
+
+        { // Autolock scope
+            std::lock_guard<std::mutex> lock(mCore->mMutex);
+
+            if (error == NO_ERROR && !mCore->mIsAbandoned) {
+                graphicBuffer->setGenerationNumber(mCore->mGenerationNumber);
+                mSlots[*outSlot].mGraphicBuffer = graphicBuffer;
+                if (mCore->mConsumerListener != nullptr) {
+                    mCore->mConsumerListener->onFrameDequeued(
+                            mSlots[*outSlot].mGraphicBuffer->getId());
+                }
+            }
+
+            mCore->mIsAllocating = false;
+            mCore->mIsAllocatingCondition.notify_all();
+
+            if (error != NO_ERROR) {
+                mCore->mFreeSlots.insert(*outSlot);
+                mCore->clearBufferSlotLocked(*outSlot);
+                BQ_LOGE("dequeueBuffer: createGraphicBuffer failed");
+                return error;
+            }
+
+            if (mCore->mIsAbandoned) {
+                mCore->mFreeSlots.insert(*outSlot);
+                mCore->clearBufferSlotLocked(*outSlot);
+                BQ_LOGE("dequeueBuffer: BufferQueue has been abandoned");
+                return NO_INIT;
+            }
+
+            VALIDATE_CONSISTENCY();
+        } // Autolock scope
+    }
+
+    if (attachedByConsumer) {
+        returnFlags |= BUFFER_NEEDS_REALLOCATION;
+    }
+
+    if (eglFence != EGL_NO_SYNC_KHR) {
+        EGLint result = eglClientWaitSyncKHR(eglDisplay, eglFence, 0,
+                1000000000);
+        // If something goes wrong, log the error, but return the buffer without
+        // synchronizing access to it. It's too late at this point to abort the
+        // dequeue operation.
+        if (result == EGL_FALSE) {
+            BQ_LOGE("dequeueBuffer: error %#x waiting for fence",
+                    eglGetError());
+        } else if (result == EGL_TIMEOUT_EXPIRED_KHR) {
+            BQ_LOGE("dequeueBuffer: timeout waiting for fence");
+        }
+        eglDestroySyncKHR(eglDisplay, eglFence);
+    }
+
+    BQ_LOGV("dequeueBuffer: returning slot=%d/%" PRIu64 " buf=%p flags=%#x",
+            *outSlot,
+            mSlots[*outSlot].mFrameNumber,
+            mSlots[*outSlot].mGraphicBuffer->handle, returnFlags);
+
+    if (outBufferAge) {
+        *outBufferAge = mCore->mBufferAge;
+    }
+    addAndGetFrameTimestamps(nullptr, outTimestamps);
+
+    return returnFlags;
+}
+```
 
 
-Page356
-338
-深入理解Android：卷!
-err=getBufferLocked(bufIdx，usage);
-if(err==NO_ERROR){
-=uint32t(backBuffer->width);
-uint32_t(backBuffer->height);
-mWidth
-mHeight
-%3D
+
+## unlockCanvasAndPost
+
+```java
+public void unlockCanvasAndPost(Canvas canvas) {
+    synchronized (mLock) {
+        checkNotReleasedLocked();
+
+        if (mHwuiContext != null) {
+            mHwuiContext.unlockAndPost(canvas);
+        } else {
+            unlockSwCanvasAndPost(canvas);
+        }
+    }
 }
+```
+
+对应的native方法：
+
+```cpp
+static void nativeUnlockCanvasAndPost(JNIEnv* env, jclass clazz,
+                                     jlong nativeObject, jobject canvasObj) {
+    // 取出Native的Surface对象
+    sp<Surface> surface(reinterpret_cast<Surface *>(nativeObject));
+    if (!isSurfaceValid(surface)) {
+        return;
+    }
+
+    // 释放Surface中的buffer
+    graphics::Canvas canvas(env, canvasObj);
+    canvas.setBuffer(nullptr, ADATASPACE_UNKNOWN);
+
+    // 解锁Surface
+    status_t err = surface->unlockAndPost();
+    if (err < 0) {
+        jniThrowException(env, IllegalArgumentException, NULL);
+    }
 }
-上面列出了一个关键点，就是SharedBufferClient的dequeue函数，暂且记住这个调用，
-后面会有单独的章节分析生产/消费步调控制。先看getBufferLocked函数，其代码如下所示：
-[-->Surface。cpp]
-tatus_tSurface：：getBufferLocked(intindex，intusage)
-{
-sp<ISurface>s(mSurface);
-statusterr
-=NO_MEMORY;
-1/注意这个currentBuffer也被定义为引用类型。
-sp<GraphicBuffer>&currentBuffer(mBuffers(index]);
-1/终于用上了ISurface对象，调用它的requestBuffer得到指定索引index的Buffer。
-sp<GraphicBuffer>buffer=s->requestBuffer(index，usage);
-if(buffer!=0){
-mSharedBufferClient->getStatus();
-if(!err&&buffer->handle!=NULL){
-//getBufferMapperikeGraphicBufferMapper。
-1/调用它的registerBuffer干什么?这个问題我们在8。4。7节回答。
-err
-%3D
-getBufferMapper()。registerBuffer(buffer->handle);
-err=
-if(err==NO_ERROR){
-//terequestBufferNecurrentBuffer，tcurrentBuffer3IAN，
-//*t†mBuffers[index]=buffer。
-currentBuffer=buffer;
-//iIcurrentBuffer。
-currentBuffer->setIndex(index);
-MNeedFullUpdate
-}
-}else{
-=true;
-err<0
-?err：NO_MEMORY;
-err
-%3D
-}
-returnerr;
-}
-至此，getBufferLocked的目的已比较清晰了：
-调用ISurface的requestBuffer得到一个GraphicBuffer对象，这个GraphicBuffer对象被
-设置到本地的mBuffers数组中。看来Surface定义的这两个GraphicBuffer和Layer定义的两
-个GraphicBuffer是有联系的，所以图8-18中只画了两个GraphicBuffer。
-我们已经知道，ISurface的Bn端实际上是定义在Layer类中的SurfaceLayer，下面来
+```
 
 
-Page357
-第8章深入理解Surface系统
-339
-看它实现的requestBuffer。由于SurfaceLayer是Layer的内部类，它的工作最终都会交给
-Layer来处理，所以这里可直接看Layer的requestBuffer函数：
-[-->Layer。cpp]
-sp<GraphicBuffer>Layer：：requestBuffer(intindex，intusage)
-{
-sp<GraphicBuffer>buffer;
-sp<Client>ourClient(client。promote());
-1/lcblk就是那个SharedBufferServer对象，下面这个调用确保index号GraphicBuffer
-//没有被SF当做FrontBuffer使用。
-statusterr
-=1cblk->assertReallocate(index);
-if(err!=NO_ERROR){
-returnbuffer;
-}
-uint32_tw，h;
-{
-Mutex：：Autolock_1(mLock);
-w=mWidth;
-mHeight;
-h=
-/*
-mBuffers是SF端创建的一个二元数组，这里取出第index个元素，之前说过，
-mBuffers使用的也是GraphicBuffer的无参构造函数，所以此时也没有真实存储被创建。
-*/
-buffer=mBuffers[index];
-mBuffers[index]。clear();
-}
-constuint32_teffectiveUsage
-getEffectiveUsage(usa
-e);
-%3D
-if(buffer!=0&&buffer->getStrongCount()
-==1){
-110分配物理存储，后面会分析这个。
-=buffer->reallocate(w，h，mFormat，
-err
-effectiveUsage);
-}else{
-buffer。clear();
-1/使用GraphicBuffer的有参构造，这也使得物理存储被分配。
-newGraphicBuffer(w，h，mFormat，effectiveUsage);
-=buffer->initCheck();
-buffer=
-err
-}
-if(err==NOERROR&&buffer->handle!=0){
-Mutex：：Autolock_1(mLock);
-if(mWidth&&mHeight){
-mBuffers[index)
-=buffer;
-mTextures(index]。dirty
-true;
-%3D
-}else{
 
 
-Page358
-340
-深入理解Android：卷」
-buffer。clear();
-}
-}
-returnbuffer;//iáE
-}
-不管怎样，此时跨进程的这个requestBuffer返回的GraphicBuffer，已经和一块物
-理存储绑定到一起了。所以dequeueBuffer顺利返回了它所需的东西。接下来则需调用
-lockBuffer。
-(2)lockBuffer
-lockBuffer的代码如下所示：
-[-->Surface。cpp]
-intSurface：：lockBuffer(android_native_buffer_t*buffer)
-{
-sp<SurfaceComposerClient>client(getClient());
-status_terr=validate();
-GraphicBuffer：：getSelf(buffer)->getIndex();
-=msharedBufferClient->lock(bufIdx);//SharedBufferClient#lock。
-int32tbufIdx=
-err
-returnerr;
-}
-来看这个lock函数，代码如下所示：
-[->SharedBufferStack。cpp]
-statustSharedBufferClient：：1ock(intbuf)
-{
-LockConditioncondition(this，buf);//iż^bufXBackBufferéý*31。
-status_terr=waitForCondition(condition);
-returnerr;
-}
-注意，给waitForCondition函数传递的是一个LockCondition类型的对象，前面所说的
-函数对象的作用将在这里见识到，先看waitForCondition函数，代码如下所示：
-[-->SharedBufferStack。h]
-template<typenameT>//这是一个模板函数。
-status_tSharedBufferBase：：waitForCondition(Tcondition)
-{
-constSharedBufferStack&stack(*mSharedstack);
-SharedClient&client(*mSharedclient);
-constnsecstTIMEOUT=s2ns(1);
-Mutex：：Autolock1(client。lock);
-while((condition()==false)&&//iti↑condition()ýŁ。
-(stack。identity
-mIdentity)&&
-==
 
 
-Page359
-第8章深入理解Surface系统
-341
-(stack。status==NOERROR))
-{
-statusterr
-client。cv。waitRelative(client。lock，TIMEOUT);
-if(CC_UNLIKELY(err!=NOERROR)){
-if(err==TIMEDOUT){
-if(condition()){//i*^：condition()，condition-^。
-break;
-}else{
-}
-}else{
-returnerr;
-}
-}
-return(stack。identity!=mIdentity)?status_t(BAD_INDEX)
-}
-：stack。status;
-waitForCondition函数比较简单，就是等待一个条件为真，这个条件是否满足由
-condition()这条语句来判断。但这个condition不是一个函数，而是一个对象，这又是怎么
-回事?
-说明这就是FuncitionObject(函数对象)的概念。函数对象的本质是一个对象，不过是重
-载了操作符)，这和重载操作符+、一等没什么区别。可以把它当作是一个函数来看待。
-为什么需要函数对象呢?因为对象可以保存信息，所以调用这个对象的()函数就可以利
-用这个对象的信息了。
-来看condition对象的()函数。网刚才传进来的是LockCondition，它的()定义如下：
-[-->SharedBufferStack。cpp]
-boolSharedBufferClient：：LockCondition：：operator()0{
-1/stack、buf等都是这个对象的內部成员，这个对象的目的就是根据读写位置判断这个buffer是
-1/否空闲。
-return(buf!=stack。head||
-(stack。queued>0&&stack。inUse!=buf));
-}
-SharedBufferStack的读写控制比Audio中的环形缓冲看起来要简单，实际上它却比较复
-杂。本章会在扩展内容中进行分析。这里给读者准备一个问题，也是我之前百思不得其解的
-问题：
-既然已经调用dequeue得到了一个空闲缓冲，为什么这里还要lock呢?
-(3)拷贝旧数据
-在第三个关键点中，可看到这样的代码：
-
-
-Page360
-342
-深入理解Android：卷!
-[-->Surface。cpp]
-status_tSurface：：lock(SurfaceInfo*other，Region*dirtyIn，boolblocking)
-{
-constsp<GraphicBuffer>&frontBuffer(mPostedBuffer);
-if(frontBuffer!=0&&
-backBuffer->width
-==frontBuffer->width&&
-backBuffer->height
-==frontBuffer->height&&
-!(mFlags&ISurfaceComposer：：eDestroyBackbuffer))
-{
-constRegioncopyback(moldDirtyRegion。subtract(newDirtyRegion));
-if(!copyback。isEmpty()&&frontBuffer!=0){
-//③把frontBuffer中的数据拷贝到BackBuffer中，这是为什么?
-copyBlt(backBuffer，frontBuffer，copyback);
-}
-}
-}
-上面这段代码所解决的，其实是下面这个问题：
-在大部分情况下，UI只有一小部分会发生变化(例如一个按钮被按下去，导致颜色发生
-变化)，这一小部分UI只对应整个GraphicBuffer中的一小块存储(就是在前面代码中见到
-的dirtyRegion)，如果整块存储都更新，则会极大地浪费资源。怎么办?
-这就需要将变化的图像和没有发生变化的图像进行叠加了。上一次绘制的信息保存在
-mPostedBuffer中，而这个mPostedBuffer则要在unLockAndPost函数中设置。这里将根
-据需要，把mPostedBuffer中的旧数据拷贝到BackBuffer中。后续的绘画只要更新脏区域
-就可以了，这会节约不少资源。
-lockCanvas返回后，应用层将在这块画布上尽情作画。假设现在已经在BackBuffer上绘
-制好了图像，下面就要通过unlockCanvasAndPost进行后续工作了，一起来看。
 2。unlockCanvasAndPost
 进入精简流程的最后一步，就是unlockCanvasAndPost函数，它的代码如下所示：
 [-->Surface。cpp]
