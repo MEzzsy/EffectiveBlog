@@ -1,23 +1,68 @@
 # BufferQueue
 
+## BufferQueue的创建
+
+在创建Layer对象过程中：frameworks/native/services/surfaceflinger/BufferQueueLayer.cpp
+
+```cpp
+BufferQueueLayer::BufferQueueLayer(const LayerCreationArgs& args) : BufferLayer(args) {}
+
+void BufferQueueLayer::onFirstRef() {
+    BufferLayer::onFirstRef();
+
+    // Creates a custom BufferQueue for SurfaceFlingerConsumer to use
+    sp<IGraphicBufferProducer> producer;
+    sp<IGraphicBufferConsumer> consumer;
+    mFlinger->getFactory().createBufferQueue(&producer, &consumer, true);
+    // MonitoredProducer
+    mProducer = mFlinger->getFactory().createMonitoredProducer(producer, mFlinger, this);
+    // BufferLayerConsumer
+    mConsumer = mFlinger->getFactory().createBufferLayerConsumer(consumer, mFlinger->getRenderEngine(), mTextureName, this);
+    // ...
+}
+```
+
+frameworks/native/services/surfaceflinger/SurfaceFlingerDefaultFactory.cpp
+
+```cpp
+void DefaultFactory::createBufferQueue(sp<IGraphicBufferProducer>* outProducer,
+                                       sp<IGraphicBufferConsumer>* outConsumer,
+                                       bool consumerIsSurfaceFlinger) {
+    BufferQueue::createBufferQueue(outProducer, outConsumer, consumerIsSurfaceFlinger);
+}
+```
+
+frameworks/native/libs/gui/BufferQueue.cpp
+
+```cpp
+void BufferQueue::createBufferQueue(sp<IGraphicBufferProducer>* outProducer,
+        sp<IGraphicBufferConsumer>* outConsumer,
+        bool consumerIsSurfaceFlinger) {
+    // ...
+    sp<BufferQueueCore> core(new BufferQueueCore());
+    // ...
+    sp<IGraphicBufferProducer> producer(new BufferQueueProducer(core, consumerIsSurfaceFlinger));
+    // ...
+    sp<IGraphicBufferConsumer> consumer(new BufferQueueConsumer(core));
+    // ...
+    *outProducer = producer;
+    *outConsumer = consumer;
+}
+```
+
+## 生产者IGraphicBufferProducer
+
+IGraphicBufferProducer的调用主要在Surface的lock和unlock操作中（见Surface系统 上）。
+
+### dequeueBuffer
+
 frameworks/native/libs/gui/include/gui/IGraphicBufferProducer.h
 
 客户端类型：BpGraphicBufferProducer （代码也在IGraphicBufferProducer.cpp中）
 
 ```cpp
 virtual status_t dequeueBuffer(int* buf, sp<Fence>* fence, uint32_t width, uint32_t height, PixelFormat format, uint64_t usage, uint64_t* outBufferAge, FrameEventHistoryDelta* outTimestamps) {
-    Parcel data, reply;
-    bool getFrameTimestamps = (outTimestamps != nullptr);
-	data.writeInterfaceToken(IGraphicBufferProducer::getInterfaceDescriptor());
-    data.writeUint32(width);
-    data.writeUint32(height);
-    data.writeInt32(static_cast<int32_t>(format));
-    data.writeUint64(usage);
-    data.writeBool(getFrameTimestamps);
-
-    status_t result = remote()->transact(DEQUEUE_BUFFER, data, &reply);
     // 。。。
-    result = reply.readInt32();
     return result;
 }
 ```
@@ -50,11 +95,6 @@ frameworks/native/libs/gui/BufferQueueProducer.cpp
 status_t BufferQueueProducer::dequeueBuffer(int* outSlot, sp<android::Fence>* outFence, uint32_t width, uint32_t height, PixelFormat format, uint64_t usage, uint64_t* outBufferAge, FrameEventHistoryDelta* outTimestamps) {
     // ...
 
-    status_t returnFlags = NO_ERROR;
-    EGLDisplay eglDisplay = EGL_NO_DISPLAY;
-    EGLSyncKHR eglFence = EGL_NO_SYNC_KHR;
-    bool attachedByConsumer = false;
-
     { // Autolock scope
         //. ..
         int found = BufferItem::INVALID_BUFFER_SLOT;
@@ -65,32 +105,15 @@ status_t BufferQueueProducer::dequeueBuffer(int* outSlot, sp<android::Fence>* ou
             const sp<GraphicBuffer>& buffer(mSlots[found].mGraphicBuffer);
 			// ...
         }
-
-        const sp<GraphicBuffer>& buffer(mSlots[found].mGraphicBuffer);
         // ...
         *outSlot = found;
         // 。。。
 		//2.找到可用的Slot，将Buffer状态设置为DEQUEUED，由于步骤1找到的Slot状态为FREE，因此这一步完成了FREE到DEQUEUED的状态切换
         mSlots[found].mBufferState.dequeue();
 
-        // //3. 找到的Slot如果需要申请GraphicBuffer，则申请GraphicBuffer，这里采用了懒加载机制，如果内存没有申请，申请内存放在生产者来处理
-        if ((buffer == nullptr) ||
-                buffer->needsReallocation(width, height, format, BQ_LAYER_COUNT, usage))
-        {
-            mSlots[found].mAcquireCalled = false;
-            mSlots[found].mGraphicBuffer = nullptr;
-            mSlots[found].mRequestBufferCalled = false;
-            mSlots[found].mEglDisplay = EGL_NO_DISPLAY;
-            mSlots[found].mEglFence = EGL_NO_SYNC_KHR;
-            mSlots[found].mFence = Fence::NO_FENCE;
-            mCore->mBufferAge = 0;
-            mCore->mIsAllocating = true;
-
-            returnFlags |= BUFFER_NEEDS_REALLOCATION;
-        } else {
-            // We add 1 because that will be the frame number when this buffer
-            // is queued
-            mCore->mBufferAge = mCore->mFrameCounter + 1 - mSlots[found].mFrameNumber;
+        //3. 找到的Slot如果需要申请GraphicBuffer，则申请GraphicBuffer，这里采用了懒加载机制，如果内存没有申请，申请内存放在生产者来处理
+        if ((buffer == nullptr) || buffer->needsReallocation(width, height, format, BQ_LAYER_COUNT, usage)) {
+            // ...
         }
         // ...
     }
@@ -99,79 +122,125 @@ status_t BufferQueueProducer::dequeueBuffer(int* outSlot, sp<android::Fence>* ou
 }
 ```
 
-关键在于寻找可用Slot，waitForFreeSlotThenRelock的流程如下：
+>   TODO waitForFreeSlotThenRelock分析
+>
+
+### requestBuffer
+
+在Surface的lock中，调用完dequeueBuffer后又调用了requestBuffer。
 
 ```cpp
-status_t BufferQueueProducer::waitForFreeSlotThenRelock(FreeSlotCaller caller, std::unique_lock<std::mutex>& lock, int* found) const {
-    auto callerString = (caller == FreeSlotCaller::Dequeue) ?
-            "dequeueBuffer" : "attachBuffer";
-    bool tryAgain = true;
-    while (tryAgain) {
-        // ...
-
-        //1. mQueue 是否太多
-        const int maxBufferCount = mCore->getMaxBufferCountLocked();
-        bool tooManyBuffers = mCore->mQueue.size()
-                            > static_cast<size_t>(maxBufferCount);
-        if (tooManyBuffers) {
-            // ...
-        } else {
-            // 2. 先查找mFreeBuffers中是否有可用的，mFreeBuffers中的元素关联了GraphicBuffer，直接可用
-            if (mCore->mSharedBufferMode && mCore->mSharedBufferSlot !=
-                    BufferQueueCore::INVALID_BUFFER_SLOT) {
-                *found = mCore->mSharedBufferSlot;
-            } else {
-                if (caller == FreeSlotCaller::Dequeue) {
-                    // If we're calling this from dequeue, prefer free buffers
-                    int slot = getFreeBufferLocked();
-                    if (slot != BufferQueueCore::INVALID_BUFFER_SLOT) {
-                        *found = slot;
-                    } else if (mCore->mAllowAllocation) {
-                        *found = getFreeSlotLocked();
-                    }
-                } else {
-                    // If we're calling this from attach, prefer free slots
-                    int slot = getFreeSlotLocked();
-                    if (slot != BufferQueueCore::INVALID_BUFFER_SLOT) {
-                        *found = slot;
-                    } else {
-                        *found = getFreeBufferLocked();
-                    }
-                }
-            }
-        }
-
-        // If no buffer is found, or if the queue has too many buffers
-        // outstanding, wait for a buffer to be acquired or released, or for the
-        // max buffer count to change.
-        tryAgain = (*found == BufferQueueCore::INVALID_BUFFER_SLOT) ||
-                   tooManyBuffers;
-        if (tryAgain) {
-            // Return an error if we're in non-blocking mode (producer and
-            // consumer are controlled by the application).
-            // However, the consumer is allowed to briefly acquire an extra
-            // buffer (which could cause us to have to wait here), which is
-            // okay, since it is only used to implement an atomic acquire +
-            // release (e.g., in GLConsumer::updateTexImage())
-            if ((mCore->mDequeueBufferCannotBlock || mCore->mAsyncMode) &&
-                    (acquiredCount <= mCore->mMaxAcquiredBufferCount)) {
-                return WOULD_BLOCK;
-            }
-            if (mDequeueTimeout >= 0) {
-                std::cv_status result = mCore->mDequeueCondition.wait_for(lock,
-                        std::chrono::nanoseconds(mDequeueTimeout));
-                if (result == std::cv_status::timeout) {
-                    return TIMED_OUT;
-                }
-            } else {
-                mCore->mDequeueCondition.wait(lock);
-            }
-        }
-    } // while (tryAgain)
-
+status_t BufferQueueProducer::requestBuffer(int slot, sp<GraphicBuffer>* buf) {
+    // 。。。
+    *buf = mSlots[slot].mGraphicBuffer;
     return NO_ERROR;
 }
 ```
+
+requestBuffer的逻辑比较简单，在dequeueBuffer中找到了可用得到slot，通过索引来获取GraphicBuffer。
+
+### queueBuffer
+
+在Surface的unlock中，会调用queueBuffer。
+
+```cpp
+status_t BufferQueueProducer::queueBuffer(int slot, const QueueBufferInput &input, QueueBufferOutput *output) {
+    // ...
+    sp<IConsumerListener> frameAvailableListener;
+    sp<IConsumerListener> frameReplacedListener;
+    // ...
+    {
+        // ...
+        const sp<GraphicBuffer>& graphicBuffer(mSlots[slot].mGraphicBuffer);
+        // ...
+        // 将Buffer状态扭转成QUEUED，此步完成了Buffer的状态由DEQUEUED到QUEUED的过程
+        mSlots[slot].mBufferState.queue();
+		// ...
+        if (mCore->mQueue.empty()) {
+            // buffer入列
+            mCore->mQueue.push_back(item);
+            frameAvailableListener = mCore->mConsumerListener;
+        } 
+        // ...
+    }
+	// ...
+    {   
+		// 消费者回调
+        if (frameAvailableListener != nullptr) {
+            frameAvailableListener->onFrameAvailable(item);
+        } else if (frameReplacedListener != nullptr) {
+            frameReplacedListener->onFrameReplaced(item);
+        }
+		// ...
+    }
+	// ...
+    return NO_ERROR;
+}
+```
+
+## 消费者IGraphicBufferConsumer
+
+### BufferLayerConsumer的创建
+
+```cpp
+void BufferQueueLayer::onFirstRef() {
+    // ...
+    sp<IGraphicBufferConsumer> consumer;
+    // BufferQueue内部创建的consumer是BufferQueueConsumer
+    mFlinger->getFactory().createBufferQueue(&producer, &consumer, true);
+    // ...
+    // createBufferLayerConsumer内部创建的是BufferLayerConsumer
+    mConsumer = mFlinger->getFactory().createBufferLayerConsumer(consumer, mFlinger->getRenderEngine(), mTextureName, this);
+    // ...
+}
+```
+
+在BufferLayerConsumer的构造函数中会调用父类ConsumerBase的构造函数
+
+```cpp
+BufferLayerConsumer::BufferLayerConsumer(const sp<IGraphicBufferConsumer>& bq, renderengine::RenderEngine& engine, uint32_t tex, Layer* layer)
+      : ConsumerBase(bq, false),
+        // ...
+```
+
+```cpp
+ConsumerBase::ConsumerBase(const sp<IGraphicBufferConsumer>& bufferQueue, bool controlledByApp) :
+        mAbandoned(false),
+        mConsumer(bufferQueue),
+        mPrevFinalReleaseFence(Fence::NO_FENCE) {
+    // ...
+    wp<ConsumerListener> listener = static_cast<ConsumerListener*>(this);
+    sp<IConsumerListener> proxy = new BufferQueue::ProxyConsumerListener(listener);
+
+    status_t err = mConsumer->consumerConnect(proxy, controlledByApp);
+    if (err != NO_ERROR) {
+        CB_LOGE("ConsumerBase: error connecting to BufferQueue: %s (%d)",
+                strerror(-err), err);
+    } else {
+        mConsumer->setConsumerName(mName);
+    }
+}
+```
+
+>   TODO 这里为什么要代理，难道在不同进程？
+
+### consumerConnect
+
+>   目前看到这里有点混，主要是WMS进程和SZ进程的联系，以及各个类型。后续再进行梳理
+
+# 未完待续
+
+
+
+1.   BufferQueue
+     可以认为BufferQueue是一个服务中心，IGraphicBufferProducer和IGraphicBufferConsumer
+     所需要使用的buffer必须要通过它来管理。
+2.   IGraphicBufferProducer
+     IGraphicBufferProducer就是“填充”buffer空间的人，通常情况下是应用程序。因为应用程序不断地刷新UI，从而将产生的显示数据源源不断地写到buffer中。当IGraphicBufferProducer需要使用一块buffer时，它首先会向BufferQueue发起dequeueBuffer申请，然后才能对指定的buffer进行操作。此时buffer就只属于IGraphicBufferProducer一个人的了，它可以对buffer进行任何必要的操作，而IGraphicBufferConsumer此刻绝不能操作这块buffer。当IGraphicBufferProducer认为一块buffer已经写入完成后，它进一步调用queueBuffer函数。从字面上看这个函数是“入列”的意思，形象地表达了buffer此时的操作，把buffer归还到BufferQueue的队列中。一旦queue成功后，buffer的owner也就随之改变为BufferQueue了。
+3.   IGraphicBufferConsumer
+     IGraphicBufferConsumer是与IGraphicBufferProducer相对应的，它的操作同样受到BufferQueue的管控。当一块buffer已经就绪后，IGraphicBufferConsumer就可以开始工作了。
+
+![12](assets/12.jpg)
 
 # SurfaceFlinger分析
 
@@ -239,18 +308,347 @@ void SurfaceFlinger::run() {
 
 小结：
 
-SurfaceFlinger的启动主要是这几步：
+SurfaceFlinger进程的启动主要是这几步：
 
 1.   启动SurfaceFlinger进程。
 2.   创建SurfaceFlinger对象。
 3.   调用SurfaceFlinger的init函数。
 4.   调用SurfaceFlinger的run函数，等待Message。
 
+## SF消息循环
+
+涉及类型：
+
+```cpp
+void SurfaceFlinger::onFirstRef() {
+    mEventQueue->init(this);
+}
+```
+
+```cpp
+void MessageQueue::init(const sp<SurfaceFlinger>& flinger) {
+    mFlinger = flinger;
+    mLooper = new Looper(true);
+    mHandler = new Handler(*this);
+}
+```
+
+MessageQueue、Looper、Handler。
+
+### waitMessage
+
+```cpp
+void SurfaceFlinger::run() {
+    while (true) {
+        mEventQueue->waitMessage();
+    }
+}
+```
+
+在一个死循环中，SF一直等待消息，当消息来临时，进行处理：
+
+```cpp
+void MessageQueue::waitMessage() {
+    do {
+        IPCThreadState::self()->flushCommands();
+        int32_t ret = mLooper->pollOnce(-1);
+        switch (ret) {
+            case Looper::POLL_WAKE:
+            case Looper::POLL_CALLBACK:
+                continue;
+            case Looper::POLL_ERROR:
+                ALOGE("Looper::POLL_ERROR");
+                continue;
+            case Looper::POLL_TIMEOUT:
+                // timeout (should not happen)
+                continue;
+            default:
+                // should not happen
+                ALOGE("Looper::pollOnce() returned unknown status %d", ret);
+                continue;
+        }
+    } while (true);
+}
+```
+
+```cpp
+int Looper::pollOnce(int timeoutMillis, int* outFd, int* outEvents, void** outData) {
+    int result = 0;
+    for (;;) {
+        // ...
+        result = pollInner(timeoutMillis);
+    }
+}
+```
+
+```cpp
+int Looper::pollInner(int timeoutMillis) {
+    // ...
+    while (mMessageEnvelopes.size() != 0) {
+        // ...
+        const MessageEnvelope& messageEnvelope = mMessageEnvelopes.itemAt(0);
+        if (messageEnvelope.uptime <= now) {
+            // ...
+            { // obtain handler
+                sp<MessageHandler> handler = messageEnvelope.handler;
+                Message message = messageEnvelope.message;
+                mMessageEnvelopes.removeAt(0);
+                mSendingMessage = true;
+                mLock.unlock();
+                handler->handleMessage(message);
+            } // release handler
+
+            mLock.lock();
+            mSendingMessage = false;
+            result = POLL_CALLBACK;
+        } 
+        // ...
+    }
+    // ...
+    return result;
+}
+```
+
+和Java中的Handler类似，MessageQueue处理消息时，取出一个消息，获取对应的Handler，并交给其进行处理。
+
+frameworks/native/services/surfaceflinger/Scheduler/MessageQueue.cpp
+
+```cpp
+void MessageQueue::Handler::handleMessage(const Message& message) {
+    switch (message.what) {
+        case INVALIDATE:
+            mEventMask.fetch_and(~eventMaskInvalidate);
+            mQueue.mFlinger->onMessageReceived(message.what, mVsyncId, mExpectedVSyncTime);
+            break;
+        case REFRESH:
+            mEventMask.fetch_and(~eventMaskRefresh);
+            mQueue.mFlinger->onMessageReceived(message.what, mVsyncId, mExpectedVSyncTime);
+            break;
+    }
+}
+```
+
+frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp
+
+```cpp
+void SurfaceFlinger::onMessageReceived(int32_t what, int64_t vsyncId, nsecs_t expectedVSyncTime) {
+    switch (what) {
+        case MessageQueue::INVALIDATE: {
+            onMessageInvalidate(vsyncId, expectedVSyncTime);
+            break;
+        }
+        case MessageQueue::REFRESH: {
+            onMessageRefresh();
+            break;
+        }
+    }
+}
+```
+
+```cpp
+void SurfaceFlinger::onMessageInvalidate(int64_t vsyncId, nsecs_t expectedVSyncTime) {
+    // ...
+    bool refreshNeeded;
+    {
+        // ...
+        refreshNeeded = handleMessageTransaction();
+        refreshNeeded |= handleMessageInvalidate();
+        // ...
+    }
+    // ...
+    refreshNeeded |= mRepaintEverything;
+    if (refreshNeeded && CC_LIKELY(mBootStage != BootStage::BOOTLOADER)) {
+        // Signal a refresh if a transaction modified the window state,
+        // a new buffer was latched, or if HWC has requested a full
+        // repaint
+        // ...
+        onMessageRefresh();
+    }
+    notifyRegionSamplingThread();
+}
+```
+
+```cpp
+bool SurfaceFlinger::handleMessageInvalidate() {
+    ATRACE_CALL();
+    bool refreshNeeded = handlePageFlip();
+
+    // Send on commit callbacks
+    mTransactionCallbackInvoker.sendCallbacks();
+
+    if (mVisibleRegionsDirty) {
+        computeLayerBounds();
+    }
+
+    for (auto& layer : mLayersPendingRefresh) {
+        Region visibleReg;
+        visibleReg.set(layer->getScreenBounds());
+        invalidateLayerStack(layer, visibleReg);
+    }
+    mLayersPendingRefresh.clear();
+    return refreshNeeded;
+}
+```
+
+### postMessage
+
+```cpp
+void MessageQueue::postMessage(sp<MessageHandler>&& handler) {
+    mLooper->sendMessage(handler, Message());
+}
+```
+
+```cpp
+void Looper::sendMessage(const sp<MessageHandler>& handler, const Message& message) {
+    nsecs_t now = systemTime(SYSTEM_TIME_MONOTONIC);
+    sendMessageAtTime(now, handler, message);
+}
+```
+
+```cpp
+void Looper::sendMessageAtTime(nsecs_t uptime, const sp<MessageHandler>& handler,
+        const Message& message) {
+	// ...
+
+    size_t i = 0;
+    { // acquire lock
+        AutoMutex _l(mLock);
+
+        size_t messageCount = mMessageEnvelopes.size();
+        while (i < messageCount && uptime >= mMessageEnvelopes.itemAt(i).uptime) {
+            i += 1;
+        }
+
+        MessageEnvelope messageEnvelope(uptime, handler, message);
+        mMessageEnvelopes.insertAt(messageEnvelope, i, 1);
+
+        // Optimization: If the Looper is currently sending a message, then we can skip
+        // the call to wake() because the next thing the Looper will do after processing
+        // messages is to decide when the next wakeup time should be.  In fact, it does
+        // not even matter whether this code is running on the Looper thread.
+        if (mSendingMessage) {
+            return;
+        }
+    } // release lock
+
+    // Wake the poll loop only when we enqueue a new message at the head.
+    if (i == 0) {
+        wake();
+    }
+}
+```
+
+### 小结
+
+SF中的消息循环和Java层中的Handler类似：
+
+1.   post一个msg到MessageQueue中，会将msg封装成一个MessageEnvelope，并放入到mMessageEnvelopes中。
+2.   处理消息时，从mMessageEnvelopes中取出一个MessageEnvelope，并从MessageEnvelope中获取msg对应的Handler，交其处理。
+
+
+
+# handlePageFlip
+
+```cpp
+bool SurfaceFlinger::handlePageFlip() {
+    ATRACE_CALL();
+    ALOGV("handlePageFlip");
+
+    nsecs_t latchTime = systemTime();
+
+    bool visibleRegions = false;
+    bool frameQueued = false;
+    bool newDataLatched = false;
+
+    const nsecs_t expectedPresentTime = mExpectedPresentTime.load();
+
+    // Store the set of layers that need updates. This set must not change as
+    // buffers are being latched, as this could result in a deadlock.
+    // Example: Two producers share the same command stream and:
+    // 1.) Layer 0 is latched
+    // 2.) Layer 0 gets a new frame
+    // 2.) Layer 1 gets a new frame
+    // 3.) Layer 1 is latched.
+    // Display is now waiting on Layer 1's frame, which is behind layer 0's
+    // second frame. But layer 0's second frame could be waiting on display.
+    mDrawingState.traverse([&](Layer* layer) {
+         uint32_t trFlags = layer->getTransactionFlags(eTransactionNeeded);
+         if (trFlags || mForceTransactionDisplayChange) {
+             const uint32_t flags = layer->doTransaction(0);
+             if (flags & Layer::eVisibleRegion)
+                 mVisibleRegionsDirty = true;
+         }
+
+         if (layer->hasReadyFrame()) {
+            frameQueued = true;
+            if (layer->shouldPresentNow(expectedPresentTime)) {
+                mLayersWithQueuedFrames.emplace(layer);
+            } else {
+                ATRACE_NAME("!layer->shouldPresentNow()");
+                layer->useEmptyDamage();
+            }
+         } else {
+            layer->useEmptyDamage();
+        }
+    });
+    mForceTransactionDisplayChange = false;
+
+    // The client can continue submitting buffers for offscreen layers, but they will not
+    // be shown on screen. Therefore, we need to latch and release buffers of offscreen
+    // layers to ensure dequeueBuffer doesn't block indefinitely.
+    for (Layer* offscreenLayer : mOffscreenLayers) {
+        offscreenLayer->traverse(LayerVector::StateSet::Drawing,
+                                         [&](Layer* l) { l->latchAndReleaseBuffer(); });
+    }
+
+    if (!mLayersWithQueuedFrames.empty()) {
+        // mStateLock is needed for latchBuffer as LayerRejecter::reject()
+        // writes to Layer current state. See also b/119481871
+        Mutex::Autolock lock(mStateLock);
+
+        for (const auto& layer : mLayersWithQueuedFrames) {
+            if (layer->latchBuffer(visibleRegions, latchTime, expectedPresentTime)) {
+                mLayersPendingRefresh.push_back(layer);
+            }
+            layer->useSurfaceDamage();
+            if (layer->isBufferLatched()) {
+                newDataLatched = true;
+            }
+        }
+    }
+
+    mVisibleRegionsDirty |= visibleRegions;
+
+    // If we will need to wake up at some time in the future to deal with a
+    // queued frame that shouldn't be displayed during this vsync period, wake
+    // up during the next vsync period to check again.
+    if (frameQueued && (mLayersWithQueuedFrames.empty() || !newDataLatched)) {
+        signalLayerUpdate();
+    }
+
+    // enter boot animation on first buffer latch
+    if (CC_UNLIKELY(mBootStage == BootStage::BOOTLOADER && newDataLatched)) {
+        ALOGI("Enter boot animation");
+        mBootStage = BootStage::BOOTANIMATION;
+    }
+
+    if (mNumClones > 0) {
+        mDrawingState.traverse([&](Layer* layer) { layer->updateCloneBufferInfo(); });
+    }
+
+    // Only continue with the refresh if there is actually new work to do
+    return !mLayersWithQueuedFrames.empty() && newDataLatched;
+}
+```
 
 
 
 
-8。5。2SF工作线程分析
+
+
+
+
+
 SF中的工作线程就是用来做图像混合的，比起AudioFlinger来，它相当简单，下面是
 它的代码：
 [-->SurfaceFlinger。cpp]
@@ -333,7 +731,6 @@ mVisibleRegionsDirty;
 还记得前面所说的mCurrentState吗?它保存了所有显示层的信息，而绘制的时候使用的
 mDrawingstate则保存了当前需要显示的显示层信息。
 */
-
 
 Page379
 第8章深入理解Surface系统
@@ -1424,8 +1821,9 @@ int32_tqueued;
 do{
 queued=stack。queued;
 if(queued
+
 0){
-==
+
 returnNOTENOUGHDATA;
 
 
