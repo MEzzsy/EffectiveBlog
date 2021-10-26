@@ -10,27 +10,22 @@ BufferQueueLayer::BufferQueueLayer(const LayerCreationArgs& args) : BufferLayer(
 void BufferQueueLayer::onFirstRef() {
     BufferLayer::onFirstRef();
 
-    // Creates a custom BufferQueue for SurfaceFlingerConsumer to use
-    sp<IGraphicBufferProducer> producer;
-    sp<IGraphicBufferConsumer> consumer;
+    sp<IGraphicBufferProducer> producer;// 类型是BufferQueueProducer
+    sp<IGraphicBufferConsumer> consumer;// 类型是BufferQueueConsumer
     mFlinger->getFactory().createBufferQueue(&producer, &consumer, true);
-    // MonitoredProducer
+    // 类型是MonitoredProducer
     mProducer = mFlinger->getFactory().createMonitoredProducer(producer, mFlinger, this);
-    // BufferLayerConsumer
+    // 类型是BufferLayerConsumer
     mConsumer = mFlinger->getFactory().createBufferLayerConsumer(consumer, mFlinger->getRenderEngine(), mTextureName, this);
+    // 。。。
+    mContentsChangedListener = new ContentsChangedListener(this);
+    mConsumer->setContentsChangedListener(mContentsChangedListener);
     // ...
 }
 ```
 
 frameworks/native/services/surfaceflinger/SurfaceFlingerDefaultFactory.cpp
-
-```cpp
-void DefaultFactory::createBufferQueue(sp<IGraphicBufferProducer>* outProducer,
-                                       sp<IGraphicBufferConsumer>* outConsumer,
-                                       bool consumerIsSurfaceFlinger) {
-    BufferQueue::createBufferQueue(outProducer, outConsumer, consumerIsSurfaceFlinger);
-}
-```
+中间过程代码略
 
 frameworks/native/libs/gui/BufferQueue.cpp
 
@@ -182,15 +177,24 @@ status_t BufferQueueProducer::queueBuffer(int slot, const QueueBufferInput &inpu
 
 ### BufferLayerConsumer的创建
 
+BufferQueue的创建隔得远，再看一遍：
+
 ```cpp
+BufferQueueLayer::BufferQueueLayer(const LayerCreationArgs& args) : BufferLayer(args) {}
+
 void BufferQueueLayer::onFirstRef() {
-    // ...
-    sp<IGraphicBufferConsumer> consumer;
-    // BufferQueue内部创建的consumer是BufferQueueConsumer
+    BufferLayer::onFirstRef();
+
+    sp<IGraphicBufferProducer> producer;// 类型是BufferQueueProducer
+    sp<IGraphicBufferConsumer> consumer;// 类型是BufferQueueConsumer
     mFlinger->getFactory().createBufferQueue(&producer, &consumer, true);
-    // ...
-    // createBufferLayerConsumer内部创建的是BufferLayerConsumer
+    // 类型是MonitoredProducer
+    mProducer = mFlinger->getFactory().createMonitoredProducer(producer, mFlinger, this);
+    // 类型是BufferLayerConsumer
     mConsumer = mFlinger->getFactory().createBufferLayerConsumer(consumer, mFlinger->getRenderEngine(), mTextureName, this);
+    // 。。。
+    mContentsChangedListener = new ContentsChangedListener(this);
+    mConsumer->setContentsChangedListener(mContentsChangedListener);
     // ...
 }
 ```
@@ -206,31 +210,156 @@ BufferLayerConsumer::BufferLayerConsumer(const sp<IGraphicBufferConsumer>& bq, r
 ```cpp
 ConsumerBase::ConsumerBase(const sp<IGraphicBufferConsumer>& bufferQueue, bool controlledByApp) :
         mAbandoned(false),
-        mConsumer(bufferQueue),
+        mConsumer(bufferQueue),// mConsumer的类型是BufferQueueConsumer
         mPrevFinalReleaseFence(Fence::NO_FENCE) {
     // ...
     wp<ConsumerListener> listener = static_cast<ConsumerListener*>(this);
     sp<IConsumerListener> proxy = new BufferQueue::ProxyConsumerListener(listener);
 
     status_t err = mConsumer->consumerConnect(proxy, controlledByApp);
-    if (err != NO_ERROR) {
-        CB_LOGE("ConsumerBase: error connecting to BufferQueue: %s (%d)",
-                strerror(-err), err);
-    } else {
-        mConsumer->setConsumerName(mName);
+    // 。。。
+}
+```
+
+### 消费者回调设置
+
+```cpp
+status_t BufferQueueConsumer::connect(const sp<IConsumerListener>& consumerListener, bool controlledByApp) {
+    // ...
+    mCore->mConsumerListener = consumerListener;
+    // ...
+    return NO_ERROR;
+}
+```
+
+当生产者queueBuffer触发回调时，回调对象就是这个consumerListener：
+
+```cpp
+status_t BufferQueueProducer::queueBuffer(int slot, const QueueBufferInput &input, QueueBufferOutput *output) {
+    // ...
+    sp<IConsumerListener> frameAvailableListener;
+    // ...
+    frameAvailableListener = mCore->mConsumerListener;
+	// ...
+    if (frameAvailableListener != nullptr) {
+    	frameAvailableListener->onFrameAvailable(item);
+    }
+	// ...
+    return NO_ERROR;
+}
+```
+
+consumerListener（类型是ConsumerBase）的onFrameAvailable：
+
+```cpp
+void ConsumerBase::onFrameAvailable(const BufferItem& item) {
+	// ...
+    sp<FrameAvailableListener> listener;
+    {
+        Mutex::Autolock lock(mFrameAvailableMutex);
+        listener = mFrameAvailableListener.promote();// promote函数是将wp升级为sp
+    }
+
+    if (listener != nullptr) {
+        // ...
+        listener->onFrameAvailable(item);
     }
 }
 ```
 
->   TODO 这里为什么要代理，难道在不同进程？
+可以看到，ConsumerBase的回调并不是真正的实现，真正的实现在哪呢？看一下mFrameAvailableListener的赋值，在BufferQueueLayer的创建中：
 
-### consumerConnect
+```cpp
+BufferQueueLayer::BufferQueueLayer(const LayerCreationArgs& args) : BufferLayer(args) {}
 
->   目前看到这里有点混，主要是WMS进程和SZ进程的联系，以及各个类型。后续再进行梳理
+void BufferQueueLayer::onFirstRef() {
+    // ...
+    sp<IGraphicBufferConsumer> consumer;// 类型是BufferQueueConsumer
+    // ...
+    // 类型是BufferLayerConsumer
+    mConsumer = mFlinger->getFactory().createBufferLayerConsumer(consumer, mFlinger->getRenderEngine(), mTextureName, this);
+    // 。。。
+    mContentsChangedListener = new ContentsChangedListener(this);
+    mConsumer->setContentsChangedListener(mContentsChangedListener);
+    // ...
+}
+```
 
-# 未完待续
+setContentsChangedListener：
 
+```cpp
+void ConsumerBase::setFrameAvailableListener(const wp<FrameAvailableListener>& listener) {
+    // ...
+    mFrameAvailableListener = listener;
+}
+```
 
+所以消费者回调的具体实现类型是BufferQueueLayer。
+
+```cpp
+void BufferQueueLayer::onFrameAvailable(const BufferItem& item) {
+    // ...
+    mFlinger->signalLayerUpdate();
+    mConsumer->onBufferAvailable(item);
+}
+```
+
+signalLayerUpdate内部会触发SF的handlePageFlip。
+
+### acquireBuffer
+
+```cpp
+status_t BufferQueueConsumer::acquireBuffer(BufferItem* outBuffer, nsecs_t expectedPresent, uint64_t maxFrameNumber) {
+    // ...
+    sp<IProducerListener> listener;
+    {
+        // 取出元素
+        // 更新Slot的状态为ACQUIRED
+        mSlots[slot].mBufferState.acquire();
+		// ...
+    }
+
+    if (listener != nullptr) {
+        for (int i = 0; i < numDroppedBuffers; ++i) {
+            // 回调
+            listener->onBufferReleased();
+        }
+    }
+
+    return NO_ERROR;
+}
+```
+
+### releaseBuffer
+
+消费者获取到Slot后开始消费数据（典型的消费如SurfaceFlinger的UI合成），消费完毕后，需要告知BufferQueueCore这个Slot被消费者消费完毕了，可以给生产者重新生产数据，releaseBuffer流程如下：
+
+```cpp
+status_t BufferQueueConsumer::releaseBuffer(int slot, uint64_t frameNumber, const sp<Fence>& releaseFence, EGLDisplay eglDisplay, EGLSyncKHR eglFence) {
+    // ...
+
+    sp<IProducerListener> listener;
+    {
+        // ...
+        // 将Slot的状态扭为RELEASE
+        mSlots[slot].mBufferState.release();
+        // ...
+        if (mCore->mBufferReleasedCbEnabled) {
+            listener = mCore->mConnectedProducerListener;
+        }
+        // ...
+    }
+    
+    // 回调生产者
+    if (listener != nullptr) {
+        listener->onBufferReleased();
+    }
+
+    return NO_ERROR;
+}
+```
+
+## 小结
 
 1.   BufferQueue
      可以认为BufferQueue是一个服务中心，IGraphicBufferProducer和IGraphicBufferConsumer
@@ -241,6 +370,16 @@ ConsumerBase::ConsumerBase(const sp<IGraphicBufferConsumer>& bufferQueue, bool c
      IGraphicBufferConsumer是与IGraphicBufferProducer相对应的，它的操作同样受到BufferQueue的管控。当一块buffer已经就绪后，IGraphicBufferConsumer就可以开始工作了。
 
 ![12](assets/12.jpg)
+
+# 未完待续
+
+TODO 
+
+1.   VSYNC信号的处理，即`mFlinger->signalLayerUpdate();`
+2.    listener->onBufferReleased();
+3.   listener->onBufferReleased();
+
+
 
 # SurfaceFlinger分析
 
@@ -647,7 +786,7 @@ bool SurfaceFlinger::handlePageFlip() {
 
 
 
-
+# VSYNC信号
 
 SF中的工作线程就是用来做图像混合的，比起AudioFlinger来，它相当简单，下面是
 它的代码：
