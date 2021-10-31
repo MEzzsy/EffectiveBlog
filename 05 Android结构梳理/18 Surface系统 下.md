@@ -371,19 +371,7 @@ status_t BufferQueueConsumer::releaseBuffer(int slot, uint64_t frameNumber, cons
 
 ![12](assets/12.jpg)
 
-# 未完待续
-
-TODO 
-
-1.   VSYNC信号的处理，即`mFlinger->signalLayerUpdate();`
-2.    listener->onBufferReleased();
-3.   listener->onBufferReleased();
-
-
-
-# SurfaceFlinger分析
-
-## SurfaceFlinger进程的启动
+# SurfaceFlinger进程的启动
 
 >   和书中说的不同，SurfaceFlinger单独放在了一个进程。
 >
@@ -454,9 +442,9 @@ SurfaceFlinger进程的启动主要是这几步：
 3.   调用SurfaceFlinger的init函数。
 4.   调用SurfaceFlinger的run函数，等待Message。
 
-## SF消息循环
+# SF消息循环
 
-涉及类型：
+涉及类型：MessageQueue、Looper、Handler。在SF的初始化过程中会创建这些对象。
 
 ```cpp
 void SurfaceFlinger::onFirstRef() {
@@ -472,9 +460,7 @@ void MessageQueue::init(const sp<SurfaceFlinger>& flinger) {
 }
 ```
 
-MessageQueue、Looper、Handler。
-
-### waitMessage
+## waitMessage
 
 ```cpp
 void SurfaceFlinger::run() {
@@ -491,21 +477,7 @@ void MessageQueue::waitMessage() {
     do {
         IPCThreadState::self()->flushCommands();
         int32_t ret = mLooper->pollOnce(-1);
-        switch (ret) {
-            case Looper::POLL_WAKE:
-            case Looper::POLL_CALLBACK:
-                continue;
-            case Looper::POLL_ERROR:
-                ALOGE("Looper::POLL_ERROR");
-                continue;
-            case Looper::POLL_TIMEOUT:
-                // timeout (should not happen)
-                continue;
-            default:
-                // should not happen
-                ALOGE("Looper::pollOnce() returned unknown status %d", ret);
-                continue;
-        }
+        // ...
     } while (true);
 }
 ```
@@ -526,21 +498,11 @@ int Looper::pollInner(int timeoutMillis) {
     while (mMessageEnvelopes.size() != 0) {
         // ...
         const MessageEnvelope& messageEnvelope = mMessageEnvelopes.itemAt(0);
-        if (messageEnvelope.uptime <= now) {
-            // ...
-            { // obtain handler
-                sp<MessageHandler> handler = messageEnvelope.handler;
-                Message message = messageEnvelope.message;
-                mMessageEnvelopes.removeAt(0);
-                mSendingMessage = true;
-                mLock.unlock();
-                handler->handleMessage(message);
-            } // release handler
-
-            mLock.lock();
-            mSendingMessage = false;
-            result = POLL_CALLBACK;
-        } 
+        // ...
+        sp<MessageHandler> handler = messageEnvelope.handler;
+        Message message = messageEnvelope.message;
+		// ...
+		handler->handleMessage(message);
         // ...
     }
     // ...
@@ -584,52 +546,7 @@ void SurfaceFlinger::onMessageReceived(int32_t what, int64_t vsyncId, nsecs_t ex
 }
 ```
 
-```cpp
-void SurfaceFlinger::onMessageInvalidate(int64_t vsyncId, nsecs_t expectedVSyncTime) {
-    // ...
-    bool refreshNeeded;
-    {
-        // ...
-        refreshNeeded = handleMessageTransaction();
-        refreshNeeded |= handleMessageInvalidate();
-        // ...
-    }
-    // ...
-    refreshNeeded |= mRepaintEverything;
-    if (refreshNeeded && CC_LIKELY(mBootStage != BootStage::BOOTLOADER)) {
-        // Signal a refresh if a transaction modified the window state,
-        // a new buffer was latched, or if HWC has requested a full
-        // repaint
-        // ...
-        onMessageRefresh();
-    }
-    notifyRegionSamplingThread();
-}
-```
-
-```cpp
-bool SurfaceFlinger::handleMessageInvalidate() {
-    ATRACE_CALL();
-    bool refreshNeeded = handlePageFlip();
-
-    // Send on commit callbacks
-    mTransactionCallbackInvoker.sendCallbacks();
-
-    if (mVisibleRegionsDirty) {
-        computeLayerBounds();
-    }
-
-    for (auto& layer : mLayersPendingRefresh) {
-        Region visibleReg;
-        visibleReg.set(layer->getScreenBounds());
-        invalidateLayerStack(layer, visibleReg);
-    }
-    mLayersPendingRefresh.clear();
-    return refreshNeeded;
-}
-```
-
-### postMessage
+## postMessage
 
 ```cpp
 void MessageQueue::postMessage(sp<MessageHandler>&& handler) {
@@ -648,141 +565,39 @@ void Looper::sendMessage(const sp<MessageHandler>& handler, const Message& messa
 void Looper::sendMessageAtTime(nsecs_t uptime, const sp<MessageHandler>& handler,
         const Message& message) {
 	// ...
-
-    size_t i = 0;
-    { // acquire lock
-        AutoMutex _l(mLock);
-
-        size_t messageCount = mMessageEnvelopes.size();
-        while (i < messageCount && uptime >= mMessageEnvelopes.itemAt(i).uptime) {
-            i += 1;
-        }
-
-        MessageEnvelope messageEnvelope(uptime, handler, message);
-        mMessageEnvelopes.insertAt(messageEnvelope, i, 1);
-
-        // Optimization: If the Looper is currently sending a message, then we can skip
-        // the call to wake() because the next thing the Looper will do after processing
-        // messages is to decide when the next wakeup time should be.  In fact, it does
-        // not even matter whether this code is running on the Looper thread.
-        if (mSendingMessage) {
-            return;
-        }
-    } // release lock
-
-    // Wake the poll loop only when we enqueue a new message at the head.
-    if (i == 0) {
-        wake();
-    }
+    MessageEnvelope messageEnvelope(uptime, handler, message);
+    mMessageEnvelopes.insertAt(messageEnvelope, i, 1);
+	// ...
 }
 ```
 
-### 小结
+## 小结
 
 SF中的消息循环和Java层中的Handler类似：
 
 1.   post一个msg到MessageQueue中，会将msg封装成一个MessageEnvelope，并放入到mMessageEnvelopes中。
 2.   处理消息时，从mMessageEnvelopes中取出一个MessageEnvelope，并从MessageEnvelope中获取msg对应的Handler，交其处理。
 
-## Vsync处理
-
-见下Vsync处理。
-
-## handlePageFlip
+# SF消息接收：onMessageReceived
 
 ```cpp
-bool SurfaceFlinger::handlePageFlip() {
-    ATRACE_CALL();
-    ALOGV("handlePageFlip");
-
-    nsecs_t latchTime = systemTime();
-
-    bool visibleRegions = false;
-    bool frameQueued = false;
-    bool newDataLatched = false;
-
-    const nsecs_t expectedPresentTime = mExpectedPresentTime.load();
-
-    // Store the set of layers that need updates. This set must not change as
-    // buffers are being latched, as this could result in a deadlock.
-    // Example: Two producers share the same command stream and:
-    // 1.) Layer 0 is latched
-    // 2.) Layer 0 gets a new frame
-    // 2.) Layer 1 gets a new frame
-    // 3.) Layer 1 is latched.
-    // Display is now waiting on Layer 1's frame, which is behind layer 0's
-    // second frame. But layer 0's second frame could be waiting on display.
-    mDrawingState.traverse([&](Layer* layer) {
-         uint32_t trFlags = layer->getTransactionFlags(eTransactionNeeded);
-         if (trFlags || mForceTransactionDisplayChange) {
-             const uint32_t flags = layer->doTransaction(0);
-             if (flags & Layer::eVisibleRegion)
-                 mVisibleRegionsDirty = true;
-         }
-
-         if (layer->hasReadyFrame()) {
-            frameQueued = true;
-            if (layer->shouldPresentNow(expectedPresentTime)) {
-                mLayersWithQueuedFrames.emplace(layer);
-            } else {
-                ATRACE_NAME("!layer->shouldPresentNow()");
-                layer->useEmptyDamage();
-            }
-         } else {
-            layer->useEmptyDamage();
+void SurfaceFlinger::onMessageReceived(int32_t what, int64_t vsyncId, nsecs_t expectedVSyncTime) {
+    switch (what) {
+        case MessageQueue::INVALIDATE: {
+            onMessageInvalidate(vsyncId, expectedVSyncTime);
+            break;
         }
-    });
-    mForceTransactionDisplayChange = false;
-
-    // The client can continue submitting buffers for offscreen layers, but they will not
-    // be shown on screen. Therefore, we need to latch and release buffers of offscreen
-    // layers to ensure dequeueBuffer doesn't block indefinitely.
-    for (Layer* offscreenLayer : mOffscreenLayers) {
-        offscreenLayer->traverse(LayerVector::StateSet::Drawing,
-                                         [&](Layer* l) { l->latchAndReleaseBuffer(); });
-    }
-
-    if (!mLayersWithQueuedFrames.empty()) {
-        // mStateLock is needed for latchBuffer as LayerRejecter::reject()
-        // writes to Layer current state. See also b/119481871
-        Mutex::Autolock lock(mStateLock);
-
-        for (const auto& layer : mLayersWithQueuedFrames) {
-            if (layer->latchBuffer(visibleRegions, latchTime, expectedPresentTime)) {
-                mLayersPendingRefresh.push_back(layer);
-            }
-            layer->useSurfaceDamage();
-            if (layer->isBufferLatched()) {
-                newDataLatched = true;
-            }
+        case MessageQueue::REFRESH: {
+            onMessageRefresh();
+            break;
         }
     }
-
-    mVisibleRegionsDirty |= visibleRegions;
-
-    // If we will need to wake up at some time in the future to deal with a
-    // queued frame that shouldn't be displayed during this vsync period, wake
-    // up during the next vsync period to check again.
-    if (frameQueued && (mLayersWithQueuedFrames.empty() || !newDataLatched)) {
-        signalLayerUpdate();
-    }
-
-    // enter boot animation on first buffer latch
-    if (CC_UNLIKELY(mBootStage == BootStage::BOOTLOADER && newDataLatched)) {
-        ALOGI("Enter boot animation");
-        mBootStage = BootStage::BOOTANIMATION;
-    }
-
-    if (mNumClones > 0) {
-        mDrawingState.traverse([&](Layer* layer) { layer->updateCloneBufferInfo(); });
-    }
-
-    // Only continue with the refresh if there is actually new work to do
-    return !mLayersWithQueuedFrames.empty() && newDataLatched;
 }
 ```
 
+1.   onMessageInvalidate内部会调用handlePageFlip来处理Layer的合成，以及BufferQueue中消费者部分。
 
+2.   onMessageRefresh会合并以及渲染输出。
 
 # Vsync处理
 
@@ -1191,3 +1006,193 @@ void MessageQueue::Handler::dispatchInvalidate(nsecs_t expectedVSyncTimestamp) {
 ## 小结
 
 Vsync信号的处理，即requestNextVsync，最终触发SF的handlePageFlip。
+
+# handlePageFlip
+
+frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp
+
+```cpp
+bool SurfaceFlinger::handlePageFlip() {
+    // 。。。
+
+    // Store the set of layers that need updates. This set must not change as
+    // buffers are being latched, as this could result in a deadlock.
+    // Example: Two producers share the same command stream and:
+    // 1.) Layer 0 is latched
+    // 2.) Layer 0 gets a new frame
+    // 2.) Layer 1 gets a new frame
+    // 3.) Layer 1 is latched.
+    // Display is now waiting on Layer 1's frame, which is behind layer 0's
+    // second frame. But layer 0's second frame could be waiting on display.
+    mDrawingState.traverse([&](Layer* layer) {
+         uint32_t trFlags = layer->getTransactionFlags(eTransactionNeeded);
+         if (trFlags || mForceTransactionDisplayChange) {
+             const uint32_t flags = layer->doTransaction(0);
+             if (flags & Layer::eVisibleRegion)
+                 mVisibleRegionsDirty = true;
+         }
+
+         if (layer->hasReadyFrame()) {
+            frameQueued = true;
+            // shouldPresentNow：是否需要显示该Layer
+            if (layer->shouldPresentNow(expectedPresentTime)) {
+                mLayersWithQueuedFrames.emplace(layer);
+            } else {
+                ATRACE_NAME("!layer->shouldPresentNow()");
+                layer->useEmptyDamage();
+            }
+         } else {
+            layer->useEmptyDamage();
+        }
+    });
+    mForceTransactionDisplayChange = false;
+
+    // 。。。
+
+    // mLayersWithQueuedFrames保存需要进行合成的Layer
+    if (!mLayersWithQueuedFrames.empty()) {
+        // 。。。
+        for (const auto& layer : mLayersWithQueuedFrames) {
+            if (layer->latchBuffer(visibleRegions, latchTime, expectedPresentTime)) {
+                mLayersPendingRefresh.push_back(layer);
+            }
+            layer->useSurfaceDamage();
+            if (layer->isBufferLatched()) {
+                newDataLatched = true;
+            }
+        }
+    }
+
+    mVisibleRegionsDirty |= visibleRegions;
+
+    // If we will need to wake up at some time in the future to deal with a
+    // queued frame that shouldn't be displayed during this vsync period, wake
+    // up during the next vsync period to check again.
+    if (frameQueued && (mLayersWithQueuedFrames.empty() || !newDataLatched)) {
+        //如果Layer中有QUEUED的帧，但是在该VSYNC检查出来不需要显示Layer, 那么说明QUEUED的帧要显示的条件还不满足，则触发下一个 VSYNC
+        signalLayerUpdate();
+    }
+    // 。。。
+    // 返回值确定是否需要刷新显示
+    return !mLayersWithQueuedFrames.empty() && newDataLatched;
+}
+```
+
+## latchBuffer
+
+```cpp
+bool BufferLayer::latchBuffer(bool& recomputeVisibleRegions, nsecs_t latchTime, nsecs_t expectedPresentTime) {
+    // ...
+    status_t err = updateTexImage(recomputeVisibleRegions, latchTime, expectedPresentTime);
+    // ...
+    return true;
+}
+```
+
+frameworks/native/services/surfaceflinger/BufferQueueLayer.cpp
+
+```cpp
+status_t BufferQueueLayer::updateTexImage(bool& recomputeVisibleRegions, nsecs_t latchTime, nsecs_t expectedPresentTime) {
+    // ...
+    status_t updateResult = mConsumer->updateTexImage(&r, expectedPresentTime, &mAutoRefresh, &queuedBuffer, maxFrameNumberToAcquire);
+    // ...
+    return NO_ERROR;
+}
+```
+
+mConsumer是BufferLayerConsumer类型的：
+
+frameworks/native/services/surfaceflinger/BufferLayerConsumer.cpp
+
+```cpp
+status_t BufferLayerConsumer::updateTexImage(BufferRejecter* rejecter, nsecs_t expectedPresentTime, bool* autoRefresh, bool* queuedBuffer, uint64_t maxFrameNumber) {
+    // ...
+
+    BufferItem item;
+    // Acquire the next buffer.
+    // In asynchronous mode the list is guaranteed to be one buffer deep, while in synchronous mode we use the oldest buffer.
+    status_t err = acquireBufferLocked(&item, expectedPresentTime, maxFrameNumber);
+    // ...
+
+    // We call the rejecter here, in case the caller has a reason to
+    // not accept this buffer.  This is used by SurfaceFlinger to
+    // reject buffers which have the wrong size
+    int slot = item.mSlot;
+    if (rejecter && rejecter->reject(mSlots[slot].mGraphicBuffer, item)) {
+        releaseBufferLocked(slot, mSlots[slot].mGraphicBuffer);
+        return BUFFER_REJECTED;
+    }
+
+    // Release the previous buffer.
+    err = updateAndReleaseLocked(item, &mPendingRelease);
+    if (err != NO_ERROR) {
+        return err;
+    }
+    // ...
+    return err;
+}
+```
+
+### acquireBufferLocked
+
+```cpp
+status_t BufferLayerConsumer::acquireBufferLocked(BufferItem* item, nsecs_t presentWhen, uint64_t maxFrameNumber) {
+    status_t err = ConsumerBase::acquireBufferLocked(item, presentWhen, maxFrameNumber);
+    // ...
+    return NO_ERROR;
+}
+```
+
+```cpp
+status_t ConsumerBase::acquireBufferLocked(BufferItem *item, nsecs_t presentWhen, uint64_t maxFrameNumber) {
+    // ...
+    status_t err = mConsumer->acquireBuffer(item, presentWhen, maxFrameNumber);
+    // ...
+    return OK;
+}
+```
+
+acquireBufferLocked最终触发了BufferQueue循环中的acquireBuffer。
+
+### releaseBufferLocked
+
+```cpp
+status_t ConsumerBase::releaseBufferLocked(
+        int slot, const sp<GraphicBuffer> graphicBuffer,
+        EGLDisplay display, EGLSyncKHR eglFence) {
+    // ...
+    status_t err = mConsumer->releaseBuffer(slot, mSlots[slot].mFrameNumber,
+            display, eglFence, mSlots[slot].mFence);
+    // ...
+
+    return err;
+}
+```
+
+releaseBufferLocked最终触发了BufferQueue循环中的releaseBuffer。
+
+### updateAndReleaseLocked
+
+```cpp
+status_t BufferLayerConsumer::updateAndReleaseLocked(const BufferItem& item, PendingRelease* pendingRelease) {
+    // ...
+	status_t status = releaseBufferLocked(mCurrentTexture, mCurrentTextureBuffer->graphicBuffer());
+    // ...
+    return err;
+}
+```
+
+updateAndReleaseLocked最终也触发了BufferQueue循环中的releaseBuffer。
+
+# onMessageRefresh
+
+```cpp
+void SurfaceFlinger::onMessageRefresh() {
+   	// ...
+    postFrame();
+    postComposition();
+	// ...
+}
+```
+
+postComposition将图像传递到物理屏幕。
