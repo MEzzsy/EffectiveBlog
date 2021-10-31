@@ -1205,8 +1205,6 @@ void BufferQueue::createBufferQueue(sp<IGraphicBufferProducer>* outProducer,
 }
 ```
 
->   TODO 看上面的代码，应该只是创建producer和consumer对象，但具体生产buffer和消费buffer应该在别的地方。
-
 ### 小结
 
 在处理SurfaceControl创建期间，会创建一个图层。
