@@ -103,6 +103,7 @@
   - [17 Surface系统 上](./05 Android结构梳理/17 Surface系统 上.md)
   - [18 Surface系统 下](./05 Android结构梳理/18 Surface系统 下.md)
   - [19 Surface系统总结](./05 Android结构梳理/19 Surface系统总结.md)
+  - [20 硬件加速](./05 Android结构梳理/20 硬件加速.md)
 - [06 Java虚拟机](./06 Java虚拟机/README.md)
   - [01-Java介绍](./06 Java虚拟机/01-Java介绍.md)
   - [02-内存区域](./06 Java虚拟机/02-内存区域.md)
