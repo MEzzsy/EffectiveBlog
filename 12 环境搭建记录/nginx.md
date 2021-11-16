@@ -1,24 +1,26 @@
-# 创建文件夹
+# 搭建nginx
+
+## 创建文件夹
 
 ```
 mkdir nginx
 cd nginx
 ```
 
-# 下载并解压
+## 下载并解压
 
 ```
 wget http://nginx.org/download/nginx-1.19.2.tar.gz
 tar -zxvf nginx-1.19.2.tar.gz
 ```
 
-# 安装nginx依赖包
+## 安装nginx依赖包
 
 ```
 yum -y install gcc zlib zlib-devel pcre-devel openssl openssl-devel
 ```
 
-# 安装nginx 
+## 安装nginx 
 
 ```
 进入nginx目录：
@@ -36,7 +38,7 @@ make   install
 
 安装完，nginx在/usr/local/nginx下
 
-# 配置nginx
+## 配置nginx
 
 ```
 vim /usr/local/nginx/conf/nginx.conf
@@ -46,7 +48,7 @@ vim /usr/local/nginx/conf/nginx.conf
 
 端口改为8080，最好不要占用默认的80端口。
 
-# 配置环境变量
+## 配置环境变量
 
 ```
 ln -s /usr/local/nginx/sbin/nginx /usr/local/bin/
@@ -54,7 +56,7 @@ ln -s /usr/local/nginx/sbin/nginx /usr/local/bin/
 
 /usr/local/bin/就是环境变量目录
 
-# 启动nginx
+## 启动nginx
 
 ```
 启动：
@@ -62,6 +64,45 @@ nginx
 
 查看 nginx 进程：
 ps -ef | grep  nginx
+```
+
+# 登录权限认证
+
+## 安装htpassed工具
+
+通过yum安装
+
+```
+yum -y install httpd-tools
+```
+
+设置用户名和密码，并把用户名、密码保存到指定文件中：
+
+```
+htpasswd -c [passwfile] [username]
+```
+
+![3](assets/3.jpg) 
+
+## 修改nginx配置文件
+
+```
+vim /usr/local/nginx/conf/nginx.conf
+```
+
+```
+server {
+        listen       4000;                		#nginx监听的端口
+        server_name  117.51.142.225;         	#拦截的用户访问路径
+        # 访问本地绝对路径下的静态html    
+        location / {
+            root   /root/EffectiveBlog/_book;	#gitbook build 生成的文件
+            index  index.html index.htm;
+		}
+		#新增下面两行
+   		auth_basic "请输入密码"; #这里是验证时的提示信息 
+   		auth_basic_user_file /root/password/mima;
+}
 ```
 
 # 遇到的问题
@@ -72,3 +113,12 @@ ps -ef | grep  nginx
 
 ![2](assets/2.jpg)
 
+## 没有读取文件的权限
+
+将nginx.config的user改为和启动用户一致：
+
+![4](assets/4.jpg)
+
+## 启动Nginx时候报错
+
+https://blog.csdn.net/weixin_45525272/article/details/107980445
