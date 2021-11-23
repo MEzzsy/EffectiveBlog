@@ -62,7 +62,10 @@ public void dispatchMessage(@NonNull Message msg) {
 
 **异步消息总结**
 
-
+1.   消息队列循环执行，不一定是完全按照时间串行执行的，是可以有异步消息的。
+2.   异步消息相当于高优msg，当存在Barrier且存在异步消息时，异步消息会被处理。
+3.   异步消息必须结合Barrier使用，如果没有设置Barrier，也是没效果的。
+4.   设置了Barrier，要对应的移除掉它，否则同步消息再也不会被处理。
 
 # 几个问题
 
