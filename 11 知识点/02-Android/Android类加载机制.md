@@ -233,60 +233,41 @@ TODO PathClassLoader是在另一个进程中创建的，那么是怎么获取实
 
 # 个人总结
 
-https://www.jianshu.com/p/7193600024e7
-
-https://www.cnblogs.com/NeilZhang/p/8467721.html
-
-https://www.jianshu.com/p/a620e368389a (good)
-
-https://juejin.im/post/5a0ad2b551882531ba1077a2（good）
+## Java和Android的区别
 
 1.   Java中的ClassLoader是加载class文件，Android中是加载dex文件。Android中的`java.lang.ClassLoader`这个类也不同于Java中的`java.lang.ClassLoader`。
 2.   Android平台上虚拟机运行的是Dex字节码，一种对class文件优化的产物。Android把所有Class文件进行合并，优化，然后生成一个最终的class.dex，目的是把不同class文件重复的东西只需保留一份，如果Android应用不进行分dex处理，最后一个应用的apk只会有一个dex文件。 
 3.   和java虚拟机中不同的是BootClassLoader是ClassLoader内部类，由java代码实现而不是c++实现。
 
-PathClassLoader用来操作本地文件系统中的文件和目录的集合。并不会加载来源于网络中的类。Android采用这个类加载器一般是用于加载系统类和它自己的应用类。这个应用类放置在data/data/包名下。 
+## PathClassLoader与DexClassLoader的区别
 
-DexClassLoader可以加载一个未安装的APK，也可以加载其它包含dex文件的JAR/ZIP类型的文件。DexClassLoader需要一个对应用私有且可读写的文件夹来缓存优化后的class文件。而且一定要注意不要把优化后的文件存放到外部存储上，避免使自己的应用遭受代码注入攻击。
+1.   PathClassLoader只能加载已经安装到Android系统中的apk文件（/data/app目录），是Android默认使用的类加载器。（其实这说的应该是在dalvik虚拟机上，在art虚拟机上PathClassLoader可以加载未安装的apk的dex）。
+2.   DexClassLoader可以加载任意目录下的dex/jar/apk/zip文件，比PathClassLoader更灵活。
 
-> Android中具体负责类加载的并不是哪个ClassLoader，而是通过DexFile的defineClassNative()方法来加载的。 
-
-通过观察PathClassLoader与DexClassLoader的源码我们就可以确定，真正有意义的处理逻辑肯定在BaseDexClassLoader中 。
-
-```java
-public class BaseDexClassLoader extends ClassLoader {
-    ...
-    public BaseDexClassLoader(String dexPath， File optimizedDirectory， String libraryPath， ClassLoader parent){
-        super(parent);
-        this.pathList = new DexPathList(this， dexPath， libraryPath， optimizedDirectory);
-    }
-    ...
-}
-```
-
-- dexPath：要加载的程序文件（一般是dex文件，也可以是jar/apk/zip文件）所在目录。
-- optimizedDirectory：dex文件的输出目录（因为在加载jar/apk/zip等压缩格式的程序文件时会解压出其中的dex文件，该目录就是专门用于存放这些被解压出来的dex文件的）。
-- libraryPath：加载程序文件时需要用到的库路径。
-- parent：父加载器
-
-> 上面说到的"程序文件"这个概念是我自己定义的，因为从一个完整App的角度来说，程序文件指定的就是apk包中的classes.dex文件；但从热修复的角度来看，程序文件指的是补丁。 
+## 热修复基本原理
 
 DexPathList的构造函数是将一个个的程序文件（可能是dex、apk、jar、zip）封装成一个个Element对象，最后添加到Element集合中。 
 
+```java
+// DexPathList#findClass
+public Class<?> findClass(String name, List<Throwable> suppressed) {
+    for (Element element : dexElements) {
+        Class<?> clazz = element.findClass(name, definingContext, suppressed);
+        if (clazz != null) {
+            return clazz;
+        }
+    }
+
+    if (dexElementsSuppressedExceptions != null) {
+        suppressed.addAll(Arrays.asList(dexElementsSuppressedExceptions));
+    }
+    return null;
+}
+```
+
 结合DexPathList的构造函数，其实DexPathList的findClass()方法很简单，就只是对Element数组进行遍历，一旦找到类名与name相同的类时，就直接返回这个class，找不到则返回null。 
 
-> 为什么是调用DexFile的loadClassBinaryName()方法来加载class？这是因为一个Element对象对应一个dex文件，而一个dex文件则包含多个class。也就是说Element数组中存放的是一个个的dex文件，而不是class文件！！！这可以从Element这个类的源码和dex文件的内部结构看出。
+数组的遍历是有序的，假设有两个dex文件存放了二进制名称相同的Class，类加载器肯定就会加载在放在数组前面的dex文件中的Class。
 
-数组的遍历是有序的，假设有两个dex文件存放了二进制名称相同的Class，类加载器肯定就会加载在放在数组前面的dex文件中的Class。现在很多热修复技术就是把修复的dex文件放在DexPathList中Element[]数组的前面，这样就实现了修复后的Class抢先加载了，达到了修改bug的目的。
-
-> 热修复基本原理
-
-## 个人总结
-
-BaseDexClassLoader中有个pathList对象，pathList中包含一个DexFile的数组dexElements ，dexPath传入的原始dex(.apk，.zip，.jar等)文件在optimizedDirectory文件夹中生成相应的优化后的odex文件，dexElements数组就是这些odex文件的集合，对于类加载呢，就是遍历这个集合。
-
-### ART虚拟机的兼容性问题
-
-**Android Runtime**（缩写为ART），在[Android 5.0](https://link.jianshu.com?t=https://zh.wikipedia.org/wiki/Android_5.0)及后续Android版本中作为正式的运行时库取代了以往的[Dalvik虚拟机](https://link.jianshu.com?t=https://zh.wikipedia.org/wiki/Dalvik虚拟机)。ART能够把应用程序的[字节码](https://link.jianshu.com?t=https://zh.wikipedia.org/wiki/字节码)转换为[机器码](https://link.jianshu.com?t=https://zh.wikipedia.org/wiki/機器碼)，是Android所使用的一种新的[虚拟机](https://link.jianshu.com?t=https://zh.wikipedia.org/wiki/虚拟机)。它与Dalvik的主要不同在于：Dalvik采用的是[JIT](https://link.jianshu.com?t=https://zh.wikipedia.org/wiki/JIT)技术，字节码都需要通过即时编译器（just in time ，JIT）转换为机器码，这会拖慢应用的运行效率，而ART采用[Ahead-of-time](https://link.jianshu.com?t=https://en.wikipedia.org/wiki/Ahead-of-time_compilation)（AOT）技术，应用在第一次安装的时候，字节码就会预先编译成机器码，这个过程叫做预编译。ART同时也改善了性能、[垃圾回收](https://link.jianshu.com?t=https://zh.wikipedia.org/wiki/垃圾回收_(計算機科學))（Garbage Collection）、应用程序除错以及性能分析。但是请注意，运行时内存占用空间较少同样意味着编译二进制需要更高的存储。
- ART模式相比原来的Dalvik，会在安装APK的时候，使用Android系统自带的**dex2oat工具**把APK里面的.dex文件转化成OAT文件，OAT文件是一种Android私有ELF文件格式，它不仅包含有从DEX文件翻译而来的本地机器指令，还包含有原来的DEX文件内容。这使得我们无需重新编译原有的APK就可以让它正常地在ART里面运行，也就是我们不需要改变原来的APK编程接口。ART模式的系统里，同样存在DexClassLoader类，包名路径也没变，只不过它的具体实现与原来的有所不同，但是接口是一致的。实际上，ART运行时就是和Dalvik虚拟机一样，实现了一套完全兼容Java虚拟机的接口。
+现在很多热修复技术就是把修复的dex文件放在DexPathList中dexElements数组的前面，这样就实现了修复后的Class抢先加载了，达到了修改bug的目的。
 
