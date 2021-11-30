@@ -1,12 +1,12 @@
 # 简介
 
-IPC，Inter-Process Communication，含义为进程间通信，是指两个进程之间进行数据交换的过程。
+IPC，Inter Process Communication，含义为进程间通信，是指两个进程之间进行数据交换的过程。
 
 Android的内核是Linux，但是它的IPC方式并不能完全继承Linux，它有自己的IPC方式，最有特色的就是Binder，也可以用Socket。
 
 # Linux进程基本概念
 
-![8](assets/255.jpg)
+<img src="assets/255.jpg" alt="8" style="zoom:50%;" />
 
 上图展示了 Liunx 中跨进程通信涉及到的一些基本概念：
 
@@ -16,13 +16,11 @@ Android的内核是Linux，但是它的IPC方式并不能完全继承Linux，它
 
 ## 进程隔离
 
-简单的说就是操作系统中，进程与进程间内存是不共享的。两个进程就像两个平行的世界，A 进程没法直接访问 B 进程的数据，这就是进程隔离的通俗解释。A 进程和 B 进程之间要进行数据交互就得采用特殊的通信机制：进程间通信（IPC）。
+简单的说就是操作系统中，进程与进程间内存是不共享的。A 进程和 B 进程之间要进行数据交互就得采用特殊的通信机制：进程间通信（IPC）。
 
 ## 用户空间和内核空间
 
 现在操作系统都是采用的虚拟存储器，对于 32 位系统而言，它的寻址空间（虚拟存储空间）就是 2 的 32 次方，也就是 4GB。操作系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也可以访问底层硬件设备的权限。为了保护用户进程不能直接操作内核，保证内核的安全，操作系统从逻辑上将虚拟空间划分为用户空间（User Space）和内核空间（Kernel Space）。针对 Linux 操作系统而言，将最高的 1GB 字节供内核使用，称为内核空间；较低的 3GB 字节供各进程使用，称为用户空间。
-
-> 简单的说就是，内核空间（Kernel）是系统内核运行的空间，用户空间（User Space）是用户程序运行的空间。为了保证安全性，它们之间是隔离的。
 
 ## 系统调用：用户态与内核态
 
@@ -55,7 +53,7 @@ copy_to_user() //将数据从内核空间拷贝到用户空间
     android:process="com.mezzsy.remote" />
 ```
 
-分别为FirstActivity 和SecondActivity指定了process 属性，并且它们的属性值不同，这意味着当前应用又增加了两个新进程。当前应用的包名为"com.mezzsy.myapplication"，当FirstActivity 启动时，系统会为它创建一个单独的进程，进程名为"com.mezzsy.myapplication:remote"，当SecondActivity启动时，系统也会为它创建一个单独的进程，进程名为“com.mezzsy.remote"。同时D06Activity没有为它指定process属性，那么它运行在默认进程中，默认进程的进程名是包名。运行一下看看效果：
+分别为FirstActivity和SecondActivity指定了process 属性，并且它们的属性值不同，这意味着当前应用又增加了两个新进程。当前应用的包名为"com.mezzsy.myapplication"，当FirstActivity 启动时，系统会为它创建一个单独的进程，进程名为"com.mezzsy.myapplication:remote"，当SecondActivity启动时，系统也会为它创建一个单独的进程，进程名为“com.mezzsy.remote"。同时D06Activity没有为它指定process属性，那么它运行在默认进程中，默认进程的进程名是包名。运行一下看看效果：
 
 输入`adb shell ps | grep "com.mezzsy"`查看相关的进程
 
@@ -105,21 +103,43 @@ User newUser = (User) in.readObject();
 in.close();
 ```
 
-Serializable是java的一个序列化接口，是一个空接口，为对象提供标准的序列化和反序列化。
+1.   Serializable是java的一个序列化接口，是一个空接口，为对象提供标准的序列化和反序列化。
+2.   serialVersionUID在序列化和反序列化中启到作用。
+     serialVersionUID相同才能够正常地被反序列化。serialVersionUID的详细工作机制是这样的：序列化的时候系统会把当前类的serialVersionUID写入序列化的文件中（也可能是其他中介），当反序列化的时候系统会去检测文件中的serialVersionUID， 看它是否和当前类的serialVersionUID一致，如果一致就说明序列化的类的版本和当前类的版本是相同的，这个时候可以成功反序列化；否则就说明当前类和序列化的类相比发生了某些变换，比如成员变量的数量、类型可能发生了改变，这个时候是无法正常反序列化的。
+3.   静态成员属于类不属于对象，不会参与序列化，加了transient的不会参与序列化。
+4.   Serializable接口之所以定义为空，是因为它只起到了一个标识的作用，告诉程序实现了它的对象是可以被序列化的，但真正序列化和反序列化的操作并不需要它来完成。
 
-serialVersionUID在序列化和反序列化中启到作用。
-
-静态成员属于类不属于对象，不会参与序列化，加了transient的不会参与序列化。
+```java
+// ObjectOutputStream的核心部分
+if (obj instanceof Class) {
+    writeClass((Class) obj, unshared);
+} else if (obj instanceof ObjectStreamClass) {
+    writeClassDesc((ObjectStreamClass) obj, unshared);
+} else if (obj instanceof String) {
+    writeString((String) obj, unshared);
+} else if (cl.isArray()) {
+    writeArray(obj, desc, unshared);
+} else if (obj instanceof Enum) {
+    writeEnum((Enum<?>) obj, desc, unshared);
+} else if (obj instanceof Serializable) {
+    writeOrdinaryObject(obj, desc, unshared);
+} else {
+    if (extendedDebugInfo) {
+        throw new NotSerializableException(
+            cl.getName() + "\n" + debugInfoStack.toString());
+    } else {
+        throw new NotSerializableException(cl.getName());
+    }
+}
+```
 
 ### Parcelable的使用
 
-序列化功能由write ToParcel方法来完成，最终是通过Parcel中的一系列 write方法来完成的；
-
-反序列化功能由CREATOR来完成，其内部标明了如何创建序列化对象和数组，并通过Parcel的一系列 read 方法来完成反序列化过程；
-
-内容描述功能由describeContents方法来完成，几乎在所有情况下这个方法都应该返回0，仅当当前对象中存在文件描述符时，此方法返回1。
-
-需要注意的是，在User(Parcel in)方法中，由于book是另一个可序列化对象，所以它的反序列化过程需要传递当前线程的上下文类加载器，否则会报无法找到类的错误。
+1.   序列化功能由writeToParcel方法来完成，最终是通过Parcel中的一系列write方法来完成的；
+2.   反序列化功能由CREATOR来完成，其内部标明了如何创建序列化对象和数组，并通过Parcel的一系列 read方法来完成反序列化过程；
+3.   内容描述功能由describeContents方法来完成，几乎在所有情况下这个方法都应该返回0，仅当当前对象中存在文件描述符时，此方法返回1。
+4.   需要注意的是，在User(Parcel in)方法中，由于book是另一个可序列化对象，所以它的反序列化过程需要传递当前线程的上下文类加载器，否则会报无法找到类的错误。
+5.   Parcelable的原理是将对象转为byte数组，所以可以将byte数组存储到本地。
 
 ```java
 class User implements Parcelable {
@@ -127,9 +147,8 @@ class User implements Parcelable {
     private String name;
 
     private User(Parcel in) {
-        book = in.readParcelable(Book.class.getClassLoader());//AndroidStudio自动创建。
-//艺术探索中的描写			book = in.readParcelable(Thread.currentThread().getContextClassLoader());
-
+        //AndroidStudio自动创建。
+        book = in.readParcelable(Book.class.getClassLoader());
         name = in.readString();
     }
 
@@ -168,11 +187,19 @@ class User implements Parcelable {
 | writeToParcel(Parcel out, int flags) | 将当前对象写入序列化结构中，其中flags标识有两种值：0或者1。为1时标识当前对象需要作为返回值返回，不能立即释放资源，几乎所有情况都为0 | PARCELABLE_ WRITE RETURN VALUE |
 | describeContents                     | 返回当前对象的内容描述。如果含有文件描述符，返回1，否则返回0，几乎所有情况都返回0 | CONTENTS FILE_ DESCRIPTOR      |
 
+### 2者的选择
+
+既然Parcelable和Serializable都能实现序列化并且都可用于Intent间的数据传递，那么二者该如何选取呢？
+
+Serializable是Java中的序列化接口，其使用起来简单但是开销很大，序列化和反序列化过程需要大量I/O操作。而Parcelable是Android中的序列化方式，因此更适合用在Android平台上，它的缺点就是使用起来稍微麻烦点，但是它的效率很高，这是Android推荐的序列化方式，因此首选Parcelable。 
+
+Parcelable主要用在内存序列化上，通过Parcelable将对象序列化到存储设备中或者将对象序列化后通过网络传输也都是可以的，但是这个过程会稍显复杂，因此在这两种情况下建议大家使用Serializable。 
+
 # Binder笔记
 
 ## Binder设计原因
 
-目前linux支持的IPC包括传统的管道，System V IPC，即消息队列/共享内存/信号量，以及socket，其中只有socket支持Client-Server的通信方式。
+目前linux支持的IPC包括传统的管道，即消息队列/共享内存/信号量，以及socket，其中只有socket支持Client-Server的通信方式。
 
 另一方面是传输性能。socket作为一款通用接口，其传输效率低，开销大，主要用在跨网络的进程间通信和本机上进程间的低速通信。消息队列和管道采用存储-转发方式，即数据先从发送方缓存区拷贝到内核开辟的缓存区中，然后再从内核缓存区拷贝到接收方缓存区，至少有两次拷贝过程。共享内存虽然无需拷贝，但控制复杂，难以使用。
 
@@ -184,9 +211,9 @@ class User implements Parcelable {
 | Binder               | 1                |
 | Socket/管道/消息队列 | 2                |
 
-还有一点是出于安全性考虑。Android作为一个开放式，拥有众多开发者的的平台，应用程序的来源广泛，确保智能终端的安全是非常重要的。终端用户不希望从网上下载的程序在不知情的情况下偷窥隐私数据，连接无线网络，长期操作底层设备导致电池很快耗尽等等。传统IPC没有任何安全措施，完全依赖上层协议来确保。首先传统IPC的接收方无法获得对方进程可靠的UID/PID（用户ID/进程ID），从而无法鉴别对方身份。Android为每个安装好的应用程序分配了自己的UID，故进程的UID是鉴别进程身份的重要标志。使用传统IPC只能由用户在数据包里填入UID/PID，但这样不可靠，容易被恶意程序利用。可靠的身份标记只有由IPC机制本身在内核中添加。其次传统IPC访问接入点是开放的，无法建立私有通道。比如命名管道的名称，system V的键值，socket的ip地址或文件名都是开放的，只要知道这些接入点的程序都可以和对端建立连接，不管怎样都无法阻止恶意程序通过猜测接收方地址获得连接。
+还有一点是出于安全性考虑。传统IPC没有任何安全措施，完全依赖上层协议来确保。首先传统IPC的接收方无法获得对方进程可靠的UID/PID（用户ID/进程ID），从而无法鉴别对方身份。Android为每个安装好的应用程序分配了自己的UID，故进程的UID是鉴别进程身份的重要标志。使用传统IPC只能由用户在数据包里填入UID/PID，但这样不可靠，容易被恶意程序利用。可靠的身份标记只有由IPC机制本身在内核中添加。其次传统IPC访问接入点是开放的，无法建立私有通道。比如命名管道的名称，system V的键值，socket的ip地址或文件名都是开放的，只要知道这些接入点的程序都可以和对端建立连接，不管怎样都无法阻止恶意程序通过猜测接收方地址获得连接。
 
-基于以上原因，Android需要建立一套新的IPC机制来满足系统对通信方式，传输性能和安全性的要求，这就是Binder。Binder基于Client-Server通信模式，传输过程只需一次拷贝，为发送发添加UID/PID身份，既支持实名Binder也支持匿名Binder，安全性高。
+基于以上原因，Android需要建立一套新的IPC机制来满足系统对通信方式，传输性能和安全性的要求，这就是Binder。Binder基于Client-Server通信模式，传输过程只需一次拷贝，为发送方添加UID/PID身份，既支持实名Binder也支持匿名Binder，安全性高。
 
 ## Binder的设计思想
 
@@ -197,21 +224,22 @@ Binder使用Client-Server通信方式：一个进程作为Server提供诸如视�
 
 与其它IPC不同，Binder**使用了面向对象的思想**来描述作为访问接入点的Binder及其在Client中的入口：Binder是一个实体位于Server中的对象，该对象提供了一套方法用以实现对服务的请求，就像类的成员函数。遍布于client中的入口可以看成指向这个binder对象的引用，一旦获得了这个引用就可以调用该对象的方法访问server。在Client看来，通过Binder引用调用其提供的方法和通过引用调用其它任何本地对象的方法并无区别，尽管前者的实体位于远端Server中，而后者实体位于本地内存中。
 
-面向对象思想的引入将进程间通信转化为通过对某个Binder对象的引用调用该对象的方法，而其独特之处在于Binder对象是一个可以跨进程引用的对象，它的实体位于一个进程中，而它的引用却遍布于系统的各个进程之中。最诱人的是，这个引用和java里引用一样既可以是强类型，也可以是弱类型，而且可以从一个进程传给其它进程，让大家都能访问同一Server，就象将一个对象或引用赋值给另一个引用一样。**Binder模糊了进程边界，淡化了进程间通信过程，整个系统仿佛运行于同一个面向对象的程序之中。形形色色的Binder对象以及星罗棋布的引用仿佛粘接各个应用程序的胶水，这也是Binder在英文里的原意。**
+面向对象思想的引入将进程间通信转化为通过对某个Binder对象的引用调用该对象的方法，而其独特之处在于Binder对象是一个可以跨进程引用的对象，它的实体位于一个进程中，而它的引用却遍布于系统的各个进程之中。
+最诱人的是，这个引用和java里引用一样既可以是强类型，也可以是弱类型，而且可以从一个进程传给其它进程，让大家都能访问同一Server，就象将一个对象或引用赋值给另一个引用一样。
 
 当然面向对象只是针对应用程序而言，对于Binder驱动和内核其它模块一样使用C语言实现，没有类和对象的概念。Binder驱动为面向对象的进程间通信提供底层支持。
 
-## Binder 通信模型
+## Binder通信模型
 
 Binder框架定义了四个角色：Server，Client，ServiceManager（以后简称SMgr）以及Binder驱动。其中Server，Client，SMgr运行于用户空间，驱动运行于内核空间。这四个角色的关系和互联网类似：Server是服务器，Client是客户终端，SMgr是域名服务器（DNS），驱动是路由器。
 
-### Binder 驱动
+### Binder驱动
 
 和路由器一样，Binder驱动虽然默默无闻，却是通信的核心。尽管名叫‘驱动’，实际上和硬件设备没有任何关系，只是实现方式和设备驱动程序是一样的：它工作于内核态，提供标准文件操作。
 
 **驱动负责进程之间Binder通信的建立，Binder在进程之间的传递，Binder引用计数管理，数据包在进程之间的传递和交互等一系列底层支持。**
 
-### ServiceManager 与实名Binder
+### ServiceManager与实名Binder
 
 和DNS类似，SMgr的作用是将字符形式的Binder名字转化成Client中对该Binder的引用，使得Client能够通过Binder名字获得对Server中Binder实体的引用。
 
@@ -219,13 +247,18 @@ Binder框架定义了四个角色：Server，Client，ServiceManager（以后简
 
 驱动为这个穿过进程边界的Binder创建位于内核中的实体节点以及SMgr对实体的引用，将名字及新建的引用打包传递给SMgr。SMgr收数据包后，从中取出名字和引用填入一张查找表中。
 
-细心的读者可能会发现其中的蹊跷：SMgr是一个进程，Server是另一个进程，Server向SMgr注册Binder必然会涉及进程间通信。当前实现的是进程间通信却又要用到进程间通信，这就好象蛋可以孵出鸡前提却是要找只鸡来孵蛋。Binder的实现比较巧妙：预先创造一只鸡来孵蛋：SMgr和其它进程同样采用Binder通信，SMgr是Server端，有自己的Binder对象（实体），其它进程都是Client，需要通过这个Binder的引用来实现Binder的注册，查询和获取。SMgr提供的Binder比较特殊，它没有名字也不需要注册，当一个进程使用BINDER_SET_CONTEXT_MGR命令将自己注册成SMgr时Binder驱动会自动为它创建Binder实体（这就是那只预先造好的鸡）。其次这个Binder的引用在所有Client中都固定为0而无须通过其它手段获得。也就是说，一个Server若要向SMgr注册自己Binder就必需通过0这个引用号和SMgr的Binder通信。类比网络通信，0号引用就好比域名服务器的地址，你必须预先手工或动态配置好。要注意这里说的Client是相对SMgr而言的，一个应用程序可能是个提供服务的Server，但对SMgr来说它仍然是个Client。
+细心的读者可能会发现其中的蹊跷：SMgr是一个进程，Server是另一个进程，Server向SMgr注册Binder必然会涉及进程间通信。当前实现的是进程间通信却又要用到进程间通信。
+Binder的实现比较巧妙：预先创造一只鸡来孵蛋：SMgr和其它进程同样采用Binder通信，SMgr是Server端，有自己的Binder对象（实体），其它进程都是Client，需要通过这个Binder的引用来实现Binder的注册，查询和获取。
+SMgr提供的Binder比较特殊，它没有名字也不需要注册，当一个进程使用BINDER_SET_CONTEXT_MGR命令将自己注册成SMgr时Binder驱动会自动为它创建Binder实体。
+其次这个Binder的引用在所有Client中都固定为0而无须通过其它手段获得。也就是说，一个Server若要向SMgr注册自己Binder就必需通过0这个引用号和SMgr的Binder通信。类比网络通信，0号引用就好比域名服务器的地址，必须预先手工或动态配置好。要注意这里说的Client是相对SMgr而言的，一个应用程序可能是个提供服务的Server，但对SMgr来说它仍然是个Client。
 
 ### Client 获得实名Binder的引用
 
-Server向SMgr注册了Binder实体及其名字后，Client就可以通过名字获得该Binder的引用了。Client也利用保留的0号引用向SMgr请求访问某个Binder：我申请获得名字叫张三的Binder的引用。SMgr收到这个连接请求，从请求数据包里获得Binder的名字，在查找表里找到该名字对应的条目，从条目中取出Binder的引用，将该引用作为回复发送给发起请求的Client。从面向对象的角度，这个Binder对象现在有了两个引用：一个位于SMgr中，一个位于发起请求的Client中。如果接下来有更多的Client请求该Binder，系统中就会有更多的引用指向该Binder，就象java里一个对象存在多个引用一样。而且类似的这些指向Binder的引用是强类型，从而确保只要有引用Binder实体就不会被释放掉。通过以上过程可以看出，SMgr象个火车票代售点，收集了所有火车的车票，可以通过它购买到乘坐各趟火车的票-得到某个Binder的引用。
+Server向SMgr注册了Binder实体及其名字后，Client就可以通过名字获得该Binder的引用了。Client也利用保留的0号引用向SMgr请求访问某个Binder。
+SMgr收到这个连接请求，从请求数据包里获得Binder的名字，在查找表里找到该名字对应的条目，从条目中取出Binder的引用，将该引用作为回复发送给发起请求的Client。
+从面向对象的角度，这个Binder对象现在有了两个引用：一个位于SMgr中，一个位于发起请求的Client中。如果接下来有更多的Client请求该Binder，系统中就会有更多的引用指向该Binder，就象java里一个对象存在多个引用一样。而且类似的这些指向Binder的引用是强类型，从而确保只要有引用Binder实体就不会被释放掉。
 
-### 匿名 Binder
+### 匿名Binder
 
 并不是所有Binder都需要注册给SMgr广而告之的。Server端可以通过已经建立的Binder连接将创建的Binder实体传给Client，当然这条已经建立的Binder连接必须是通过实名Binder实现。由于这个Binder没有向SMgr注册名字，所以是个匿名Binder。Client将会收到这个匿名Binder的引用，通过这个引用向位于Server中的实体发送请求。匿名Binder为通信双方建立一条私密通道，只要Server没有把匿名Binder发给别的进程，别的进程就无法通过穷举或猜测等任何方式获得该Binder的引用，向该Binder发送请求。
 
@@ -233,7 +266,7 @@ Server向SMgr注册了Binder实体及其名字后，Client就可以通过名字�
 
 ### Linux补充概念
 
-那么在 Android 系统中用户进程之间是如何通过这个内核模块（Binder 驱动）来实现通信的呢？难道是和前面说的传统 IPC 机制一样，先将数据从发送方进程拷贝到内核缓存区，然后再将数据从内核缓存区拷贝到接收方进程，通过两次拷贝来实现吗？显然不是。
+那么在 Android 系统中用户进程之间是如何通过这个内核模块（Binder驱动）来实现通信的呢？难道是和前面说的传统 IPC 机制一样，先将数据从发送方进程拷贝到内核缓存区，然后再将数据从内核缓存区拷贝到接收方进程，通过两次拷贝来实现吗？显然不是。
 
 这里用到了Linux 下的另一个概念：**内存映射**。
 
@@ -401,11 +434,11 @@ public interface IBookManager extends android.os.IInterface {
 
 A 进程想要 B 进程中某个对象（object）是如何实现的呢？毕竟它们分属不同的进程，A 进程 没法直接使用 B 进程中的 object。
 
-前面我们介绍过跨进程通信的过程都有 Binder 驱动的参与，因此在数据流经 Binder 驱动的时候驱动会对数据做一层转换。当 A 进程想要获取 B 进程中的 object 时，驱动并不会真的把 object 返回给 A，而是返回了一个跟 object 看起来一模一样的代理对象 objectProxy，这个 objectProxy 具有和 object 一摸一样的方法，但是这些方法并没有 B 进程中 object 对象那些方法的能力，这些方法只需要把把请求参数交给驱动即可。对于 A 进程来说和直接调用 object 中的方法是一样的。
+前面介绍过跨进程通信的过程都有 Binder 驱动的参与，因此在数据流经 Binder 驱动的时候驱动会对数据做一层转换。当 A 进程想要获取 B 进程中的 object 时，驱动并不会真的把 object 返回给 A，而是返回了一个跟 object 看起来一模一样的代理对象 objectProxy，这个 objectProxy 具有和 object 一摸一样的方法，但是这些方法并没有 B 进程中 object 对象那些方法的能力，这些方法只需要把把请求参数交给驱动即可。对于 A 进程来说和直接调用 object 中的方法是一样的。
 
 当 Binder 驱动接收到 A 进程的消息后，发现这是个 objectProxy 就去查询自己维护的表单，一查发现这是 B 进程 object 的代理对象。于是就会去通知 B 进程调用 object 的方法，并要求 B 进程把返回结果发给自己。当驱动拿到 B 进程的返回结果后就会转发给 A 进程，一次通信就完成了。
 
-![9](assets/258.jpg)
+<img src="assets/258.jpg" alt="9" style="zoom:33%;" />
 
 # IPC方式
 
@@ -601,7 +634,7 @@ interface IBookManager {
 - Parcelable：所有实现了Parcelable接口的对象
 - AIDL：所有的AIDL接口本身也可以在AIDL文件中使用
 
-其中自定义的Parcelable对象和AIDL对象必须要显式import 进来，不管它们是否和当前的AIDL文件位于同一个包内。比如IBookManager.aidl这个文件，里面用到了Book这个类，这个类实现了Parcelable 接口并且和IBookManageraidl位于同一个包中，但是遵守AIDL的规范，仍然需要显式地import进来。
+其中自定义的Parcelable对象和AIDL对象必须要显式import 进来，不管它们是否和当前的AIDL文件位于同一个包内。比如IBookManager.aidl这个文件，里面用到了Book这个类，这个类实现了Parcelable接口并且和IBookManageraidl位于同一个包中，但是遵守AIDL的规范，仍然需要显式地import进来。
 
 另外一个需要注意的地方是，如果AIDL文件中用到了自定义的Parcelable对象，那么必须新建一个和它同名的AIDL文件，并在其中声明它为Parcelable 类型。在上面的IBookManager.aidl中，用到了Book这个类，所以必须要创建Book.aidl，然后在里面添加如下内容：
 
@@ -666,11 +699,9 @@ public class BookManagerService extends Service {
 }
 ```
 
-上面是一个服务端Service的典型实现，首先在onCreate中初始化添加了两本图书的信息，然后创建了一个Binder对象并在onBind中返回它，这个对象继承自IBookManager.Stub
-并实现了它内部的AIDL方法。
+上面是一个服务端Service的典型实现，首先在onCreate中初始化添加了两本图书的信息，然后创建了一个Binder对象并在onBind中返回它，这个对象继承自IBookManager.Stub并实现了它内部的AIDL方法。
 
-这里主要看getBookList和addBook这两个AIDL方法的实现，实现过程也比较简单，注意
-这里采用了CopyOnWriteArrayList，这个CopyOnWriteArayList支持并发读/写。AIDL方法是在服务端的Binder线程池中执行的，因此当多个客户端同时连接的时候，会存在多个线程同时访问的情形，所以要在AIDL方法中处理线程同步。
+这里主要看getBookList和addBook这两个AIDL方法的实现，实现过程也比较简单，注意这里采用了CopyOnWriteArrayList，这个CopyOnWriteArayList支持并发读/写。AIDL方法是在服务端的Binder线程池中执行的，因此当多个客户端同时连接的时候，会存在多个线程同时访问的情形，所以要在AIDL方法中处理线程同步。
 
 ### AIDLClient
 
@@ -1131,7 +1162,7 @@ log：
 
 客户端调用远程服务的方法，被调用的方法运行在服务端的Binder线程池中，同时客户端线程会被挂起，这个时候如果服务端方法执行比较耗时，就会导致客户端线程长时间地阻塞在这里，而如果这个客户端线程是UI线程的话，就会导致客户端ANR。
 
-因此，如果明确知道某个远程方法是耗时的，那么就要避免在客户端的UI线程中去访问远程方法。由于客户端的onServiceConnected 和onServiceDisconnected方法都运行在UI线程中，所以也不可以在它们里面直接调用服务端的耗时方法，这点要尤其注意。
+因此，如果明确知道某个远程方法是耗时的，那么就要避免在客户端的UI线程中去访问远程方法。由于客户端的onServiceConnected和onServiceDisconnected方法都运行在UI线程中，所以也不可以在它们里面直接调用服务端的耗时方法，这点要尤其注意。
 
 另外，由于服务端的方法本身就运行在服务端的Binder线程池中，所以服务端方法本身就可以执行大量耗时操作，这个时候不要在服务端方法中开线程去进行异步任务。
 
@@ -1190,6 +1221,16 @@ Binder 是可能意外死亡的，这往往是由于服务端进程意外停止�
 
 
 ![7](assets/263.jpg)
+
+>   RPC（Remote Procedure Call）远程过程调用，简单的理解是一个节点请求另一个节点提供的服务
+>
+>   -   本地过程调用：如果需要将本地student对象的age+1，可以实现一个addAge()方法，将student对象传入，对年龄进行更新之后返回即可，本地方法调用的函数体通过函数指针来指定。
+>   -   远程过程调用：上述操作的过程中，如果addAge()这个方法在服务端，执行函数的函数体在远程机器上，如何告诉机器需要调用这个方法呢？
+>
+>   1.  首先客户端需要告诉服务器，需要调用的函数，这里函数和进程ID存在一个映射，客户端远程调用时，需要查一下函数，找到对应的ID，然后执行函数的代码。
+>   2.  客户端需要把本地参数传给远程函数，本地调用的过程中，直接压栈即可，但是在远程调用过程中不再同一个内存里，无法直接传递函数的参数，因此需要客户端把参数转换成字节流，传给服务端，然后服务端将字节流转换成自身能读取的格式，是一个序列化和反序列化的过程。
+
+
 
 # 参考
 
