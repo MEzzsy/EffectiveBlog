@@ -159,6 +159,7 @@
     - [Android的跨进程通信](./11 知识点/02-Android/Android的跨进程通信.md)
     - [Android类加载机制](./11 知识点/02-Android/Android类加载机制.md)
     - [IPC机制](./11 知识点/02-Android/IPC机制.md)
+    - [View体系](./11 知识点/02-Android/View体系.md)
     - [四大组件](./11 知识点/02-Android/四大组件.md)
   - [03-计算机网络](./11 知识点/03-计算机网络.md)
   - [04-操作系统](./11 知识点/04-操作系统.md)
