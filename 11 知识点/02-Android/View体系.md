@@ -198,13 +198,14 @@ Draw过程决定了View的显示，只有draw方法后，view的内容才会显�
 
 ## MeasureSpec
 
-MeasureSpec很大程度上决定了一个View的尺寸规格，这个过程受父容器的影响，因为父容器影响View的MeasureSpec的创建过程。
+**MeasureSpec的作用在于：**在Measure流程中，系统会将View的LayoutParams根据父容器所施加的规则转换成对应的MeasureSpec，然后在onMeasure方法中根据这个MeasureSpec来确定View的测量宽高。
 
 MeasureSpec是一个32位int值，高两位是SpecMode（测量模式），低30位是SpecSize（规格大小）
 
 ### SpecMode
 
-- **UNSPECIFIED**：一般用于系统内部，表示一种测量的状态
+- **UNSPECIFIED**：一般用于系统内部，表示一种测量的状态。
+    官方介绍原文：The parent has not imposed any constraint on the child. It can be whatever size it wants.大意是父View对子View不施加任何约束。
 - **EXACTLY**：View所需要的精确大小，最终大小就是SpecSize指定的值，对应match_patent和具体的数值
 - **AT_MOST**：父容器指定了一个可用大小即SpecSize，View的大小不能大于这个值，对应wrap_content
 
@@ -303,55 +304,150 @@ MeasureSpec是一个32位int值，高两位是SpecMode（测量模式），低30
 
 - 直接继承View的自定义控件需要重写onMeasure方法并设置wrap_content时自身的大小，否则在布局中使用wrap_content就相当于使用match_parent。
 - 在某些情况下，系统可能会多次measure才会确定最终的测量宽高，在这种情况下，在onMeasure方法中拿到的宽高可能不准。一个比较好的习惯是在onLayout方法中获取宽高。
-- 在onCreate、onStart、onResume无法获取正确宽高，因为View的measure和Activity的生命周期不是同步的。**四个获取宽高的方法**：
 
-1. **Activity/View#onWindowFocusChanged**：这个方法的含义是View已经初始化完毕了，宽高已经准备好了。当Activity获得焦点和失去焦点的时候会调用一次，具体的说，是当onResume和onPause的时候会被调用。
-2. **view.post(runnable)**：通过post将一个runnable投到消息队列的尾部，等待Looper调用此runnable的时候，View已经初始化好了。
+### 获取宽高的方法
 
-```java
-@Override
-protected void onStart() {
-    super.onStart();
-    ViewGroup viewGroup = findViewById(android.R.id.content);
-    final View view = viewGroup.getChildAt(0);
-    view.post(new Runnable() {
+在onCreate、onStart、onResume无法获取正确宽高，因为View的measure和Activity的生命周期不是同步的。**四个获取宽高的方法**：
 
-        @Override
-        public void run() {
-            int width = view.getMeasuredWidth();
-            int height = view.getMeasuredHeight();
-        }
-    });
-}
-```
+1. **Activity/View#onWindowFocusChanged**
+    这个方法的含义是View已经初始化完毕了，宽高已经准备好了。当Activity获得焦点和失去焦点的时候会调用一次，具体的说，是当onResume和onPause的时候会被调用。
 
-3.   **ViewTreeObserver**：使用ViewTreeObserver的回调可以完成这个功能
+2. **view.post(runnable)**
+    通过post将一个runnable投到消息队列的尾部，等待Looper调用此runnable的时候，View已经初始化好了。
 
-```java
-@Override
-protected void onStart() {
-    super.onStart();
-    ViewGroup viewGroup = findViewById(android.R.id.content);
-    final View view = viewGroup.getChildAt(0);
-    ViewTreeObserver observer = view.getViewTreeObserver();
-    observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-        @Override
-        public void onGlobalLayout() {
-            view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-            int width = view.getMeasuredWidth();
-            int height = view.getMeasuredHeight();
-        }
-    });
-}
+    ```java
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+        final View view = viewGroup.getChildAt(0);
+        view.post(new Runnable() {
+    
+            @Override
+            public void run() {
+                int width = view.getMeasuredWidth();
+                int height = view.getMeasuredHeight();
+            }
+        });
+    }
+    ```
 
-```
+3. **ViewTreeObserver**
+    使用ViewTreeObserver的回调可以完成这个功能
 
-4.   **view.measure(int widthMeasureSpec，int heightMeasureSpec)**：通过手动对View进行measure来得到View的宽高。要根据LayoutParams：
-     **match_parent**：直接放弃，无法直接measure出具体的宽高。
-     **wrap_content**：略
-     **具体的数值**：略
+    ```java
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+        final View view = viewGroup.getChildAt(0);
+        ViewTreeObserver observer = view.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                int width = view.getMeasuredWidth();
+                int height = view.getMeasuredHeight();
+            }
+        });
+    }
+    ```
+
+4. **view.measure(int widthMeasureSpec，int heightMeasureSpec)**
+    具体见下"手动measure"。
 
 > View的measure方法是final方法，不能继承，建议在onMeasure写逻辑。
+
+### DecorView的测量
+
+MeasureSpec是LayoutParams和父容器的模式所共同影响的，那么，对于DecorView来说，它已经是顶层view了，没有父容器，那么它的MeasureSpec怎么来的呢？
+
+在ViewRootImpl#PerformTraveals的方法中，有：
+
+```java
+WindowManager.LayoutParams lp = mWindowAttributes;
+// ...
+int childWidthMeasureSpec = getRootMeasureSpec(mWidth, lp.width);
+int childHeightMeasureSpec = getRootMeasureSpec(mHeight, lp.height);
+// ...
+performMeasure(childWidthMeasureSpec, childHeightMeasureSpec);
+```
+
+```java
+private static int getRootMeasureSpec(int windowSize, int rootDimension) {
+    int measureSpec;
+    switch (rootDimension) {
+
+    case ViewGroup.LayoutParams.MATCH_PARENT:
+        // Window can't resize. Force root view to be windowSize.
+        measureSpec = MeasureSpec.makeMeasureSpec(windowSize, MeasureSpec.EXACTLY);
+        break;
+    case ViewGroup.LayoutParams.WRAP_CONTENT:
+        // Window can resize. Set max size for root view.
+        measureSpec = MeasureSpec.makeMeasureSpec(windowSize, MeasureSpec.AT_MOST);
+        break;
+    default:
+        // Window wants to be an exact size. Force root view to be that size.
+        measureSpec = MeasureSpec.makeMeasureSpec(rootDimension, MeasureSpec.EXACTLY);
+        break;
+    }
+    return measureSpec;
+}
+```
+
+思路也很清晰，根据不同的模式来设置MeasureSpec，如果是LayoutParams.MATCH_PARENT模式，则是窗口的大小，WRAP_CONTENT模式则是大小不确定，但是不能超过窗口的大小等等。
+
+**个人总结**
+
+DecorView虽然是顶层View，但是Window是以View的形式存在，而Window具有LayoutParams，这个lp会影响DecorView。
+
+### 手动measure
+
+通过手动对View进行measure来得到View的宽/高。这种方法比较复杂，这里要分情况处理，根据View的LayoutParams来分：
+
+1.   match_parent
+     直接放弃，无法measure出具体的宽/高。原因很简单，根据View的measure过程，构造此种MeasureSpec需要知道parentSize，即父容器的剩余空间，而这个时候无法知道parentSize的大小，所以理论上不可能测量出View的大小。
+
+2.   具体的数值（dp/px）
+     比如宽/高都是100px，如下measure：
+
+     ```java
+     int widthMeasureSpec = MeasureSpec.makeMeasureSpec(100，MeasureSpec.EXACTLY);
+     int heightMeasureSpec = MeasureSpec.makeMeasureSpec(100, MeasureSpec.EXACTLY);
+     view.measure(widthMeasureSpec, heightMeasureSpec);
+     ```
+
+3.   wrap_content
+     如下measure：
+
+     ```java
+     int widthMeasureSpec = MeasureSpec.makeMeasureSpec((1 << 30) - 1, MeasureSpec.AT_MOST);
+     int heightMeasureSpec = MeasureSpec.makeMeasureSpec((1 << 30) - 1, MeasureSpec.AT_MOST) ; 
+     view.measure(widthMeasureSpecr heightMeasureSpec) ;
+     ```
+
+     注意到`(1 << 30) - 1`，通过分析MeasureSpec的实现可以知道，View的尺寸使用30位二进制表示，也就是说最大是30个1（即2^30- 1），也就是（1<<30）- 1，在最大化模式下，用View理论上能支持的最大值去构造MeasureSpec是合理的。
+
+>   《Android艺术开发探索》里介绍：
+>
+>   关于View的measure,网络上有两个错误的用法。为什么说是错误的，首先其违背了系统的内部实现规范（因为无法通过错误的MeasureSpec去得出合法的SpecMode，从而导致measure过程出错），其次不能保证一定能measure出正确的结果。
+>   第一种错误用法：
+>
+>   ```java
+>   int widthMeasureSpec = MeasureSpec.makeMeasureSpec(-1，MeasureSpec.UNSPECIFIED);
+>   int heightMeasureSpec = MeasureSpec.makeMeasureSpec(-1, MeasureSpec.UNSPECIFIED);
+>   view.measure(widthMeasureSpec, heightMeasureSpec);
+>   ```
+>
+>   这种错误方法原因未知。
+>
+>   第二种错误用法：
+>
+>   ```java
+>   view.measure(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+>   ```
+>
+>   这种错误用法我猜是没有指定SpecMode，应该以这样的方式：`MeasureSpec.makeMeasureSpec((1 << 30) - 1, MeasureSpec.AT_MOST);`。
 
 ## Layout
 
