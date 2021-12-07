@@ -300,7 +300,7 @@ MeasureSpec是一个32位int值，高两位是SpecMode（测量模式），低30
 
 
 
-## Measure
+## measure
 
 - 直接继承View的自定义控件需要重写onMeasure方法并设置wrap_content时自身的大小，否则在布局中使用wrap_content就相当于使用match_parent。
 - 在某些情况下，系统可能会多次measure才会确定最终的测量宽高，在这种情况下，在onMeasure方法中拿到的宽高可能不准。一个比较好的习惯是在onLayout方法中获取宽高。
@@ -439,7 +439,7 @@ DecorView虽然是顶层View，但是Window是以View的形式存在，而Window
 >   view.measure(widthMeasureSpec, heightMeasureSpec);
 >   ```
 >
->   这种错误方法原因未知。
+>   这种错误方法原因未知。可能是-1？因为size是非负数。
 >
 >   第二种错误用法：
 >
@@ -449,26 +449,43 @@ DecorView虽然是顶层View，但是Window是以View的形式存在，而Window
 >
 >   这种错误用法我猜是没有指定SpecMode，应该以这样的方式：`MeasureSpec.makeMeasureSpec((1 << 30) - 1, MeasureSpec.AT_MOST);`。
 
-## Layout
+## layout
 
-在ViewGroup的位置确定后，会在onLayout中遍历所有的子元素并调用其layout方法，在layout中onLayout方法又会被调用。
+Layout的作用是ViewGroup用来确定子元素的位置，当ViewGroup的位置被确定后，它在onLayout中会遍历所有的子元素并调用其layout方法，在layout方法中onLayout方法又会被调用。layout方法确定View本身的位置，而onLayout方法则会确定所有子元素的位置。
+
+layout方法的大致流程如下：首先会通过setFrame方法来设定View的四个顶点的位置，即初始化mLeft、mRight、 mTop和mBottom这四个值，View的四个顶点一旦确定，那么View在父容器中的位置也就确定了:接着会调用onLayout方法，这个方法的用途是父容器确定子元素的位置，和onMeasure方法类似，onLayout 的具体实现同样和具体的布局有关，所以View和ViewGroup均没有真正实现onLayout方法。
 
 > onLayout在ViewGroup是抽象方法，layout是由父容器在onlayout中调用。
 
-## Draw
+### View的测量宽高和最终宽高有什么区别？
+
+这个问题可以具体为：View的getMeasuredWidth和getWidth这两个方法有什么区别？
+
+getMeasuredWidth：
+
+```java
+public final int getMeasuredWidth() {
+    return mMeasuredWidth & MEASURED_SIZE_MASK;
+}
+```
+
+getWidth：
+
+```java
+public final int getWidth() {
+    return mRight - mLeft;
+}
+```
+
+在View的默认实现中，View的测量宽/高和最终宽/高是相等的，只不过测量宽/高形成于View的measure过程，而最终宽/高形成于View的layout过程，即两者的赋值时机不同，测量宽/高的赋值时机稍微早一些。因此，在日常开发中，可以认为View的测量宽/高就等于最终宽/高。
+
+>   即，一般情况下，两者相等，只是赋值时机不同。
+
+## draw
 
 draw方法
 
 ```java
-/**
- * Manually render this view (and all of its children) to the given Canvas.
- * The view must have already done a full layout before this function is
- * called.  When implementing a view， implement
- * {@link #onDraw(android.graphics.Canvas)} instead of overriding this method.
- * If you do need to override this method， call the superclass version.
- *
- * @param canvas The Canvas to which the View is rendered.
- */
 public void draw(Canvas canvas) {
     //...
     
@@ -486,40 +503,23 @@ public void draw(Canvas canvas) {
 
     // Step 1， draw the background， if needed
     //...
-
-    if (!dirtyOpaque) {
-        drawBackground(canvas);
-    }
+    drawBackground(canvas);
 
     // skip step 2 & 5 if possible (common case)
     //...
-    if (!verticalEdges && !horizontalEdges) {
-        // Step 3， draw the content
-        if (!dirtyOpaque) onDraw(canvas);
+    // Step 3， draw the content
+    onDraw(canvas);
+    
+    // Step 4， draw the children
+    dispatchDraw(canvas);
+    
+    // Step 6， draw decorations (foreground， scrollbars)
+    onDrawForeground(canvas);
 
-        // Step 4， draw the children
-        dispatchDraw(canvas);
-
-        drawAutofilledHighlight(canvas);
-
-        // Overlay is part of the content and draws beneath Foreground
-        if (mOverlay != null && !mOverlay.isEmpty()) {
-            mOverlay.getOverlayView().dispatchDraw(canvas);
-        }
-
-        // Step 6， draw decorations (foreground， scrollbars)
-        onDrawForeground(canvas);
-
-        // Step 7， draw the default focus highlight
-        drawDefaultFocusHighlight(canvas);
-
-        if (debugDraw()) {
-            debugDrawFocus(canvas);
-        }
-
-        // we're done...
-        return;
-    }
+    // Step 7， draw the default focus highlight
+    drawDefaultFocusHighlight(canvas);
+    return;
+}
 ```
 
 View的绘制过程（主要）：
@@ -581,96 +581,85 @@ protected void onDraw(Canvas canvas) {
 
 ### 优化布局层次
 
-在Android中，系统对View的进行测量、布局和绘制时，都是通过对View树的遍历来进行操作的。如果一个View的高度太高，就会影响测量、布局和绘制的速度，因此优化布局的第一个方法就是降低View树的高度，Google在器API文档中也建议View树的高度不超过10层。
-避免嵌套过多无用布局：
+在Android中，系统对View的进行测量、布局和绘制时，都是通过对View树的遍历来进行操作的。如果一个View的高度太高，就会影响测量、布局和绘制的速度，因此优化布局的第一个方法就是降低View树的高度，Google在器API文档中也建议View树的高度不超过10层。避免嵌套过多无用布局：
 
 1. **使用\<include\>标签重用layout**
     主要用于布局重用。
     注：根容器id与include id必须相同
     如给include所加载的layout布局的根容器设置了id属性，也在include标签中设置了id属性，同时需要在代码中获取根容器的控件对象时，一定要将这两个id设置相同的名称！否则，将获取不到根容器对象，即为null。
+    
 2. **merge标签**
     merge标签可以自动消除当一个布局插入到另一个布局时产生的多余的View Group。用法就是直接使用merge标签作为复用布局的根节点，再使用include标签复用到其他布局中，这时，系统会自动忽略merge标签，直接把两个Button替换到include标签的位置。 
     也就是说，include和merge是配合使用的。
     **需要注意的地方：**
+    
     - merge标签只能作为复用布局的root元素来使用。
     - 使用它来inflate一个布局时，必须指定一个ViewGroup实例作为其父元素并且设置attachToRoot属性为true（参考 inflate(int， android.view.ViewGroup， boolean) 方法的说明 ）。
+    
 3. **使用\<ViewStub\>实现view的延迟加载**
     **\<ViewStub\>**是一个非常轻量级的组件，它不仅不可见，而且大小为0。
     首先创建一个布局，这个布局在初始化加载时不需要显示，只在某些情况下才显示出来，例如查看用户信息的时，只有点击了某个按钮是，用户详细信息才显示出来。写一个简单的布局：
-
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-    <TextView
-        android:id="@+id/tv"
-        android:layout_width="wrap_content"
+    
+    ```xml
+    <?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="not often use layout"
+            android:textSize="30sp"/>
+    </LinearLayout>
+    ```
+    
+    接下来与使用\<include\>标签类似，在主布局中的\<ViewStub\>中的layout属性来引用上面的布局。
+    
+    ```xml
+    <ViewStub
+        android:id="@+id/not_often_use"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="not often use layout"
-        android:textSize="30sp"/>
-</LinearLayout>
-```
-
-接下来与使用\<include\>标签类似，在主布局中的\<ViewStub\>中的layout属性来引用上面的布局。
-
-```xml
-<ViewStub
-    android:id="@+id/not_often_use"
-    android:layout_alignParentBottom="true"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout="@layout/not_often_use"/>
-```
-
-**如何重新加载显示的布局呢？**
-
-首先，通过普通的findViewById（）方法找到\<ViewStub>组件，这点与一般的组件基本相同：
-
-`mViewStub = (ViewStub)findViewById(R.id.not_often_use);`
-
-接下来，有两种方式重新显示这个View.
-
-（1）VISIBLE
-
-通过调用ViewStub的setVisibility()方法来显示这个View，代码如下所示：
-
-`mViewStub.setVisibility(View.VISIBLE);`
-
-( 2 ) inflate
-
-通过调用ViewStub的inflate（）方法来显示这个View，代码如下：
-
-`View inflateView = mViewStub.inflate();`
-
-这两种方式都可以让ViewStub重新展开，显示引用的布局，而唯一的区别就是inflate（）方法可以返回引用的布局，从而可以在通过View.findViewById()方法来找到对应的控件，代码如下：
-
-```java
-View inflateView = mViewStub.inflate();
-TextView textview  = (TextView) inflateView.findViewById(R.id.Tv);
-textView.setText(“Hello“);
-```
-
-**ViewStub和View.GONE有啥区别？**
-它们的共同点是初始时都不会显示，但是前者只会在显示时才去渲染整个布局，而后者在初始化布局树的时候就已经添加到布局树上了，相比之下前者的布局具有更高的效率。
+        android:layout="@layout/not_often_use"/>
+    ```
+    
+    **如何重新加载显示的布局呢？**
+    首先，通过普通的findViewById方法找到\<ViewStub>组件，这点与一般的组件基本相同：
+    `mViewStub = (ViewStub)findViewById(R.id.not_often_use);`
+    接下来，有两种方式重新显示这个View：
+    (1) VISIBLE
+    通过调用ViewStub的setVisibility()方法来显示这个View，代码如下所示：
+    `mViewStub.setVisibility(View.VISIBLE);`
+    (2) inflate
+    通过调用ViewStub的inflate（）方法来显示这个View，代码如下：
+    `View inflateView = mViewStub.inflate();`
+    这两种方式都可以让ViewStub重新展开，显示引用的布局，而唯一的区别就是inflate方法可以返回引用的布局，从而可以在通过View.findViewById()方法来找到对应的控件，代码如下：
+    
+    ```java
+    View inflateView = mViewStub.inflate();
+    TextView textview  = (TextView) inflateView.findViewById(R.id.Tv);
+    textView.setText(“Hello“);
+    ```
+    
+    **ViewStub和View.GONE有啥区别？**
+    它们的共同点是初始时都不会显示，但是前者只会在显示时才去渲染整个布局，而后者在初始化布局树的时候就已经添加到布局树上了，相比之下前者的布局具有更高的效率。
 
 ### LinearLayout、RelativeLayout、FrameLayout的特性及对比，并介绍使用场景。
 
 RelativeLayout会对子View做两次measure。 
 首先RelativeLayout中子View的排列方式是基于彼此的依赖关系，而这个依赖关系可能和布局中View的顺序并不相同，在确定每个子View的位置的时候，就需要先给所有的子View排序一下。 
 
-如果不使用weight属性，LinearLayout会在当前方向上进行一次measure的过程，如果使用weight属性，LinearLayout会避开设置过weight属性的view做第一次measure，完了再对设置过weight属性的view做第二次measure。由此可见，weight属性对性能是有影响的，而且本身有大坑，请注意避让。
+如果不使用weight属性，LinearLayout会在当前方向上进行一次measure的过程，如果使用weight属性，LinearLayout会避开设置过weight属性的view做第一次measure，完了再对设置过weight属性的view做第二次measure。由此可见，weight属性对性能是有影响的。
 
 总结：
 
-1.RelativeLayout会让子View调用2次onMeasure，LinearLayout 在有weight时，也会调用子View2次onMeasure
-
-2.RelativeLayout的子View如果高度和RelativeLayout不同，则会引发效率问题，当子View很复杂时，这个问题会更加严重。如果可以，尽量使用padding代替margin。
-
-3.在不影响层级深度的情况下，使用LinearLayout和FrameLayout而不是RelativeLayout。
-
-4.能用两层LinearLayout，尽量用一个RelativeLayout，在时间上此时RelativeLayout耗时更小。另外LinearLayout慎用layout_weight，也将会增加一倍耗时操作。由于使用LinearLayout的layout_weight，大多数时间是不一样的，这会降低测量的速度。这只是一个如何合理使用Layout的案例，必要的时候，你要小心考虑是否用layout weight。总之减少层级结构，才是王道，让onMeasure做延迟加载，用viewStub，include等一些技巧。
+1.   RelativeLayout会让子View调用2次onMeasure，LinearLayout在有weight时，也会调用子View2次onMeasure
+2.   RelativeLayout的子View如果高度和RelativeLayout不同，则会引发效率问题，当子View很复杂时，这个问题会更加严重。如果可以，尽量使用padding代替margin。
+3.   在不影响层级深度的情况下，使用LinearLayout和FrameLayout而不是RelativeLayout。
+4.   能用两层LinearLayout，尽量用一个RelativeLayout，在时间上此时RelativeLayout耗时更小。另外LinearLayout慎用layout_weight，也将会增加一倍耗时操作。由于使用LinearLayout的layout_weight，大多数时间是不一样的，这会降低测量的速度。这只是一个如何合理使用Layout的案例，必要的时候，要小心考虑是否用layout_weight。总之减少层级结构，才是王道，让onMeasure做延迟加载，用viewStub，include等一些技巧。
 
 **选择LinearLayout还是RelativeLayout？**
 
@@ -678,24 +667,24 @@ RelativeLayout会对子View做两次measure。
 
 > A RelativeLayout is a very powerful utility for designing a user interface because it can eliminate nested view groups and keep your layout hierarchy flat， which improves performance. If you find yourself using several nested LinearLayout groups， you may be able to replace them with a single RelativeLayout
 
-Google的意思是“性能至上”， RelativeLayout 在性能上更好，因为在诸如 ListView 等控件中，使用 LinearLayout 容易产生多层嵌套的布局结构，这在性能上是不好的。而 RelativeLayout 因其原理上的灵活性，通常层级结构都比较扁平，很多使用LinearLayout 的情况都可以用一个 RelativeLayout 来替代，以降低布局的嵌套层级，优化性能。所以从这一点来看，Google比较推荐开发者使用RelativeLayout，因此就将其作为Blank Activity的默认布局了。
+Google的意思是“性能至上”， RelativeLayout在性能上更好，因为在诸如ListView等控件中，使用 LinearLayout容易产生多层嵌套的布局结构，这在性能上是不好的。而 RelativeLayout 因其原理上的灵活性，通常层级结构都比较扁平，很多使用LinearLayout 的情况都可以用一个 RelativeLayout 来替代，以降低布局的嵌套层级，优化性能。所以从这一点来看，Google比较推荐开发者使用RelativeLayout，因此就将其作为Blank Activity的默认布局了。
 
 ## 自定义View
 
 1. 让View支持wrap_content
     这是因为直接维承View或者ViewGroup的控件，如果不在onMeasure中对wrap_content做特殊处理，那么当外界在布局中使用wrap_content时就无法达到预期的效果。
-2. 如果有必要，让你的View支持padding
+2. 如果有必要，让View支持padding
     这是因为直接继承View的控件，如果不在draw方法中处理padding，那么padding居性是无法起作用的。另外，直接继承自ViewGroup的控件需要在onMeasure和onLayout中考虑padding和子元素的margin对其造成的影响，不然将导致padding和子元素的margin失效。
 3. 尽量不要在View中使用Handler(没必要)
     这是因为View内部本身就提供了post系列的方法，完全可以替代Handler的作用，当然除非你很明确地要使用Handler来发送消息。
 4. View中如果有线程或者动画，需要及时停止，参考View#onDetachedFromWindow。
-    这一条也很好理解，如果有线程或者动画需要停止时，那么onDetachedFromWindow是一个很好的时机。当包含此View的Activity退出或者当前View被remove 时，View的onDetachedFromWindow方法会被调用，和此方法对应的是onAtachedToWindow， 当包含此View的Activity启动时，View的onAtachedToWindow方法会被调用。同时，当View变得不可见时我们也需要停止线程和动画，如果不及时处理这种问题，有可能会造成内存泄漏。
+    这一条也很好理解，如果有线程或者动画需要停止时，那么onDetachedFromWindow是一个很好的时机。当包含此View的Activity退出或者当前View被remove 时，View的onDetachedFromWindow方法会被调用，和此方法对应的是onAtachedToWindow， 当包含此View的Activity启动时，View的onAtachedToWindow方法会被调用。同时，当View变得不可见时也需要停止线程和动画，如果不及时处理这种问题，有可能会造成内存泄漏。
 5. View带有滑动嵌套情形时，需要处理好滑动冲突
     如果有滑动冲突的话，那么要合适地处理滑动冲突，否则将会严重影响View的效果。
 
 ## invalidate()
 
-该方法的调用会引起View树的重绘，常用于内部调用(比如 setVisiblity())或者需要刷新界面的时候，需要在主线程(即UI线程)中调用该方法。
+该方法的调用会引起View树的重绘，常用于内部调用(比如setVisiblity())或者需要刷新界面的时候，需要在主线程(即UI线程)中调用该方法。
 
 invalidate()会不断调用父View的invalidate()方法，一直调用ViewRootImpl的invalidate()方法，在ViewRootImpl的invalidate()方法中，最后会调用performTraversals()，但没有设置重新测量的标记，所以只会调用onDraw。
 
@@ -739,7 +728,7 @@ public boolean post(Runnable action) {
 ```
 
 如果 <strong>mAttachInfo</strong> 不为空，那就调用 <strong>mAttachInfo.mHanlder.post()</strong> 方法，如果为空，则调用 <strong>getRunQueue().post()</strong> 方法。
-我们使用 <strong>View.post()</strong> 时，其实内部它自己分了两种情况处理，当 View 还没有 <strong>attachedToWindow</strong> 时，通过 <strong>View.post(Runnable)</strong> 传进来的 Runnable 操作都先被缓存在 HandlerActionQueue，然后等 View 的 <strong>dispatchAttachedToWindow()</strong> 被调用时，就通过 <strong>mAttachInfo.mHandler</strong> 来执行这些被缓存起来的 Runnable 操作。从这以后到 View 被 <strong>detachedFromWindow</strong> 这段期间，如果再次调用 <strong>View.post(Runnable)</strong> 的话，那么这些 Runnable 不用再缓存了，而是直接交给 <strong>mAttachInfo.mHanlder</strong> 来执行。
+使用 <strong>View.post()</strong> 时，其实内部它自己分了两种情况处理，当 View 还没有 <strong>attachedToWindow</strong> 时，通过 <strong>View.post(Runnable)</strong> 传进来的 Runnable 操作都先被缓存在 HandlerActionQueue，然后等 View 的<strong>dispatchAttachedToWindow()</strong> 被调用时，就通过 <strong>mAttachInfo.mHandler</strong> 来执行这些被缓存起来的 Runnable 操作。从这以后到 View 被 <strong>detachedFromWindow</strong> 这段期间，如果再次调用 <strong>View.post(Runnable)</strong> 的话，那么这些 Runnable 不用再缓存了，而是直接交给 <strong>mAttachInfo.mHanlder</strong> 来执行。
 
 <strong>dispatchAttachedToWindow() 是什么时候被调用的？</strong>
 
