@@ -719,22 +719,48 @@ public boolean post(Runnable action) {
     if (attachInfo != null) {
         return attachInfo.mHandler.post(action);
     }
-
-    // Postpone the runnable until we know on which thread it needs to run.
-    // Assume that the runnable will be successfully placed after attach.
     getRunQueue().post(action);
     return true;
 }
 ```
 
-如果 <strong>mAttachInfo</strong> 不为空，那就调用 <strong>mAttachInfo.mHanlder.post()</strong> 方法，如果为空，则调用 <strong>getRunQueue().post()</strong> 方法。
-使用 <strong>View.post()</strong> 时，其实内部它自己分了两种情况处理，当 View 还没有 <strong>attachedToWindow</strong> 时，通过 <strong>View.post(Runnable)</strong> 传进来的 Runnable 操作都先被缓存在 HandlerActionQueue，然后等 View 的<strong>dispatchAttachedToWindow()</strong> 被调用时，就通过 <strong>mAttachInfo.mHandler</strong> 来执行这些被缓存起来的 Runnable 操作。从这以后到 View 被 <strong>detachedFromWindow</strong> 这段期间，如果再次调用 <strong>View.post(Runnable)</strong> 的话，那么这些 Runnable 不用再缓存了，而是直接交给 <strong>mAttachInfo.mHanlder</strong> 来执行。
+未dispatchAttachedToWindow时，将runnable操作缓存，等View的dispatchAttachedToWindow被调用时，就通过mAttachInfo.mHandler来执行这些被缓存起来的Runnable操作。
 
-<strong>dispatchAttachedToWindow() 是什么时候被调用的？</strong>
+从这以后到 View被detachedFromWindow这段期间，如果再次调用View.post(Runnable)的话，那么这些Runnable不用再缓存了，而是直接交给mAttachInfo.mHanlder来执行。
 
-<strong>mAttachInfo 是在哪里初始化的？</strong>
+一些问题：
 
-在 Activity 首次进行 View 树的遍历绘制时，ViewRootImpl 会将自己的 <strong>mAttachInfo</strong> 通过根布局 DecorView 传递给所有的子 View 。
+dispatchAttachedToWindow的调用时机？mAttachInfo是在哪里初始化的？
+
+```java
+void dispatchAttachedToWindow(AttachInfo info, int visibility) {
+    // 初始化mAttachInfo
+    mAttachInfo = info;
+    // ...
+    // 执行缓存的runnable
+    if (mRunQueue != null) {
+        mRunQueue.executeActions(info.mHandler);
+        mRunQueue = null;
+    }
+    // ...
+    // 回调
+    onAttachedToWindow();
+    // ...
+}
+```
+
+dispatchAttachedToWindow的调用是在ViewRootImpl的performTraversals方法里。
+
+```java
+void dispatchDetachedFromWindow() {
+    // 回调
+    onDetachedFromWindow();
+    // ...
+	// 置空
+    mAttachInfo = null;
+    // ...
+}
+```
 
 # View事件分发机制
 
@@ -749,14 +775,14 @@ public boolean post(Runnable action) {
 上述方法的关系的伪代码:
 
 ```java
-public boolean dispatchTouchEvent(MotionEvent ev){
+public boolean dispatchTouchEvent(MotionEvent ev) {
 	boolean consume = false;
-	if  (onInterceptTouchEvent (ev)) {
-		consume = onTouchEvent (ev) ;
-	}else{
-		consume = child.dispatchTouchEvent (ev) ;
+	if (onInterceptTouchEvent(ev)) {
+		consume = onTouchEvent(ev);
+	} else{
+		consume = child.dispatchTouchEvent(ev);
 	}
-	return consume ;
+	return consume;
 }
 ```
 
@@ -779,8 +805,10 @@ if (actionMasked == MotionEvent.ACTION_DOWN || mFirstTouchTarget != null) {
 ```
 
 以上这段代码是用来判断是否拦截事件，可以看到只有当事件是ACTION_DOWN或
-`mFirstTouchTarget != null`时才会去调用`onInterceptTouchEvent()`方法来判断是否拦截该事件。这里mFirstTouchTarget是什么呢？
-mFirstTouchTarget是ViewGroup的一个内部类。`mFirstTouchTarget`对象指向的是接受触摸事件的View所组成的链表的起始节点。也就是说，当事件由ViewGroup传递给子元素成功处理时，`mFirstTouchTarget`对象就会被赋值，换种方式来说，也就是说当ViewGroup不拦截事件传递，`mFirstTouchTarget!=null`。如果拦截事件，`mFirstTouchTarget!=null`就不成立。此时如果事件序列中的ACTION_MOVE、ACTION_UP事件再传递过来时，由于`(actionMasked == MotionEvent.ACTION_DOWN || mFirstTouchTarget != null)`条件为false，就不会再调用`onInterceptTouchEvent()`方法，是否被拦截的标志变量也会设置为`intercepted = true`，并且后续同一事件序列的其他事件都会默认交给它处理。
+`mFirstTouchTarget != null`时才会去调用`onInterceptTouchEvent()`方法来判断是否拦截该事件。
+
+这里mFirstTouchTarget是什么呢？
+TouchTarget是ViewGroup的一个内部类。`mFirstTouchTarget`对象指向的是接受触摸事件的View所组成的链表的起始节点。也就是说，当事件由ViewGroup传递给子元素成功处理时，`mFirstTouchTarget`对象就会被赋值，换种方式来说，也就是说当ViewGroup不拦截事件传递，`mFirstTouchTarget!=null`。如果拦截事件，`mFirstTouchTarget!=null`就不成立。此时如果事件序列中的ACTION_MOVE、ACTION_UP事件再传递过来时，由于`(actionMasked == MotionEvent.ACTION_DOWN || mFirstTouchTarget != null)`条件为false，就不会再调用`onInterceptTouchEvent()`方法，是否被拦截的标志变量也会设置为`intercepted = true`，并且后续同一事件序列的其他事件都会默认交给它处理。
 
 这里还有一种特殊情况，那就是FLAG_DISALLOW_INTERCEPT标记位，这个标记位是通过`requestDisallowInterceptTouchEvent()`方法来设置的。FLAG_DISALLOW_INTERCEPT这个标记位一旦设置后，ViewGroup就无法拦截除ACTION_DOWN以外的其他点击事件。
 
