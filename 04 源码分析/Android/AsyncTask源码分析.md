@@ -10,7 +10,7 @@ AsyncTask需要传入三个泛型：
 
 - Params：在执行AsyncTask时需要传入的参数，可以用于后台任务中使用。
 - Progress: 如果需要在界面上显示进度条，则使用指定的泛型作为单位。
-- Result:返回值的类型。
+- Result：返回值的类型。
 
 执行需要四个方法：
 
@@ -74,6 +74,12 @@ public AsyncTask(@Nullable Looper callbackLooper) {
 }
 ```
 
+```java
+private static abstract class WorkerRunnable<Params, Result> implements Callable<Result> {
+    Params[] mParams;
+}
+```
+
 mWorker是WorkerRunnable类型，其父类型是Callable，mFuture是FutureTask类型，如果熟悉Java线程池的话可以知道，mWorker是任务的核心，mFuture是封装了mWorker，使能够获取返回值。
 
 ## execute
@@ -88,7 +94,7 @@ public final AsyncTask<Params, Progress, Result> execute(Params... params) {
 
 传入了2个参数sDefaultExecutor和params，params是用户指定的任务开启时需要的参数，sDefaultExecutor是一个串行线程池，一个应用所有的AsyncTask全部在这个线程池中排队执行。
 
-在executeOnExecutor中，onPreExecute()最先执行（如果用户重写了这个方法），然后线程池执行AsyncTask。
+在executeOnExecutor中，onPreExecute最先执行（如果用户重写了这个方法，在当前调用线程中执行），然后线程池执行AsyncTask。
 
 ```java
 public final AsyncTask<Params, Progress, Result> executeOnExecutor(Executor exec, Params... params) {
@@ -147,7 +153,7 @@ private static class SerialExecutor implements Executor {
 }
 ```
 
-从SerialExecutor的实现可以分析AsyncTask 的排队执行过程。
+从SerialExecutor的实现可以分析AsyncTask的排队执行过程。
 
 首先系统会把AsyncTask的params封装成FutureTask对象，起到Runnable的作用。
 
@@ -311,4 +317,3 @@ AsyncTask是一个轻量级的异步任务类，内部有2个线程池和一个H
 3.  Handler是静态变量，属于类属性，同一进程所有AsyncTask实例共享一个Handler对象。android-21及之前Handler的实例化在类一加载的时候就创建了，android22~25 handler实例是在需要用到Handler发送消息的时候，才会进行Handler的实例化。android26+则是在创建AsyncTask实例时进行了Handler的实例化。这样做的好处是不会像android21之前那样类一加载就实例化耗费资源，而在需要用到Handler发消息的时候才实例化，如果在多线程并发发消息时，会有延迟。
 
 4.  android26+ AsyncTask中包含了两个Handler对象mHandler（常量）和sHandler（静态变量），如果用AsyncTask有参构造方法中传入了Looper创建AsyncTask实例，mHandler会用传入的Looper来创建实例；而现在系统只支持AsyncTask无参构造方法创建AsyncTask实例，所以mHandler=sHandler.
-    
