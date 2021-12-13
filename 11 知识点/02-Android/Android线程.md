@@ -1,5 +1,7 @@
 # 介绍
 
+1.   见`/04 源码分析/JDK/线程池源码分析`
+
 AsyncTask底层用线程池，IntentService和HandlerThread底层用了线程。
 
 # AsyncTask
