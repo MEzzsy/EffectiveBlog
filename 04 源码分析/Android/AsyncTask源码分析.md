@@ -98,7 +98,7 @@ public final AsyncTask<Params, Progress, Result> execute(Params... params) {
 
 ```java
 public final AsyncTask<Params, Progress, Result> executeOnExecutor(Executor exec, Params... params) {
-    //这里可以看出AsyncTask只能执行一次
+    // 这里可以看出AsyncTask只能执行一次
     if (mStatus != Status.PENDING) {
         switch (mStatus) {
             case RUNNING:
@@ -239,7 +239,28 @@ private static class InternalHandler extends Handler {
 }
 ```
 
-为了能够将环境切换到主线程，这要求sHandler必须在主线程创建。这是一个静态成员，而静态成员会在加载类的时候初始化，使用变相要求**AsyncTask必须在主线程创建**
+为了能够将环境切换到主线程，这要求sHandler必须在主线程创建。这是一个静态成员，而静态成员会在加载类的时候初始化，使用变相要求**AsyncTask必须在主线程创建**。
+
+```java
+public AsyncTask() {
+	this((Looper) null);
+}
+
+public AsyncTask(@Nullable Handler handler) {
+	this(handler != null ? handler.getLooper() : null);
+}
+
+/**
+ * Creates a new asynchronous task. This constructor must be invoked on the UI thread.
+ */
+public AsyncTask(@Nullable Looper callbackLooper) {
+    mHandler = callbackLooper == null || callbackLooper == Looper.getMainLooper()
+            ? getMainHandler()
+            : new Handler(callbackLooper);
+}
+```
+
+AsyncTask的注释直接说明了这一点。不过AsyncTask的构造函数有3个，暴露的只有1个，即无参构造函数，所以即使在子线程中调用，AsyncTask最终也会创建MainLooper的Handler。
 
 收到MESSAGE_POST_RESULT后会调用finish方法。
 
@@ -262,40 +283,51 @@ private void finish(Result result) {
 
 ```java
 protected Long doInBackground(URL... urls) {
-         int count = urls.length;
-         long totalSize = 0;
-         for (int i = 0; i < count; i++) {
-             totalSize += Downloader.downloadFile(urls[i]);
-             publishProgress((int) ((i / (float) count) * 100));
-             // Escape early if cancel() is called
-             if (isCancelled()) break;
-         }
-         return totalSize;
-     }
+	int count = urls.length;
+	long totalSize = 0;
+	for (int i = 0; i < count; i++) {
+		totalSize += Downloader.downloadFile(urls[i]);
+		publishProgress((int) ((i / (float) count) * 100));
+		if (isCancelled()) break;
+	}
+	return totalSize;
+}
 ```
 
-# AsyncTask的机制原理
+## cancel
 
-- 1、AsyncTask的本质是一个静态的线程池，AsyncTask派生的子类可以实现不同的异步任务，这些任务都是提交到静态的线程池中执行。
-- 2、线程池中的工作线程执行doInBackground()方法执行异步任务
-- 3、当任务状态改变之后，工作线程会向UI线程发送消息，AsyncTask内部的InternalHandler响应这些消息，并调用相关的回调函数
+```java
+public final boolean cancel(boolean mayInterruptIfRunning) {
+    mCancelled.set(true);
+    return mFuture.cancel(mayInterruptIfRunning);
+}
+```
+
+cancel方法需要传递一个参数，如果为true，会调用Thread的interrupt方法；如果会false，那么任务会执行完。最终都会执行完任务，并回调onCancel。
+
+>   Thread的interrupt方法的效果见`/01 语言/02 Java/并发`，大致结论是这样的：如果当前调用了可中断的阻塞函数，那么调用interrupt方法会抛出异常；反之只是设置一下状态，不会中断线程。
+
+在AsyncTask的doInBackground里最好判断一下isCancelled，以感知当前AsyncTask是否被cancel。
+
+另外任务即使被cancel了，也还是存在SerialExecutor的队列中，等排队轮到执行时，FutureTask的run会判断状态，直接return。
 
 # 注意
 
--   AsyncTask不适合大量数据的请求，因为AsyncTask中线程池**一个时间只能执行一个，因为使用了同步锁**；
+-   AsyncTask不适合大量数据的请求，因为AsyncTask中线程池一个时间只能执行一个，因为SerialExecutor是串行队列，任务是一个一个执行。
 
 - 由于Handler需要和主线程交互，而Handler又是内置于AsyncTask中，所以AsyncTask的创建必须在主线程。（**注意这条并不正确**，AsyncTask内部Handler的创建会选取主线程的Looper，而不是当前线程的Looper，所以AsyncTask可以在子线程中创建，本人已从代码和实践2个角度证实。新版本是可以，老版本是不可以的，为了兼容性，建议在主线程中创建）。
 - AsyncTaskResult的doInBackground(Params)方法执行异步任务运行在子线程中，其他方法运行在主线程中，可以操作UI组件。
 - 不要手动的去调用AsyncTask的onPreExecute，doInBackground，onProgressUpdate，onPostExecute方法，这些都是由android系统自动调用的。
 - 一个AsyncTask任务只能被执行一次。
-- 运行中可以随时调用cancel(boolean)方法取消任务，如果成功调用isCancel()会返回true，并不会执行onPostExecute()，取而代之的是调用onCancelled()。从源码看，如果这个任务已经执行了这个时候调用cancel是不会真正的把task结束，而是继续执行，只不过改变的是执行之后的回调方法的onPostExecute还是onCancelled。（这里说一下，cancel方法是调用FutureTask的cancel方法，FutureTask的cancel方法是调用了Thread的interrupt方法，除非doInBackground利用Thread的interrupted判断是否中断，否则任务会继续执行，可以见Java目录下的线程池归纳总结.md）
-- 可能存在内存泄露情况，即非静态内部类持有外部类引用，解决办法同，Handler内存泄露解决办法一样。在activity的onDestory 方法中调用 AsyncTask的cancel()方法，或者利用静态内部类+弱引用的方式。
+- 运行中可以随时调用cancel(boolean)方法取消任务，如果成功调用isCancel()会返回true，并不会执行onPostExecute()，取而代之的是调用onCancelled()。从源码看，如果这个任务已经执行了这个时候调用cancel是不会真正的把task结束，而是继续执行，只不过改变的是执行之后的回调方法的onPostExecute还是onCancelled。
+- 可能存在内存泄露情况，即非静态内部类持有外部类引用，解决办法是利用静态内部类+弱引用Activity的方式。（在Activity的onDestroy调用cancel也没用，因为任务即使被cancel了，也还是存在SerialExecutor的队列中，等排队轮到执行时，FutureTask的run会判断状态，直接return）
 - 并行或串行：在android 1.6之前的版本asynctask都是串行，即把任务放线程池中一串一串的执行，1.6到2.3改成并行，2.3之后为了维护系统稳定改成串行，但是任然可以执行并行操作。
-- 可能会导致结果丢失
+-   可能会导致结果丢失。
+    屏幕旋转等造成Activity重新创建时AsyncTask数据丢失的问题。当Activity销毁并创新创建后，还在运行的AsyncTask会持有一个Activity的非法引用即之前的Activity实例，导致onPostExecute()没有任何作用。
 
 # 个人总结
 
-AsyncTask是一个轻量级的异步任务类，内部有2个线程池和一个Handler，SerialExecutor是一个串行线程池，用于任务的排队，内部的execute和scheduleNext方法加了同步锁，保证了任务的顺序执行，THREAD_POOL_EXECUTOR用来真正的执行任务，官方注释说可以并行执行任务，但由于锁机制，导致也只能异步执行。Handler是一个InternalHandler，用来将线程切换到主线程。
+AsyncTask是一个轻量级的异步任务类，内部有2个Executor和一个Handler，SerialExecutor是一个串行线程池，用于任务的排队，内部的execute和scheduleNext方法加了同步锁，保证了任务的顺序执行，THREAD_POOL_EXECUTOR用来真正的执行任务，官方注释说可以并行执行任务，但由于锁机制，导致也只能异步执行。Handler是一个InternalHandler，用来将线程切换到主线程。
 
 **优缺点（结合源码的个人总结）**
 
@@ -304,7 +336,7 @@ AsyncTask是一个轻量级的异步任务类，内部有2个线程池和一个H
 缺点：
 
 1.  不适合执行耗时操作，会阻塞后续任务。
-2.  有内存泄漏的危险，如果是普通匿名内部类，会持有外部Activity的引用。可以利用静态内部类+弱引用的方式解决。也可以普通匿名内部类+cancel的方式。
+2.  有内存泄漏的危险，如果是普通匿名内部类，会持有外部Activity的引用。可以利用静态内部类+弱引用的方式解决。
 
 # 他人总结
 
@@ -316,4 +348,4 @@ AsyncTask是一个轻量级的异步任务类，内部有2个线程池和一个H
 
 3.  Handler是静态变量，属于类属性，同一进程所有AsyncTask实例共享一个Handler对象。android-21及之前Handler的实例化在类一加载的时候就创建了，android22~25 handler实例是在需要用到Handler发送消息的时候，才会进行Handler的实例化。android26+则是在创建AsyncTask实例时进行了Handler的实例化。这样做的好处是不会像android21之前那样类一加载就实例化耗费资源，而在需要用到Handler发消息的时候才实例化，如果在多线程并发发消息时，会有延迟。
 
-4.  android26+ AsyncTask中包含了两个Handler对象mHandler（常量）和sHandler（静态变量），如果用AsyncTask有参构造方法中传入了Looper创建AsyncTask实例，mHandler会用传入的Looper来创建实例；而现在系统只支持AsyncTask无参构造方法创建AsyncTask实例，所以mHandler=sHandler.
+4.  android26+AsyncTask中包含了两个Handler对象：mHandler（常量）和sHandler（静态变量），如果用AsyncTask有参构造方法中传入了Looper创建AsyncTask实例，mHandler会用传入的Looper来创建实例；而现在系统只支持AsyncTask无参构造方法创建AsyncTask实例，所以mHandler=sHandler.

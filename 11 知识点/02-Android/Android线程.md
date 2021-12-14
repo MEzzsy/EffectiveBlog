@@ -14,7 +14,7 @@ AsyncTask是一个抽象类，它是由Android封装的一个轻量级异步类�
     这个方法会在后台任务开始执行之前调用，用于进行一些界面上的初始化操作，比如显示一个进度条对话框等。
     在调用execute(params)后会调用。
 2. doInBackground(Params...)
-    这个方法中的所有代码都会在子线程中运行，我们应该在这里去处理所有的耗时任务。任务一旦完成就可以通过return语句来将任务的执行结果返回，如果AsyncTask的第三个泛型参数指定的是Void，就可以不返回任务执行结果。注意，在这个方法中是不可以进行UI操作的，如果需要更新UI元素，比如说反馈当前任务的执行进度，可以调用publishProgress(Progress...)方法来完成。
+    这个方法中的所有代码都会在子线程中运行，应该在这里去处理所有的耗时任务。任务一旦完成就可以通过return语句来将任务的执行结果返回，如果AsyncTask的第三个泛型参数指定的是Void，就可以不返回任务执行结果。注意，在这个方法中是不可以进行UI操作的，如果需要更新UI元素，比如说反馈当前任务的执行进度，可以调用publishProgress(Progress...)方法来完成。
     在执行任务的时候调用。
 3. publishProgress(Progress... values)
     在doInBackground中调用，内部会用一个Handler切换到主线程。
@@ -27,43 +27,6 @@ AsyncTask是一个抽象类，它是由Android封装的一个轻量级异步类�
 ## 分析
 
 具体见源码分析里的AsyncTask分析。
-
-从起点execute开始分析，这个方法return一个executeOnExecutor。一个进程的所有AsyncTask都在一个串行线程池排队执行。在executeOnExecutor中，onPreExecute方法最先执行，然后线程池执行。
-
-首先系统会把AsyncTask的params封装成FutureTask对象，起到Runnable的作用。然后交给SerialExecutor的execute方法处理。execute方法会把FutureTask对象插入到任务队列中，如果没有正在活动的AsyncTask，那么scheduleNext方法就会执行下一个AsyncTask任务，**这一点可以看出，AsyncTask默认是串行执行的**
-
-AsyncTask有两个线程池（SerialExecutor和THREAD_POOL_EXECUTOR）和一个Handler（InternalHandler），SerialExecutor用于任务的排队，THREAD_POOL_EXECUTOR用于执行任务。InternalHandler用于将执行环境从线程池切换到主线程。
-
-**个人思考：为什么用两个线程池，为什么不直接用一个线程池？**
-
-第一个线程池的源码：
-
-```java
-private static class SerialExecutor implements Executor {
-    final ArrayDeque<Runnable> mTasks = new ArrayDeque<Runnable>();
-    Runnable mActive;
-
-    public synchronized void execute(final Runnable r) {
-        //...
-    }
-
-    protected synchronized void scheduleNext() {
-        if ((mActive = mTasks.poll()) != null) {
-            THREAD_POOL_EXECUTOR.execute(mActive);
-        }
-    }
-}
-```
-
-接口Executor的源码：
-
-```java
-public interface Executor {
-    void execute(Runnable command);
-}
-```
-
-SerialExecutor除了将任务交给第二个线程池外，其余没有涉及线程的地方，因此猜测任务的排队所在的线程在调用AsyncTask.execute(Params)的线程。所以SerialExecutor名字叫线程池，但与线程池关系不大。
 
 ## AsyncTask的机制原理
 
