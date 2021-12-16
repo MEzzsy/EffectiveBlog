@@ -72,7 +72,7 @@ ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
 ## AsyncTask使用不当的后果
 
 1. 生命周期
-    AsyncTask不与任何组件绑定生命周期，所以在Activity/或者Fragment中创建执行AsyncTask时，最好在Activity/Fragment的onDestory()调用 cancel(boolean)；
+    AsyncTask不与任何组件绑定生命周期，所以在Activity/或者Fragment中创建执行AsyncTask时，最好在Activity/Fragment的onDestory调用cancel(boolean)
 
 2. 内存泄漏
     如果AsyncTask被声明为Activity的非静态的内部类，那么AsyncTask会保留一个对创建了AsyncTask的Activity的引用。如果Activity已经被销毁，AsyncTask的后台线程还在执行，它将继续在内存里保留这个引用，导致Activity无法被回收，引起内存泄露。解决方式和Handler差不多。
@@ -82,53 +82,81 @@ ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
 
 # HandlerThread
 
-HandlerThread继承了Thread，内部创建了一个Looper，所以可以使用Handler，HandlerThread具体使用的场景是IntentService。
+HandlerThread继承了Thread，并允许Handler的特殊线程。
 
-# 线程池
+```java
+@Override
+public void run() {
+    mTid = Process.myTid();
+    Looper.prepare();
+    synchronized (this) {
+        mLooper = Looper.myLooper();
+        notifyAll();
+    }
+    Process.setThreadPriority(mPriority);
+    onLooperPrepared();
+    Looper.loop();
+    mTid = -1;
+}
+```
 
-## 简单介绍
+普通线程在run()方法中执行耗时操作，而HandlerThread在run()方法创建了一个消息队列不停地轮询消息，可以通过Handler发送消息来告诉线程该执行什么操作。
 
-线程池的优点：
+它在Android中是个很有用的类，它常见的使用场景实在IntentService中。当不再需要HandlerThread时，通过调用quit/Safely方法来结束线程的轮询并结束该线程。
 
-1. 重用线程池中的线程，避免因为线程的创建和销毁所带来的性能开销。
-2. 能有效控制线程池的最大并发数，避免大量的线程之间因互相抢占系统资源而导致阻塞。
-3. 能对线程进行简单的管理，并提供定时执行以及指定间隔循环执行等功能。
+# **IntentService**
 
-Android中最常见的四类具有不同功能特性的线程池，都是用ThreadPoolExecutor直接或间接实现自己的特性的：FixedThreadPool、CachedThreadPool、ScheduledThreadPool、SingleThreadExecutor。
+**1. 概述**
 
-## 线程池的分类
+IntentService是一个继承Service的抽象类，必须实现它的子类再去使用。
 
-核心线程指不会被回收的线程。非核心线程指最大线程数减核心线程数，会被回收。
+在说到HandlerThread时提到，HandlerThread的使用场景是在IntentService上，可以这样来理解IntentService，它是一个实现了HandlerThread的Service。
 
-**FixedThreadPool：**
+那么为什么要这样设计呢？这样设计的好处是Service的优先级比较高，可以利用这个特性来保证后台服务的优先正常执行，甚至还可以为Service开辟一个新的进程。
 
-- 线程数量固定（需用户指定），当线程处于空闲状态也不会被回收，除非线程池被关闭。
-- 只有核心线程，并且没有超时机制，另外任务队列没有大小限制。
+**2. 源码分析**
 
-**CachedThreadPool：**
+onCreate()函数：
 
-- 线程数量不定，只有非核心线程，最大的线程数为Integer.MAX_VALUE
-- 空闲线程具有超时机制，超过60秒就会被回收。
-- 适合大量耗时少的任务。
+```java
+@Override
+public void onCreate() {
+    super.onCreate();
+    HandlerThread thread = new HandlerThread("IntentService[" + mName + "]");
+    thread.start();
+    mServiceLooper = thread.getLooper();
+    mServiceHandler = new ServiceHandler(mServiceLooper);
+}
+```
 
-**ScheduledThreadPool：**
+创建Service时，实现了一个HandlerThread的实例开启了一个线程，并在线程内部进行消息轮询，又创建了一个Handler来收发Looper的消息。
 
-- 核心线程数量固定，非核心线程没有限制，非核心线程闲置时会被立即回收。
-- 主要用于执行定时任务和具有固定周期的重复任务。
+每启动一次服务时，不会开启新的服务，只是会调用onStartCommand()函数，又看到该函数调用了onStart()方法。
 
-**SingleThreadExecutor：**
+```java
+@Override
+public void onStart(@Nullable Intent intent, int startId) {
+    Message msg = mServiceHandler.obtainMessage();
+    msg.arg1 = startId;
+    msg.obj = intent;
+    mServiceHandler.sendMessage(msg);
+}
+```
 
-- 只有一个核心线程，确保所有的任务都在同一个线程按顺序执行
-- 意义在于统一所有的外界任务到一个线程，使得不需要处理同步问题。
+在该方法中看到，这里用来接收Context传递的参数，通过Handler发送出去，然后再HandlerThread的线程上接收消息并且处理。
 
-## 自定义线程池
+```java
+private final class ServiceHandler extends Handler {
+    public ServiceHandler(Looper looper) {
+        super(looper);
+    }
 
-ThreadPoolExecutor是线程池的真正实现。
+    @Override
+    public void handleMessage(Message msg) {
+        onHandleIntent((Intent)msg.obj);
+        stopSelf(msg.arg1);
+    }
+}
+```
 
-## 笔记
-
-见笔记[Android线程和线程池](https://mezzsy.github.io/2019/06/23/Android/Android线程和线程池/)
-
-# TODO
-
-1.   为什么AsyncTask最好不要执行耗时任务
+可以看到onHandleIntent()方法是需要接收消息处理的。

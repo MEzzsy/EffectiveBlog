@@ -94,6 +94,8 @@ public final AsyncTask<Params, Progress, Result> execute(Params... params) {
 
 传入了2个参数sDefaultExecutor和params，params是用户指定的任务开启时需要的参数，sDefaultExecutor是一个串行线程池，一个应用所有的AsyncTask全部在这个线程池中排队执行。
 
+## executeOnExecutor
+
 在executeOnExecutor中，onPreExecute最先执行（如果用户重写了这个方法，在当前调用线程中执行），然后线程池执行AsyncTask。
 
 ```java
@@ -118,7 +120,11 @@ public final AsyncTask<Params, Progress, Result> executeOnExecutor(Executor exec
 }
 ```
 
+mStatus代表了当前异步任务的运行状态，可以看出AsyncTask是一次性的，即不能重复调用execute()来开启异步任务。
+
 `exec.execute(mFuture)`执行任务。这个exec就是下面的SerialExecutor对象sDefaultExecutor。
+
+另外一点，AsyncTask的execute方法是串行的，因为有SerialExecutor进行排队，但也可以直接调用executeOnExecutor并指定一个线程池来做到并行执行任务。
 
 ## SerialExecutor
 
