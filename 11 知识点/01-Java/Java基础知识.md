@@ -1,19 +1,19 @@
-# Object 类相关
+# Object类相关
 
 ## java中==和equals和hashCode的区别
 
-**1、==**
+### ==
 
 java中的数据类型，可分为两类：
 
 1.  基本数据类型，也称原始数据类型
-    byte,short,char,int,long,float,double,boolean   他们之间的比较，应用双等号（==）,比较的是他们的值。 
+    byte,short,char,int,long,float,double,boolean之间的比较，应用双等号（==）,比较的是值。 
 
 2.  引用类型(类、接口、数组) 
-    当他们用（==）进行比较的时候，比较的是他们在内存中的存放地址，所以，除非是同一个new出来的对象，他们的比较后的结果为true，否则比较后结果为false。
+    当用（==）进行比较的时候，比较的是在内存中的存放地址，所以，除非是同一个new出来的对象，他们的比较后的结果为true，否则比较后结果为false。
     对象是放在堆中的，栈中存放的是对象的引用（地址）。由此可见'=='是对栈中的值进行比较的。如果要比较堆中对象的内容是否相同，那么就要重写equals方法了。
 
-**2、equals**
+### equals
 
 1.  没有覆盖equals方法，equals是Object的方法，代码如下：
 
@@ -39,7 +39,7 @@ hashCode的目的是用于在对象进行散列的时候作为key输入，保证
 ## 浅拷贝与深拷贝
 
 ```java
-public class Human implements Cloneable{
+public class Human implements Cloneable {
     private int age;
     private String name;
     private Info mInfo;
@@ -90,6 +90,12 @@ public class Info implements Cloneable {
     }
 }
 ```
+
+```java
+protected native Object clone() throws CloneNotSupportedException;
+```
+
+>   clone()是Object的一个方法。
 
 ### 浅拷贝
 
@@ -167,8 +173,6 @@ Info{d=1.1, b=true}}
 ## 数据类型
 
 8种基本数据类型
-
-![20180916202419](http://111.230.96.19:8081/image/20190328192625.png)
 
 还有一种基本数据类型refvar，是面向对象的引用变量，也叫引用句柄。默认值是null，存储的是refobj的首地址，可以直接使用==进行等值判断。
 
@@ -260,7 +264,7 @@ Integer a3 = new Integer(128);
 3、Integer实际是对象的引用，当new一个Integer时，实际上是生成一个指针指向此对象；而int则是直接存储数据值。
 4、Integer的默认值是null，int的默认值是0。
 
-# **比较double数据是否相等的方法**
+# double数据比较
 
 **方法一**
 
@@ -376,19 +380,10 @@ String s = "abcd";
 - 在任何非静态内部类中，都不能有静态变量、静态方法或者静态内部类。
 - 创建非静态内部类，必须要通过外部类来创建，例如`Outer.InnerImpl outer = new Outer().new InnerImpl();`；静态内部类则可以直接创建，`Outer.InnerImpl outer = new Outer.InnerImpl();` 
 - 静态内部类只可以访问外部类的静态方法和静态变量。
-- 非静态内部类不能含有`static`的变量和方法。
-
-### 实现多重继承
-
-由于`Java`不允许多重继承，因此假如我们希望一个类同时具备其它两个类的功能时，就可以采用内部类来实现。
 
 ### 避免修改接口而实现同一个类中两种同名方法的调用
 
 用于解决下面的困境：一个需要继承另一个类，还要实现一个接口，而继承的类和接口里面有两个同名的方法。那么我们调用该方法的时候，究竟是父类的，还是实现的接口呢，这时候就可以使用内部类来解决这一问题。
-
-## 应用场景
-
-从作用考虑
 
 ## 一些问题
 
@@ -1026,9 +1021,9 @@ LinkedList源码很简单，见[LinkedList源码分析](/Applications/Projects/B
 - 声明为final的方法不能被重写。
 
 - 声明为static的方法不能被重写，但是能够被再次声明。
-  语法上子类允许出现和父类只有方法体不一样其他都一模一样的static方法，但是在父类引用指向子类对象时，通过父类引用调用的依然是父类的static方法，而不是子类的static方法。
+    语法上子类允许出现和父类只有方法体不一样其他都一模一样的static方法，但是在父类引用指向子类对象时，通过父类引用调用的依然是父类的static方法，而不是子类的static方法。
 
-  即：语法上static支持重写，但是运行效果上达不到多态目的
+    即：语法上static支持重写，但是运行效果上达不到多态目的
 
 - 子类和父类在同一个包中，那么子类可以重写父类所有方法，除了声明为private和final的方法。
 
@@ -1275,7 +1270,7 @@ notify是随机唤醒一个线程，notifyAll是唤醒所有线程。
 1. 继承Thread类重写run方法
 2. 实现Runnable接口
 3. 使用Callable（重写call方法）和Future配合线程池使用。
-   线程池的submit方法传入Callable对象，返回Future对象。利用Future对象的get方法得到Callable中call方法返回的值。
+    线程池的submit方法传入Callable对象，返回Future对象。利用Future对象的get方法得到Callable中call方法返回的值。
 
 如果Runnable和run方法都有呢？
 
@@ -1455,37 +1450,37 @@ b>25, b = 100
 ## 元注解
 
 - @Target
-  表示该注解可以用于什么地方。可能的ElementType参数包括：
+    表示该注解可以用于什么地方。可能的ElementType参数包括：
 
-  - CONSTRUCTOR
-    构造器的声明
-  - FIELD
-    域声明(包括enum实例)
-  - LOCAL VARIABLE
-    局部变量声明
-  - METHOD
-    方法声明
-  - PACKAGE
-    包声明
-  - PARAMETER
-    参数声明
-  - TYPE
-    类、接口(包括注解类型)或enum声明
+    - CONSTRUCTOR
+        构造器的声明
+    - FIELD
+        域声明(包括enum实例)
+    - LOCAL VARIABLE
+        局部变量声明
+    - METHOD
+        方法声明
+    - PACKAGE
+        包声明
+    - PARAMETER
+        参数声明
+    - TYPE
+        类、接口(包括注解类型)或enum声明
 
 - @Retention
 
-  表示需要在什么级别保存该注解信息。可选的RetentionPolicy参数包括:
+    表示需要在什么级别保存该注解信息。可选的RetentionPolicy参数包括:
 
-  - SOURCE
-    注解将被编译器丢弃。
-  - CLASS
-    注解在class文件中可用，但会被VM丢弃。
-  - RUNTIME
-    VM将在运行期也保留注解，因此可以通过反射机制读取注解的信息。
+    - SOURCE
+        注解将被编译器丢弃。
+    - CLASS
+        注解在class文件中可用，但会被VM丢弃。
+    - RUNTIME
+        VM将在运行期也保留注解，因此可以通过反射机制读取注解的信息。
 
 - @Documented
-  将此注解包含在Javadoc中。
+    将此注解包含在Javadoc中。
 
 - @Inherited
-  使用此注解声明出来的自定义注解，在使用此自定义注解时，如果注解在类上面时，子类会自动继承此注解，否则的话，子类不会继承此注解。
+    使用此注解声明出来的自定义注解，在使用此自定义注解时，如果注解在类上面时，子类会自动继承此注解，否则的话，子类不会继承此注解。
 
