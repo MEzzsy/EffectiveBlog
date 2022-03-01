@@ -581,8 +581,6 @@ private void postCallbackDelayedInternal(int callbackType, Object action, Object
 
 ViewRootImpl在进行view的刷新时，放置了一个屏障。然后post了一个异步消息。
 
-
-
 ```java
 public int postSyncBarrier() {
     return postSyncBarrier(SystemClock.uptimeMillis());

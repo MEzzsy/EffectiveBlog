@@ -1,3 +1,5 @@
+# 介绍
+
 LinkedHashMap继承了HashMap，和HashMap一样内部有个Hash表，而且还有一个链表，这个链表在迭代的时候会有到。这个特性是由键值对节点决定的。
 
 ```java

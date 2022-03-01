@@ -1,5 +1,3 @@
-使用很简单，put放入键值对，get获取键值对，remove移除
-
 # 思想
 
 主要是CAS操作+Synchronized锁分段。
@@ -683,6 +681,10 @@ final V replaceNode(Object key, V value, Object cv) {
 # 总结
 
 put与remove类似，所以这里围绕put和get来进行总结。
+
+## put
+
+1.   put时，如果数组没有初始化，那么初始化数组。
 
 # 参考
 
