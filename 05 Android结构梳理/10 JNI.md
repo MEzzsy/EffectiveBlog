@@ -465,7 +465,7 @@ Java对象传入JNI函数时，会创建一个局部引用引用这个对象，�
 >
 >   所以当JNI函数返回时，局部引用也会被回收，Java层拿到的是具体对象，此时已经无关JNI层的引用了。
 
-局部引用在Native代码显式释放非常重要。既然Java虚拟机会自动释放局部变量为什么还需要我在Native代码中显示释放呢？原因有以下几点：
+局部引用在Native代码显式释放非常重要。既然Java虚拟机会自动释放局部变量为什么还需要在Native代码中显示释放呢？原因有以下几点：
 
 1.  Java虚拟机默认为Native引用分配的局部引用数量是有限的，大部分的Java虚拟机实现默认分配16个局部引用。当然Java虚拟机也提供API（[PushLocalFrame](http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#push_local_frame)，[EnsureLocalCapacity](http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#ensure_local_capacity)）让你申请更多的局部引用数量（Java虚拟机不保证你一定能申请到）。JNI编程中，实现Native代码时强烈建议调用 [PushLocalFrame](http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#push_local_frame) ， [EnsureLocalCapacity](http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#ensure_local_capacity) 来确保Java虚拟机为你准备好了局部变量空间。 
 2.  如果你实现的Native函数是工具函数，会被频繁的调用。如果你在Native函数中没有显示删除局部引用，那么每次调用该函数Java虚拟机都会创建一个新的局部引用，造成局部引用过多。尤其是该函数在Native代码中被频繁调用，代码的控制权没有交还给Java虚拟机，所以Java虚拟机根本没有机会释放这些局部变量。退一步讲，就算该函数直接返回给Java虚拟机，也不能保证没有问题，我们不能假设Native函数返回Java虚拟机之后，Java虚拟机马上就会回收Native函数中创建的局部引用，依赖于Java虚拟机实现。所以我们在实现Native函数时一定要记着删除不必要的局部引用，否则你的程序就有潜在的风险，不知道什么时候就会爆发。 
