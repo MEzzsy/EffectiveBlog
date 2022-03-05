@@ -63,10 +63,10 @@ BaseDexClassLoader中有个pathList对象，pathList中包含一个DexFile的数
 
 ## ClassLoader的类型
 
-Java中的类加载器主要有两种类型，即系统类加载器和自定义类加载器。其中系统类加载器包括3种，分别是Bootstrap ClassLoader、Extensions ClassLoader 和Application ClassLoader。
+Java中的类加载器主要有两种类型，即系统类加载器和自定义类加载器。其中系统类加载器包括3种，分别是Bootstrap ClassLoader、Extensions ClassLoader和Application ClassLoader。
 
 1. **Bootstrap ClassLoader(引导类加载器)**
-    C/C++代码实现的加载器，用于加载指定的JDK的核心类库，比如`java.lang.` `java.util.`等这些系统类。它用来加载以下目录中的类库：
+    C/C++代码实现的加载器，用于加载指定的JDK的核心类库，比如`java.lang.`，`java.util.`等这些系统类。它用来加载以下目录中的类库：
 
   -   `$JAVA_HOME/jre/lib`目录。
   -   `-Xbootclasspath`参数指定的目录。
