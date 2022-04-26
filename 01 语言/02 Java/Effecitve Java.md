@@ -12,3 +12,7 @@
 
 1.   The main limitation of providing only static factory methods is that classes without public or protected constructors cannot be subclassed.
 2.   A second shortcoming of static factory methods is that they are hard for programmers to find.
+
+## Item 2: Consider a builder when faced with many constructor parameters
+
+1.   A minor advantage of builders over constructors is that builders can have mul- tiple varargs parameters because each parameter is specified in its own method.
