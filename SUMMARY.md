@@ -22,7 +22,6 @@
       - [流总结](./01 语言/01 Cpp/用法总结/流总结.md)
       - [类总结](./01 语言/01 Cpp/用法总结/类总结.md)
   - [02 Java](./01 语言/02 Java/README.md)
-    - [Effecitve Java](./01 语言/02 Java/Effecitve Java.md)
     - [Java-IO](./01 语言/02 Java/Java-IO.md)
     - [Java反射机制和泛型](./01 语言/02 Java/Java反射机制和泛型.md)
     - [Java基础知识](./01 语言/02 Java/Java基础知识.md)
