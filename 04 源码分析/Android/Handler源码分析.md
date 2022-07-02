@@ -357,6 +357,302 @@ boolean enqueueMessage(Message msg, long when) {
 1.   Message的链表顺序按照when（运行时间，delay的原理就是delay加上当前时间得到最终的运行时间）来的。
      如果有个Message enqueue，那么遍历链表，比较when，将该msg放置在合适的位置。
 
+## nativePollOnce
+
+>   nativePollOnce(ptr, nextPollTimeoutMillis)我之前一直以为是等nextPollTimeoutMillis时间，虽然从效果上来看，确实等了nextPollTimeoutMillis时间，但是从函数名称上看不出等的逻辑，这次看了native层的代码，发现nativePollOnce和native的MessageQueue有关。
+
+见Native MessageQueue部分
+
+# Native层的消息循环
+
+>   文档：https://developer.android.com/ndk/reference/group/looper
+
+## Native层消息循环
+
+Native层消息循环的大致实现方式（线程之间的消息通信）：
+
+1.   通过ALooper_acquire获取Native Looper对象。
+2.   通过eventfd创建一个fd，并通过ALooper_addFd来注册这个fd。
+3.   其它线程需要给目标线程发送消息时，用write(fd)的方式来通知。
+4.   ALooper_addFd调用时，需要设置一个callback，当其它线程通知时，这个callback会执行，并且是在目标线程执行的。
+5.   通过ALooper_release释放资源。
+
+## 原理
+
+Native层的消息循环实现的核心是epoll，epoll的简单实用方式见demo。
+
+## 注册fd
+
+```cpp
+int Looper::addFd(int fd, int ident, int events, const sp<LooperCallback>& callback, void* data) {
+	// ...
+
+    { // acquire lock
+        AutoMutex _l(mLock);
+        // ...
+        // 该fd的序号
+        const SequenceNumber seq = mNextRequestSeq++;
+
+        Request request;
+        request.fd = fd;
+        request.ident = ident;
+        request.events = events;
+        request.callback = callback;
+        request.data = data;
+
+        epoll_event eventItem = createEpollEvent(request.getEpollEvents(), seq);
+        auto seq_it = mSequenceNumberByFd.find(fd);
+        if (seq_it == mSequenceNumberByFd.end()) {
+            int epollResult = epoll_ctl(mEpollFd.get(), EPOLL_CTL_ADD, fd, &eventItem);
+            if (epollResult < 0) {
+                ALOGE("Error adding epoll events for fd %d: %s", fd, strerror(errno));
+                return -1;
+            }
+            mRequests.emplace(seq, request);
+            mSequenceNumberByFd.emplace(fd, seq);
+        } else {
+            int epollResult = epoll_ctl(mEpollFd.get(), EPOLL_CTL_MOD, fd, &eventItem);
+            if (epollResult < 0) {
+                if (errno == ENOENT) {
+                    epollResult = epoll_ctl(mEpollFd.get(), EPOLL_CTL_ADD, fd, &eventItem);
+                    if (epollResult < 0) {
+                        ALOGE("Error modifying or adding epoll events for fd %d: %s",
+                                fd, strerror(errno));
+                        return -1;
+                    }
+                    scheduleEpollRebuildLocked();
+                } else {
+                    ALOGE("Error modifying epoll events for fd %d: %s", fd, strerror(errno));
+                    return -1;
+                }
+            }
+            const SequenceNumber oldSeq = seq_it->second;
+            mRequests.erase(oldSeq);
+            mRequests.emplace(seq, request);
+            seq_it->second = seq;
+        }
+    } // release lock
+    return 1;
+}
+```
+
+注册fd也就是通过epoll_ctl来add一个新的epoll event，该fd对应一个新的序号SequenceNumber，并赋值给epoll event。
+
+## write fd
+
+write fd需要其它线程调用。如果write了，那么epoll_wait是会返回对应的event的。
+
+## nativePollOnce
+
+```cpp
+int Looper::pollOnce(int timeoutMillis, int* outFd, int* outEvents, void** outData) {
+    int result = 0;
+    for (;;) {
+        while (mResponseIndex < mResponses.size()) {
+            const Response& response = mResponses.itemAt(mResponseIndex++);
+            int ident = response.request.ident;
+            if (ident >= 0) {
+                int fd = response.request.fd;
+                int events = response.events;
+                void* data = response.request.data;
+#if DEBUG_POLL_AND_WAKE
+                ALOGD("%p ~ pollOnce - returning signalled identifier %d: "
+                        "fd=%d, events=0x%x, data=%p",
+                        this, ident, fd, events, data);
+#endif
+                if (outFd != nullptr) *outFd = fd;
+                if (outEvents != nullptr) *outEvents = events;
+                if (outData != nullptr) *outData = data;
+                return ident;
+            }
+        }
+
+        if (result != 0) {
+#if DEBUG_POLL_AND_WAKE
+            ALOGD("%p ~ pollOnce - returning result %d", this, result);
+#endif
+            if (outFd != nullptr) *outFd = 0;
+            if (outEvents != nullptr) *outEvents = 0;
+            if (outData != nullptr) *outData = nullptr;
+            return result;
+        }
+
+        result = pollInner(timeoutMillis);
+    }
+}
+
+int Looper::pollInner(int timeoutMillis) {
+#if DEBUG_POLL_AND_WAKE
+    ALOGD("%p ~ pollOnce - waiting: timeoutMillis=%d", this, timeoutMillis);
+#endif
+
+    // Adjust the timeout based on when the next message is due.
+    if (timeoutMillis != 0 && mNextMessageUptime != LLONG_MAX) {
+        nsecs_t now = systemTime(SYSTEM_TIME_MONOTONIC);
+        int messageTimeoutMillis = toMillisecondTimeoutDelay(now, mNextMessageUptime);
+        if (messageTimeoutMillis >= 0
+                && (timeoutMillis < 0 || messageTimeoutMillis < timeoutMillis)) {
+            timeoutMillis = messageTimeoutMillis;
+        }
+#if DEBUG_POLL_AND_WAKE
+        ALOGD("%p ~ pollOnce - next message in %" PRId64 "ns, adjusted timeout: timeoutMillis=%d",
+                this, mNextMessageUptime - now, timeoutMillis);
+#endif
+    }
+
+    // Poll.
+    int result = POLL_WAKE;
+    mResponses.clear();
+    mResponseIndex = 0;
+
+    // We are about to idle.
+    mPolling = true;
+
+    struct epoll_event eventItems[EPOLL_MAX_EVENTS];
+    int eventCount = epoll_wait(mEpollFd.get(), eventItems, EPOLL_MAX_EVENTS, timeoutMillis);
+
+    // No longer idling.
+    mPolling = false;
+
+    // Acquire lock.
+    mLock.lock();
+
+    // Rebuild epoll set if needed.
+    if (mEpollRebuildRequired) {
+        mEpollRebuildRequired = false;
+        rebuildEpollLocked();
+        goto Done;
+    }
+
+    // Check for poll error.
+    if (eventCount < 0) {
+        if (errno == EINTR) {
+            goto Done;
+        }
+        ALOGW("Poll failed with an unexpected error: %s", strerror(errno));
+        result = POLL_ERROR;
+        goto Done;
+    }
+
+    // Check for poll timeout.
+    if (eventCount == 0) {
+#if DEBUG_POLL_AND_WAKE
+        ALOGD("%p ~ pollOnce - timeout", this);
+#endif
+        result = POLL_TIMEOUT;
+        goto Done;
+    }
+
+    // Handle all events.
+#if DEBUG_POLL_AND_WAKE
+    ALOGD("%p ~ pollOnce - handling events from %d fds", this, eventCount);
+#endif
+
+    for (int i = 0; i < eventCount; i++) {
+        const SequenceNumber seq = eventItems[i].data.u64;
+        uint32_t epollEvents = eventItems[i].events;
+        if (seq == WAKE_EVENT_FD_SEQ) {
+            if (epollEvents & EPOLLIN) {
+                awoken();
+            } else {
+                ALOGW("Ignoring unexpected epoll events 0x%x on wake event fd.", epollEvents);
+            }
+        } else {
+            const auto& request_it = mRequests.find(seq);
+            if (request_it != mRequests.end()) {
+                const auto& request = request_it->second;
+                int events = 0;
+                if (epollEvents & EPOLLIN) events |= EVENT_INPUT;
+                if (epollEvents & EPOLLOUT) events |= EVENT_OUTPUT;
+                if (epollEvents & EPOLLERR) events |= EVENT_ERROR;
+                if (epollEvents & EPOLLHUP) events |= EVENT_HANGUP;
+                mResponses.push({.seq = seq, .events = events, .request = request});
+            } else {
+                ALOGW("Ignoring unexpected epoll events 0x%x for sequence number %" PRIu64
+                      " that is no longer registered.",
+                      epollEvents, seq);
+            }
+        }
+    }
+Done: ;
+
+    // Invoke pending message callbacks.
+    mNextMessageUptime = LLONG_MAX;
+    while (mMessageEnvelopes.size() != 0) {
+        nsecs_t now = systemTime(SYSTEM_TIME_MONOTONIC);
+        const MessageEnvelope& messageEnvelope = mMessageEnvelopes.itemAt(0);
+        if (messageEnvelope.uptime <= now) {
+            // Remove the envelope from the list.
+            // We keep a strong reference to the handler until the call to handleMessage
+            // finishes.  Then we drop it so that the handler can be deleted *before*
+            // we reacquire our lock.
+            { // obtain handler
+                sp<MessageHandler> handler = messageEnvelope.handler;
+                Message message = messageEnvelope.message;
+                mMessageEnvelopes.removeAt(0);
+                mSendingMessage = true;
+                mLock.unlock();
+
+#if DEBUG_POLL_AND_WAKE || DEBUG_CALLBACKS
+                ALOGD("%p ~ pollOnce - sending message: handler=%p, what=%d",
+                        this, handler.get(), message.what);
+#endif
+                handler->handleMessage(message);
+            } // release handler
+
+            mLock.lock();
+            mSendingMessage = false;
+            result = POLL_CALLBACK;
+        } else {
+            // The last message left at the head of the queue determines the next wakeup time.
+            mNextMessageUptime = messageEnvelope.uptime;
+            break;
+        }
+    }
+
+    // Release lock.
+    mLock.unlock();
+
+    // Invoke all response callbacks.
+    for (size_t i = 0; i < mResponses.size(); i++) {
+        Response& response = mResponses.editItemAt(i);
+        if (response.request.ident == POLL_CALLBACK) {
+            int fd = response.request.fd;
+            int events = response.events;
+            void* data = response.request.data;
+#if DEBUG_POLL_AND_WAKE || DEBUG_CALLBACKS
+            ALOGD("%p ~ pollOnce - invoking fd event callback %p: fd=%d, events=0x%x, data=%p",
+                    this, response.request.callback.get(), fd, events, data);
+#endif
+            // Invoke the callback.  Note that the file descriptor may be closed by
+            // the callback (and potentially even reused) before the function returns so
+            // we need to be a little careful when removing the file descriptor afterwards.
+            int callbackResult = response.request.callback->handleEvent(fd, events, data);
+            if (callbackResult == 0) {
+                AutoMutex _l(mLock);
+                removeSequenceNumberLocked(response.seq);
+            }
+
+            // Clear the callback reference in the response structure promptly because we
+            // will not clear the response vector itself until the next poll.
+            response.request.callback.clear();
+            result = POLL_CALLBACK;
+        }
+    }
+    return result;
+}
+```
+
+>   以上代码没有删改，但也不需要看，下面总结
+
+1.   其它线程write fd，epoll_wait才能取得事件。
+2.   epoll_wait会阻塞线程，等的时间就是nativePollOnce传入的时间。
+3.   epoll_wait获取到一定的events时，根据其中的序号（注册fd时传入的），获取对应的Request对象，并callback（注册fd时传入的），这样就实现了在目标线程回调事件。
+
+## 总结
+
+Android的消息循环主要是Java层，不过在Java层的消息空闲期，也会通过nativePollOnce进行native层的消息循环。
+
 # Handler
 
 ## dispatchMessage
