@@ -1,12 +1,3 @@
-# 简介
-
-能够分析类能力的程序称为反射。反射机制可以用来：
-
-- 在运行中分析类的能力
-- 在运行中查看对象
-- 实现通用的数组操作代码
-- 利用Method对象，这个对象很像C++的函数指针
-
 # Type接口详解
 
 来源https://blog.csdn.net/lkforce/article/details/82466893
@@ -492,34 +483,46 @@ Java判断类型的方式有这么几种：
 2.  Class的isInstance(Object obj)方法
 
 ```java
-public class Main {
-    public static void main(String[] args) {
-        Object a = new A();
-        Object a2 = new A();
-        Object b = new B();
+private static void test20() {
+    class A {}
+    class B extends A {}
+    class C {}
 
-        System.out.println("a instanceof A：" + (a instanceof A));
-        System.out.println("a instanceof B：" + (a instanceof B));
+    Object a = new A();
+    Object a2 = new A();
+    Object b = new B();
+    Object c = new C();
 
-        System.out.println("a.getClass().isInstance(a)：" + (a.getClass().isInstance(a)));
-        System.out.println("b.getClass().isInstance(a)：" + (b.getClass().isInstance(a)));
-
-        System.out.println("a.getClass() == a2.getClass()：" + (a.getClass() == a2.getClass()));
-        System.out.println("a.getClass() == b.getClass()：" + (a.getClass() == b.getClass()));
-    }
-
-    private static class A {}
-    private static class B {}
+    System.out.println("同种类型：a instanceof A：" + (a instanceof A));
+    System.out.println("父类是否是子类的实例：a instanceof B：" + (a instanceof B));
+    System.out.println("子类是否是父类的实例：b instanceof A：" + (b instanceof A));
+    System.out.println("其它继承树的类是否是某个类的实例：c instanceof A：" + (c instanceof A));
+    System.out.println();
+    System.out.println("同种类型：a.getClass().isInstance(a)：" + a.getClass().isInstance(a));
+    System.out.println("父类是否是子类的实例：b.getClass().isInstance(a)：" + b.getClass().isInstance(a));
+    System.out.println("子类是否是父类的实例：a.getClass().isInstance(b)：" + a.getClass().isInstance(b));
+    System.out.println("其它继承树的类是否是某个类的实例：a.getClass().isInstance(c)：" + a.getClass().isInstance(c));
+    System.out.println();
+    System.out.println("a.getClass() == a2.getClass()：" + (a.getClass() == a2.getClass()));
+    System.out.println("a.getClass() == b.getClass()：" + (a.getClass() == b.getClass()));
+    System.out.println("a.getClass() == c.getClass()：" + (a.getClass() == c.getClass()));
 }
 ```
 
 ```
-a instanceof A：true
-a instanceof B：false
-a.getClass().isInstance(a)：true
-b.getClass().isInstance(a)：false
+同种类型：a instanceof A：true
+父类是否是子类的实例：a instanceof B：false
+子类是否是父类的实例：b instanceof A：true
+其它继承树的类是否是某个类的实例：c instanceof A：false
+
+同种类型：a.getClass().isInstance(a)：true
+父类是否是子类的实例：b.getClass().isInstance(a)：false
+子类是否是父类的实例：a.getClass().isInstance(b)：true
+其它继承树的类是否是某个类的实例：a.getClass().isInstance(c)：false
+
 a.getClass() == a2.getClass()：true
 a.getClass() == b.getClass()：false
+a.getClass() == c.getClass()：false
 ```
 
 >   另外要注意的一个地方：
@@ -530,13 +533,16 @@ a.getClass() == b.getClass()：false
 >   A a = new A();
 >   A a2 = new A();
 >   B b = new B();
+>   C c = new C();
 >   ```
 >
->   编译出错
+>   这两行编译出错
 >
 >   ```java
->   System.out.println("a instanceof B：" + (a instanceof B));
->   System.out.println("a.getClass() == b.getClass()：" + (a.getClass() == b.getClass()));
+>   // Inconvertible types; cannot cast 'C' to 'A'
+>   System.out.println("其它继承树的类是否是某个类的实例：c instanceof A：" + (c instanceof A));
+>   // Operator '==' cannot be applied to 'java.lang.Class<capture<? extends A>>', 'java.lang.Class<capture<? extends C>>'
+>   System.out.println("a.getClass() == c.getClass()：" + (a.getClass() == c.getClass()));
 >   ```
 >
 >   因此，使用instanceof和==（equals不会报错）的方法的时候，两个引用的类型必须是一棵继承树上的。

@@ -66,5 +66,3 @@ abc
 ## BufferedxxxStream
 
 流的每次读写（IO）是耗时的，BufferedxxxStream一次性读写到内存，不用频繁的IO操作
-
-# 
