@@ -663,9 +663,3 @@ output：
 ```
 
 在字节码层面上，switch是利用了goto的方式，先定义每个case的序号，对于每个i，获取对应的case的序号，然后执行goto语句，跳转到相应的case部分，由于没有break，按照字节码的执行流程，会继续执行下面的case部分。这也是为什么Java层面上，会继续执行后面的case语句。
-
-# Socket
-
-TODO
-
-[Socket](Socket.md)
