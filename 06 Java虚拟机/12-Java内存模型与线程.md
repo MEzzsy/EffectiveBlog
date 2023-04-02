@@ -150,22 +150,6 @@ public static void main(java.lang.String[]);
     DCL失效问题
     有volatile修饰后，变量赋值会多执行一个内存屏障操作（重排序时不能把后面的指令重排序到内存屏障之前的位置，换句话说，执行这条指令时，前面的指令已经执行完了）。
 
-> 普通变量和volatile变量的个人理解：
->
-> 普通变量并发运算不是安全的在于读写问题。
->
-> volatile变量并发运算不是安全的在于操作栈问题。
->
-> 指令重排序的个人理解：
->
-> 1：A+10
->
-> 2：A*2
->
-> 3：B+10
->
-> 在这三个指令中，CPU可能是123执行，也可能是132或者312执行。如果B加了volatile，那么禁止指令重排序只执行123。
-
 ### volatile原理
 
 在字节码层面上，volatile变量在赋值后会多一个指令`lock addl$0x0，(%esp)`，这个指令相当于内存屏障，这个内存屏障保证在指令重排序时不能把后面的指令重排序到内存屏障之前的位置，就是禁止指令重排序优化。
@@ -184,7 +168,7 @@ public static void main(java.lang.String[]);
 
 ```java
 private int value = 0;
-pubilc void setValue(int value){
+public void setValue(int value){
 	this.value = value; 
 }
 public int getValue(){
@@ -206,9 +190,6 @@ int j = 2;
 ```
 
 两条赋值语句在同一个线程之中，根据程序次序规则，`int i=1`的操作先行发生于`int j=2`，但`“int j=2`的代码完全可能先被处理器执行（指令重排序）。
-
->   TODO 线程原理
->   进程是CPU分配时间片，那么线程呢？
 
 # Java与线程
 
