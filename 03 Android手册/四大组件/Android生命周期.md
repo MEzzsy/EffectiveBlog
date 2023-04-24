@@ -1,3 +1,160 @@
+# 常见生命周期情况
+
+## Main启动A
+
+```
+2023-04-23 22:39:13.744 32187-32187/? D/测试生命周期-Main: onCreate: 
+2023-04-23 22:39:13.744 32187-32187/? D/测试生命周期-Main: onStart: 
+2023-04-23 22:39:13.745 32187-32187/? D/测试生命周期-Main: onResume: 
+
+2023-04-23 22:39:17.192 32187-32187/? D/测试生命周期-Main: onPause: 
+2023-04-23 22:39:17.199 32187-32187/? D/测试生命周期-A: onCreate: 
+2023-04-23 22:39:17.204 32187-32187/? D/测试生命周期-A: onStart: 
+2023-04-23 22:39:17.204 32187-32187/? D/测试生命周期-A: onResume: 
+2023-04-23 22:39:17.740 32187-32187/? D/测试生命周期-Main: onStop: 
+
+2023-04-23 22:39:21.875 32187-32187/? D/测试生命周期-A: onPause: 
+2023-04-23 22:39:21.883 32187-32187/? D/测试生命周期-Main: onRestart: 
+2023-04-23 22:39:21.884 32187-32187/? D/测试生命周期-Main: onStart: 
+2023-04-23 22:39:21.884 32187-32187/? D/测试生命周期-Main: onResume: 
+2023-04-23 22:39:22.417 32187-32187/? D/测试生命周期-A: onStop: 
+2023-04-23 22:39:22.418 32187-32187/? D/测试生命周期-A: onDestroy: 
+```
+
+## 按Home键或者锁屏回到主屏
+
+```
+2023-04-23 22:48:11.673 32187-32187/? D/测试生命周期-Main: onCreate: 
+2023-04-23 22:48:11.674 32187-32187/? D/测试生命周期-Main: onStart: 
+2023-04-23 22:48:11.675 32187-32187/? D/测试生命周期-Main: onResume: 
+// 按Home键或者锁屏
+2023-04-23 22:48:14.231 32187-32187/? D/测试生命周期-Main: onPause: 
+2023-04-23 22:48:14.250 32187-32187/? D/测试生命周期-Main: onStop: 
+// 回到Activity
+2023-04-23 22:48:29.358 32187-32187/? D/测试生命周期-Main: onRestart: 
+2023-04-23 22:48:29.358 32187-32187/? D/测试生命周期-Main: onStart: 
+2023-04-23 22:48:29.360 32187-32187/? D/测试生命周期-Main: onResume: 
+```
+
+## 启动dialog风格的activity
+
+```xml
+<activity
+    android:name=".basic.activity.lifecycle.MyDialogActivity"
+    android:theme="@style/Theme.AppCompat.Dialog" />
+```
+
+```java
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+    getWindow().setLayout(500, 500);
+
+    TextView textView = new TextView(this);
+    textView.setLayoutParams(new ViewGroup.LayoutParams(300, 300));
+    textView.setText("这是DialogActivity");
+    setContentView(textView);
+}
+```
+
+当`activity`中弹出`dialog`对话框的时候，`activity不会回调onPause`。
+
+然而当`activity`启动`dialog风格的activity`的时候，此`activity会回调onPause函数`。
+
+```
+D/测试生命周期-Main: onCreate: 
+D/测试生命周期-Main: onStart: 
+D/测试生命周期-Main: onResume: 
+D/测试生命周期-Main: onPause: 
+// 启动DialogActivity
+I/测试生命周期-DialogAct: onCreate: screenWidth = 1440, screenHeight = 3007
+// 返回
+D/测试生命周期-Main: onResume: 
+```
+
+可以认为，Activity未被完全覆盖只是失去焦点：onPause--->onResume
+
+## 启动非全屏的Activity
+
+```java
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+    if (getIntent().getBooleanExtra("is_half_screen", false)) {
+        getWindow().setLayout(500, 500);
+    }
+
+    // ...
+}
+```
+
+<img src="assets/5.jpg" alt="5" style="zoom:30%;" />
+
+```
+D/测试生命周期-Main: onCreate: before
+D/测试生命周期-Main: onCreate: 
+D/测试生命周期-Main: onStart: 
+D/测试生命周期-Main: onResume: before
+D/测试生命周期-Main: onResume: 
+
+// 启动半屏Activity
+
+D/测试生命周期-Main: onPause: 
+I/测试生命周期-DialogAct: onCreate: isHalfScreen = true
+D/测试生命周期-Main: onStop: 
+```
+
+可以看到，风格是一般的Activity且window只有屏幕的一部分，但Main Activity还是会回调onStop。如图所示，虽然window只有屏幕的一部分，但是其余不是透明的，是黑的。
+
+## 在onCreate中执行post
+
+```kotlin
+override fun onCreate(savedInstanceState: Bundle?) {
+    Log.d(TAG, "onCreate: before")
+    super.onCreate(savedInstanceState)
+    Log.d(TAG, "onCreate: ")
+    uiHandler.post { Log.i(TAG, "run: ") }
+}
+
+override fun onStart() {
+    super.onStart()
+    Log.d(TAG, "onStart: ")
+}
+
+override fun onResume() {
+    Log.d(TAG, "onResume: before")
+    super.onResume()
+    Log.d(TAG, "onResume: ")
+}
+```
+
+```
+D/测试生命周期-Main: onCreate: before
+D/测试生命周期-Main: onCreate: 
+D/测试生命周期-Main: onStart: 
+D/测试生命周期-Main: onResume: before
+D/测试生命周期-Main: onResume: 
+I/测试生命周期-Main: run: 
+```
+
+在onCreate中执行post，post的代码最终在onResume之后执行。
+
+## 其它
+
+-   当前Activity产生事件弹出Toast和AlertDialog的时候Activity的生命周期不会有改变。
+-   Activity运行时按下HOME键（跟被完全覆盖是一样的）：onPause --> onSaveInstanceState --> onStop -->  onRestart -->onStart--->onResume
+
+**防止重新创建activity**：`activity`指定`configChange`属性来不让系统重新创建`activity`。
+`android:configChanges = "orientation"`
+
+**Activity上有Dialog的时候按Home键时的生命周期**
+
+Dialog不会影响生命周期，按home键也是显示正常的生命周期。PopupWindow也不会影响生命周期。
+
+**Activity与menu创建先后顺序**
+
+在`activity`创建完回调`onResume`后创建`menu`，回调`onCreateOptionsMenu`
+
 # Activity在DialogActivity下的生命周期
 
 ## 进入主Activity

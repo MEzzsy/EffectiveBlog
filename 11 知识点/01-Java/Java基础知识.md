@@ -1,235 +1,4 @@
-# Object类相关
-
-## java中==和equals和hashCode的区别
-
-### ==
-
-java中的数据类型，可分为两类：
-
-1.  基本数据类型，也称原始数据类型
-    byte,short,char,int,long,float,double,boolean之间的比较，应用双等号（==）,比较的是值。 
-
-2.  引用类型(类、接口、数组) 
-    当用（==）进行比较的时候，比较的是在内存中的存放地址，所以，除非是同一个new出来的对象，他们的比较后的结果为true，否则比较后结果为false。
-    对象是放在堆中的，栈中存放的是对象的引用（地址）。由此可见'=='是对栈中的值进行比较的。如果要比较堆中对象的内容是否相同，那么就要重写equals方法了。
-
-### equals
-
-1.  没有覆盖equals方法，equals是Object的方法，代码如下：
-
-```java
-public boolean equals(Object obj) {  
-    return (this == obj);  
-}  
-```
-
-2.  覆盖了equals方法，那么就要根据具体的代码来确定equals方法的作用了，一般是根据对象的内容是否相等来判断对象是否相等。
-
-**3、hashCode**
-
-hashCode的目的是用于在对象进行散列的时候作为key输入，保证散列的存取性能。Object的默认hashCode实现为在对象的内存地址上经过特定的算法计算出。
-
-初学者可以这样理解，hashCode方法实际上返回的就是对象存储的物理地址（实际可能并不是）
-
-1、如果两个对象equals，Java运行时环境会认为他们的hashcode一定相等。 
-2、如果两个对象不equals，他们的hashcode有可能相等。 
-3、如果两个对象hashcode相等，他们不一定equals。 
-4、如果两个对象hashcode不相等，他们一定不equals。 
-
-## 浅拷贝与深拷贝
-
-```java
-public class Human implements Cloneable {
-    private int age;
-    private String name;
-    private Info mInfo;
-
-    public Human(int age, String name, Info info) {
-        this.age = age;
-        this.name = name;
-        mInfo = info;
-    }
-
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
-    @Override
-    public String toString() {
-        String s = super.toString();
-        return s + "\n" + "Human{" +
-                "age=" + age +
-                ", name='" + name + '\'' +
-                ", mInfo=" + mInfo +
-                '}';
-    }
-}
-
-public class Info implements Cloneable {
-    private double d;
-    private boolean b;
-
-    public Info(double d, boolean b) {
-        this.d = d;
-        this.b = b;
-    }
-
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
-    @Override
-    public String toString() {
-        String s = super.toString();
-        return s + "\n" + "Info{" +
-                "d=" + d +
-                ", b=" + b +
-                '}';
-    }
-}
-```
-
-```java
-protected native Object clone() throws CloneNotSupportedException;
-```
-
->   clone()是Object的一个方法。
-
-### 浅拷贝
-
-对于数据类型是基本数据类型的成员变量，浅拷贝会直接进行值传递，也就是将该属性值复制一份给新的对象。
-
-对于数据类型是引用数据类型的成员变量，比如说成员变量是某个数组、某个类的对象等，那么浅拷贝会进行引用传递，也就是只是将该成员变量的引用值（内存地址）复制一份给新的对象。在这种情况下，在一个对象中修改该成员变量会影响到另一个对象的该成员变量值。
-
-```java
-Info info = new Info(1.1, true);
-Human human = new Human(2, "a", info);
-Human human1= (Human) human.clone();
-System.out.println(info);
-System.out.println(human);
-System.out.println(human1);
-
-output：
-com.mezzsy.learnsomething.Info@1b6d3586
-Info{d=1.1, b=true}
-
-com.mezzsy.learnsomething.Human@4554617c
-Human{age=2, name='a', mInfo=com.mezzsy.learnsomething.Info@1b6d3586
-Info{d=1.1, b=true}}
-
-com.mezzsy.learnsomething.Human@74a14482
-Human{age=2, name='a', mInfo=com.mezzsy.learnsomething.Info@1b6d3586
-Info{d=1.1, b=true}}
-```
-
-> human1浅拷贝了human，从hash code看出，human1是一个新的对象，但是它内部的info是和human中的一样。
-
-### 深拷贝
-
-深拷贝对引用数据类型的成员变量的对象图中所有的对象都开辟了内存空间；而浅拷贝只是传递地址指向，新的对象并没有对引用数据类型创建内存空间。
-
-```java
-public class Human implements Cloneable {
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        Object o = super.clone();
-        Human human = (Human) o;
-        human.mInfo = (Info) human.mInfo.clone();
-        return human;
-    }
-}
-
-public class Info implements Cloneable {
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-}
-```
-
-```java
-Info info = new Info(1.1, true);
-Human human = new Human(2, "a", info);
-Human human1= (Human) human.clone();
-System.out.println(info);
-System.out.println(human);
-System.out.println(human1);
-
-output：
-com.mezzsy.learnsomething.Info@1b6d3586
-Info{d=1.1, b=true}
-
-com.mezzsy.learnsomething.Human@4554617c
-Human{age=2, name='a', mInfo=com.mezzsy.learnsomething.Info@1b6d3586
-Info{d=1.1, b=true}}
-
-com.mezzsy.learnsomething.Human@74a14482
-Human{age=2, name='a', mInfo=com.mezzsy.learnsomething.Info@1540e19d
-Info{d=1.1, b=true}}
-```
-
-## 数据类型
-
-8种基本数据类型
-
-还有一种基本数据类型refvar，是面向对象的引用变量，也叫引用句柄。默认值是null，存储的是refobj的首地址，可以直接使用==进行等值判断。
-
-作为一个引用变量，不管它是指向包装类、集合类、字符串类还是自定义类，refvar均占用**4B**空间。注意它与真正对象refobj之间的区别。无论refobj是多么小的对象，最小占用的存储空间是12B（用于存储基本信息，称为对象头），但由于存储空间分配必须是8B的倍数，所以初始分配的空间至少是**16B**。
-
-一个refvar至多存储一个refobj的首地址，一个refobj可以被多个refvar存储下它的首地址，即一个堆内对象可以被多个refvar引用指向。如果refobj没有被任何refvar指向，那么它迟早会被垃圾回收。而refvar的内存释放，与其他基本数据类型类似。
-
-基本数据类型int占用4个字节，而对应的包装类Integer实例对象占用16个字节。这里可能会有人问：Integer里边的代码就只占用16B？这是因为字段属性除成员属性int value外，其他的如MAX_VALUE 、MIN_VALUE等**都是静态成员变量，在类加载时就分配了内存，与实例对象容量无关**（方法区内存与堆无关）。此外，**类定义中的方法代码不占用实例对象的任何空间**。IntegerCache是Integer的静态内部类，容量占用也与实例对象无关。由于refobj对象的基础大小是12B，再加上int是4B，所以Integer实例对象占用16B，按此推算Double对象占用的存储容量是24B，示例代码如下：
-
-```java
-public class Main {
-    //对象头最少占用12个字节（B）
-
-    //下方4个byte类型分配后，对象占用16（12+4）个字节
-    byte b1;
-    byte b2;
-    byte b3;
-    byte b4;
-
-    //下方每个引用变量占4个字节，共20个
-    Object o1;
-    Object o2;
-    Object o3;
-    Object o4;
-    Object o5;
-
-    //Info实例占用空间并不计算在本对象内，依然只计算引用变量大小8（2*4）个字节
-    Info info1 = new Info();
-    Info info2 = new Info();
-
-    /**
-     * double类型占用8个字节，但此处是数组引用变量
-     * 所以占用4个字节，而不是8000个字节
-     * 这个引用指向的是double[] 类型，指向实际分配的数组空间首地址
-     * 在new 对象时，已经实际分配空间
-     */
-    double[] mDoubles = new double[1000];
-}
-```
-
 # int和Integer
-
-int占32位4字节
-
-## 存储原理
-
-- `int`属于基本数据类型，存储在栈中。
-- `Integer`属于复合数据类型，引用存储在栈中，引用所指向的对象存储在堆中。
-
-## 缺省值
-
-- `0`
-- `null`
-
-## 泛型支持
-
-泛型支持`Integer`，不支持`int`
 
 ## int 与 Integer 之间的比较
 
@@ -277,18 +46,6 @@ if(Math.abs(double_x - 0) < epsilon) {
     System.out.println("true");
 }
 ```
-
-**方法二**
-
-转换成字符串之后用equals方法比较 
-
-如果要比较的两个double数据的字符串精度相等，可以将数据转换成String然后借助String的equals方法来间接实现比较两个double数据是否相等。
-
-```java
-Double.toString(double_x).equals(Double.toString(double_y))
-```
-
-注意：这种方法只适用于比较精度相同的数据，并且是只用用于比较是否相等的情况下，不能用来判断大小。
 
 **方法三**
 
@@ -470,18 +227,13 @@ class InnerClassTest$InnerClass {
 
 # 异常机制
 
-见笔记[Java异常机制](/Users/mezzsy/Projects/Blog/Java/Java异常机制.md)
-
-## 注意点
-
-**finally语句在return语句执行之后return返回之前执行的**
-
 ```java
-public static void main(String[] args) {
-    System.out.println(test1());
+private static void test21() {
+    System.out.println(test21Fun1());
+    System.out.println(test21Fun2());
 }
 
-private static int test1() {
+private static int test21Fun1() {
     int b = 20;
     try {
         System.out.println("try block");
@@ -497,11 +249,26 @@ private static int test1() {
     return b + 10;
 }
 
+private static int test21Fun2() {
+    try {
+        return 100;
+    } catch (Exception e) {
+        return 200;
+    } finally {
+        return 300;
+    }
+}
+```
+
+```
 try block
 finally block
 b>25, b = 100
 100
+300
 ```
+
+如果finally有return，最终会用finally的return。
 
 # 运算符
 
@@ -520,44 +287,4 @@ b>25, b = 100
 -5%(-2)=-1
 ```
 
-以上来自实验的log。
-
-# 注解
-
-## 元注解
-
-- @Target
-    表示该注解可以用于什么地方。可能的ElementType参数包括：
-
-    - CONSTRUCTOR
-        构造器的声明
-    - FIELD
-        域声明(包括enum实例)
-    - LOCAL VARIABLE
-        局部变量声明
-    - METHOD
-        方法声明
-    - PACKAGE
-        包声明
-    - PARAMETER
-        参数声明
-    - TYPE
-        类、接口(包括注解类型)或enum声明
-
-- @Retention
-
-    表示需要在什么级别保存该注解信息。可选的RetentionPolicy参数包括:
-
-    - SOURCE
-        注解将被编译器丢弃。
-    - CLASS
-        注解在class文件中可用，但会被VM丢弃。
-    - RUNTIME
-        VM将在运行期也保留注解，因此可以通过反射机制读取注解的信息。
-
-- @Documented
-    将此注解包含在Javadoc中。
-
-- @Inherited
-    使用此注解声明出来的自定义注解，在使用此自定义注解时，如果注解在类上面时，子类会自动继承此注解，否则的话，子类不会继承此注解。
-
+以上来自实验的log。java模运算结果的符号取决于被模数。
