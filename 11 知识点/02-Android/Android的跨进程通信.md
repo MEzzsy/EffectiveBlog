@@ -8,7 +8,7 @@ Android的内核是Linux，但是它的IPC方式并不能完全继承Linux，它
 
 <img src="assets/255.jpg" alt="8" style="zoom:50%;" />
 
-上图展示了 Liunx 中跨进程通信涉及到的一些基本概念：
+上图展示了 Linux 中跨进程通信涉及到的一些基本概念：
 
 - 进程隔离
 - 进程空间划分：用户空间(User Space)/内核空间(Kernel Space)
@@ -564,47 +564,11 @@ handleMessage: 收到！
 先创建Bean类：
 
 ```java
-package com.mezzsy.aidlserver;
-
-import android.os.Parcel;
-import android.os.Parcelable;
-
-/**
- * @author mezzsy
- * @date 2019-08-06
- */
-public class Book implements Parcelable {
-    public int bookId;
-    public String bookName;
-
-    protected Book(Parcel in) {
-        bookId = in.readInt();
-        bookName = in.readString();
-    }
-
-    public static final Creator<Book> CREATOR = new Creator<Book>() {
-        @Override
-        public Book createFromParcel(Parcel in) {
-            return new Book(in);
-        }
-
-        @Override
-        public Book[] newArray(int size) {
-            return new Book[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(bookId);
-        dest.writeString(bookName);
-    }
+public class MultiProcessBook implements Parcelable {
+    private final String name;
+    // ...略
 }
+
 ```
 
 AIDLServer中创建AIDL文件：
@@ -617,11 +581,14 @@ AIDLServer中创建AIDL文件：
 // IBookManager.aidl
 package com.mezzsy.aidlserver;
 
-import com.mezzsy.aidlserver.Book;
+import com.mezzsy.aidlserver.MultiProcessBook;
+import com.mezzsy.aidlserver.IOnNewBookArrivedListener;
 
 interface IBookManager {
-    List<Book> getBookList();
-    void addBook(in Book book);
+    List<MultiProcessBook> getBookList();
+    void addBook(in MultiProcessBook book);
+    void registerListener(IOnNewBookArrivedListener listener);
+    void unregisterListener(IOnNewBookArrivedListener listener);
 }
 ```
 
@@ -634,15 +601,15 @@ interface IBookManager {
 - Parcelable：所有实现了Parcelable接口的对象
 - AIDL：所有的AIDL接口本身也可以在AIDL文件中使用
 
-其中自定义的Parcelable对象和AIDL对象必须要显式import 进来，不管它们是否和当前的AIDL文件位于同一个包内。比如IBookManager.aidl这个文件，里面用到了Book这个类，这个类实现了Parcelable接口并且和IBookManageraidl位于同一个包中，但是遵守AIDL的规范，仍然需要显式地import进来。
+其中自定义的Parcelable对象和AIDL对象必须要显式import进来，不管它们是否和当前的AIDL文件位于同一个包内。比如IBookManager.aidl这个文件，里面用到了MultiProcessBook这个类，这个类实现了Parcelable接口并且和IBookManageraidl位于同一个包中，但是遵守AIDL的规范，仍然需要显式地import进来。
 
-另外一个需要注意的地方是，如果AIDL文件中用到了自定义的Parcelable对象，那么必须新建一个和它同名的AIDL文件，并在其中声明它为Parcelable 类型。在上面的IBookManager.aidl中，用到了Book这个类，所以必须要创建Book.aidl，然后在里面添加如下内容：
+另外一个需要注意的地方是，如果AIDL文件中用到了自定义的Parcelable对象，那么必须新建一个和它同名的AIDL文件，并在其中声明它为Parcelable 类型。在上面的IBookManager.aidl中，用到了MultiProcessBook这个类，所以必须要创建MultiProcessBook.aidl，然后在里面添加如下内容：
 
 ```java
-// Book.aidl
+// MultiProcessBook.aidl
 package com.mezzsy.aidlserver;
 
-parcelable Book;
+parcelable MultiProcessBook;
 ```
 
 > 小问题：android studio AIDL 编译时 错误：找不到符号。
@@ -651,50 +618,55 @@ parcelable Book;
 >
 > ![3](assets/260.jpg)
 
-上面讲述了如何定义AIDL接口，接下来需要实现这个接口了。先创建一个Service，称为BookManagerService，代码如下:
+上面讲述了如何定义AIDL接口，接下来需要实现这个接口了。先创建一个Service，称为BookManagerService，代码如下：
 
-```java
-package com.mezzsy.aidlserver;
+```kotlin
+package com.mezzsy.myapplication.other.multiprocess
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.Binder;
-import android.os.IBinder;
-import android.os.RemoteException;
+import android.app.Service
+import android.content.Intent
+import android.os.Binder
+import android.os.IBinder
+import android.util.Log
+import com.mezzsy.aidlserver.IBookManager
+import com.mezzsy.aidlserver.IOnNewBookArrivedListener
+import com.mezzsy.aidlserver.MultiProcessBook
+import java.util.concurrent.CopyOnWriteArrayList
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-public class BookManagerService extends Service {
-    private static final String TAG = "BookManagerService";
-
-    private CopyOnWriteArrayList<Book> mBookList = new CopyOnWriteArrayList<>();
-
-    private Binder mBinder = new IBookManager.Stub() {
-        @Override
-        public List<Book> getBookList() throws RemoteException {
-            return mBookList;
-        }
-
-        @Override
-        public void addBook(Book book) throws RemoteException {
-            mBookList.add(book);
-        }
-    };
-
-    public BookManagerService() {
+class BookManagerService : Service() {
+    companion object {
+        private const val TAG = "跨进程：主进程的Service"
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        mBookList.add(new Book(1, "Android"));
-        mBookList.add(new Book(2, "IOS"));
+    private val bookList: CopyOnWriteArrayList<MultiProcessBook> = CopyOnWriteArrayList()
+
+    private val binder: Binder = object : IBookManager.Stub() {
+        override fun getBookList(): MutableList<MultiProcessBook> = this@BookManagerService.bookList
+
+        override fun addBook(book: MultiProcessBook?) {
+            if (book != null) {
+                Log.i(TAG, "addBook: $book")
+                bookList.add(book)
+            }
+        }
+
+        override fun registerListener(listener: IOnNewBookArrivedListener?) {
+//            TODO("Not yet implemented")
+        }
+
+        override fun unregisterListener(listener: IOnNewBookArrivedListener?) {
+//            TODO("Not yet implemented")
+        }
     }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return mBinder;
+    override fun onCreate() {
+        super.onCreate()
+        bookList.add(MultiProcessBook("Android"))
+        bookList.add(MultiProcessBook("IOS"))
+    }
+
+    override fun onBind(intent: Intent?): IBinder {
+        return binder
     }
 }
 ```
@@ -707,94 +679,82 @@ public class BookManagerService extends Service {
 
 客户端的实现就比较简单了，首先要绑定远程服务，绑定成功后将服务端返回的Binder对象转换成AIDL接口，然后就可以通过这个接口去调用服务端的远程方法了。需要注意，再客户端中的AIDL文件的包名需要和服务端中的一致。
 
-```java
-package com.mezzsy.aidlclient;
+```kotlin
+package com.mezzsy.another.multiprocess
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.os.Bundle;
-import android.os.IBinder;
-import android.os.RemoteException;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
+import android.content.pm.PackageManager
+import android.os.Bundle
+import android.os.IBinder
+import android.os.RemoteException
+import android.util.Log
+import android.view.View
+import com.mezzsy.aidlserver.IBookManager
+import com.mezzsy.aidlserver.MultiProcessBook
+import com.mezzsy.commonlib.demo.activity.BaseLinearLayoutActivity
 
-import com.mezzsy.aidlserver.Book;
-import com.mezzsy.aidlserver.IBookManager;
+class TestMultiProcessActivity : BaseLinearLayoutActivity() {
+    override fun generateLogTag(): String = "跨进程：另一个进程的Activity"
 
-import java.util.List;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        tvContent.visibility = View.VISIBLE
+        tvContent.text = TAG
 
-public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivityz";
+        val intent = Intent()
+        intent.action = "com.mezzsy.aidlserver.demo"
+        bindService(createExplicitFromImplicitIntent(this, intent), connection, Context.BIND_AUTO_CREATE)
+    }
 
-    private ServiceConnection mConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            IBookManager bookManager = IBookManager.Stub.asInterface(service);
-
+    private val connection: ServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+            val bookManager = IBookManager.Stub.asInterface(service)
             try {
-                List<Book> books = bookManager.getBookList();
-                Log.d(TAG, "list type:" + books.getClass());
-                Log.d(TAG, books.toString());
-            } catch (RemoteException e) {
-                e.printStackTrace();
+                val books: List<MultiProcessBook> = bookManager.bookList
+                Log.d(TAG, "list type:" + books.javaClass)
+                Log.d(TAG, books.toString())
+                bookManager.addBook(MultiProcessBook("Macos"))
+            } catch (e: RemoteException) {
+                e.printStackTrace()
             }
         }
 
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-        }
-    };
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        Intent intent = new Intent();
-        intent.setAction("com.mezzsy.aidlserver.demo");
-        bindService(createExplicitFromImplicitIntent(this, intent)
-                , mConnection, Context.BIND_AUTO_CREATE);
+        override fun onServiceDisconnected(name: ComponentName) {}
     }
 
     /**
      * Android5.0中service的intent一定要显性声明，如果一定要隐式启动，需要用此方法
-     * @param context
-     * @param implicitIntent
-     * @return
      */
-    private Intent createExplicitFromImplicitIntent(Context context, Intent implicitIntent) {
+    private fun createExplicitFromImplicitIntent(context: Context, implicitIntent: Intent): Intent? {
         // Retrieve all services that can match the given intent
-        PackageManager pm = context.getPackageManager();
-        List<ResolveInfo> resolveInfo = pm.queryIntentServices(implicitIntent, 0);
+        val pm: PackageManager = context.packageManager
+        val resolveInfo = pm.queryIntentServices(implicitIntent, 0)
 
         // Make sure only one match was found
-        if (resolveInfo == null || resolveInfo.size() != 1) {
-            return null;
+        if (resolveInfo.size != 1) {
+            return null
         }
 
         // Get component info and create ComponentName
-        ResolveInfo serviceInfo = resolveInfo.get(0);
-        String packageName = serviceInfo.serviceInfo.packageName;
-        String className = serviceInfo.serviceInfo.name;
-        ComponentName component = new ComponentName(packageName, className);
+        val serviceInfo = resolveInfo[0]
+        val packageName = serviceInfo.serviceInfo.packageName
+        val className = serviceInfo.serviceInfo.name
+        val component = ComponentName(packageName, className)
 
         // Create a new intent. Use the old one for extras and such reuse
-        Intent explicitIntent = new Intent(implicitIntent);
+        val explicitIntent = Intent(implicitIntent)
 
         // Set the component to be explicit
-        explicitIntent.setComponent(component);
-
-        return explicitIntent;
+        explicitIntent.component = component
+        return explicitIntent
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unbindService(mConnection);
+    override fun onDestroy() {
+        super.onDestroy()
+        unbindService(connection)
     }
 }
 ```
@@ -802,42 +762,9 @@ public class MainActivity extends AppCompatActivity {
 先运行Server，再运行Client，打印日志如下：
 
 ```
-2019-08-06 19:21:34.833 16599-16599/com.mezzsy.aidlclient D/MainActivityz: list type:class java.util.ArrayList
-2019-08-06 19:21:34.833 16599-16599/com.mezzsy.aidlclient D/MainActivityz: [com.mezzsy.aidlserver.Book@a33899e, com.mezzsy.aidlserver.Book@a13ec7f]
-```
-
-接着再调用一下另外一个接口addBook，在客户端给服务端添加一本书，然
-后再获取一次，看程序是否能够正常工作。还是上面的代码，客户端在服务连接后，在
-onServiceConnected中做如下改动：
-
-```java
-private ServiceConnection mConnection = new ServiceConnection() {
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
-        IBookManager bookManager = IBookManager.Stub.asInterface(service);
-
-        try {
-            List<Book> books = bookManager.getBookList();
-            Log.d(TAG, books.toString());
-            Book book = new Book(3, "zzsy");
-            bookManager.addBook(book);
-            Log.d(TAG, books.toString());
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onServiceDisconnected(ComponentName name) {
-    }
-};
-```
-
-log：
-
-```
-2019-08-06 19:32:53.168 17390-17390/com.mezzsy.aidlclient D/MainActivityz: [Book{bookId=1, bookName='Android'}, Book{bookId=2, bookName='IOS'}]
-2019-08-06 19:32:53.169 17390-17390/com.mezzsy.aidlclient D/MainActivityz: [Book{bookId=1, bookName='Android'}, Book{bookId=2, bookName='IOS'}, Book{bookId=3, bookName='zzsy'}]
+D/跨进程：另一个进程的Activity: list type:class java.util.ArrayList
+D/跨进程：另一个进程的Activity: [MultiProcessBook{name='Android'}, MultiProcessBook{name='IOS'}]
+I/跨进程：主进程的Service: addBook: com.mezzsy.aidlserver.MultiProcessBook@d2bfd11
 ```
 
 ### 服务端通知客户端
@@ -852,10 +779,10 @@ log：
 // IOnNewBookArrivedListener.aidl
 package com.mezzsy.aidlserver;
 
-import com.mezzsy.aidlserver.Book;
+import com.mezzsy.aidlserver.MultiProcessBook;
 
 interface IOnNewBookArrivedListener {
-    void onNewBookArrived(in Book book);
+    void onNewBookArrived(in MultiProcessBook book);
 }
 ```
 
@@ -1094,8 +1021,7 @@ log显示：
 
 ![4](assets/261.jpg)
 
-服务端没有像预期的那样执行。在解注册的过程中，服务端无法找到之前注册的那个listener。其实，这种解注册的处理方式在日常开发过程中时常使用到，但是放到多进程中却无法奏效，因为Binder会把客户端传递过来的对象重新转化并生成一个新的对象。虽然在注册和解注册过程中使用的是同一个客户端对象，但是通过Binder传递到服务端后，却
-会产生一个全新的对象。对象是不能跨进程直接传输的，对象的跨进程传输本质上是反序列化的过程，这就是为什么AIDL中的自定义对象都必须要实现Parcelable接口。
+服务端没有像预期的那样执行。在解注册的过程中，服务端无法找到之前注册的那个listener。其实，这种解注册的处理方式在日常开发过程中时常使用到，但是放到多进程中却无法奏效，因为Binder会把客户端传递过来的对象重新转化并生成一个新的对象。虽然在注册和解注册过程中使用的是同一个客户端对象，但是通过Binder传递到服务端后，却会产生一个全新的对象。对象是不能跨进程直接传输的，对象的跨进程传输本质上是反序列化的过程，这就是为什么AIDL中的自定义对象都必须要实现Parcelable接口。
 
 解决方法是使用RemoteCallbackLis。RemoteCallbackList是系统专门提供的用于删除跨进程listener 的接口。RemoteCallbackList是一个泛型，支持管理任意的AIDL接口，这点从它的声明就可以看出，因为所有的AIDL接口都继承自Interface接口。
 
@@ -1156,6 +1082,10 @@ log：
 
 > 注意，beginBroadcast方法和finishBroadcast要配对使用。
 
+### 备注
+
+server和client的代码是新代码，“服务端通知客户端”的代码是老代码
+
 ## AIDL需要注意的地方
 
 **一**
@@ -1168,7 +1098,7 @@ log：
 
 **解决办法是在非UI线程中调用方法。**
 
-同理，当远程服务端需要调用客户端的listener中的方法时，被调用的方法也运行在Binder线程池中，只不过是客户端的线程池。所以，同样不可以在服务端中调用客户端的耗时方法。比如针对BookManagerService的onNewBookArrived方法，如下所示。在它内部调用了客户端的IOnNewBookArrivedListener中的onNewBookArrived方法，如果客户端的这个onNewBookArrived方法比较耗时的话，那么请确保BookManagerService中的onNewBookArrived运行在非UI线程中，否则将导致服务端无法响应。
+同理，当远程服务端需要调用客户端的listener中的方法时，被调用的方法也运行在Binder线程池中，只不过是客户端的线程池。所以，同样不可以在服务端中调用客户端的耗时方法。比如针对BookManagerService的onNewBookArrived方法，在它内部调用了客户端的IOnNewBookArrivedListener中的onNewBookArrived方法，如果客户端的这个onNewBookArrived方法比较耗时的话，那么请确保BookManagerService中的onNewBookArrived运行在非UI线程中，否则将导致服务端无法响应。
 
 **二**
 
