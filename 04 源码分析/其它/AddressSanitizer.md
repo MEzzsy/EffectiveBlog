@@ -1,6 +1,23 @@
-[官方文档](https://developer.android.com/ndk/guides/asan?hl=zh-cn)https://zhuanlan.zhihu.com/p/109193953)
+[官方文档](https://developer.android.com/ndk/guides/asan?hl=zh-cn)
+
+https://zhuanlan.zhihu.com/p/109193953)
 
 下面从使用方式解析Asan的原理
+
+# cmake配置
+
+```cmake
+target_compile_options(${TARGET} PUBLIC -fsanitize=address -fno-omit-frame-pointer)
+set_target_properties(${TARGET} PROPERTIES LINK_FLAGS -fsanitize=address)
+```
+
+## omit-frame-pointer
+
+开启该选项，主要是用于去掉所有函数SFP（Stack Frame Pointer）的，即在函数调用时不保存栈帧指针SFP，代价是不能通过backtrace进行调试根据堆栈信息了。通过去掉SFP，可以提高程序运行速度，达到优化程序的目的。如果要打开栈指针，使用`-fno-omit-frame-pointer`。
+
+从gcc 4.8开始，AddressSanitizer成为gcc的一部分。当然，要获得更好的体验，最好使用4.9及以上版本，因为gcc 4.8的AddressSanitizer还不完善，最大的缺点是没有符号信息。
+
+>   个人：AddressSanitizer成为gcc的一部分，在cmakeLists里添加相应的配置，编译的时候会开启和AddressSanitizer有关的东西。
 
 # wrap.sh
 
