@@ -90,18 +90,51 @@ FirstActivity 和SecondActivity的`android:process`属性分别为 ":remote" 和
 
 对象的序列化是把`Java`对象转化为字节序列并存储至一个存储媒介（硬盘或者内存）的过程，反序列化则是把字节序列恢复为`Java`对象的过程，但它们仅处理`Java`变量而不处理方法。
 
-### Serializable接口
+### 序列化的使用场景
 
-```java
-//序列化
-User user = new User();
-ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("cache.txt"));
-out.close();
-//反序列化
-ObjectInputStream in = new ObjectInputStream(new FileInputStream("cache.txt"));
-User newUser = (User) in.readObject();
-in.close();
+- Intent和Binder传输数据时就需要序列化。
+- 需要把对象持久化到存储设备上或者通过网络传输给其他客户端。
+
+### Serializable简单使用
+
+```kotlin
+val obj = SerializableObject(1, "a")
+// 序列化
+val byteOut = ByteArrayOutputStream()
+val objectOut = ObjectOutputStream(byteOut)
+objectOut.writeObject(obj)
+objectOut.close()
+// 反序列化
+val byteIn = ByteArrayInputStream(byteOut.toByteArray())
+val objectIn = ObjectInputStream(byteIn)
+val secondObj: SerializableObject = objectIn.readObject() as SerializableObject
+objectIn.close()
+
+Log.i(TAG, "testSerializable: first:$obj")
+Log.i(TAG, "testSerializable: second:$secondObj")
+Log.i(TAG, "testSerializable: equal:${obj == secondObj}")
 ```
+
+```
+I/MeTestSerializeActivity: testSerializable: first:SerializableObject(intVal=1, StringVal=a)
+I/MeTestSerializeActivity: testSerializable: second:SerializableObject(intVal=1, StringVal=a)
+I/MeTestSerializeActivity: testSerializable: equal:true
+```
+
+也可以自定义实现序列化方式：
+
+```
+private void readObject(java.io.ObjectInputStream stream)
+       throws IOException, ClassNotFoundException;
+private void writeObject(java.io.ObjectOutputStream stream)
+       throws IOException
+private void readObjectNoData()
+       throws ObjectStreamException;
+```
+
+### Serializable原理
+
+#### 介绍
 
 1.   Serializable是java的一个序列化接口，是一个空接口，为对象提供标准的序列化和反序列化。
 2.   serialVersionUID在序列化和反序列化中启到作用。
@@ -109,29 +142,157 @@ in.close();
 3.   静态成员属于类不属于对象，不会参与序列化，加了transient的不会参与序列化。
 4.   Serializable接口之所以定义为空，是因为它只起到了一个标识的作用，告诉程序实现了它的对象是可以被序列化的，但真正序列化和反序列化的操作并不需要它来完成。
 
+>   原理参考：https://blog.csdn.net/abc123lzf/article/details/82318148
+
+Serializable的原理主要是ObjectOutputStream和ObjectInputStream，这里偷个懒，只介绍ObjectOutputStream，ObjectInputStream原理应该差不多。
+
+#### 核心方法writeObject
+
 ```java
-// ObjectOutputStream的核心部分
-if (obj instanceof Class) {
-    writeClass((Class) obj, unshared);
-} else if (obj instanceof ObjectStreamClass) {
-    writeClassDesc((ObjectStreamClass) obj, unshared);
-} else if (obj instanceof String) {
-    writeString((String) obj, unshared);
-} else if (cl.isArray()) {
-    writeArray(obj, desc, unshared);
-} else if (obj instanceof Enum) {
-    writeEnum((Enum<?>) obj, desc, unshared);
-} else if (obj instanceof Serializable) {
-    writeOrdinaryObject(obj, desc, unshared);
-} else {
-    if (extendedDebugInfo) {
-        throw new NotSerializableException(
-            cl.getName() + "\n" + debugInfoStack.toString());
-    } else {
-        throw new NotSerializableException(cl.getName());
+public final void writeObject(Object obj) throws IOException {
+    // ...
+    try {
+        writeObject0(obj, false);
+    } catch (IOException ex) {
+        // ...
     }
 }
 ```
+
+```java
+private void writeObject0(Object obj, boolean unshared) throws IOException
+    {
+        // ...
+        try {
+            // ...
+            Object orig = obj;
+            Class<?> cl = obj.getClass();
+            ObjectStreamClass desc;
+			// ...
+            Class repCl;
+            desc = ObjectStreamClass.lookup(cl, true);
+            // ...
+
+            // BEGIN Android-changed: Make Class and ObjectStreamClass replaceable.
+            if (obj instanceof Class) {
+                writeClass((Class) obj, unshared);
+            } else if (obj instanceof ObjectStreamClass) {
+                writeClassDesc((ObjectStreamClass) obj, unshared);
+            // END Android-changed:  Make Class and ObjectStreamClass replaceable.
+            } else if (obj instanceof String) {
+                writeString((String) obj, unshared);
+            } else if (cl.isArray()) {
+                writeArray(obj, desc, unshared);
+            } else if (obj instanceof Enum) {
+                writeEnum((Enum<?>) obj, desc, unshared);
+            } else if (obj instanceof Serializable) {
+                writeOrdinaryObject(obj, desc, unshared);
+            } else {
+                if (extendedDebugInfo) {
+                    throw new NotSerializableException(
+                        cl.getName() + "\n" + debugInfoStack.toString());
+                } else {
+                    throw new NotSerializableException(cl.getName());
+                }
+            }
+        } finally {
+            // ...
+        }
+    }
+```
+
+writeObject根据obj的类型选择对应的方法，这里分析writeOrdinaryObject，也就是对象是Serializable类型。
+
+#### lookup方法
+
+简单提一下lookup方法。（有空可以看一下lookup的实现细节，其中的代码考虑了并发、弱应用、缓存）
+
+lookup方法从缓存里找到一个ObjectStreamClass，如果没有就创建一个。
+
+ObjectStreamClass存储了一个Class对象的信息，其实例变量包括：Class对象，Class名称，serialVersionUID，实现了Serializable接口还是 Externalizable接口，非transient修饰的变量，自定义的writeObject和readObject的Method对象。
+
+#### 写入对象数据
+
+```java
+private void writeOrdinaryObject(Object obj,
+                                 ObjectStreamClass desc,
+                                 boolean unshared)
+    throws IOException
+{
+    // ...
+    try {
+        // ...
+        bout.writeByte(TC_OBJECT);
+        writeClassDesc(desc, false);
+        handles.assign(unshared ? null : obj);
+        if (desc.isExternalizable() && !desc.isProxy()) {
+            writeExternalData((Externalizable) obj);
+        } else {
+            writeSerialData(obj, desc);
+        }
+    } finally {
+        if (extendedDebugInfo) {
+            debugInfoStack.pop();
+        }
+    }
+}
+```
+
+```java
+private void writeSerialData(Object obj, ObjectStreamClass desc)
+    throws IOException
+{
+    ObjectStreamClass.ClassDataSlot[] slots = desc.getClassDataLayout();
+    for (int i = 0; i < slots.length; i++) {
+        ObjectStreamClass slotDesc = slots[i].desc;
+        if (slotDesc.hasWriteObjectMethod()) {
+            // ...通过自定义的writeObject来写入对象数据
+        } else {
+            defaultWriteFields(obj, slotDesc);
+        }
+    }
+}
+```
+
+```java
+private void defaultWriteFields(Object obj, ObjectStreamClass desc)
+    throws IOException
+{
+    // ...先写入基础类型数据
+    int primDataSize = desc.getPrimDataSize();
+    if (primVals == null || primVals.length < primDataSize) {
+        primVals = new byte[primDataSize];
+    }
+    desc.getPrimFieldValues(obj, primVals);
+    bout.write(primVals, 0, primDataSize, false);
+
+    // 再写入Object类型数据
+    ObjectStreamField[] fields = desc.getFields(false);
+    Object[] objVals = new Object[desc.getNumObjFields()];
+    int numPrimFields = fields.length - objVals.length;
+    desc.getObjFieldValues(obj, objVals);
+    for (int i = 0; i < objVals.length; i++) {
+        // ...
+        writeObject0(objVals[i],
+                         fields[numPrimFields + i].isUnshared());
+        // ...
+    }
+}
+```
+
+1.   先写入TC_OBJECT（*0x73*）表示是对象，再写入*class*信息，最后再写入对象数据。
+2.   writeSerialData方法里有个ClassDataSlot数组，是因为对象类型是有父类的，还需要序列化父类数据。如果类型自定义了writeObject方法就通过自定义的writeObject来写入对象数据。否则调用defaultWriteFields方法。
+3.   defaultWriteFields方法先是写入基础类型数据，再写入Object类型数据，Object类型就递归调用writeObject方法。
+
+#### 总结
+
+1.  ObjectOutputStream的构造函数内部会创建一个BlockDataOutputStream对象，这个对象处理写入流的逻辑。
+2.  ObjectOutputStream一般调用writeObject方法，先获取ObjectStreamClass对象，该对象封装了Obj的class信息。
+3.  然后根据Obj的类型执行对应的write方法，Obj一般是Serializable，所以调用writeOrdinaryObject方法。
+4.  先写入字节*0x73*，表示是对象，再写入*class*信息，最后写入这个对象变量信息及其父类的成员变量（writeSerialData）。
+5.  writeSerialData方法遍历了ClassDataSlot数组，是因为对象类型是有父类的，还需要序列化父类数据。
+6.  如果Obj自定义了writeObject方法就使用Obj的方法，否则默认处理。
+7.  默认的写入方式是这样的：先写入基础类型的成员变量，再写入Object类型的成员变量。Object类型的成员变量的写入会递归调用writeObject方法。
 
 ### Parcelable的使用
 

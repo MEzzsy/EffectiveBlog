@@ -30,35 +30,11 @@
 
 # IPC基础概念
 
-主要包含三个方面：Serializable，Parcelable，Binder。
-
 ## 序列化
 
-对象的序列化是把`Java`对象转化为字节序列并存储至一个存储媒介（硬盘或者内存）的过程，反序列化则是把字节序列恢复为`Java`对象的过程，但它们仅处理`Java`变量而不处理方法。
+### Parcelable接口
 
-### 序列化的使用场景
-
-- Intent和Binder传输数据时就需要序列化。
-- 需要把对象持久化到存储设备上或者通过网络传输给其他客户端。
-
-### Serializable接口
-
-```java
-//序列化
-User user = new User();
-ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("cache.txt"));
-out.close();
-//反序列化
-ObjectInputStream in = new ObjectInputStream(new FileInputStream("cache.txt"));
-User newUser = (User) in.readObject();
-in.close();
-```
-
-Serializable是java的一个序列化接口，是一个空接口，为对象提供标准的序列化和反序列化。
-
-serialVersionUID在序列化和反序列化中启到作用。
-
-静态成员属于类不属于对象，不会参与序列化，加了transient的不会参与序列化。
+**简单使用**
 
 ### Serializable和Parcelable的区别
 
