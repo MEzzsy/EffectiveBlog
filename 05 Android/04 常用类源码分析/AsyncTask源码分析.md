@@ -333,7 +333,7 @@ cancel方法需要传递一个参数，如果为true，会调用Thread的interru
 
 # 个人总结
 
-AsyncTask是一个轻量级的异步任务类，内部有2个Executor和一个Handler，SerialExecutor是一个串行线程池，用于任务的排队，内部的execute和scheduleNext方法加了同步锁，保证了任务的顺序执行，THREAD_POOL_EXECUTOR用来真正的执行任务，官方注释说可以并行执行任务，但由于锁机制，导致也只能异步执行。Handler是一个InternalHandler，用来将线程切换到主线程。
+AsyncTask是一个轻量级的异步任务类，内部有2个Executor和一个Handler，SerialExecutor是一个串行线程池，用于任务的排队，内部的execute和scheduleNext方法加了同步锁，保证了任务的顺序执行，THREAD_POOL_EXECUTOR用来真正的执行任务，官方注释说可以并行执行任务。Handler是一个InternalHandler，用来将线程切换到主线程。
 
 **优缺点（结合源码的个人总结）**
 
