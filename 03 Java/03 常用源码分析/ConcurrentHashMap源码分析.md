@@ -76,20 +76,22 @@ public V put(K key, V value) {
 
 ```java
 final V putVal(K key, V value, boolean onlyIfAbsent) {
-    if (key == null || value == null) throw new NullPointerException();//与HashMap不同，不能传入null的键或值。
+    // 与HashMap不同，不能传入null的键或值。
+    if (key == null || value == null) throw new NullPointerException();
     int hash = spread(key.hashCode());
     int binCount = 0;
     for (Node<K,V>[] tab = table;;) {
         Node<K,V> f; int n, i, fh;
         if (tab == null || (n = tab.length) == 0)
-            tab = initTable();//如果是第一次put，则初始化table
+            tab = initTable();// 如果是第一次put，则初始化table。
         else if ((f = tabAt(tab, i = (n - 1) & hash)) == null) {
+            // 如果桶的位置没有节点，那么就新建一个节点并放入。
             if (casTabAt(tab, i, null, new Node<K,V>(hash, key, value, null)))
                 break;                   
-        }//代码1
-        else if ((fh = f.hash) == MOVED)//代码2
+        }
+        else if ((fh = f.hash) == MOVED)// 当前正在扩容
             tab = helpTransfer(tab, f);
-        else {//代码3
+        else { // 代码3
             V oldVal = null;
             synchronized (f) {
                 if (tabAt(tab, i) == f) {
@@ -127,7 +129,7 @@ final V putVal(K key, V value, boolean onlyIfAbsent) {
                         throw new IllegalStateException("Recursive update");
                 }
             }
-            if (binCount != 0) {//代码4
+            if (binCount != 0) { // 代码4
                 if (binCount >= TREEIFY_THRESHOLD)
                     treeifyBin(tab, i);
                 if (oldVal != null)
@@ -141,30 +143,23 @@ final V putVal(K key, V value, boolean onlyIfAbsent) {
 }
 ```
 
-**代码1**
-此处是当前table位置为null的情况。注意，table是volatile的，但是它内部的元素并不是volatile的，所以这里获取table元素的时候用了原子操作getObjectVolatile。
+**小结**
 
-```java
-static final <K,V> Node<K,V> tabAt(Node<K,V>[] tab, int i) {
-    return (Node<K,V>)U.getObjectVolatile(tab, ((long)i << ASHIFT) + ABASE);
-}
-```
+1.   与HashMap不同，不能传入null的键或值。
 
-**代码2**
+2.   如果是第一次put，则初始化table。（见initTable）
 
-此处发生在扩容中，当前节点为ForwardingNode。调用helpTransfer方法。helpTransfer方法主要是放回扩容后的table（nextTable）。获取到新table之后，会进入下一个循环，根据新的table来再次尝试放入。
+3.   如果桶的位置没有节点，那么就新建一个节点并放入。注意，table是volatile的，但是它内部的元素并不是volatile的，所以`tabAt`和`casTabAt`以cas的方式将Node放入桶中。
 
-**代码3**
+4.   如果桶的头节点的hash为MOVED，表示当前正在扩容，那么调用helpTransfer方法。（见helpTransfer）
 
-如果产生Hash冲突，那么锁住当前分段（table的第i个位置）。
+5.   如果产生Hash冲突，那么锁住当前分段（table的第i个位置）。
 
-然后和HashMap相似，如果当前位置的类型是链表，如果有这个键那么更新值，否则放入链表的最后节点。如果当前位置的类型是树，那么就放入树中。
+     代码3：然后和HashMap相似，如果当前位置的类型是链表，如果有这个键那么更新值，否则放入链表的最后节点。如果当前位置的类型是树，那么就放入树中。
 
-**代码4**
+     代码4：如果此时是新增而不是更新，那么binCount表示table当前位置的节点数量。如果binCount大于树化阈值（TREEIFY_THRESHOLD = 8），会调用treeifyBin方法进行树化。
 
-如果此时是新增而不是更新，那么binCount表示table当前位置的节点数量。如果binCount大于树化阈值（TREEIFY_THRESHOLD = 8），会调用treeifyBin方法进行树化。
-
-# initTable初始化table
+# initTable
 
 ```java
 private final Node<K,V>[] initTable() {
@@ -197,11 +192,11 @@ table的初始化被延迟到了第一次put前。如果sizeCtl为负，表示�
 >
 > 就是说当一个线程使用了这个方法之后，它就会把自己CPU执行的时间让掉，让自己或者其它线程运行。
 
-如果sizeCtl不为负，一般此时为默认值0，会用CAS操作将其变为-1，防止其他线程初始化。初始化完成后，sizeCtl变为table大小的0.75，也就是扩容阈值。
+如果sizeCtl不为负，一般此时为默认值0（除非用户指定了初始容量），会用CAS操作将其变为-1，防止其他线程初始化。初始化完成后，sizeCtl变为table大小的0.75，也就是扩容阈值。
 
 > public final native boolean compareAndSwapInt(Object o, long offset, int expected, int x);
 >
-> 第一个参数是需要改变的对象，第二个是相对地址值，第三个是预期值，第四个是置换值。
+> 第一个参数是需要改变的对象，第二个是该成员变量的偏移，第三个是预期值，第四个是置换值。
 >
 > 每次循环调本地方法时，传最新的预期值，和符合修改值。由本地方法中硬件层具体实现，如果预期值和最新值相同，将AtomicInteger对象的value值改为符合修改值。
 
@@ -227,9 +222,10 @@ table的初始化被延迟到了第一次put前。如果sizeCtl为负，表示�
 private final void treeifyBin(Node<K,V>[] tab, int index) {
     Node<K,V> b; int n;
     if (tab != null) {
-        if ((n = tab.length) < MIN_TREEIFY_CAPACITY)//代码1
+        // 如果table长度小于最小树化能力（64），那么不进行树化，而是选择扩容。
+        if ((n = tab.length) < MIN_TREEIFY_CAPACITY)
             tryPresize(n << 1);
-      	//将当前位置的链表变为树结构
+      	// 锁住当前位置，并将当前位置的链表变为树结构。
         else if ((b = tabAt(tab, index)) != null && b.hash >= 0) {
             synchronized (b) {
                 if (tabAt(tab, index) == b) {
@@ -252,9 +248,8 @@ private final void treeifyBin(Node<K,V>[] tab, int index) {
 }
 ```
 
-**代码1**
-
-如果table长度小于最小树化能力（MIN_TREEIFY_CAPACITY = 64），那么不进行树化，而是选择扩容。
+1.   如果table长度小于最小树化能力（MIN_TREEIFY_CAPACITY = 64），那么不进行树化，而是选择扩容。
+2.   锁住当前位置，并将当前位置的链表变为树结构。
 
 # tryPresize扩容
 
@@ -292,13 +287,36 @@ private final void tryPresize(int size) {
 }
 ```
 
-首先将传入的size变为2倍，为超过了MAXIMUM_CAPACITY，就另其等于MAXIMUM_CAPACITY 。
+1.   首先将传入的size变为2倍，为超过了MAXIMUM_CAPACITY，就另其等于MAXIMUM_CAPACITY 。
+2.   然后如果没有初始化就初始化table，这点与上面initTable相似。
+3.   如果扩容后的大小c比阈值sizeCtl小或者已经到达最大容量，则不进行扩容。
+4.   反之进行真正的扩容（transfer）。
 
-然后如果没有初始化就初始化table，这点与上面initTable相似。
+# helpTransfer帮助扩容
 
-如果扩容后的大小c比阈值sizeCtl小或者已经到达最大容量，则不进行扩容。
+```java
+final Node<K,V>[] helpTransfer(Node<K,V>[] tab, Node<K,V> f) {
+    Node<K,V>[] nextTab; int sc;
+    if (tab != null && (f instanceof ForwardingNode) &&
+        (nextTab = ((ForwardingNode<K,V>)f).nextTable) != null) {
+        int rs = resizeStamp(tab.length);
+        while (nextTab == nextTable && table == tab &&
+               (sc = sizeCtl) < 0) {
+            if ((sc >>> RESIZE_STAMP_SHIFT) != rs || sc == rs + 1 ||
+                sc == rs + MAX_RESIZERS || transferIndex <= 0)
+                break;
+            if (U.compareAndSwapInt(this, SIZECTL, sc, sc + 1)) {
+                transfer(tab, nextTab);
+                break;
+            }
+        }
+        return nextTab;
+    }
+    return table;
+}
+```
 
-反之进行真正的扩容。
+如果当前桶位置的头节点的hash是MOVED，表示其它线程正在扩容。那么就调用transfer方法帮助扩容。这也是方法名称叫helpTransfer的原因。
 
 # transfer真正的扩容
 
@@ -313,7 +331,7 @@ private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
  		// stride最小为16，被限定死。
     if ((stride = (NCPU > 1) ? (n >>> 3) / NCPU : n) < MIN_TRANSFER_STRIDE)
         stride = MIN_TRANSFER_STRIDE; // subdivide range
-  	//创建一个大小为原来2倍的table
+  	// 创建一个大小为原来2倍的table
     if (nextTab == null) {            // initiating
         try {
             @SuppressWarnings("unchecked")
@@ -466,31 +484,26 @@ private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
 }
 ```
 
-# helpTransfer帮助扩容
+几个变量的含义：
 
-```java
-final Node<K,V>[] helpTransfer(Node<K,V>[] tab, Node<K,V> f) {
-    Node<K,V>[] nextTab; int sc;
-    if (tab != null && (f instanceof ForwardingNode) &&
-        (nextTab = ((ForwardingNode<K,V>)f).nextTable) != null) {
-        int rs = resizeStamp(tab.length);
-        while (nextTab == nextTable && table == tab &&
-               (sc = sizeCtl) < 0) {
-            if ((sc >>> RESIZE_STAMP_SHIFT) != rs || sc == rs + 1 ||
-                sc == rs + MAX_RESIZERS || transferIndex <= 0)
-                break;
-            if (U.compareAndSwapInt(this, SIZECTL, sc, sc + 1)) {
-                transfer(tab, nextTab);
-                break;
-            }
-        }
-        return nextTab;
-    }
-    return table;
-}
-```
+1.   stride：stride表示步长。如果一个线程发现正在扩容，那么会调用helpTransfer帮助扩容。每个线程会负责一块区域，每个区域的大小就是stride。
+2.   ForwardingNode：`ForwardingNode<K,V> fwd = new ForwardingNode<K,V>(nextTab);`。ForwardingNode的官方注释：A node inserted at head of bins during transfer operations.
+     表示当前桶的位置在进行扩容。
 
-主要是返回扩容后的table。
+**小结**
+
+1.   先创建一个大小为原来2倍的table，为nextTab。
+2.   扩容时，tab下标i从后往前移动。bound表示边界。
+3.   如果tabAt(tab, i)是null，该位置没有节点，不需要移到nextTab里，就先填入fwd。其它线程put时发现当前位置时fwd，就helpTransfer帮助扩容。
+4.   如果tabAt(tab, i)是fwd，表示已经处理了，跳过。
+5.   否则，锁住当前桶，像HashMap一样处理。把当前桶的Node分成两部分（low和high，具体可以见HashMap，和HashMap有不同，HashMap是将一条list分成两条list，即更改节点。ConcurrentHashMap是新建两条list，即new Node），放到nextTable的相应位置。最后在原table的i位置填入fwd。
+6.   前面提到了bound，也就是扩容时是一段段扩容的。一个线程负责一段区域的扩容，另一个发现需要扩容时会扩容另一段区域。
+
+>   一开始看代码的时候，我很疑惑区域的意义，因为下标会从后往前移动，肯定会到头，为什么还需要bound？
+>
+>   但是想到多线程操作时，分段可以让各个线程参与扩容，提高效率。难怪叫helpTransfer
+>
+>   我感叹到，设计ConcurrentHashMap的人真聪明。
 
 # addCount方法
 
@@ -570,6 +583,10 @@ public V get(Object key) {
 hash<0有这么几种情况：
 
 1. hash=-1：Node的实际类型是ForwardingNode，会调用Node的实际类型是ForwardingNode的find方法，从nextTable方法中查找。
+
+    如果原来桶的位置时null，扩容时会在该位置放置fwd，那么在nextTable也有可能返回null。
+
+    如果原来桶的位置非null，扩容时会锁住nextTable某处，所以即使get，也不用担心线程问题。扩容完会在原来的位置放置fwd。
 2. hash=-2：Node的实际类型是TreeBin，调用TreeBin的find方法遍历红黑树，由于红黑树有可能正在旋转变色，所以find里会有读写锁。
 
 ## 为什么get方法不需要加锁？
@@ -580,9 +597,7 @@ put方法会将需要更改的节点加锁，保证操作正确。如果get的�
 
 **在扩容或者树化的过程中get**
 
-扩容和树化过程会通过CAS操作来设置值，保证可见性，所以get获取到正确的值。
-
-> 我看有些博客说是volatile，我感觉不对，volatile对于对象只是内存地址的可见性而不是内容的可见性。
+见上面hash=-1的分析。
 
 # remove方法
 
@@ -687,6 +702,47 @@ put与remove类似，所以这里围绕put和get来进行总结。
 1.   put时，如果数组没有初始化，那么初始化数组。
 2.   如果当前数组还没有Node，那么通过CAS操作在一个死循环中不断尝试放入第一个Node，放置成功就退出循环。
 3.   如果当前数组位置已经存在链表，那么锁住该链表，并放置元素。
+
+# CAS的简单使用
+
+```java
+/**
+ * 使用CAS
+ * 通过CAS来改变成员变量的值
+ */
+private static void test22() throws Throwable {
+    Field field = ConcurrentHashMap.class.getDeclaredField("U");
+    field.setAccessible(true);
+    final sun.misc.Unsafe U = (Unsafe) field.get(null);
+
+    field = ConcurrentHashMap.class.getDeclaredField("TRANSFERINDEX");
+    field.setAccessible(true);
+    final long TRANSFERINDEX = field.getLong(null);
+
+    field = ConcurrentHashMap.class.getDeclaredField("transferIndex");
+    field.setAccessible(true);
+
+    ConcurrentHashMap<String, String> map = new ConcurrentHashMap<>();
+    int transferIndex = field.getInt(map);
+    System.out.println(transferIndex);
+    // 通过CAS修改transferIndex
+    U.compareAndSwapInt(map, TRANSFERINDEX, transferIndex, 100);
+    transferIndex = field.getInt(map);
+    System.out.println(transferIndex);
+    // 再次修改
+    U.compareAndSwapInt(map, TRANSFERINDEX, transferIndex, 200);
+    transferIndex = field.getInt(map);
+    System.out.println(transferIndex);
+}
+```
+
+```
+0
+100
+200
+```
+
+
 
 # 参考
 
