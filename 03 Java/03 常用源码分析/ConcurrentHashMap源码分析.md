@@ -589,15 +589,32 @@ hash<0有这么几种情况：
     如果原来桶的位置非null，扩容时会锁住nextTable某处，所以即使get，也不用担心线程问题。扩容完会在原来的位置放置fwd。
 2. hash=-2：Node的实际类型是TreeBin，调用TreeBin的find方法遍历红黑树，由于红黑树有可能正在旋转变色，所以find里会有读写锁。
 
-## 为什么get方法不需要加锁？
+# 如何保证线程安全
 
-**如果在put过程中get**
+## 一个线程put另一个线程也put
 
-put方法会将需要更改的节点加锁，保证操作正确。如果get的节点正好是锁的节点，那么会等待，如果不是，那么没有其他线程修改，不需要考虑并发问题。
+如果两个线程put不是同一个桶，那么各自put各自的。如果是同一个桶，那么会有一个线程先锁住，另一个线程等待。
 
-**在扩容或者树化的过程中get**
+类似的，如果一个线程在扩容，也会锁住，另一个线程需要等待。
 
-见上面hash=-1的分析。
+## 一个线程put另一线程get
+
+```java
+class Node<K,V> implements Map.Entry<K,V> {
+    final int hash;
+    final K key;
+    volatile V val;
+    volatile Node<K,V> next;
+}
+```
+
+这种情况和单例模式中的DCL类似，通过volatile来保证修改可见性。Node的val和next是volatile的。
+
+## 在扩容或者树化的过程中get
+
+具体见上面hash=-1的分析。
+
+扩容是把tab的节点移到nextTab上。如果当前位置还未被移动，那么就在当前位置寻找。如果当前位置已经移动了，那么在nextTab上找。
 
 # remove方法
 
@@ -685,23 +702,15 @@ final V replaceNode(Object key, V value, Object cv) {
 }
 ```
 
-**代码3**
-
-与put类似，会锁住当前节点。
-
-如果节点类型是链表，那么就删除链表节点
-
-如果节点类型是树，那么就删除树节点
+与put类似，略。
 
 # 总结
 
-put与remove类似，所以这里围绕put和get来进行总结。
+ConcurrentHashMap的设计很巧妙，基本思想是分段锁+CAS操作+volatile。
 
-## put
+如果多个线程的操作没有线程冲突，那么就不需要加锁。如果存在冲突，就尽可能细化锁的范围，即分段锁。
 
-1.   put时，如果数组没有初始化，那么初始化数组。
-2.   如果当前数组还没有Node，那么通过CAS操作在一个死循环中不断尝试放入第一个Node，放置成功就退出循环。
-3.   如果当前数组位置已经存在链表，那么锁住该链表，并放置元素。
+具体可以看put、get、transfer的小结。
 
 # CAS的简单使用
 
