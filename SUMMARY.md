@@ -132,6 +132,7 @@
       - [视图相关工具类](./05 Android/03 Android应用手册/视图/视图相关工具类.md)
       - [资源文件](./05 Android/03 Android应用手册/视图/资源文件.md)
     - [项目](./05 Android/03 Android应用手册/项目/README.md)
+      - [命令行调试](./05 Android/03 Android应用手册/项目/命令行调试.md)
       - [打包](./05 Android/03 Android应用手册/项目/打包.md)
   - [04 常用类源码分析](./05 Android/04 常用类源码分析/README.md)
     - [AsyncTask源码分析](./05 Android/04 常用类源码分析/AsyncTask源码分析.md)
