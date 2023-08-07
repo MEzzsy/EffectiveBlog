@@ -327,9 +327,16 @@ performTraversals方法会在注释2、3、4处分别调用performMeasure、perf
 3.   ViewRootImpl实现了ViewParent接口，它有两个重要的成员变量，一个是mView，它指向Activity顶层UI单元的DecorView，另外一个是mSurface，这个Surface包含了一个Canvas。
 4.   整个Activity的绘图流程就是从mSurface中lock一块Canvas，然后交给mView去自由发挥画画的才能，最后unlockCanvasAndPost释放这块Canvas。
 
-**个人额外总结**
+### 个人额外总结
 
 在ViewRootImpl的DecorView（mView）初始化时，会触发View树的重绘（requestLayout）。除此之外，还会将创建的Window和WMS建立联系（`mWindowSession.addToDisplayAsUser`）
+
+应用层的渲染流程时这样的：
+
+1. Activity创建后会创建一个Window，在setContentView或者performLaunchActivity执行完界面要与用户进行交互时会创建一个DecorView，并把这个DecorView add到Window中，同时创建一个ViewRootImpl。
+2. 当主线程发起渲染时，ViewRootImpl调用performTraversals发起performMeasure、performLayout和performDraw。
+3. ViewRootImpl和WMS交互，获取一块新的Surface。
+4. performDraw时，从Surface中lock一块Canvas，然后交给View去draw，最后unlockCanvasAndPost释放这块Canvas。（软件绘制）
 
 ### Android中Window、Surface、View的关系
 

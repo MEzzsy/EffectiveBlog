@@ -1,6 +1,6 @@
 # 参考
 
-[Android图片加载框架最全解析](https://blog.csdn.net/guolin_blog/article/details/53759439)，作者郭霖。
+[Android图片加载框架最全解析](https://blog.csdn.net/guolin_blog/article/details/53759439)，作者郭霖。源码基于Glide分支：3.0
 
 # with()
 
@@ -14,7 +14,7 @@ with()方法得到一个RequestManager对象，然后Glide会根据传入with()�
 
 # load()
 
-load()方法就是封装了传入的参数，并没有做实际的加载。返回的是一个RequestBuilder\<Drawable\>对象。
+load()方法就是封装了传入的参数，并没有做实际的加载。返回的是一个`RequestBuilder<Drawable>`对象。
 
 # into()
 
@@ -119,6 +119,13 @@ public synchronized <R> LoadStatus load(
   return new LoadStatus(cb, engineJob);
 }
 ```
+
+主要分为这么几步：
+
+1. buildKey
+2. loadFromActiveResources
+3. loadFromCache
+4. start decodeJob
 
 ## 缓存Key
 
