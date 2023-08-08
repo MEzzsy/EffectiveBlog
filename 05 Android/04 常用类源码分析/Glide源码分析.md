@@ -418,25 +418,55 @@ Glide.with(this)
 
 和内存缓存类似，硬盘缓存的实现也是使用的LruCache算法，而且Google还提供了一个现成的工具类DiskLruCache。当然Glide是使用的自己编写的DiskLruCache工具类，但是基本的实现原理都是差不多的。
 
-大致流程：
+### 状态机
 
+```java
+private Stage getNextStage(Stage current) {
+  switch (current) {
+    case INITIALIZE:
+      return diskCacheStrategy.decodeCachedResource()
+          ? Stage.RESOURCE_CACHE : getNextStage(Stage.RESOURCE_CACHE);
+    case RESOURCE_CACHE:
+      return diskCacheStrategy.decodeCachedData()
+          ? Stage.DATA_CACHE : getNextStage(Stage.DATA_CACHE);
+    case DATA_CACHE:
+      // Skip loading from source if the user opted to only retrieve the resource from cache.
+      return onlyRetrieveFromCache ? Stage.FINISHED : Stage.SOURCE;
+    case SOURCE:
+    case FINISHED:
+      return Stage.FINISHED;
+    default:
+      throw new IllegalArgumentException("Unrecognized stage: " + current);
+  }
+}
 ```
-Engine#load
-EngineJob#start
-DecodeJob#run
-DecodeJob#runWrapped
-DecodeJob#decodeFromRetrievedData
+
+```java
+private DataFetcherGenerator getNextGenerator() {
+  switch (stage) {
+    case RESOURCE_CACHE:
+      return new ResourceCacheGenerator(decodeHelper, this);
+    case DATA_CACHE:
+      return new DataCacheGenerator(decodeHelper, this);
+    case SOURCE:
+      return new SourceGenerator(decodeHelper, this);
+    case FINISHED:
+      return null;
+    default:
+      throw new IllegalStateException("Unrecognized stage: " + stage);
+  }
+}
 ```
 
+初始状态为`INITIALIZE`，下一个状态为`RESOURCE_CACHE`，使用ResourceCacheGenerator。主要是从磁盘缓存中获取经过转化过的资源。（loader为ByteBufferFileLoader，fetcher为ByteBufferFetcher）
 
+如果没有获取到，状态改为`DATA_CACHE`，使用DataCacheGenerator，用于获取原始图片数据。（loader为ByteBufferFileLoader，fetcher为ByteBufferFetcher）。如果获取到了原始图片数据缓存，那么会转换，并放入ResourceCache。
 
-### 读取缓存
+如果在ResourceCache或者DataCache拿到了缓存，那么会将转换后的图片放入弱引用缓存。
 
-当内存缓存中获取不到图片的时候，会开启线程，尝试从硬盘中获取缓存。
+如果在硬盘缓存里没有拿到，那么状态改为`SOURCE`，使用SourceGenerator，从网络获取图片，（fetcher为HttpUrlFetcher）。
 
-### 放入缓存
-
-在没有缓存的情况下，会读取图片数据，再进行转换，最后放入缓存。
+下载成功后，硬盘缓存原始数据。放入硬盘ResourceCache，最后放入弱引用缓存。
 
 # 总结
 
@@ -445,12 +475,8 @@ Glide的源码分析主要针对它的缓存策略。
 1.   Glide根据传入的Context来决定图片的生命周期，Glide是添加一个隐形的Fragment来监听Activity的生命周期。
 2.   Glide先从弱引用中获取缓存。
 3.   如果没有拿到弱引用缓存就从LruCache中获取。如果拿到了Lru缓存，那么从Lru缓存中移除并重新放入到弱引用缓存中。
-
-放入的时候先放入弱引用，当不使用时，再放入LruCache里。
-这里Glide利用引用计数法来判断弱引用是否需要放入LruCache中，使用的时候加1，释放的时候减1，释放是根据Activity的生命周期来判断的，上面也说过了，Glide利用一个隐形的Fragment来监听Activity的生命周期，当监听到onDestory的时候就释放。
-
-
-
-当内存缓存中获取不到图片的时候，会开启线程，尝试从硬盘中获取缓存。
-
-在没有缓存的情况下，会读取图片数据，再进行转换，最后放入缓存。
+4.   Glide利用引用计数法来判断弱引用是否需要放入LruCache中。使用的时候加1，释放的时候减1，释放是根据Activity的生命周期来判断的。
+5.   当内存缓存中获取不到图片的时候，会开启线程，尝试从硬盘中获取缓存。
+6.   Glide默认硬盘缓存策略是只找转换过的图片缓存。
+7.   硬盘缓存逻辑：先寻找转换过的图片缓存，如果没有找到，再找原始图片缓存，找到后放入转换过的图片缓存和弱引用缓存中。
+8.   在没有缓存的情况下，会网络请求图片数据，将其放入原始图片缓存。再进行转换，最后放入转换过的图片缓存和弱引用缓存中。
