@@ -12,7 +12,7 @@ public final class Launcher extends Activity
 
 和一般启动Activity一样，Launcher启动应用程序时也会调用startActivity方法。
 
-startActivity方法方法内部会获取AMS（运行在SystemServer进程）在本地的代理对象，并调用其startActivity方法。
+startActivity方法方法内部会获取AMS（运行在SystemServer进程）在本地的代理对象（IActivityTaskManager），并调用其startActivity方法。
 
 由于Launcher和AMS处在不同的进程，所以这期间是通过跨进程通信进行交互。
 
