@@ -129,6 +129,7 @@
     - [架构组件](./05 Android/03 Android应用手册/架构组件/README.md)
       - [LiveData](./05 Android/03 Android应用手册/架构组件/LiveData.md)
       - [Navigation](./05 Android/03 Android应用手册/架构组件/Navigation.md)
+      - [ViewModel](./05 Android/03 Android应用手册/架构组件/ViewModel.md)
     - [视图](./05 Android/03 Android应用手册/视图/README.md)
       - [Android动画](./05 Android/03 Android应用手册/视图/Android动画.md)
       - [Android布局](./05 Android/03 Android应用手册/视图/Android布局.md)
