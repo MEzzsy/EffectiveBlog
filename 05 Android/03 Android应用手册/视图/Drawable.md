@@ -497,3 +497,14 @@ ClipDrawable对应于clip标签，它可以根据自己当前的等级(level)来
 | fill              | 使内部的Drawable在水平和竖直方向上同时填充容器。仅当ClipDrawable的等级为0时，才能有裁剪行为 |
 | clip_vertical     | 附加选项，表示竖直方向的裁剪，较少使用                       |
 | clip_horizontal   | 附加选项，表示水平方向的裁剪，较少使用                       |
+
+# Bitmap和Drawable的区别
+
+定义对比：
+
+1.   Bitmap：称作位图，一般的位图的文件格式扩展名为.bmp，当然编码器也有很多，RGB565，RGB8888，作为一种追个像素的显示对象，执行效率高，但是存储效率低，可以理解成一种存储对象。
+2.   Drawable：Android下的通用的图片形象，它可以装载常用格式的图像，比如GIF，PNG，JPG，BMP，提供一些高级的可视化方法。
+
+gif是如何展示的？
+
+Glide库提供了GifDrawable，细节后续再看。
