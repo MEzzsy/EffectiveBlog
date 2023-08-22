@@ -761,3 +761,10 @@ void dispatchDetachedFromWindow() {
     // ...
 }
 ```
+
+1.   通过View post一个runnable。
+     如果当前View已经dispatchAttachedToWindow，那么将该消息post到消息队列的末尾。
+     如果当前View还没有dispatchAttachedToWindow，那么缓存该消息。
+2.   当View dispatchAttachedToWindow时，会将缓存消息post，而View的dispatchAttachedToWindow是在ViewRootImpl的performTraversals方法里。
+3.   performTraversals会进行测量，布局，这些是同步操作。
+4.   所以View的post方法可以拿到宽高。

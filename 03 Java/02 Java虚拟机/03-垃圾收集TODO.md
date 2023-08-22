@@ -231,13 +231,13 @@ public T get() {
 
 # 垃圾收集器
 
-### Serial回收器
+## Serial回收器
 
 Serial回收器是一个**主要应用于YGC**的垃圾回收器，采用串行单线程的方式完成GC任务，其中“Stop The World"简称**STW**，即垃圾回收的某个阶段会暂停整个应用程序的执行。FGC的时间相对较长，频繁FGC会严重影响应用程序的性能。主要流程如图所示。
 
 ![20180913163010](http://111.230.96.19:8081/image/20190405210340.png)
 
-### CMS回收器
+## CMS回收器
 
 CMS回收器(Concurrent Mark Sweep Collector)是回收停顿时间比较短、目前比较常用的垃圾回收器。它通过
 
@@ -253,7 +253,7 @@ CMS回收器(Concurrent Mark Sweep Collector)是回收停顿时间比较短、�
 
 第1、3步的初始标记和重新标记阶段依然会引发STW，而第2、4步的并发标记和并发清除两个阶段可以和应用程序并发执行，也是比较耗时的操作，但并不影响应用程序的正常执行。由于CMS采用的是“标记一清除算法”，因此产生大量的空间碎片。为了解决这个问题，CMS可以通过配置-XX: +UseCMSCompactAtFullColetion参数，强制JVM在FGC完成后对老年代进行压缩，执行一一次空间碎片整理，但是空间碎片整理阶段也会引发STW。为了减少STW次数，CMS还可以通过配置-XX: +CMSFullGCsBeforeCompaction=n参数，在执行了n次FGC后，JVM再在老年代执行空间碎片整理。
 
-### G1回收器
+## G1回收器
 
 Hotspot在JDK7中推出了新一代 G1 ( Garbage-First Garbage Collector )垃圾回收，通过-XX: +UseG1GC参数启用。和CMS相比，G1具备压缩功能，能避免碎片问题，G1的暂停时间更加可控。性能总体还是非常不错的，简要结构如图所示。
 
