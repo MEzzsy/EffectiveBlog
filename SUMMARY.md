@@ -154,6 +154,8 @@
     - [Retrofit2源码分析](./05 Android/04 常用类源码分析/Retrofit2源码分析.md)
     - [RxJava2源码分析](./05 Android/04 常用类源码分析/RxJava2源码分析.md)
     - [SparseArray源码分析](./05 Android/04 常用类源码分析/SparseArray源码分析.md)
+  - [05 性能优化工具](./05 Android/05 性能优化工具/README.md)
+    - [cpu工具](./05 Android/05 性能优化工具/cpu工具.md)
 - [06 计算机网络](./06 计算机网络/README.md)
   - [计算机网络](./06 计算机网络/计算机网络.md)
 - [07 设计模式](./07 设计模式/README.md)
