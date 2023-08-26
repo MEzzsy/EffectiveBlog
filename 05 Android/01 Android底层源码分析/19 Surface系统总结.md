@@ -25,6 +25,16 @@
 
 ## BufferQueue的循环
 
+# 总结
+
+## 应用层
+
+1. Activity启动后会创建一个Window，在setContentView或者performLaunchActivity执行完界面要与用户进行交互时会创建一个DecorView，并把这个DecorView add到Window中，同时创建一个ViewRootImpl。
+2. TODO Choreographer是如何收到系统VSYNC信号的。
+3. 当主线程发起渲染时，ViewRootImpl调用performTraversals发起performMeasure、performLayout和performDraw。
+4. ViewRootImpl和WMS交互，获取一块新的Surface。
+5. performDraw时，从Surface中lock一块Canvas，然后交给View去draw，最后unlockCanvasAndPost释放这块Canvas。（软件绘制）
+
 # Surface相关
 
 ## SurfaceView

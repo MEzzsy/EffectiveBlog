@@ -408,6 +408,7 @@ MyViewGroup: onTouchEvent:
 MyViewGroup: onTouchEvent: ACTION_DOWN
 MyActivity: onTouchEvent: 
 MyActivity: onTouchEvent: ACTION_DOWN
+
 MyActivity: dispatchTouchEvent: 
 MyActivity: dispatchTouchEvent: ACTION_UP
 MyActivity: onTouchEvent: 
@@ -607,15 +608,25 @@ public boolean dispatchTouchEvent(MotionEvent ev) {
 另外，如果一个View的onTouchEvent（ACTION_DOWN）返回false，那么它的父容器的onTouchEvent将会被调用，依此类推。如果所有的元素都不处理这个事件，那么这个事件将会最终传递给Activity处理。
 如果非ACTION_DOWN返回了false，那么父容器不会调用自己的onTouchEvent，最终是由Activity处理。
 
-# 简单总结
+# 总结
 
-手势事件分发主要是dispatchTouchEvent、onInterceptTouchEvent、onTouchEvent。
+View的手势事件分发主要是dispatchTouchEvent、onInterceptTouchEvent、onTouchEvent。
+
+## ViewRootImpl事件分发
+
+ViewRootImpl除了负责绘制流程，还是手势事件的中转站。
+
+手势事件先到达ViewRootImpl的WindowInputEventReceiver，ViewRootImpl最终会调用DecorView的dispatchPointerEvent，而DecorView通过WindowCallback传给Activity的dispatchTouchEvent，这样手势事件进入Activity。
+
+## Activity事件分发
+
+Activity通过Window将手势事件传给DecorView，DecorView通过dispatchTouchEvent来分发。这样手势事件进入View体系。
 
 ## dispatchTouchEvent
 
 dispatchTouchEvent用于分发事件，返回值表示是否消费此次事件。
 
-当事件为ACTION_DOWN时，会遍历子View分发该事件，如果有子View消费了该事件，那么将子View加入到TouchTarget。
+当事件为ACTION_DOWN时，会遍历子View分发该事件，如果有子View消费了该事件，那么将子View加入到TouchTarget。如果没有子View消费该事件（TouchTarget为空），那么调用ViewGroup自身的onTouchEvent。
 
 其余事件，会遍历TouchTarget来分发。
 
@@ -651,7 +662,7 @@ onInterceptTouchEvent用于拦截事件，只有ViewGroup才有。
 1. 同一个事件序列是指从手指接触屏幕的那一刻起，到手指离开屏幕的那一刻结束，在这个过程中所产生的一系列事件，这个事件序列以down事件开始，中间含有数量不定的move事件，最终以up事件结束。
 2. 正常情况下，一个事件序列只能被一个View拦截且消耗。这条的原因可以参考 （3），因为一旦一个元素拦截了某此事件，那么同一个事件序列内的所有事件都会直接交给它处理，因此同一个事件序列中的事件不能分别由两个View同时处理，但是通过特殊手段可以做到，比如一个View将本该自己处理的事件通过onTouchEvent强行传递给其他View处理。
 3. 某个View一旦决定拦截，那么这一个事件序列都只能由它来处理（如果事件序列能够传递给它的话），并且它的onInterceptTouchEvent不会再被调用（View.java没有onInterceptTouchEvent方法）。就是说当一个View决定拦截一个事件后， 那么系统会把同一个事件序列内的其他方法都直接交给它来处理，因此就不用再调用这个View的onInterceptTouchEvent去询问它是否要拦截了。
-4. 某个View一旦开始处理事件， 如果它不消耗ACTION_DOWN事件（onTouchEvent返回了false）， 那么同一事件序列中的其他事件都不会再交给它来处理；并且事件将重新交由它的父元素去处理，即父元素的onTouchEvent会被调用。意思就是事件一旦交给一个View处理，那么它就必须消耗掉，否则同一事件序列中剩下的事件就不再交给它来处理了。
+4. 某个View一旦开始处理事件， 如果它不消耗ACTION_DOWN事件（onTouchEvent返回了false）， 那么同一事件序列中的其他事件都不会再交给它来处理；并且事件将重新交由它的父元素去处理，即父元素的onTouchEvent会被调用。
 5. 如果View不消耗除ACTION_DOWN以外的其他事件，那么这个点击事件会消失，此时父元素的onTouchEvent并不会被调用，并且当前View可以持续收到后续的事件，最终这些消失的点击事件会传递给Activity处理。
 6. ViewGroup默认不拦截任何事件，Android源码中ViewGroup的onInterceptTouchEvent方法默认返回false。
 7. View没有onInterceptTouchEvent方法，一旦有点击事件传递给它，那么它的onTouchEvent方法就会被调用。
@@ -839,6 +850,6 @@ I/TTE-MyViewGroup: onTouchEvent: ACTION_UP
 
 1. 外部滑动方向和内部滑动方向不一致：
     可以用外部拦截法和内部拦截法。
-2. 外部滑动方向和内部滑动方向一致：
-    如果使用外部拦截法，因为方向一致，那么父View的onInterceptTouchEvent方法只能返回false，因为一旦拦截，那么子View就无法执行了。
-    只能使用内部拦截法，在子View的onTouchEvent里处理事件，但不消费事件（除了ACTION_DOWN），另外再配合requestDisallowInterceptTouchEvent，可以做到父View处理事件，
+2. 外部滑动方向和内部滑动方向一致：（如子View先滑动，当滑到底时再滑动父View）
+    如果使用外部拦截法，因为方向一致，那么父View的onInterceptTouchEvent方法会拦截，事件无法传到子View。
+    只能使用内部拦截法，子View先每次消费事件，当子View判断出滑到底时，不再消费，并通过`requestDisallowInterceptTouchEvent(false)`，让父View拦截处理后续事件。
