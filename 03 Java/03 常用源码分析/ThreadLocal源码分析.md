@@ -134,13 +134,16 @@ private Entry getEntryAfterMiss(ThreadLocal<?> key, int i, Entry e) {
 
 1.   当某些数据是以线程为作用域且在不同线程具有不同的数据副本时，就可以考虑使用ThreadLocal（比如Looper）。
 2.   一个ThreadLocal对象对应一个线程本地变量。
-3.   每个线程都有一个ThreadLocalMap，ThreadLocalMap里有个数组table存放Entry的对象。
-4.   Entry本身是ThreadLocal的弱引用。用弱引用是因为，有些线程是长时间存在的（如主线程），如果使用强引用，可能会导致内存泄露。
-5.   ThreadLocal的set方法放入需要的值，先获取Thread，再取出这个Thread的ThreadLocalMap。
-     先根据hash值和table数组长度获取数组位置。
-     如果产生hash冲突，解决办法是位置+1，如果超出了数组长度就放在0位置。
-     找到合适的位置后，放入数组中。
-     如果超出阈值就扩容。扩容是容量*2。
-6.   ThreadLocal的get方法：
-     先获取Thread，再取出这个Thread的ThreadLocalMap，然后根据此ThreadLocal取出值。
-7.   ThreadLocalMap的初始化是懒加载，table的初始大小是16。
+3.   每个线程内部有一个ThreadLocalMap变量，以ThreadLocal对象为key，对应的对象为value。
+4.   ThreadLocalMap是懒加载，只有操作ThreadLocal时，才会初始化，table的初始大小是16。
+5.   Entry本身是ThreadLocal的弱引用。用弱引用是因为，有些线程是长时间存在的（如主线程），如果使用强引用，可能会导致内存泄露。
+6.   当一个线程想要获取或者放置一个对象时，通过ThreadLocal的get和set方法。
+7.   set方法
+      先获取Thread，再取出这个Thread的ThreadLocalMap。 
+      然后根据hash值和table数组长度获取数组位置。 如果产生hash冲突，解决办法是位置+1，如果超出了数组长度就归0。 
+      找到合适的位置后，放入数组中。
+      如果超出阈值就扩容，扩容是容量*2。
+8.   get方法
+      先获取Thread，再取出这个Thread的ThreadLocalMap。
+      然后根据此ThreadLocal取出值，如果有值就返回。
+      如果没有值，就放置一个初始值，默认值是null，可以由ThreadLocal的子类实现。最后返回初始值。

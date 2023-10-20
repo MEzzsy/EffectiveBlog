@@ -926,12 +926,19 @@ private int postSyncBarrier(long when) {
 3.   线程是默认没有Looper，如果需要使用Handler需要创建Looper。Looper创建时会创建MessageQueue。
 4.   MessageQueue内部用单链表存储Message。
 
+## 消息循环准备
+
+1.  通过Looper.prepare创建一个Looper对象，并放入当前线程的ThreadLocal中。
+2.  创建Looper时，会创建一个MessageQueue。
+3.  调用Looper.loop开启消息循环，不断调用MessageQueue的next方法取出一个msg，并通过msg对应的Handler来处理此msg。
+
 ## 消息循环
 
 1.   Handler post一个runnable或send一个message（post最终是通过send完成的）。
 2.   这个message会带上当前的时间戳，如果是delay消息，则加上delay。
 3.   调用MessageQueue的enqueueMessage方法将消息放入消息队列中，msg是按照时间戳（when）排序的。
-4.   最后Looper处理，不断的获取消息，调用`runnable.run`或者handleMessage。
+4.   最后Looper处理，不断的获取消息，并通过msg对应的Handler来处理此msg。
+5.   如果msg有callback，那么执行callback。如果没有callback，但是Handler设置了callback，那么交给callback的handleMessage来处理。如果callback的handleMessage返回false，那么Handler自己处理（handleMessage）。
 
 ## 细节
 

@@ -154,3 +154,16 @@ ApplicationThread将启动Activity的参数进行封装，并通知H消息管理
 步骤2采用的是Socket通信，步骤1和步骤4采用的是Binder通信。
 
 如果是普通Activity的话，启动过程只会涉及2个：AMS所在进程和应用程序进程。
+
+# 总结
+
+1.   应用进程调用startActivity方法。
+2.   startActivity方法内部会获取AMS（运行在SystemServer进程）在应用进程的代理对象（IActivityTaskManager），并调用其startActivity方法。
+3.   此时逻辑到了AMS中。如果任务栈不存在，那么会创建一个新的TaskRecord，用来描述一个Activity任务栈。
+4.   如果Activity进程不存在，那么通过一个Socket通知Zygote进程。
+5.   当Zygote进程接收到AMS的请求时，根据请求参数来fork自身创建应用程序进程。
+6.   调用ActivityThread的main方法，并开启主线程的消息循环。
+7.   Activity进程启动后，AMS通过ActivityThread的内部类ApplicationThread（继承了IApplicationThread.Stub）与应用进程交互。
+8.   ApplicationThread将启动Activity的参数进行封装，并通知H消息管理类发送处理启动Activity的逻辑（因为ApplicationThread是一个Binder，方法运行在Binder池中，所以需要Handler将逻辑回调到主线程）。
+9.   然后在performLaunchActivity中创建Context对象，Activity对象和Application对象。
+10.   最后回调Activity的onCreate，Activity启动完毕。

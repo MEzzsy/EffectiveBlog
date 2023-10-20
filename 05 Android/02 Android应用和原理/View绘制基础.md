@@ -205,9 +205,10 @@ MeasureSpec是一个32位int值，高两位是SpecMode（测量模式），低30
 ### SpecMode
 
 - **UNSPECIFIED**：一般用于系统内部，表示一种测量的状态。
-    官方介绍原文：The parent has not imposed any constraint on the child. It can be whatever size it wants.大意是父View对子View不施加任何约束。
-- **EXACTLY**：View所需要的精确大小，最终大小就是SpecSize指定的值，对应match_patent和具体的数值
-- **AT_MOST**：父容器指定了一个可用大小即SpecSize，View的大小不能大于这个值，对应wrap_content
+    官方介绍原文：The parent has not imposed any constraint on the child. It can be whatever size it wants.
+    在此模式下，父容器不对子view的大小做限制，一般用于系统内部，或者ListView ScrollView等滑动控件。
+- **EXACTLY**：在此模式下，父容器已经检测出子view所需要的精确大小，这个时候，view的测量大小就是通过getSize得到的数值。
+- **AT_MOST**：在此模式下，父容器未能检测出子view的大小，但指定了一个最大大小spec size，子view的大小不能超过此值。
 
 ### MeasureSpec和LayoutParams的对应关系
 
@@ -219,11 +220,11 @@ MeasureSpec是一个32位int值，高两位是SpecMode（测量模式），低30
 
 对于普通View是由父容器的MeasureSpec和其LayoutParams来共同决定的
 
-- 当View采用固定宽高的时候，不管父容器的MeasureSpec是什么，View的MeasureSpec都是精确模式并且大小遵循LayoutParams中的大小。
+- 当View采用固定宽高的时候，不管父容器的MeasureSpec是什么，View的MeasureSpec都是精确模式并且大小遵循LayoutParams中的大小。（经测试，如果parent的大小是200，子View的大小是400，测量后的结果是，parent：200，View：400）
 - 当View采用match_parent的时候，如果父容器是精确模式，那么View也是精确模式并且大小是父容器的剩余空间。如果父容器是最大模式，那么View也是最大模式，并且不会超过父容器的剩余空间。
 - 当View采用wrap_content的时候，View总是最大模式，并且不会超过父容器的剩余空间。
 
-<img src="../../04 源码分析/Android/assets/5.jpg" alt="5" style="zoom:50%;" />
+![11](../../assets/11.jpg)
 
 ### 实验
 

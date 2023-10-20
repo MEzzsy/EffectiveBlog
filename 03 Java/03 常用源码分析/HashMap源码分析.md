@@ -130,9 +130,9 @@ Java的HashMap实现的方式很巧妙，首先保证table的长度是2的次方
 
 如果kv放置的方式是hash % len，虽然也能保证不越界，但是在扩容时，原链表节点可能会散落在新table各个index上。
 
-## 几个问题
+# 几个问题
 
-### HashMap和Hashtable区别？
+## HashMap和Hashtable区别？
 
 简单总结有几点：
 
@@ -149,14 +149,18 @@ Java的HashMap实现的方式很巧妙，首先保证table的长度是2的次方
 
 5.  如果在创建时给定了初始化大小，那么HashTable会直接使用给定的大小，而HashMap会将其扩充为2的幂次方大小。 
 
-### ConcurrentHashMap和Hashtable的区别
+## ConcurrentHashMap和Hashtable的区别
 
 都可以用于多线程的环境，但是当Hashtable的大小增加到一定的时候，性能会急剧下降，因为迭代时需要被锁定很长的时间。因为ConcurrentHashMap引入了分割(segmentation)，不论它变得多么大，仅仅需要锁定map的某个部分，而其它的线程不需要等到迭代完成才能访问map。**简而言之，在迭代的过程中，ConcurrentHashMap仅仅锁定map的某个部分，而Hashtable则会锁定整个map。**
 
-### HashMap、SparseArray、ArrayMap的区别
+## HashMap、SparseArray、ArrayMap的区别
 
 1.  在数据量小的时候一般认为1000以下，当key为int的时候，使用SparseArray确实是一个很不错的选择，内存大概能节省30%，相比用HashMap，因为key值不需要装箱，所以时间性能平均来看也优于HashMap。
 2.  ArrayMap相对于SparseArray，特点就是key值类型不受限，任何情况下都可以取代HashMap，但是通过研究和测试发现，ArrayMap的内存节省并不明显。并且AS会提示使用SparseArray，但是不会提示使用ArrayMap。
+
+## 如何检测HashMap存在线程安全问题？
+
+HashMap每次操作都会`++modCount`，在迭代期间，如果发现modCount发生了变化，那么就抛出ConcurrentModificationException异常。这意味着在单线程的`for-each`中也不能操作（put）。
 
 # 源码
 
