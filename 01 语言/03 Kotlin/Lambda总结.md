@@ -98,124 +98,90 @@ Salute
 
 # 内联函数
 
-lambda表达式会被编译成匿名类。每调用一次lambda表达式，一个额外的类就会被创建。并且如果lambda捕捉了某个变量，那么每次调用的时候都会创建一个新的对象。这会带来运行时的额外开销，导致使用lambda比使用一个直接执行相同代码的函数效率更低。
+在Kotlin中每声明一个Lambda表达式，就会在字节码中产生一个匿名类。该匿名类包含了一个invoke方法，作为Lambda的调用方法，每次调用的时候，还会创建一个新的对象。可想而知，Lambda语法虽然简洁，但是额外增加的开销也不少。
 
-一个高效的做法是内联函数。
+## Java的处理方式
 
-使用inline修饰符标记一个函数，在函数被使用的时候编译器并不会生成函数调用的代码，而是使用函数实现的真实代码替换每一次的函数调用。
+invokedynamic：Java在SE 7之后通过invokedynamic技术实现了在运行期才产生相应的翻译代码。在invokedynamic被首次调用的时候，就会触发产生一个匿名类来替换中间码invokedynamic，后续的调用会
+直接采用这个匿名类的代码。这种做法的好处主要体现在：
 
-当一个函数被声明为inline时，它的函数体是内联的。换句话说， 函数体会被直接替换到函数被调用的地方，而不是被正常调用。
+-   由于具体的转换实现是在运行时产生的，在字节码中能看到的只有一个固定的invokedynamic，所以需要静态生成的类的个数及字节码大小都显著减少
+-   与编译时写死在字节码中的策略不同，利用invokedynamic可以把实际的翻译策略隐藏在JDK库的实现，这极大提高了灵活性，在确保向后兼容性的同时，后期可以继续对翻译策略不断优化升级
+-   JVM天然支持了针对该方式的Lambda表达式的翻译和优化，这也意味着开发者在书写Lambda表达式的同时，可以完全不用关心这个问题，这极大地提升了开发的体验。
+
+>   TODO zsy invokedynamic的demo
+
+## inline
+
+内联函数：使用inline修饰符标记一个函数，在函数被使用的时候编译器并不会生成函数调用的代码，而是使用函数实现的真实代码替换每一次的函数调用。当一个函数被声明为inline时，它的函数体是内联的。换句话说， 函数体会被直接替换到函数被调用的地方，而不是被正常调用。
 
 >   类似于C++的内联函数
 
+以下情况应避免使用内联函数：
+
+-   由于JVM对普通的函数已经能够根据实际情况智能地判断是否进行内联优化，所以并不需要对其使用Kotlin的inline语法，那只会让字节码变得更加复杂。
+-   尽量避免对具有大量函数体的函数进行内联，这样会导致过多的字节码数量
+-   一旦一个函数被定义为内联函数，便不能获取闭包类的私有成员，除非把它们声明为internal。
+
+## noinline：避免参数被内联
+
+函数需要接收多个参数，但只想对其中部分Lambda参数内联，其他的则不内联，这个又该如何处理呢？
+
+Kotlin在引入inline的同时，也新增了noinline关键字，可以把它加在不想要内联的参数开头，该参数便不会具有内联的效果。
+
 # 在lambda中返回
 
-## 非局部返回
-
 ```kotlin
-fun lookForAlice(people: List<Person>) {
-    for (person in people) {
-        if (person.name == "Alice") {
-            println("Found!")
-            return
-        }
-    }
-    println("Alice is not found")
+fun test3() {
+    // fun1 { return } // 编译错误
+    println("fun1")
+    fun1 { return@fun1 }
+    println("fun2")
+    fun2 { return }
+}
+
+private fun fun1(returning: () -> Unit) {
+    println("before local return")
+    returning()
+    println("after local return")
+    return
+}
+
+private inline fun fun2(returning: () -> Unit) {
+    println("before local return")
+    returning()
+    println("after local return")
+    return
 }
 ```
 
-```kotlin
-fun testInlineFun3() {
-    println("testInlineFun3 before")
-    val i: Int = 1
-    inlinefun {
-        if (i == 1) {
-            return
-        }
-    }
-    println("testInlineFun3 after")
-}
-
-inline fun inlinefun(action: () -> Unit) {
-    println("inlinefun before")
-    action()
-    println("inlinefun after")
-}
-
-testInlineFun3 before
-inlinefun before
+```
+fun1
+before local return
+after local return
+fun2
+before local return
 ```
 
-在lambda中使用return关键字，它会从调用lambda的函数中返回，并不只是从lambda中返回。这样的return语句叫作非局部返回。
+正常情况下Lambda表达式不允许存在return关键字（见第2行代码）。
 
-局部返回只适用于内联函数。需要注意的是，只有在以lambda作为参数的函数是内联函数的时候才能从更外层的函数返回。forEach的函数体和lambda的函数体一起被内联了，所以在编译的时候能很容易做到从包含它的函数中返回。在一个非内联函数的lambda中使用return表达式是不允许的。一个非内联函数可以把传给它的lambda保存在变量中，以便在函数返回以后可以继续使用，这个时候lambda想要去影响函数的返回已经太晚了。
+如果需要用return关键字，那么需要使用内联函数，但此时是局部返回（见第6行代码）。
 
-```kotlin
-fun testInlineFun4(){
-    println("testInlineFun4 before")
-    val i: Int = 1
-    noInlineFun {
-        if (i == 1) {
-            return
-        }
-    }
-    println("testInlineFun4 after")
-}
+如果需要非局部返回，则通过标签利用@符号返回（见第4行代码）。
 
-fun noInlineFun(action: () -> Unit){
-    println("noInlineFun before")
-    action()
-    println("noInlineFun after")
-}
+## crossinline：禁用局部返回
 
-//上述代码会编译错误
-```
-
-## 局部返回
-
-局部返回需要用到标签。
+非局部返回虽然在某些场合下非常有用，但可能也存在危险。因为有时候，内联函数所接收的Lambda参数常常来自于上下文其他地方。为了避免带有return的Lambda参数产生破坏，还可以使用crossinline关键字来修饰该参数，从而杜绝此类问题的发生。
 
 ```kotlin
-fun lookForAlice(people: List<Person>) {
-    people.forEach label@{
-        if (it.name == "Alice") return@label
-    }
-    println("Alice might be somewhere")
-}
-```
-
-在lambda的花括号之前放一个标签名(可以是任何标识符)，接着放一个@符号。要从一个lambda返回，在return关键字后放一个@符号，接着放标签名。
-
-也使用lambda作为参数的函数的函数名可以作为标签。
-
-```kotlin
-fun lookForAlice(people: List<Person>) {
-    people.forEach {
-        if (it.name == "Alice") return@forEach
-    }
-    println("Alice might be somewhere")
-}
-```
-
-```kotlin
-fun testInlineFun4() {
-    println("testInlineFun4 before")
-    val i: Int = 1
-    inlinefun(fun() {
-        if (i == 1) {
-            return
-        }
-    })
-    println("testInlineFun4 after")
+fun test4() {
+    // fun3 { return } // 编译错误
 }
 
-testInlineFun4 before
-inlinefun before
-inlinefun after
-testInlineFun4 after
+private inline fun fun3(crossinline returning: () -> Unit) {
+    returning()
+}
 ```
-
-在匿名函数中，不带标签的return表达式会从匿名函数返回，而不是从包含匿名函数的函数返回。这条规则很简单：return从最近的使用fun关键字声明的函数返回。lambda 表达式没有使用fun关键字，所以lambda中的return从最外层的函数返回。匿名函数使用了fun，因此，在前一个例子中匿名函数是最近的符合规则的函数。所以，return表达式从匿名函数返回，而不是从最外层的函数返回。
 
 # 序列（惰性操作）
 
@@ -632,101 +598,3 @@ private static void test6() {
 ```
 
 Kotlin的函数参数在Java会生成一个类FunctionN。如：有2个参数，那么就是Function2，类型参数有3个，前两个是函数参数的方法参数类型，最后一个是函数参数的返回类型。见上例子。
-
-## 内联函数
-
-每调用一次lambda表达式，一个额外的类就会被创建。并且如果lambda捕捉了某个变量，那么每次调用的时候都会创建一个新的对象。这会带来运行时的额外开销，导致使用lambda比使用一个直接执行相同代码的函数效率更低。
-
-使用内联函数可以消除lambda带来的运行时开销。
-
-### 内联函数的运作方式
-
-当一个函数被声明为inline时，函数并不是被调用，而是将函数体替换到被调用的地方。
-
-```kotlin
-fun testInlineFun() {
-    println("aaaa")
-    val l = ReentrantLock()
-    synchronized(l) {
-        println("bbbb")
-    }
-    println("cccc")
-}
-
-/**
- * 内联函数
- */
-inline fun synchronized(lock: Lock, action: () -> Unit) {
-    lock.lock()
-    try {
-        action()
-    } finally {
-        lock.unlock()
-    }
-}
-```
-
-其字节码相当于：
-
-```kotlin
-fun testInlineFun() {
-    println("aaaa")
-    val lock.lock = ReentrantLock()
-   lock.lock()
-    try {
-        println("bbbb")
-    } finally {
-        lock.unlock()
-    }
-    println("cccc")
-}
-```
-
-注意lambda表达式和synchronized函数的实现都被内联了。由lambda生成的字节码成为了函数调用者定义的一部分，而不是被包含在一个实现了函数接口的匿名类中。
-
-```kotlin
-fun testInlineFun2(action: () -> Unit) {
-    val lock = ReentrantLock()
-    synchronized(lock, action)
-}
-```
-
-如果是这样的，那么对应的字节码相当于：
-
-```kotlin
-fun testInlineFun2(action: () -> Unit) {
-    val lock = ReentrantLock()
-    lock.lock()
-    try {
-        action()
-    } finally {
-        lock.unlock()
-    }
-}
-```
-
-synchronized函数体实现了内联，但是lambda没有实现内联。
-
-如果在两个不同的位置使用同一个内联函数，但是用的是不同的lambda，那么内联函数会在每一个被调用的位置被分别内联。内联函数的代码会被拷贝到使用它的两个不同位置，并把不同的lambda替换到其中。
-
-### 内联函数的限制
-
-lambda参数如果被直接调用或者作为参数传递给另外一个inline函数，它是可以被内联的。但如果lambda参数在某个地方被保存起来，以便后面可以继续使用，lambda表达式的代码将不能被内联，因为必须要有一个包含这些代码的对象存在。
-
-如果一个函数期望两个或更多lambda参数，可以选择只内联其中一些参数。这是有道理的，因为一个lambda可能会包含很多代码或者以不允许内联的方式使用。接收这样的非内联lambda的参数，可以用noinline修饰符来标记它：
-
-```kotlin
-inline fun foo(inlined: () -> Unit, noinline notInlined: () -> Unit) { }
-```
-
-在Kotlin中，filter 函数被声明为内联函数。这意味着filter函数，以及传递给它的lambda的字节码会被一起内联到filter被调用的地方。map也一样。
-
-**什么时候需要inline？**
-
-使用inline关键字只能提高带有lambda参数的函数的性能，其他的情况需要额外的度量和研究。
-
-对于普通的函数调用，JVM已经提供了强大的内联支持。它会分析代码的执行，并在任何通过内联能够带来好处的时候将函数调用内联。这是在将字节码转换成机器代码时自动完成的。在字节码中，每一个函数的实现只会出现一次，并不需要跟
-
-Kotlin的内联函数一样，每个调用的地方都拷贝一次。再说，如果函数被直接调用，调用栈会更加清晰。
-
-另一方面，将带有lambda参数的函数内联能带来好处。首先，通过内联避免的运行时开销更明显了。不仅节约了函数调用的开销，而且节约了为lambda创建匿名类，以及创建lambda实例对象的开销。其次，JVM目前并没有聪明到总是能将函数调用内联。最后，内联使得我们可以使用一些不可能被普通lambda使用的特性，比如非局部返回。
