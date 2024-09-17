@@ -1,0 +1,3668 @@
+
+<!DOCTYPE HTML>
+<html lang="zh-hans" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>标准库函数总结 · Mezzsy is here</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        <meta name="author" content="Mezzsy">
+        
+        
+    
+    <link rel="stylesheet" href="../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-splitter/splitter.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-expandable-chapters-small/expandable-chapters-small.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-anchors/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-anchor-navigation-ex/style/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="泛型总结.html" />
+    
+    
+    <link rel="prev" href="基础总结.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="输入并搜索" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    00 介绍
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    01 语言
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../01 Cpp/">
+            
+                <a href="../01 Cpp/">
+            
+                    
+                    01 Cpp
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.1" data-path="../01 Cpp/原理总结/">
+            
+                <a href="../01 Cpp/原理总结/">
+            
+                    
+                    原理总结
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.1.1" data-path="../01 Cpp/原理总结/其它.html">
+            
+                <a href="../01 Cpp/原理总结/其它.html">
+            
+                    
+                    其它
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.2" data-path="../01 Cpp/原理总结/函数.html">
+            
+                <a href="../01 Cpp/原理总结/函数.html">
+            
+                    
+                    函数
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.3" data-path="../01 Cpp/原理总结/对象.html">
+            
+                <a href="../01 Cpp/原理总结/对象.html">
+            
+                    
+                    对象
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.4" data-path="../01 Cpp/原理总结/成员变量.html">
+            
+                <a href="../01 Cpp/原理总结/成员变量.html">
+            
+                    
+                    成员变量
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.5" data-path="../01 Cpp/原理总结/执行期.html">
+            
+                <a href="../01 Cpp/原理总结/执行期.html">
+            
+                    
+                    执行期
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.6" data-path="../01 Cpp/原理总结/构造函数.html">
+            
+                <a href="../01 Cpp/原理总结/构造函数.html">
+            
+                    
+                    构造函数
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.7" data-path="../01 Cpp/原理总结/构造析构拷贝.html">
+            
+                <a href="../01 Cpp/原理总结/构造析构拷贝.html">
+            
+                    
+                    构造析构拷贝
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2" data-path="../01 Cpp/用法总结/">
+            
+                <a href="../01 Cpp/用法总结/">
+            
+                    
+                    用法总结
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.2.1" data-path="../01 Cpp/用法总结/IO总结.html">
+            
+                <a href="../01 Cpp/用法总结/IO总结.html">
+            
+                    
+                    IO总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.2" data-path="../01 Cpp/用法总结/RTTI总结.html">
+            
+                <a href="../01 Cpp/用法总结/RTTI总结.html">
+            
+                    
+                    RTTI总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.3" data-path="../01 Cpp/用法总结/cpp原理总结.html">
+            
+                <a href="../01 Cpp/用法总结/cpp原理总结.html">
+            
+                    
+                    cpp原理总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.4" data-path="../01 Cpp/用法总结/关键字总结.html">
+            
+                <a href="../01 Cpp/用法总结/关键字总结.html">
+            
+                    
+                    关键字总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.5" data-path="../01 Cpp/用法总结/内存模型和名称空间.html">
+            
+                <a href="../01 Cpp/用法总结/内存模型和名称空间.html">
+            
+                    
+                    内存模型和名称空间
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.6" data-path="../01 Cpp/用法总结/函数总结.html">
+            
+                <a href="../01 Cpp/用法总结/函数总结.html">
+            
+                    
+                    函数总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.7" data-path="../01 Cpp/用法总结/动态内存和智能指针.html">
+            
+                <a href="../01 Cpp/用法总结/动态内存和智能指针.html">
+            
+                    
+                    动态内存和智能指针
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.8" data-path="../01 Cpp/用法总结/基础总结.html">
+            
+                <a href="../01 Cpp/用法总结/基础总结.html">
+            
+                    
+                    基础总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.9" data-path="../01 Cpp/用法总结/容器总结.html">
+            
+                <a href="../01 Cpp/用法总结/容器总结.html">
+            
+                    
+                    容器总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.10" data-path="../01 Cpp/用法总结/异常总结.html">
+            
+                <a href="../01 Cpp/用法总结/异常总结.html">
+            
+                    
+                    异常总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.11" data-path="../01 Cpp/用法总结/泛型总结.html">
+            
+                <a href="../01 Cpp/用法总结/泛型总结.html">
+            
+                    
+                    泛型总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.12" data-path="../01 Cpp/用法总结/类总结.html">
+            
+                <a href="../01 Cpp/用法总结/类总结.html">
+            
+                    
+                    类总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.3" data-path="../01 Cpp/知识点/">
+            
+                <a href="../01 Cpp/知识点/">
+            
+                    
+                    知识点
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.3.1" data-path="../01 Cpp/知识点/基础.html">
+            
+                <a href="../01 Cpp/知识点/基础.html">
+            
+                    
+                    基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.3.2" data-path="../01 Cpp/知识点/类.html">
+            
+                <a href="../01 Cpp/知识点/类.html">
+            
+                    
+                    类
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.3.3" data-path="../01 Cpp/知识点/线程.html">
+            
+                <a href="../01 Cpp/知识点/线程.html">
+            
+                    
+                    线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../02 Java/">
+            
+                <a href="../02 Java/">
+            
+                    
+                    02 Java
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.2.1" data-path="../02 Java/Java-IO.html">
+            
+                <a href="../02 Java/Java-IO.html">
+            
+                    
+                    Java-IO
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.2" data-path="../02 Java/Java反射机制和泛型.html">
+            
+                <a href="../02 Java/Java反射机制和泛型.html">
+            
+                    
+                    Java反射机制和泛型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.3" data-path="../02 Java/Java基础知识.html">
+            
+                <a href="../02 Java/Java基础知识.html">
+            
+                    
+                    Java基础知识
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.4" data-path="../02 Java/Java异常机制.html">
+            
+                <a href="../02 Java/Java异常机制.html">
+            
+                    
+                    Java异常机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.5" data-path="../02 Java/并发.html">
+            
+                <a href="../02 Java/并发.html">
+            
+                    
+                    并发
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.6" data-path="../02 Java/异常.html">
+            
+                <a href="../02 Java/异常.html">
+            
+                    
+                    异常
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.7" data-path="../02 Java/禁止在foreach循环里进行元素的remove-add操作.html">
+            
+                <a href="../02 Java/禁止在foreach循环里进行元素的remove-add操作.html">
+            
+                    
+                    禁止在foreach循环里进行元素的remove-add操作
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.8" data-path="../02 Java/类和接口.html">
+            
+                <a href="../02 Java/类和接口.html">
+            
+                    
+                    类和接口
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    03 Kotlin
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.3.1" data-path="Lambda总结.html">
+            
+                <a href="Lambda总结.html">
+            
+                    
+                    Lambda总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.2" data-path="函数总结.html">
+            
+                <a href="函数总结.html">
+            
+                    
+                    函数总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.3" data-path="基础总结.html">
+            
+                <a href="基础总结.html">
+            
+                    
+                    基础总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.2.3.4" data-path="标准库函数总结.html">
+            
+                <a href="标准库函数总结.html">
+            
+                    
+                    标准库函数总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.5" data-path="泛型总结.html">
+            
+                <a href="泛型总结.html">
+            
+                    
+                    泛型总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.6" data-path="注解和反射总结.html">
+            
+                <a href="注解和反射总结.html">
+            
+                    
+                    注解和反射总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.7" data-path="类型总结.html">
+            
+                <a href="类型总结.html">
+            
+                    
+                    类型总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.8" data-path="类总结.html">
+            
+                <a href="类总结.html">
+            
+                    
+                    类总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.9" data-path="运算符总结.html">
+            
+                <a href="运算符总结.html">
+            
+                    
+                    运算符总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4" data-path="../04 Python/">
+            
+                <a href="../04 Python/">
+            
+                    
+                    04 Python
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.4.1" data-path="../04 Python/Python学习.html">
+            
+                <a href="../04 Python/Python学习.html">
+            
+                    
+                    Python学习
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../../02 计算机系统/">
+            
+                <a href="../../02 计算机系统/">
+            
+                    
+                    02 计算机系统
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../../02 计算机系统/01-操作系统.html">
+            
+                <a href="../../02 计算机系统/01-操作系统.html">
+            
+                    
+                    01-操作系统
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../../02 计算机系统/02-内存.html">
+            
+                <a href="../../02 计算机系统/02-内存.html">
+            
+                    
+                    02-内存
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../../02 计算机系统/03-线程.html">
+            
+                <a href="../../02 计算机系统/03-线程.html">
+            
+                    
+                    03-线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../../02 计算机系统/04-编译链接.html">
+            
+                <a href="../../02 计算机系统/04-编译链接.html">
+            
+                    
+                    04-编译链接
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../../02 计算机系统/深入理解计算机系统/">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/">
+            
+                    
+                    深入理解计算机系统
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.5.1" data-path="../../02 计算机系统/深入理解计算机系统/01-计算机系统漫游.html">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/01-计算机系统漫游.html">
+            
+                    
+                    01-计算机系统漫游
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.2" data-path="../../02 计算机系统/深入理解计算机系统/02-信息的表示和处理.html">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/02-信息的表示和处理.html">
+            
+                    
+                    02-信息的表示和处理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.3" data-path="../../02 计算机系统/深入理解计算机系统/07-链接.html">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/07-链接.html">
+            
+                    
+                    07-链接
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.4" data-path="../../02 计算机系统/深入理解计算机系统/09-虚拟内存.html">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/09-虚拟内存.html">
+            
+                    
+                    09-虚拟内存
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../../03 Java/">
+            
+                <a href="../../03 Java/">
+            
+                    
+                    03 Java
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../../03 Java/01 Java知识点/">
+            
+                <a href="../../03 Java/01 Java知识点/">
+            
+                    
+                    01 Java知识点
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1.1" data-path="../../03 Java/01 Java知识点/Java基础知识.html">
+            
+                <a href="../../03 Java/01 Java知识点/Java基础知识.html">
+            
+                    
+                    Java基础知识
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.2" data-path="../../03 Java/01 Java知识点/Java问题.html">
+            
+                <a href="../../03 Java/01 Java知识点/Java问题.html">
+            
+                    
+                    Java问题
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.3" data-path="../../03 Java/01 Java知识点/泛型.html">
+            
+                <a href="../../03 Java/01 Java知识点/泛型.html">
+            
+                    
+                    泛型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.4" data-path="../../03 Java/01 Java知识点/注解.html">
+            
+                <a href="../../03 Java/01 Java知识点/注解.html">
+            
+                    
+                    注解
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../../03 Java/02 Java虚拟机/">
+            
+                <a href="../../03 Java/02 Java虚拟机/">
+            
+                    
+                    02 Java虚拟机
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.2.1" data-path="../../03 Java/02 Java虚拟机/01-Java介绍.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/01-Java介绍.html">
+            
+                    
+                    01-Java介绍
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.2" data-path="../../03 Java/02 Java虚拟机/02-内存区域.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/02-内存区域.html">
+            
+                    
+                    02-内存区域
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.3" data-path="../../03 Java/02 Java虚拟机/03-垃圾收集TODO.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/03-垃圾收集TODO.html">
+            
+                    
+                    03-垃圾收集TODO
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.4" data-path="../../03 Java/02 Java虚拟机/06-类文件结构.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/06-类文件结构.html">
+            
+                    
+                    06-类文件结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.5" data-path="../../03 Java/02 Java虚拟机/07-虚拟机类加载机制.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/07-虚拟机类加载机制.html">
+            
+                    
+                    07-虚拟机类加载机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.6" data-path="../../03 Java/02 Java虚拟机/08-虚拟机字节码执行引擎.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/08-虚拟机字节码执行引擎.html">
+            
+                    
+                    08-虚拟机字节码执行引擎
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.7" data-path="../../03 Java/02 Java虚拟机/12-Java内存模型与线程.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/12-Java内存模型与线程.html">
+            
+                    
+                    12-Java内存模型与线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.8" data-path="../../03 Java/02 Java虚拟机/13-线程安全与锁优化.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/13-线程安全与锁优化.html">
+            
+                    
+                    13-线程安全与锁优化
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../../03 Java/03 常用源码分析/">
+            
+                <a href="../../03 Java/03 常用源码分析/">
+            
+                    
+                    03 常用源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.3.1" data-path="../../03 Java/03 常用源码分析/ArrayList源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/ArrayList源码分析.html">
+            
+                    
+                    ArrayList源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.2" data-path="../../03 Java/03 常用源码分析/ConcurrentHashMap源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/ConcurrentHashMap源码分析.html">
+            
+                    
+                    ConcurrentHashMap源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.3" data-path="../../03 Java/03 常用源码分析/HashMap源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/HashMap源码分析.html">
+            
+                    
+                    HashMap源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.4" data-path="../../03 Java/03 常用源码分析/HashTable源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/HashTable源码分析.html">
+            
+                    
+                    HashTable源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.5" data-path="../../03 Java/03 常用源码分析/LinkedHashMap源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/LinkedHashMap源码分析.html">
+            
+                    
+                    LinkedHashMap源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.6" data-path="../../03 Java/03 常用源码分析/LinkedList源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/LinkedList源码分析.html">
+            
+                    
+                    LinkedList源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.7" data-path="../../03 Java/03 常用源码分析/ThreadLocal源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/ThreadLocal源码分析.html">
+            
+                    
+                    ThreadLocal源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.8" data-path="../../03 Java/03 常用源码分析/线程池源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/线程池源码分析.html">
+            
+                    
+                    线程池源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../../04 源码分析/">
+            
+                <a href="../../04 源码分析/">
+            
+                    
+                    04 源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../../04 源码分析/AddressSanitizer.html">
+            
+                <a href="../../04 源码分析/AddressSanitizer.html">
+            
+                    
+                    AddressSanitizer
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../../04 源码分析/ByteX.html">
+            
+                <a href="../../04 源码分析/ByteX.html">
+            
+                    
+                    ByteX
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="../../04 源码分析/PltHook.html">
+            
+                <a href="../../04 源码分析/PltHook.html">
+            
+                    
+                    PltHook
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="../../04 源码分析/Raphael分析.html">
+            
+                <a href="../../04 源码分析/Raphael分析.html">
+            
+                    
+                    Raphael分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.5" data-path="../../04 源码分析/基于fp的栈回朔.html">
+            
+                <a href="../../04 源码分析/基于fp的栈回朔.html">
+            
+                    
+                    基于fp的栈回朔
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../../05 Android/">
+            
+                <a href="../../05 Android/">
+            
+                    
+                    05 Android
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../../05 Android/01 Android底层源码分析/">
+            
+                <a href="../../05 Android/01 Android底层源码分析/">
+            
+                    
+                    01 Android底层源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1.1" data-path="../../05 Android/01 Android底层源码分析/01 系统启动过程.html">
+            
+                <a href="../../05 Android/01 Android底层源码分析/01 系统启动过程.html">
+            
+                    
+                    01 系统启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.2" data-path="../../05 Android/01 Android底层源码分析/02 应用进程启动过程.html">
+            
+                <a href="../../05 Android/01 Android底层源码分析/02 应用进程启动过程.html">
+            
+                    
+                    02 应用进程启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.3" data-path="../../05 Android/01 Android底层源码分析/03 Activity启动过程.html">
+            
+                <a href="../../05 Android/01 Android底层源码分析/03 Activity启动过程.html">
+            
+                    
+                    03 Activity启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.4" data-path="../../05 Android/01 Android底层源码分析/04 其它组件启动过程.html">
+            
+                <a href="../../05 Android/01 Android底层源码分析/04 其它组件启动过程.html">
+            
+                    
+                    04 其它组件启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.5" data-path="../../05 Android/01 Android底层源码分析/05 Context总结.html">
+            
+                <a href="../../05 Android/01 Android底层源码分析/05 Context总结.html">
+            
+                    
+                    05 Context总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.6" data-path="../../05 Android/01 Android底层源码分析/06 AMS.html">
+            
+                <a href="../../05 Android/01 Android底层源码分析/06 AMS.html">
+            
+                    
+                    06 AMS
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.7" data-path="../../05 Android/01 Android底层源码分析/07 WM.html">
+            
+                <a href="../../05 Android/01 Android底层源码分析/07 WM.html">
+            
+                    
+                    07 WM
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.8" data-path="../../05 Android/01 Android底层源码分析/08 WMS.html">
+            
+                <a href="../../05 Android/01 Android底层源码分析/08 WMS.html">
+            
+                    
+                    08 WMS
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.9" data-path="../../05 Android/01 Android底层源码分析/10 JNI.html">
+            
+                <a href="../../05 Android/01 Android底层源码分析/10 JNI.html">
+            
+                    
+                    10 JNI
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.10" data-path="../../05 Android/01 Android底层源码分析/13 ClassLoader.html">
+            
+                <a href="../../05 Android/01 Android底层源码分析/13 ClassLoader.html">
+            
+                    
+                    13 ClassLoader
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.11" data-path="../../05 Android/01 Android底层源码分析/14 热修复.html">
+            
+                <a href="../../05 Android/01 Android底层源码分析/14 热修复.html">
+            
+                    
+                    14 热修复
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.12" data-path="../../05 Android/01 Android底层源码分析/15 Hook.html">
+            
+                <a href="../../05 Android/01 Android底层源码分析/15 Hook.html">
+            
+                    
+                    15 Hook
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.13" data-path="../../05 Android/01 Android底层源码分析/16 插件化.html">
+            
+                <a href="../../05 Android/01 Android底层源码分析/16 插件化.html">
+            
+                    
+                    16 插件化
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.14" data-path="../../05 Android/01 Android底层源码分析/17 绘制流程-生产者.html">
+            
+                <a href="../../05 Android/01 Android底层源码分析/17 绘制流程-生产者.html">
+            
+                    
+                    17 绘制流程-生产者
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.15" data-path="../../05 Android/01 Android底层源码分析/18 绘制流程-消费者.html">
+            
+                <a href="../../05 Android/01 Android底层源码分析/18 绘制流程-消费者.html">
+            
+                    
+                    18 绘制流程-消费者
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.16" data-path="../../05 Android/01 Android底层源码分析/19 渲染总结.html">
+            
+                <a href="../../05 Android/01 Android底层源码分析/19 渲染总结.html">
+            
+                    
+                    19 渲染总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.17" data-path="../../05 Android/01 Android底层源码分析/20 硬件加速.html">
+            
+                <a href="../../05 Android/01 Android底层源码分析/20 硬件加速.html">
+            
+                    
+                    20 硬件加速
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="../../05 Android/02 Android应用和原理/">
+            
+                <a href="../../05 Android/02 Android应用和原理/">
+            
+                    
+                    02 Android应用和原理
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.2.1" data-path="../../05 Android/02 Android应用和原理/Android动画.html">
+            
+                <a href="../../05 Android/02 Android应用和原理/Android动画.html">
+            
+                    
+                    Android动画
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.2" data-path="../../05 Android/02 Android应用和原理/Android消息机制.html">
+            
+                <a href="../../05 Android/02 Android应用和原理/Android消息机制.html">
+            
+                    
+                    Android消息机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.3" data-path="../../05 Android/02 Android应用和原理/Android的跨进程通信.html">
+            
+                <a href="../../05 Android/02 Android应用和原理/Android的跨进程通信.html">
+            
+                    
+                    Android的跨进程通信
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.4" data-path="../../05 Android/02 Android应用和原理/Android类加载机制.html">
+            
+                <a href="../../05 Android/02 Android应用和原理/Android类加载机制.html">
+            
+                    
+                    Android类加载机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.5" data-path="../../05 Android/02 Android应用和原理/Android线程.html">
+            
+                <a href="../../05 Android/02 Android应用和原理/Android线程.html">
+            
+                    
+                    Android线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.6" data-path="../../05 Android/02 Android应用和原理/Drawable.html">
+            
+                <a href="../../05 Android/02 Android应用和原理/Drawable.html">
+            
+                    
+                    Drawable
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.7" data-path="../../05 Android/02 Android应用和原理/View手势事件.html">
+            
+                <a href="../../05 Android/02 Android应用和原理/View手势事件.html">
+            
+                    
+                    View手势事件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.8" data-path="../../05 Android/02 Android应用和原理/View绘制基础.html">
+            
+                <a href="../../05 Android/02 Android应用和原理/View绘制基础.html">
+            
+                    
+                    View绘制基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.9" data-path="../../05 Android/02 Android应用和原理/四大组件.html">
+            
+                <a href="../../05 Android/02 Android应用和原理/四大组件.html">
+            
+                    
+                    四大组件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.10" data-path="../../05 Android/02 Android应用和原理/性能优化.html">
+            
+                <a href="../../05 Android/02 Android应用和原理/性能优化.html">
+            
+                    
+                    性能优化
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.11" data-path="../../05 Android/02 Android应用和原理/虚拟机.html">
+            
+                <a href="../../05 Android/02 Android应用和原理/虚拟机.html">
+            
+                    
+                    虚拟机
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.12" data-path="../../05 Android/02 Android应用和原理/面试题.html">
+            
+                <a href="../../05 Android/02 Android应用和原理/面试题.html">
+            
+                    
+                    面试题
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3" data-path="../../05 Android/03 Android应用手册/">
+            
+                <a href="../../05 Android/03 Android应用手册/">
+            
+                    
+                    03 Android应用手册
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.3.1" data-path="../../05 Android/03 Android应用手册/四大组件/">
+            
+                <a href="../../05 Android/03 Android应用手册/四大组件/">
+            
+                    
+                    四大组件
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.3.1.1" data-path="../../05 Android/03 Android应用手册/四大组件/Android启动模式研究.html">
+            
+                <a href="../../05 Android/03 Android应用手册/四大组件/Android启动模式研究.html">
+            
+                    
+                    Android启动模式研究
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.1.2" data-path="../../05 Android/03 Android应用手册/四大组件/Android生命周期.html">
+            
+                <a href="../../05 Android/03 Android应用手册/四大组件/Android生命周期.html">
+            
+                    
+                    Android生命周期
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.1.3" data-path="../../05 Android/03 Android应用手册/四大组件/Broadcast.html">
+            
+                <a href="../../05 Android/03 Android应用手册/四大组件/Broadcast.html">
+            
+                    
+                    Broadcast
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.2" data-path="../../05 Android/03 Android应用手册/架构组件/">
+            
+                <a href="../../05 Android/03 Android应用手册/架构组件/">
+            
+                    
+                    架构组件
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.3.2.1" data-path="../../05 Android/03 Android应用手册/架构组件/LiveData.html">
+            
+                <a href="../../05 Android/03 Android应用手册/架构组件/LiveData.html">
+            
+                    
+                    LiveData
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.2.2" data-path="../../05 Android/03 Android应用手册/架构组件/Navigation.html">
+            
+                <a href="../../05 Android/03 Android应用手册/架构组件/Navigation.html">
+            
+                    
+                    Navigation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.2.3" data-path="../../05 Android/03 Android应用手册/架构组件/ViewModel.html">
+            
+                <a href="../../05 Android/03 Android应用手册/架构组件/ViewModel.html">
+            
+                    
+                    ViewModel
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3" data-path="../../05 Android/03 Android应用手册/视图/">
+            
+                <a href="../../05 Android/03 Android应用手册/视图/">
+            
+                    
+                    视图
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.3.3.1" data-path="../../05 Android/03 Android应用手册/视图/Android动画.html">
+            
+                <a href="../../05 Android/03 Android应用手册/视图/Android动画.html">
+            
+                    
+                    Android动画
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.2" data-path="../../05 Android/03 Android应用手册/视图/Android布局.html">
+            
+                <a href="../../05 Android/03 Android应用手册/视图/Android布局.html">
+            
+                    
+                    Android布局
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.3" data-path="../../05 Android/03 Android应用手册/视图/Android控件.html">
+            
+                <a href="../../05 Android/03 Android应用手册/视图/Android控件.html">
+            
+                    
+                    Android控件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.4" data-path="../../05 Android/03 Android应用手册/视图/Drawable.html">
+            
+                <a href="../../05 Android/03 Android应用手册/视图/Drawable.html">
+            
+                    
+                    Drawable
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.5" data-path="../../05 Android/03 Android应用手册/视图/View绘制.html">
+            
+                <a href="../../05 Android/03 Android应用手册/视图/View绘制.html">
+            
+                    
+                    View绘制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.6" data-path="../../05 Android/03 Android应用手册/视图/视图相关工具类.html">
+            
+                <a href="../../05 Android/03 Android应用手册/视图/视图相关工具类.html">
+            
+                    
+                    视图相关工具类
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.7" data-path="../../05 Android/03 Android应用手册/视图/资源文件.html">
+            
+                <a href="../../05 Android/03 Android应用手册/视图/资源文件.html">
+            
+                    
+                    资源文件
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.4" data-path="../../05 Android/03 Android应用手册/项目/">
+            
+                <a href="../../05 Android/03 Android应用手册/项目/">
+            
+                    
+                    项目
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.3.4.1" data-path="../../05 Android/03 Android应用手册/项目/命令行调试.html">
+            
+                <a href="../../05 Android/03 Android应用手册/项目/命令行调试.html">
+            
+                    
+                    命令行调试
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.4.2" data-path="../../05 Android/03 Android应用手册/项目/打包.html">
+            
+                <a href="../../05 Android/03 Android应用手册/项目/打包.html">
+            
+                    
+                    打包
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4" data-path="../../05 Android/04 常用类源码分析/">
+            
+                <a href="../../05 Android/04 常用类源码分析/">
+            
+                    
+                    04 常用类源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.4.1" data-path="../../05 Android/04 常用类源码分析/AsyncTask源码分析.html">
+            
+                <a href="../../05 Android/04 常用类源码分析/AsyncTask源码分析.html">
+            
+                    
+                    AsyncTask源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.2" data-path="../../05 Android/04 常用类源码分析/EventBus源码分析.html">
+            
+                <a href="../../05 Android/04 常用类源码分析/EventBus源码分析.html">
+            
+                    
+                    EventBus源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.3" data-path="../../05 Android/04 常用类源码分析/Glide源码分析.html">
+            
+                <a href="../../05 Android/04 常用类源码分析/Glide源码分析.html">
+            
+                    
+                    Glide源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.4" data-path="../../05 Android/04 常用类源码分析/Handler源码分析.html">
+            
+                <a href="../../05 Android/04 常用类源码分析/Handler源码分析.html">
+            
+                    
+                    Handler源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.5" data-path="../../05 Android/04 常用类源码分析/LeakCanary.html">
+            
+                <a href="../../05 Android/04 常用类源码分析/LeakCanary.html">
+            
+                    
+                    LeakCanary
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.6" data-path="../../05 Android/04 常用类源码分析/LinearLayout源码分析.html">
+            
+                <a href="../../05 Android/04 常用类源码分析/LinearLayout源码分析.html">
+            
+                    
+                    LinearLayout源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.7" data-path="../../05 Android/04 常用类源码分析/ListView源码分析.html">
+            
+                <a href="../../05 Android/04 常用类源码分析/ListView源码分析.html">
+            
+                    
+                    ListView源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.8" data-path="../../05 Android/04 常用类源码分析/LruCache源码分析.html">
+            
+                <a href="../../05 Android/04 常用类源码分析/LruCache源码分析.html">
+            
+                    
+                    LruCache源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.9" data-path="../../05 Android/04 常用类源码分析/OkHttp3源码分析.html">
+            
+                <a href="../../05 Android/04 常用类源码分析/OkHttp3源码分析.html">
+            
+                    
+                    OkHttp3源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.10" data-path="../../05 Android/04 常用类源码分析/Retrofit2源码分析.html">
+            
+                <a href="../../05 Android/04 常用类源码分析/Retrofit2源码分析.html">
+            
+                    
+                    Retrofit2源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.11" data-path="../../05 Android/04 常用类源码分析/RxJava2源码分析.html">
+            
+                <a href="../../05 Android/04 常用类源码分析/RxJava2源码分析.html">
+            
+                    
+                    RxJava2源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.12" data-path="../../05 Android/04 常用类源码分析/SparseArray源码分析.html">
+            
+                <a href="../../05 Android/04 常用类源码分析/SparseArray源码分析.html">
+            
+                    
+                    SparseArray源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.5" data-path="../../05 Android/05 性能优化工具/">
+            
+                <a href="../../05 Android/05 性能优化工具/">
+            
+                    
+                    05 性能优化工具
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.5.1" data-path="../../05 Android/05 性能优化工具/cpu工具.html">
+            
+                <a href="../../05 Android/05 性能优化工具/cpu工具.html">
+            
+                    
+                    cpu工具
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../../06 计算机网络/">
+            
+                <a href="../../06 计算机网络/">
+            
+                    
+                    06 计算机网络
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.1" data-path="../../06 计算机网络/计算机网络.html">
+            
+                <a href="../../06 计算机网络/计算机网络.html">
+            
+                    
+                    计算机网络
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../../07 设计模式/">
+            
+                <a href="../../07 设计模式/">
+            
+                    
+                    07 设计模式
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.8.1" data-path="../../07 设计模式/Builder模式.html">
+            
+                <a href="../../07 设计模式/Builder模式.html">
+            
+                    
+                    Builder模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.2" data-path="../../07 设计模式/代理模式.html">
+            
+                <a href="../../07 设计模式/代理模式.html">
+            
+                    
+                    代理模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3" data-path="../../07 设计模式/其它设计模式/">
+            
+                <a href="../../07 设计模式/其它设计模式/">
+            
+                    
+                    其它设计模式
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.8.3.1" data-path="../../07 设计模式/其它设计模式/中介者模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/中介者模式.html">
+            
+                    
+                    中介者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.2" data-path="../../07 设计模式/其它设计模式/享元模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/享元模式.html">
+            
+                    
+                    享元模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.3" data-path="../../07 设计模式/其它设计模式/原型模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/原型模式.html">
+            
+                    
+                    原型模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.4" data-path="../../07 设计模式/其它设计模式/命令模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/命令模式.html">
+            
+                    
+                    命令模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.5" data-path="../../07 设计模式/其它设计模式/备忘录模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/备忘录模式.html">
+            
+                    
+                    备忘录模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.6" data-path="../../07 设计模式/其它设计模式/外观模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/外观模式.html">
+            
+                    
+                    外观模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.7" data-path="../../07 设计模式/其它设计模式/工厂方法模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/工厂方法模式.html">
+            
+                    
+                    工厂方法模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.8" data-path="../../07 设计模式/其它设计模式/抽象工厂模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/抽象工厂模式.html">
+            
+                    
+                    抽象工厂模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.9" data-path="../../07 设计模式/其它设计模式/框架模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/框架模式.html">
+            
+                    
+                    框架模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.10" data-path="../../07 设计模式/其它设计模式/桥接模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/桥接模式.html">
+            
+                    
+                    桥接模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.11" data-path="../../07 设计模式/其它设计模式/模板方法模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/模板方法模式.html">
+            
+                    
+                    模板方法模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.12" data-path="../../07 设计模式/其它设计模式/状态模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/状态模式.html">
+            
+                    
+                    状态模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.13" data-path="../../07 设计模式/其它设计模式/策略模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/策略模式.html">
+            
+                    
+                    策略模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.14" data-path="../../07 设计模式/其它设计模式/组合模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/组合模式.html">
+            
+                    
+                    组合模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.15" data-path="../../07 设计模式/其它设计模式/装饰模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/装饰模式.html">
+            
+                    
+                    装饰模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.16" data-path="../../07 设计模式/其它设计模式/解释器模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/解释器模式.html">
+            
+                    
+                    解释器模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.17" data-path="../../07 设计模式/其它设计模式/访问者模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/访问者模式.html">
+            
+                    
+                    访问者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.18" data-path="../../07 设计模式/其它设计模式/责任链模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/责任链模式.html">
+            
+                    
+                    责任链模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.19" data-path="../../07 设计模式/其它设计模式/迭代器模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/迭代器模式.html">
+            
+                    
+                    迭代器模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.20" data-path="../../07 设计模式/其它设计模式/适配器模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/适配器模式.html">
+            
+                    
+                    适配器模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.21" data-path="../../07 设计模式/其它设计模式/静态工厂方法模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/静态工厂方法模式.html">
+            
+                    
+                    静态工厂方法模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.4" data-path="../../07 设计模式/单例模式.html">
+            
+                <a href="../../07 设计模式/单例模式.html">
+            
+                    
+                    单例模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.5" data-path="../../07 设计模式/架构模式.html">
+            
+                <a href="../../07 设计模式/架构模式.html">
+            
+                    
+                    架构模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.6" data-path="../../07 设计模式/生产者消费者模式.html">
+            
+                <a href="../../07 设计模式/生产者消费者模式.html">
+            
+                    
+                    生产者消费者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.7" data-path="../../07 设计模式/观察者模式.html">
+            
+                <a href="../../07 设计模式/观察者模式.html">
+            
+                    
+                    观察者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="../../08 杂项/">
+            
+                <a href="../../08 杂项/">
+            
+                    
+                    08 杂项
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.9.1" data-path="../../08 杂项/git手册/">
+            
+                <a href="../../08 杂项/git手册/">
+            
+                    
+                    git手册
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.2" data-path="../../08 杂项/常用命令/">
+            
+                <a href="../../08 杂项/常用命令/">
+            
+                    
+                    常用命令
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3" data-path="../../08 杂项/环境搭建记录/">
+            
+                <a href="../../08 杂项/环境搭建记录/">
+            
+                    
+                    环境搭建记录
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.9.3.1" data-path="../../08 杂项/环境搭建记录/环境搭建.html">
+            
+                <a href="../../08 杂项/环境搭建记录/环境搭建.html">
+            
+                    
+                    环境搭建
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10" data-path="../../09 Gradle总结/">
+            
+                <a href="../../09 Gradle总结/">
+            
+                    
+                    09 Gradle总结
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.10.1" data-path="../../09 Gradle总结/Gradle总结.html">
+            
+                <a href="../../09 Gradle总结/Gradle总结.html">
+            
+                    
+                    Gradle总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11" data-path="../../10 机器学习/">
+            
+                <a href="../../10 机器学习/">
+            
+                    
+                    10 机器学习
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.11.1" data-path="../../10 机器学习/动量和NAG.html">
+            
+                <a href="../../10 机器学习/动量和NAG.html">
+            
+                    
+                    动量和NAG
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11.2" data-path="../../10 机器学习/机器学习周志华笔记/">
+            
+                <a href="../../10 机器学习/机器学习周志华笔记/">
+            
+                    
+                    机器学习周志华笔记
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.11.2.1" data-path="../../10 机器学习/机器学习周志华笔记/第一章-绪论.html">
+            
+                <a href="../../10 机器学习/机器学习周志华笔记/第一章-绪论.html">
+            
+                    
+                    第一章-绪论
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11.2.2" data-path="../../10 机器学习/机器学习周志华笔记/第三章-线性模型.html">
+            
+                <a href="../../10 机器学习/机器学习周志华笔记/第三章-线性模型.html">
+            
+                    
+                    第三章-线性模型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11.2.3" data-path="../../10 机器学习/机器学习周志华笔记/第二章-模型评估与选择.html">
+            
+                <a href="../../10 机器学习/机器学习周志华笔记/第二章-模型评估与选择.html">
+            
+                    
+                    第二章-模型评估与选择
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12" data-path="../../11 知识点/">
+            
+                <a href="../../11 知识点/">
+            
+                    
+                    11 知识点
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.12.1" data-path="../../11 知识点/04-操作系统.html">
+            
+                <a href="../../11 知识点/04-操作系统.html">
+            
+                    
+                    04-操作系统
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.2" data-path="../../11 知识点/06-数据结构.html">
+            
+                <a href="../../11 知识点/06-数据结构.html">
+            
+                    
+                    06-数据结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.3" data-path="../../11 知识点/07-第三方库.html">
+            
+                <a href="../../11 知识点/07-第三方库.html">
+            
+                    
+                    07-第三方库
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.4" data-path="../../11 知识点/08-设计模式.html">
+            
+                <a href="../../11 知识点/08-设计模式.html">
+            
+                    
+                    08-设计模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.5" data-path="../../11 知识点/09-算法.html">
+            
+                <a href="../../11 知识点/09-算法.html">
+            
+                    
+                    09-算法
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.6" data-path="../../11 知识点/10-计算机底层基础.html">
+            
+                <a href="../../11 知识点/10-计算机底层基础.html">
+            
+                    
+                    10-计算机底层基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13" data-path="../../12 读书笔记/">
+            
+                <a href="../../12 读书笔记/">
+            
+                    
+                    12 读书笔记
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.13.1" data-path="../../12 读书笔记/1984.html">
+            
+                <a href="../../12 读书笔记/1984.html">
+            
+                    
+                    1984
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13.2" data-path="../../12 读书笔记/两晋.html">
+            
+                <a href="../../12 读书笔记/两晋.html">
+            
+                    
+                    两晋
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13.3" data-path="../../12 读书笔记/我们从未中产过.html">
+            
+                <a href="../../12 读书笔记/我们从未中产过.html">
+            
+                    
+                    我们从未中产过
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13.4" data-path="../../12 读书笔记/文化大革命简史.html">
+            
+                <a href="../../12 读书笔记/文化大革命简史.html">
+            
+                    
+                    文化大革命简史
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13.5" data-path="../../12 读书笔记/认知觉醒.html">
+            
+                <a href="../../12 读书笔记/认知觉醒.html">
+            
+                    
+                    认知觉醒
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.14" data-path="../../13 车道级导航/">
+            
+                <a href="../../13 车道级导航/">
+            
+                    
+                    13 车道级导航
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.14.1" data-path="../../13 车道级导航/01-Frenet坐标系.html">
+            
+                <a href="../../13 车道级导航/01-Frenet坐标系.html">
+            
+                    
+                    01-Frenet坐标系
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.14.2" data-path="../../13 车道级导航/02-最短路径算法.html">
+            
+                <a href="../../13 车道级导航/02-最短路径算法.html">
+            
+                    
+                    02-最短路径算法
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.14.3" data-path="../../13 车道级导航/03-数据结构.html">
+            
+                <a href="../../13 车道级导航/03-数据结构.html">
+            
+                    
+                    03-数据结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            本书使用 GitBook 发布
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../.." >标准库函数总结</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <div id="anchor-navigation-ex-navbar"><i class="fa fa-navicon"></i><ul><li><span class="title-icon "></span><a href="#all"><b>1. </b>all</a></li><li><span class="title-icon "></span><a href="#also"><b>2. </b>also</a></li><li><span class="title-icon "></span><a href="#any"><b>3. </b>any</a></li><li><span class="title-icon "></span><a href="#apply"><b>4. </b>apply</a></li><li><span class="title-icon "></span><a href="#count"><b>5. </b>count</a></li><li><span class="title-icon "></span><a href="#find"><b>6. </b>find</a></li><li><span class="title-icon "></span><a href="#filter"><b>7. </b>filter</a></li><li><span class="title-icon "></span><a href="#let"><b>8. </b>let</a></li><li><span class="title-icon "></span><a href="#map"><b>9. </b>map</a></li><li><span class="title-icon "></span><a href="#run"><b>10. </b>run</a></li><li><span class="title-icon "></span><a href="#setof"><b>11. </b>setOf</a></li><li><span class="title-icon "></span><a href="#to"><b>12. </b>to</a></li><li><span class="title-icon "></span><a href="#use"><b>13. </b>use</a></li><li><span class="title-icon "></span><a href="#with"><b>14. </b>with</a></li><li><span class="title-icon "></span><a href="#&#x6C42;&#x548C;"><b>15. </b>&#x6C42;&#x548C;</a></li><ul><li><span class="title-icon "></span><a href="#sum"><b>15.1. </b>sum</a></li><li><span class="title-icon "></span><a href="#sumby"><b>15.2. </b>sumBy</a></li><li><span class="title-icon "></span><a href="#fold"><b>15.3. </b>fold</a></li><li><span class="title-icon "></span><a href="#reduce"><b>15.4. </b>reduce</a></li></ul><li><span class="title-icon "></span><a href="#&#x5206;&#x7EC4;"><b>16. </b>&#x5206;&#x7EC4;</a></li><ul><li><span class="title-icon "></span><a href="#groupby"><b>16.1. </b>groupBy</a></li></ul><li><span class="title-icon "></span><a href="#&#x6241;&#x5E73;&#x5316;"><b>17. </b>&#x6241;&#x5E73;&#x5316;</a></li><ul><li><span class="title-icon "></span><a href="#flatten"><b>17.1. </b>flatten</a></li><li><span class="title-icon "></span><a href="#flatmap"><b>17.2. </b>flatMap</a></li></ul></ul></div><a href="#all" id="anchorNavigationExGoTop"><i class="fa fa-arrow-up"></i></a><blockquote>
+<p>  &#x8BF7;&#x6309;&#x7167;&#x5B57;&#x6BCD;&#x987A;&#x5E8F;&#x6392;&#x5217;</p>
+</blockquote>
+<h1 id="all"><a name="all" class="anchor-navigation-ex-anchor" href="#all"><i class="fa fa-link" aria-hidden="true"></i></a>1. all</h1>
+<p>&#x4E3A;&#x4E86;&#x6F14;&#x793A;&#x8FD9;&#x4E9B;&#x51FD;&#x6570;&#xFF0C;&#x6211;&#x4EEC;&#x5148;&#x5B9A;&#x4E49;&#x4E00;&#x4E2A;&#x5224;&#x65AD;&#x5F0F;canBeInClub27&#xFF0C;&#x6765;&#x68C0;&#x67E5;&#x4E00;&#x4E2A;&#x4EBA;&#x662F;&#x5426;&#x8FD8;&#x6CA1;&#x6709;&#x5230;28&#x5C81;</p>
+<pre><code class="lang-kotlin"><span class="hljs-keyword">val</span> canBeInClub27 = { p: Person -&gt; p.age &lt;= <span class="hljs-number">28</span> }
+</code></pre>
+<p><strong>&#x5982;&#x679C;&#x5BF9;&#x662F;&#x5426;&#x6240;&#x6709;&#x5143;&#x7D20;&#x90FD;&#x6EE1;&#x8DB3;&#x5224;&#x65AD;&#x5F0F;&#x611F;&#x5174;&#x8DA3;&#xFF0C;&#x5E94;&#x8BE5;&#x4F7F;&#x7528;all&#x51FD;&#x6570;</strong></p>
+<pre><code class="lang-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> {
+    <span class="hljs-keyword">val</span> canBeInClub27 = { p: Person -&gt; p.age &lt;= <span class="hljs-number">28</span> }
+    <span class="hljs-keyword">val</span> people = listOf(
+            Person(<span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-number">27</span>)
+            , Person(<span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-number">28</span>)
+            , Person(<span class="hljs-string">&quot;c&quot;</span>, <span class="hljs-number">29</span>)
+            , Person(<span class="hljs-string">&quot;d&quot;</span>, <span class="hljs-number">30</span>)
+            , Person(<span class="hljs-string">&quot;e&quot;</span>, <span class="hljs-number">31</span>))
+    println(people.all(canBeInClub27))
+}
+
+<span class="hljs-literal">false</span>
+</code></pre>
+<h1 id="also"><a name="also" class="anchor-navigation-ex-anchor" href="#also"><i class="fa fa-link" aria-hidden="true"></i></a>2. also</h1>
+<pre><code class="lang-kotlin"><span class="hljs-keyword">public</span> <span class="hljs-keyword">inline</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-type">&lt;T&gt;</span> T.<span class="hljs-title">also</span><span class="hljs-params">(block: (<span class="hljs-type">T</span>)</span></span> -&gt; <span class="hljs-built_in">Unit</span>): T {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    block(<span class="hljs-keyword">this</span>)
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>
+}
+</code></pre>
+<p>also&#x7684;&#x8FD4;&#x56DE;&#x503C;&#x4E3A;&#x8BE5;&#x51FD;&#x6570;&#x7684;&#x63A5;&#x6536;&#x8005;&#x3002;block&#x4E2D;&#x6709;&#x53C2;&#x6570;&#xFF0C;&#x6240;&#x4EE5;&#x53EF;&#x4EE5;&#x5728;lambda&#x4E2D;&#x4F7F;&#x7528;it&#xFF0C;it&#x4E3A;&#x63A5;&#x6536;&#x8005;&#x3002;&#x4F46;this&#x4E3A;also&#x6240;&#x5728;&#x7684;&#x7C7B;&#x3002;</p>
+<p>demo&#xFF1A;</p>
+<pre><code class="lang-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">test4</span><span class="hljs-params">()</span></span> {
+    <span class="hljs-keyword">val</span> obj = Class1()
+    println(<span class="hljs-string">&quot;testAlso&quot;</span>)
+    obj.testAlso()
+    println(<span class="hljs-string">&quot;testApply&quot;</span>)
+    obj.testApply()
+}
+
+<span class="hljs-keyword">private</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Class1</span> </span>{
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">var</span> another : Class1? = <span class="hljs-literal">null</span>
+
+    init {
+        println(<span class="hljs-string">&quot;this=<span class="hljs-subst">${hashCode()}</span>&quot;</span>)
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">testAlso</span><span class="hljs-params">()</span></span> {
+        <span class="hljs-keyword">if</span> (another == <span class="hljs-literal">null</span>) another = Class1()
+        <span class="hljs-keyword">val</span> obj = another!!
+        <span class="hljs-keyword">val</span> res = obj.also {
+            println(<span class="hljs-string">&quot;it hash=<span class="hljs-subst">${it.hashCode()}</span>&quot;</span>)
+            println(<span class="hljs-string">&quot;this hash=<span class="hljs-subst">${this.hashCode()}</span>&quot;</span>)
+        }
+        println(<span class="hljs-string">&quot;res hash=<span class="hljs-subst">${res.hashCode()}</span>&quot;</span>)
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">testApply</span><span class="hljs-params">()</span></span> {
+        <span class="hljs-keyword">if</span> (another == <span class="hljs-literal">null</span>) another = Class1()
+        <span class="hljs-keyword">val</span> obj = another!!
+        <span class="hljs-keyword">val</span> res = obj.apply {
+            <span class="hljs-comment">// println(&quot;it hash=${it.hashCode()}&quot;) // &#x7F16;&#x8BD1;&#x9519;&#x8BEF;</span>
+            println(<span class="hljs-string">&quot;this hash=<span class="hljs-subst">${this.hashCode()}</span>&quot;</span>)
+        }
+        println(<span class="hljs-string">&quot;res hash=<span class="hljs-subst">${res.hashCode()}</span>&quot;</span>)
+    }
+}
+</code></pre>
+<pre><code>this=1581781576
+testAlso
+this=1725154839
+it hash=1725154839
+this hash=1581781576
+res hash=1725154839
+testApply
+this hash=1725154839
+res hash=1725154839
+</code></pre><h1 id="any"><a name="any" class="anchor-navigation-ex-anchor" href="#any"><i class="fa fa-link" aria-hidden="true"></i></a>3. any</h1>
+<p><strong>&#x5982;&#x679C;&#x9700;&#x8981;&#x68C0;&#x67E5;&#x96C6;&#x5408;&#x4E2D;&#x662F;&#x5426;&#x81F3;&#x5C11;&#x5B58;&#x5728;&#x4E00;&#x4E2A;&#x5339;&#x914D;&#x7684;&#x5143;&#x7D20;&#xFF0C;&#x90A3;&#x5C31;&#x7528;any</strong></p>
+<pre><code class="lang-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> {
+    <span class="hljs-keyword">val</span> canBeInClub27 = { p: Person -&gt; p.age &lt;= <span class="hljs-number">28</span> }
+    <span class="hljs-keyword">val</span> people = listOf(
+            Person(<span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-number">27</span>)
+            , Person(<span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-number">28</span>)
+            , Person(<span class="hljs-string">&quot;c&quot;</span>, <span class="hljs-number">29</span>)
+            , Person(<span class="hljs-string">&quot;d&quot;</span>, <span class="hljs-number">30</span>)
+            , Person(<span class="hljs-string">&quot;e&quot;</span>, <span class="hljs-number">31</span>))
+    println(people.any(canBeInClub27))
+}
+
+<span class="hljs-literal">true</span>
+</code></pre>
+<p>&#x6CE8;&#x610F;&#xFF0C;!all (&#x201C;&#x4E0D;&#x662F;&#x6240;&#x6709;&#x201D;)&#x52A0;&#x4E0A;&#x67D0;&#x4E2A;&#x6761;&#x4EF6;&#xFF0C;&#x53EF;&#x4EE5;&#x7528;any&#x52A0;&#x4E0A;&#x8FD9;&#x4E2A;&#x6761;&#x4EF6;&#x7684;&#x53D6;&#x53CD;&#x6765;&#x66FF;&#x6362;&#xFF0C;&#x53CD;&#x4E4B;&#x4EA6;&#x7136;&#x3002;&#x4E3A;&#x4E86;&#x8BA9;&#x4F60;&#x7684;&#x4EE3;&#x7801;&#x66F4;&#x5BB9;&#x6613;&#x7406;&#x89E3;&#xFF0C;&#x5E94;&#x8BE5;&#x9009;&#x62E9;&#x524D;&#x9762;&#x4E0D;&#x9700;&#x8981;&#x5426;&#x5B9A;&#x7B26;&#x53F7;&#x7684;&#x51FD;&#x6570;&#xFF1A;</p>
+<pre><code class="lang-kotlin">&gt;&gt;&gt; <span class="hljs-keyword">val</span> list = listof(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>)
+&gt;&gt;&gt; println(!list.all { it == <span class="hljs-number">3</span> })<span class="hljs-literal">true</span><span class="hljs-comment">//!&#x5426;&#x5B9A;&#x4E0D;&#x660E;&#x663E;&#xFF0C;&#x8FD9;&#x79CD;&#x60C5;&#x51B5;&#x6700;&#x597D;&#x4F7F;&#x7528;&quot;any&#x201D;</span>
+&gt;&gt;&gt; println(list.any { it != <span class="hljs-number">3</span> })<span class="hljs-literal">true</span><span class="hljs-comment">//lambda&#x53C2;&#x6570;&#x4E2D;&#x7684;&#x6761;&#x4EF6;&#x8981;&#x53D6;&#x53CD;</span>
+</code></pre>
+<h1 id="apply"><a name="apply" class="anchor-navigation-ex-anchor" href="#apply"><i class="fa fa-link" aria-hidden="true"></i></a>4. apply</h1>
+<p>apply&#x51FD;&#x6570;&#x51E0;&#x4E4E;&#x548C;with&#x51FD;&#x6570;&#x4E00;&#x6A21;&#x4E00;&#x6837;&#xFF0C;&#x552F;&#x4E00;&#x7684;&#x533A;&#x522B;&#x662F;apply&#x59CB;&#x7EC8;&#x4F1A;&#x8FD4;&#x56DE;&#x4F5C;&#x4E3A;&#x5B9E;&#x53C2;&#x4F20;&#x9012;&#x7ED9;&#x5B83;&#x7684;&#x5BF9;&#x8C61;(&#x6362;&#x53E5;&#x8BDD;&#x8BF4;&#xFF0C;&#x63A5;&#x6536;&#x8005;&#x5BF9;&#x8C61;)&#xFF0C;&#x8BA9;&#x6211;&#x4EEC;&#x518D;&#x4E00;&#x6B21;&#x91CD;&#x6784; alphabet&#x51FD;&#x6570;&#xFF0C;&#x8FD9;&#x4E00;&#x6B21;&#x7528;&#x7684;&#x662F;apply&#x3002;</p>
+<pre><code class="lang-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">alphabet</span><span class="hljs-params">()</span></span> = StringBuilder().apply {
+    <span class="hljs-keyword">for</span> (letter <span class="hljs-keyword">in</span> <span class="hljs-string">&apos;A&apos;</span>..<span class="hljs-string">&apos;Z&apos;</span>) {
+        append(letter)
+    }
+    append(<span class="hljs-string">&quot;\nNow I know the alphabet!&quot;</span>)
+}.toString()
+</code></pre>
+<p>apply&#x88AB;&#x58F0;&#x660E;&#x6210;&#x4E00;&#x4E2A;&#x6269;&#x5C55;&#x51FD;&#x6570;&#x3002;&#x5B83;&#x7684;&#x63A5;&#x6536;&#x8005;&#x53D8;&#x6210;&#x4E86;&#x4F5C;&#x4E3A;&#x5B9E;&#x53C2;&#x7684;lambda&#x7684;&#x63A5;&#x6536;&#x8005;&#x3002;&#x6267;&#x884C;apply&#x7684;&#x7ED3;&#x679C;&#x662F;StringBuilder&#xFF0C;&#x6240;&#x4EE5;&#x63A5;&#x4E0B;&#x6765;&#x4F60;&#x53EF;&#x4EE5;&#x8C03;&#x7528;tostring&#x628A;&#x5B83;&#x8F6C;&#x6362;&#x6210;String&#x3002;</p>
+<p>&#x8BB8;&#x591A;&#x60C5;&#x51B5;&#x4E0B;apply&#x90FD;&#x5F88;&#x6709;&#x6548;&#xFF0C;&#x5176;&#x4E2D;&#x4E00;&#x79CD;&#x662F;&#x5728;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x5BF9;&#x8C61;&#x5B9E;&#x4F8B;&#x5E76;&#x9700;&#x8981;&#x7528;&#x6B63;&#x786E;&#x7684;&#x65B9;&#x5F0F;&#x521D;&#x59CB;&#x5316;&#x5B83;&#x7684;&#x4E00;&#x4E9B;&#x5C5E;&#x6027;&#x7684;&#x65F6;&#x5019;&#x3002;&#x5728;Java&#x4E2D;&#xFF0C;&#x8FD9;&#x901A;&#x5E38;&#x662F;&#x901A;&#x8FC7;&#x53E6;&#x5916;&#x4E00;&#x4E2A;&#x5355;&#x72EC;&#x7684;Builder&#x5BF9;&#x8C61;&#x6765;&#x5B8C;&#x6210;&#x7684;&#xFF1B;&#x800C;&#x5728;Kotin&#x4E2D;&#xFF0C;&#x53EF;&#x4EE5;&#x5728;&#x4EFB;&#x610F;&#x5BF9;&#x8C61;&#x4E0A;&#x4F7F;&#x7528;apply&#xFF0C;&#x5B8C;&#x5168;&#x4E0D;&#x9700;&#x8981;&#x4EFB;&#x4F55;&#x6765;&#x81EA;&#x5B9A;&#x4E49;&#x8BE5;&#x5BF9;&#x8C61;&#x7684;&#x5E93;&#x7684;&#x7279;&#x522B;&#x652F;&#x6301;&#x3002;</p>
+<p>with&#x51FD;&#x6570;&#x548C;apply&#x51FD;&#x6570;&#x662F;&#x6700;&#x57FA;&#x672C;&#x548C;&#x6700;&#x901A;&#x7528;&#x7684;&#x4F7F;&#x7528;&#x5E26;&#x63A5;&#x6536;&#x8005;&#x7684;lambda&#x7684;&#x4F8B;&#x5B50;&#x3002;&#x66F4;&#x591A;&#x5177;&#x4F53;&#x7684;&#x51FD;&#x6570;&#x4E5F;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x8FD9;&#x79CD;&#x6A21;&#x5F0F;&#x3002;&#x4F8B;&#x5982;&#xFF0C;&#x4F60;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x6807;&#x51C6;&#x5E93;&#x51FD;&#x6570;buildString&#x8FDB;&#x4E00;&#x6B65;&#x7B80;&#x5316;alphabet&#x51FD;&#x6570;&#xFF0C;&#x5B83;&#x4F1A;&#x8D1F;&#x8D23;&#x521B;&#x5EFA;StringBuilder&#x5E76;&#x8C03;&#x7528;toString&#x3002;buildstring &#x7684;&#x5B9E;&#x53C2;&#x662F;&#x4E00;&#x4E2A;&#x5E26;&#x63A5;&#x6536;&#x8005;&#x7684;lambda&#xFF0C;&#x63A5;&#x6536;&#x8005;&#x5C31;&#x662F;StringBuilder&#x3002;</p>
+<pre><code class="lang-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">alphabet</span><span class="hljs-params">()</span></span> = buildString {
+    <span class="hljs-keyword">for</span> (letter <span class="hljs-keyword">in</span> <span class="hljs-string">&apos;A&apos;</span>..<span class="hljs-string">&apos;Z&apos;</span>) {
+        append(letter)
+    }
+    append(<span class="hljs-string">&quot;\nNow I know the alphabet!&quot;</span>)
+}
+</code></pre>
+<p>buildString&#x51FD;&#x6570;&#x4F18;&#x96C5;&#x5730;&#x5B8C;&#x6210;&#x4E86;&#x501F;&#x52A9;StringBuilder&#x521B;&#x5EFA;String&#x7684;&#x4EFB;&#x52A1;&#x3002;</p>
+<h1 id="count"><a name="count" class="anchor-navigation-ex-anchor" href="#count"><i class="fa fa-link" aria-hidden="true"></i></a>5. count</h1>
+<p><strong>&#x5982;&#x679C;&#x4F60;&#x60F3;&#x77E5;&#x9053;&#x6709;&#x591A;&#x5C11;&#x4E2A;&#x5143;&#x7D20;&#x6EE1;&#x8DB3;&#x4E86;&#x5224;&#x65AD;&#x5F0F;&#xFF0C;&#x4F7F;&#x7528;count</strong></p>
+<pre><code class="lang-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> {
+    <span class="hljs-keyword">val</span> canBeInClub27 = { p: Person -&gt; p.age &lt;= <span class="hljs-number">28</span> }
+    <span class="hljs-keyword">val</span> people = listOf(
+            Person(<span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-number">27</span>)
+            , Person(<span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-number">28</span>)
+            , Person(<span class="hljs-string">&quot;c&quot;</span>, <span class="hljs-number">29</span>)
+            , Person(<span class="hljs-string">&quot;d&quot;</span>, <span class="hljs-number">30</span>)
+            , Person(<span class="hljs-string">&quot;e&quot;</span>, <span class="hljs-number">31</span>))
+    println(people.count(canBeInClub27))
+}
+
+<span class="hljs-number">2</span>
+</code></pre>
+<blockquote>
+<p>&#x4F7F;&#x7528;&#x6B63;&#x786E;&#x7684;&#x51FD;&#x6570;&#x5B8C;&#x6210;&#x5DE5;&#x4F5C;&#xFF1A;&#x201C;count&quot; VS &quot;size&#x201D;</p>
+<p>count&#x65B9;&#x6CD5;&#x5BB9;&#x6613;&#x88AB;&#x9057;&#x5FD8;&#xFF0C;&#x7136;&#x540E;&#x901A;&#x8FC7;&#x8FC7;&#x6EE4;&#x96C6;&#x5408;&#x4E4B;&#x540E;&#x518D;&#x53D6;&#x5927;&#x5C0F;&#x6765;&#x5B9E;&#x73B0;&#x5B83;&#xFF1A;</p>
+<pre><code class="lang-kotlin">println(people.filter(canBeInClub27).size)
+</code></pre>
+<p>&#x5728;&#x8FD9;&#x79CD;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x4E00;&#x4E2A;&#x4E2D;&#x95F4;&#x96C6;&#x5408;&#x4F1A;&#x88AB;&#x521B;&#x5EFA;&#x5E76;&#x7528;&#x6765;&#x5B58;&#x50A8;&#x6240;&#x6709;&#x6EE1;&#x8DB3;&#x5224;&#x65AD;&#x5F0F;&#x7684;&#x5143;&#x7D20;&#x3002;&#x800C;&#x53E6;&#x4E00;&#x65B9;&#x9762;&#xFF0C;count &#x65B9;&#x6CD5;&#x53EA;&#x662F;&#x8DDF;&#x8E2A;&#x5339;&#x914D;&#x5143;&#x7D20;&#x7684;&#x6570;&#x91CF;&#xFF0C;&#x4E0D;&#x5173;&#x5FC3;&#x5143;&#x7D20;&#x672C;&#x8EAB;&#xFF0C;&#x6240;&#x4EE5;&#x66F4;&#x9AD8;&#x6548;&#x3002;</p>
+<p>&#x4E00;&#x822C;&#x7684;&#x89C4;&#x5219;&#x662F;&#xFF0C;&#x5C1D;&#x8BD5;&#x627E;&#x5230;&#x9002;&#x5408;&#x4F60;&#x9700;&#x6C42;&#x7684;&#x6700;&#x5408;&#x9002;&#x7684;&#x64CD;&#x4F5C;&#x3002;</p>
+</blockquote>
+<h1 id="find"><a name="find" class="anchor-navigation-ex-anchor" href="#find"><i class="fa fa-link" aria-hidden="true"></i></a>6. find</h1>
+<p><strong>&#x8981;&#x627E;&#x5230;&#x4E00;&#x4E2A;&#x6EE1;&#x8DB3;&#x5224;&#x65AD;&#x5F0F;&#x7684;&#x5143;&#x7D20;&#xFF0C;&#x4F7F;&#x7528;find&#x51FD;&#x6570;</strong></p>
+<pre><code class="lang-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> {
+    <span class="hljs-keyword">val</span> canBeInClub27 = { p: Person -&gt; p.age &lt;= <span class="hljs-number">28</span> }
+    <span class="hljs-keyword">val</span> people = listOf(
+            Person(<span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-number">27</span>)
+            , Person(<span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-number">28</span>)
+            , Person(<span class="hljs-string">&quot;c&quot;</span>, <span class="hljs-number">29</span>)
+            , Person(<span class="hljs-string">&quot;d&quot;</span>, <span class="hljs-number">30</span>)
+            , Person(<span class="hljs-string">&quot;e&quot;</span>, <span class="hljs-number">31</span>))
+    println(people.find(canBeInClub27))
+}
+
+Person(name=a, age=<span class="hljs-number">27</span>)
+</code></pre>
+<p>&#x5982;&#x8FC7;&#x6709;&#x591A;&#x4E2A;&#x5339;&#x914D;&#x7684;&#x5143;&#x7D20;&#x5C31;&#x8FD4;&#x56DE;&#x5176;&#x4E2D;&#x7B2C;&#x4E00;&#x4E2A;&#x5143;&#x7D20;&#xFF1B;&#x6216;&#x8005;&#x8FD4;&#x56DE;null&#xFF0C;&#x5982;&#x679C;&#x6CA1;&#x6709;&#x4E00;&#x4E2A;&#x5143;&#x7D20;&#x80FD;&#x6EE1;&#x8DB3;&#x5224;&#x65AD;&#x5F0F;&#x3002;<strong>find &#x8FD8;&#x6709;&#x4E00;&#x4E2A;&#x540C;&#x4E49;&#x65B9;&#x6CD5;firstOrNull</strong>&#xFF0C;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x66F4;&#x6E05;&#x695A;&#x5730;&#x8868;&#x8FF0;&#x4F60;&#x7684;&#x610F;&#x56FE;&#x3002;</p>
+<h1 id="filter"><a name="filter" class="anchor-navigation-ex-anchor" href="#filter"><i class="fa fa-link" aria-hidden="true"></i></a>7. filter</h1>
+<p><strong>filter&#x51FD;&#x6570;&#x904D;&#x5386;&#x96C6;&#x5408;&#x5E76;&#x9009;&#x51FA;&#x5E94;&#x7528;&#x7ED9;&#x5B9A;lambda&#x540E;&#x4F1A;&#x8FD4;&#x56DE;true&#x7684;&#x90A3;&#x4E9B;&#x5143;&#x7D20;</strong></p>
+<pre><code class="lang-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> {
+    <span class="hljs-keyword">val</span> list = listOf(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>)
+    println(list.filter { it % <span class="hljs-number">2</span> == <span class="hljs-number">0</span> })
+}
+
+[<span class="hljs-number">2</span>, <span class="hljs-number">4</span>]
+</code></pre>
+<h1 id="let"><a name="let" class="anchor-navigation-ex-anchor" href="#let"><i class="fa fa-link" aria-hidden="true"></i></a>8. let</h1>
+<p>let&#x51FD;&#x6570;&#x8BA9;&#x5904;&#x7406;&#x53EF;&#x7A7A;&#x8868;&#x8FBE;&#x5F0F;&#x53D8;&#x5F97;&#x66F4;&#x5BB9;&#x6613;&#x3002;&#x548C;&#x5B89;&#x5168;&#x8C03;&#x7528;&#x8FD0;&#x7B97;&#x7B26;&#x4E00;&#x8D77;&#xFF0C; &#x5B83;&#x5141;&#x8BB8;&#x4F60;&#x5BF9;&#x8868;&#x8FBE;&#x5F0F;&#x6C42;&#x503C;&#xFF0C;&#x68C0;&#x67E5;&#x6C42;&#x503C;&#x7ED3;&#x679C;&#x662F;&#x5426;&#x4E3A;null&#xFF0C;&#x5E76;&#x628A;&#x7ED3;&#x679C;&#x4FDD;&#x5B58;&#x4E3A;&#x4E00;&#x4E2A;&#x53D8;&#x91CF;&#x3002;</p>
+<p>&#x89C1;&#x8FD0;&#x7B97;&#x7B26;&#x7684;&#x59D4;&#x6258;&#x5C5E;&#x6027;&#x7684;&#x60F0;&#x6027;&#x52A0;&#x8F7D;&#x3002;</p>
+<p><a href="&#x8FD0;&#x7B97;&#x7B26;&#x603B;&#x7ED3;.html">&#x8FD0;&#x7B97;&#x7B26;&#x603B;&#x7ED3;</a></p>
+<h1 id="map"><a name="map" class="anchor-navigation-ex-anchor" href="#map"><i class="fa fa-link" aria-hidden="true"></i></a>9. map</h1>
+<p><strong>map&#x51FD;&#x6570;&#x5BF9;&#x96C6;&#x5408;&#x4E2D;&#x7684;&#x6BCF;&#x4E00;&#x4E2A;&#x5143;&#x7D20;&#x5E94;&#x7528;&#x7ED9;&#x5B9A;&#x7684;&#x51FD;&#x6570;&#x5E76;&#x628A;&#x7ED3;&#x679C;&#x6536;&#x96C6;&#x5230;&#x4E00;&#x4E2A;&#x65B0;&#x96C6;&#x5408;&#x3002;</strong>&#x53EF;&#x4EE5;&#x628A;&#x6570;&#x5B57;&#x5217;&#x8868;&#x53D8;&#x6362;&#x6210;&#x5B83;&#x4EEC;&#x5E73;&#x65B9;&#x7684;&#x5217;&#x8868;&#xFF0C;&#x6BD4;&#x5982;&#xFF1A;</p>
+<pre><code class="lang-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> {
+    <span class="hljs-keyword">val</span> list = listOf(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>)
+    println(list.map { it * it })
+}
+
+[<span class="hljs-number">1</span>, <span class="hljs-number">4</span>, <span class="hljs-number">9</span>, <span class="hljs-number">16</span>]
+</code></pre>
+<p>&#x7ED3;&#x679C;&#x662F;&#x4E2A;&#x65B0;&#x96C6;&#x5408;&#xFF0C; &#x5305;&#x542B;&#x7684;&#x5143;&#x7D20;&#x4E2A;&#x6570;&#x4E0D;&#x53D8;&#xFF0C;&#x4F46;&#x662F;&#x6BCF;&#x4E2A;&#x5143;&#x7D20;&#x6839;&#x636E;&#x7ED9;&#x5B9A;&#x7684;&#x5224;&#x65AD;&#x5F0F;&#x505A;&#x4E86;&#x53D8;&#x6362;&#x3002;
+&#x5982;&#x679C;&#x4F60;&#x60F3;&#x6253;&#x5370;&#x7684;&#x53EA;&#x662F;&#x4E00;&#x4E2A;&#x59D3;&#x540D;&#x5217;&#x8868;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x4EBA;&#x7684;&#x5B8C;&#x6574;&#x4FE1;&#x606F;&#x5217;&#x8868;&#xFF0C;&#x53EF;&#x4EE5;&#x7528;map&#x6765;&#x53D8;&#x6362;&#x5217;&#x8868;&#xFF1A;</p>
+<pre><code class="lang-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> {
+    <span class="hljs-keyword">val</span> people = listOf(Person(<span class="hljs-string">&quot;Alice&quot;</span>, <span class="hljs-number">29</span>), Person(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-number">31</span>))
+    println(people.map { it.name })
+}
+
+[Alice, Bob]
+</code></pre>
+<p>&#x6CE8;&#x610F;&#xFF0C;&#x8FD9;&#x4E2A;&#x4F8B;&#x5B50;&#x53EF;&#x4EE5;&#x7528;&#x6210;&#x5458;&#x5F15;&#x7528;&#x6F02;&#x4EAE;&#x5730;&#x91CD;&#x5199;:</p>
+<pre><code class="lang-kotlin">println(people.map { Person::name })
+</code></pre>
+<h1 id="run"><a name="run" class="anchor-navigation-ex-anchor" href="#run"><i class="fa fa-link" aria-hidden="true"></i></a>10. run</h1>
+<p>&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x8C03;&#x7528;lambda&#x8868;&#x8FBE;&#x5F0F;</p>
+<pre><code class="lang-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> {
+    { println(<span class="hljs-string">&quot;aa&quot;</span>)}()
+}
+
+aa
+</code></pre>
+<p>&#x4F46;&#x662F;&#x8FD9;&#x6837;&#x7684;&#x8BED;&#x6CD5;&#x6BEB;&#x65E0;&#x53EF;&#x8BFB;&#x6027;&#xFF0C;&#x4E5F;&#x6CA1;&#x6709;&#x4EC0;&#x4E48;&#x610F;&#x4E49;(&#x5B83;&#x7B49;&#x4EF7;&#x4E8E;&#x76F4;&#x63A5;&#x6267;&#x884C;imbda&#x51FD;&#x6570;&#x4F53;&#x4E2D;&#x7684;&#x4EE3;&#x7801;)&#x3002;</p>
+<p>&#x5982;&#x679C;&#x9700;&#x8981;&#x628A;&#x4E00;&#x5C0F;&#x6BB5;&#x4EE3;&#x7801;&#x5C01;&#x95ED;&#x5728;&#x4E2A;&#x4EE3;&#x7801;&#x5757;&#x4E2D;&#xFF0C; &#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x5E93;&#x51FD;&#x6570;run&#x6765;&#x6267;&#x884C;&#x3002;</p>
+<pre><code class="lang-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> {
+    v
+}
+
+<span class="hljs-keyword">val</span> v = run { println(<span class="hljs-string">&quot;bb&quot;</span>) }
+
+bb
+</code></pre>
+<h1 id="setof"><a name="setof" class="anchor-navigation-ex-anchor" href="#setof"><i class="fa fa-link" aria-hidden="true"></i></a>11. setOf</h1>
+<p>setof&#x51FD;&#x6570;&#x53EF;&#x4EE5;&#x521B;&#x5EFA;&#x51FA;&#x4E00;&#x4E2A;Set&#xFF0C;&#x5B83;&#x4F1A;&#x5305;&#x542B;&#x6240;&#x6709;&#x6307;&#x5B9A;&#x4E3A;&#x51FD;&#x6570;&#x5B9E;&#x53C2;&#x7684;&#x5BF9;&#x8C61;&#x3002;</p>
+<h1 id="to"><a name="to" class="anchor-navigation-ex-anchor" href="#to"><i class="fa fa-link" aria-hidden="true"></i></a>12. to</h1>
+<p>&#x4E2D;&#x7F00;&#x8C03;&#x7528;&#x3002;</p>
+<p>&#x8FD9;&#x4E24;&#x8005;&#x8C03;&#x7528;&#x662F;&#x7B49;&#x4EF7;&#x7684;&#xFF1A;</p>
+<pre><code class="lang-kotlin"><span class="hljs-comment">// &#x4E00;&#x822C;to&#x51FD;&#x6570;&#x7684;&#x8C03;&#x7528;</span>
+<span class="hljs-number">1.</span>to(<span class="hljs-string">&quot;one&quot;</span>)
+
+<span class="hljs-comment">// &#x4F7F;&#x7528;&#x4E2D;&#x7F00;&#x7B26;&#x53F7;&#x8C03;&#x7528;to&#x51FD;&#x6570;</span>
+<span class="hljs-number">1</span> to <span class="hljs-string">&quot;one&quot;</span>
+</code></pre>
+<pre><code class="lang-kotlin"><span class="hljs-comment">/**
+ * to
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">testTo</span><span class="hljs-params">()</span></span> {
+    <span class="hljs-keyword">val</span> a = DemoA(<span class="hljs-string">&quot;a&quot;</span>)
+    <span class="hljs-keyword">val</span> b = DemoB(<span class="hljs-string">&quot;b&quot;</span>)
+    <span class="hljs-keyword">val</span> pair: Pair&lt;DemoA, DemoB&gt; = a to b
+    println(pair)
+
+    <span class="hljs-keyword">val</span> c = <span class="hljs-string">&quot;c&quot;</span> to a
+    println(c)
+}
+
+<span class="hljs-keyword">infix</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> String.<span class="hljs-title">to</span><span class="hljs-params">(a: <span class="hljs-type">DemoA</span>)</span></span> = DemoC(<span class="hljs-keyword">this</span>, a)
+</code></pre>
+<p>to&#x8FD4;&#x56DE;&#x7684;&#x662F;Kotlin&#x7684;Pair&#x5BF9;&#x8C61;&#xFF0C;&#x53EF;&#x4EE5;&#x7528;&#x7ED3;&#x6784;&#x58F0;&#x660E;&#x5C55;&#x5F00;&#xFF1A;</p>
+<p><img src="assets/18.jpg" alt="18" style="zoom:50%;"></p>
+<h1 id="use"><a name="use" class="anchor-navigation-ex-anchor" href="#use"><i class="fa fa-link" aria-hidden="true"></i></a>13. use</h1>
+<p>use&#x51FD;&#x6570;&#x662F;&#x4E00;&#x4E2A;&#x6269;&#x5C55;&#x51FD;&#x6570;&#xFF0C;&#x88AB;&#x7528;&#x6765;&#x64CD;&#x4F5C;&#x53EF;&#x5173;&#x95ED;&#x7684;&#x8D44;&#x6E90;&#xFF0C;&#x5B83;&#x63A5;&#x6536;&#x4E00;&#x4E2A;lambda&#x4F5C;&#x4E3A;&#x53C2;&#x6570;&#x3002;&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x8C03;&#x7528;lambda&#x5E76;&#x4E14;&#x786E;&#x4FDD;&#x8D44;&#x6E90;&#x88AB;&#x5173;&#x95ED;&#xFF0C;&#x65E0;&#x8BBA;lambda&#x6B63;&#x5E38;&#x6267;&#x884C;&#x8FD8;&#x662F;&#x629B;&#x51FA;&#x4E86;&#x5F02;&#x5E38;&#x3002;&#x800C;&#x4E14;&#xFF0C;use&#x51FD;&#x6570;&#x662F;&#x5185;&#x8054;&#x51FD;&#x6570;&#xFF0C;&#x6240;&#x4EE5;&#x4F7F;&#x7528;&#x5B83;&#x5E76;&#x4E0D;&#x4F1A;&#x5F15;&#x53D1;&#x4EFB;&#x4F55;&#x6027;&#x80FD;&#x5F00;&#x9500;&#x3002;</p>
+<p>Java7&#x5F15;&#x5165;&#x4E86;<code>try-with-resource</code>&#x8BED;&#x53E5;&#x3002;</p>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">static</span> String <span class="hljs-title">readFirstLineFromFile</span><span class="hljs-params">(String path)</span> <span class="hljs-keyword">throws</span> IOException </span>{
+    <span class="hljs-keyword">try</span> (BufferedReader br = <span class="hljs-keyword">new</span> BufferedReader(<span class="hljs-keyword">new</span> FileReader(path))) {
+        <span class="hljs-keyword">return</span> br.readline();
+    }
+}
+</code></pre>
+<p>Kotlin&#x4E2D;&#x5E76;&#x6CA1;&#x6709;&#x7B49;&#x4EF7;&#x7684;&#x8BED;&#x6CD5;&#xFF0C;Kotlin&#x4F7F;&#x7528;use&#x51FD;&#x6570;&#x3002;</p>
+<pre><code class="lang-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">readFirstLineFromFile</span><span class="hljs-params">(path: <span class="hljs-type">String</span>)</span></span> : String {
+    BufferedReader(FileReader(path)).use { br -&gt;
+        <span class="hljs-keyword">return</span> br.readLine()
+    }
+}
+</code></pre>
+<h1 id="with"><a name="with" class="anchor-navigation-ex-anchor" href="#with"><i class="fa fa-link" aria-hidden="true"></i></a>14. with</h1>
+<p>&#x5F88;&#x591A;&#x8BED;&#x8A00;&#x90FD;&#x6709;&#x8FD9;&#x6837;&#x7684;&#x8BED;&#x53E5;&#xFF0C;&#x53EF;&#x4EE5;&#x7528;&#x5B83;&#x5BF9;&#x540C;&#x4E00;&#x4E2A;&#x5BF9;&#x8C61;&#x6267;&#x884C;&#x591A;&#x6B21;&#x64CD;&#x4F5C;&#xFF0C;&#x800C;&#x4E0D;&#x9700;&#x8981;&#x53CD;&#x590D;&#x628A;&#x5BF9;&#x8C61;&#x7684;&#x540D;&#x79F0;&#x5199;&#x51FA;&#x6765;&#x3002;Kotlin &#x4E5F;&#x4E0D;&#x4F8B;&#x5916;&#xFF0C;&#x4F46;&#x5B83;&#x63D0;&#x4F9B;&#x7684;&#x662F;&#x4E00;&#x4E2A;&#x53EB; with&#x7684;&#x5E93;&#x51FD;&#x6570;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x67D0;&#x79CD;&#x7279;&#x6B8A;&#x7684;&#x8BED;&#x8A00;&#x7ED3;&#x6784;&#x3002;</p>
+<pre><code class="lang-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> {
+    println(alphabet())
+}
+
+<span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">alphabet</span><span class="hljs-params">()</span></span>: String {
+    <span class="hljs-keyword">val</span> result = StringBuilder()
+    <span class="hljs-keyword">for</span> (letter <span class="hljs-keyword">in</span> <span class="hljs-string">&apos;A&apos;</span>..<span class="hljs-string">&apos;Z&apos;</span>) {
+        result.append(letter)
+    }
+    result.append(<span class="hljs-string">&quot;\nNow I know the alphabet!&quot;</span>)
+    <span class="hljs-keyword">return</span> result.toString()
+}
+
+ABCDEFGHIJKLMNOPQRSTUVWXYZ
+Now I know the alphabet!
+</code></pre>
+<p>&#x4E0A;&#x9762;&#x8FD9;&#x4E2A;&#x4F8B;&#x5B50;&#x4E2D;&#xFF0C;&#x4F60;&#x8C03;&#x7528;&#x4E86;result &#x5B9E;&#x4F8B;&#x4E0A;&#x597D;&#x51E0;&#x4E2A;&#x4E0D;&#x540C;&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x800C;&#x4E14;&#x6BCF;&#x6B21;&#x8C03;&#x7528;&#x90FD;&#x8981;&#x91CD;&#x590D;result&#x8FD9;&#x4E2A;&#x540D;&#x79F0;&#x3002;&#x8FD9;&#x91CC;&#x60C5;&#x51B5;&#x8FD8;&#x4E0D;&#x7B97;&#x592A;&#x7CDF;&#xFF0C;&#x4F46;&#x662F;&#x5982;&#x679C;&#x4F60;&#x7528;&#x5230;&#x7684;&#x8868;&#x8FBE;&#x5F0F;&#x66F4;&#x957F;&#x6216;&#x8005;&#x91CD;&#x590D;&#x5F97;&#x66F4;&#x591A;&#xFF0C;&#x8BE5;&#x600E;&#x4E48;&#x529E;&#xFF1F;</p>
+<p>&#x4E0B;&#x9762;&#x7684;&#x4F8B;&#x5B50;&#x5C55;&#x793A;&#x4E86;&#x5982;&#x4F55;&#x4F7F;&#x7528;with&#x6765;&#x91CD;&#x5199;&#x8FD9;&#x6BB5;&#x4EE3;&#x7801;&#x3002;</p>
+<pre><code class="lang-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">alphabet</span><span class="hljs-params">()</span></span>: String {
+    <span class="hljs-keyword">val</span> result = StringBuilder()<span class="hljs-comment">//&#x6307;&#x5B9A;&#x63A5;&#x6536;&#x8005;&#x7684;&#x503C;&#xFF0C;&#x4F60;&#x4F1A;&#x8C03;&#x7528;&#x5B83;&#x7684;&#x65B9;&#x6CD5;</span>
+    <span class="hljs-keyword">return</span> with(result) {
+        <span class="hljs-keyword">for</span> (letter <span class="hljs-keyword">in</span> <span class="hljs-string">&apos;A&apos;</span>..<span class="hljs-string">&apos;Z&apos;</span>) {
+            <span class="hljs-keyword">this</span>.append(letter)<span class="hljs-comment">//&#x901A;&#x8FC7;&#x663E;&#x5F0F;&#x7684;&quot;this&quot;&#x6765;&#x8C03;&#x7528;&#x63A5;&#x6536;&#x8005;&#x503C;&#x7684;&#x65B9;&#x6CD5;</span>
+        }
+        append(<span class="hljs-string">&quot;\nNow I know the alphabet!&quot;</span>)<span class="hljs-comment">//&#x7701;&#x6389;&quot;this&quot;&#x4E5F;&#x53EF;&#x4EE5;&#x8C03;&#x7528;&#x65B9;&#x6CD5;</span>
+        <span class="hljs-keyword">this</span>.toString()<span class="hljs-comment">//&#x4ECE;lambda&#x8FD4;&#x56DE;&#x503C;</span>
+    }
+}
+</code></pre>
+<p>with&#x7ED3;&#x6784;&#x770B;&#x8D77;&#x6765;&#x50CF;&#x662F;&#x4E00;&#x79CD;&#x7279;&#x6B8A;&#x7684;&#x8BED;&#x6CD5;&#x7ED3;&#x6784;&#xFF0C;&#x4F46;&#x5B83;&#x5B9E;&#x9645;&#x4E0A;&#x662F;&#x4E00;&#x4E2A;&#x63A5;&#x6536;&#x4E24;&#x4E2A;&#x53C2;&#x6570;&#x7684;&#x51FD;&#x6570;&#xFF1A;&#x8FD9;&#x4E2A;&#x4F8B;&#x5B50;&#x4E2D;&#x4E24;&#x4E2A;&#x53C2;&#x6570;&#x5206;&#x522B;&#x662F;stringBuilder&#x548C;&#x4E00;&#x4E2A;lambda&#x3002;&#x8FD9;&#x91CC;&#x5229;&#x7528;&#x4E86;&#x628A;lambda&#x653E;&#x5728;&#x62EC;&#x53F7;&#x5916;&#x7684;&#x7EA6;&#x5B9A;&#xFF0C;&#x8FD9;&#x6837;&#x6574;&#x4E2A;&#x8C03;&#x7528;&#x770B;&#x8D77;&#x6765;&#x5C31;&#x50CF;&#x662F;&#x5185;&#x5EFA;&#x7684;&#x8BED;&#x8A00;&#x529F;&#x80FD;&#x3002;&#x5F53;&#x7136;&#x4F60;&#x53EF;&#x4EE5;&#x9009;&#x62E9;&#x628A;&#x5B83;&#x5199;&#x6210;with(stringBuilder , { ... })&#xFF0C; &#x4F46;&#x53EF;&#x8BFB;&#x6027;&#x5C31;&#x4F1A;&#x5DEE;&#x5F88;&#x591A;&#x3002;</p>
+<p>with&#x51FD;&#x6570;&#x628A;&#x5B83;&#x7684;&#x7B2C;&#x4E00;&#x4E2A;&#x53C2;&#x6570;&#x8F6C;&#x6362;&#x6210;&#x4F5C;&#x4E3A;&#x7B2C;&#x4E8C;&#x4E2A;&#x53C2;&#x6570;&#x4F20;&#x7ED9;&#x5B83;&#x7684;lambda&#x7684;&#x63A5;&#x6536;&#x8005;&#x3002;&#x53EF;&#x4EE5;&#x663E;&#x5F0F;&#x5730;&#x901A;&#x8FC7;this&#x5F15;&#x7528;&#x6765;&#x8BBF;&#x95EE;&#x8FD9;&#x4E2A;&#x63A5;&#x6536;&#x8005;&#x3002;&#x6216;&#x8005;&#xFF0C;&#x6309;&#x7167;&#x60EF;&#x4F8B;&#xFF0C;&#x53EF;&#x4EE5;&#x7701;&#x7565;this&#x5F15;&#x7528;&#xFF0C;&#x4E0D;&#x7528;&#x4EFB;&#x4F55;&#x9650;&#x5B9A;&#x7B26;&#x76F4;&#x63A5;&#x8BBF;&#x95EE;&#x8FD9;&#x4E2A;&#x503C;&#x7684;&#x65B9;&#x6CD5;&#x548C;&#x5C5E;&#x6027;&#x3002;</p>
+<blockquote>
+<p><strong>&#x5E26;&#x63A5;&#x6536;&#x8005;&#x7684;lambda&#x548C;&#x6269;&#x5C55;&#x51FD;&#x6570;</strong></p>
+<p>&#x4F60;&#x53EF;&#x80FD;&#x56DE;&#x60F3;&#x8D77;&#x66FE;&#x7ECF;&#x89C1;&#x8FC7;&#x7684;&#x76F8;&#x4F3C;&#x6982;&#x5FF5;&#xFF0C;this &#x6307;&#x5411;&#x7684;&#x662F;&#x51FD;&#x6570;&#x63A5;&#x6536;&#x8005;&#x3002;&#x5728;&#x6269;&#x5C55;&#x51FD;&#x6570;&#x4F53;&#x5185;&#x90E8;&#xFF0C;this &#x6307;&#x5411;&#x4E86;&#x8FD9;&#x4E2A;&#x51FD;&#x6570;&#x6269;&#x5C55;&#x7684;&#x90A3;&#x4E2A;&#x7C7B;&#x578B;&#x7684;&#x5B9E;&#x4F8B;&#xFF0C;&#x800C;&#x4E14;&#x4E5F;&#x53EF;&#x4EE5;&#x88AB;&#x7701;&#x7565;&#x6389;&#xFF0C;&#x8BA9;&#x4F60;&#x76F4;&#x63A5;&#x8BBF;&#x95EE;&#x63A5;&#x6536;&#x8005;&#x7684;&#x6210;&#x5458;&#x3002;&#x6CE8;&#x610F;&#x4E00;&#x4E2A;&#x6269;&#x5C55;&#x51FD;&#x6570;&#x67D0;&#x79CD;&#x610F;&#x4E49;&#x4E0A;&#x6765;&#x8BF4;&#x5C31;&#x662F;&#x5E26;&#x63A5;&#x6536;&#x8005;&#x7684;&#x51FD;&#x6570;&#x3002;&#x53EF;&#x4EE5;&#x505A;&#x4E0B;&#x9762;&#x7684;&#x7C7B;&#x6BD4;:</p>
+<table>
+<thead>
+<tr>
+<th>&#x666E;&#x901A;&#x51FD;&#x6570;</th>
+<th>&#x666E;&#x901A;lambda</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&#x6269;&#x5C55;&#x51FD;&#x6570;</td>
+<td>&#x5E26;&#x63A5;&#x6536;&#x8005;&#x7684;lambda</td>
+</tr>
+</tbody>
+</table>
+<p>Lambda&#x662F;&#x4E00;&#x79CD;&#x7C7B;&#x4F3C;&#x666E;&#x901A;&#x51FD;&#x6570;&#x7684;&#x5B9A;&#x4E49;&#x884C;&#x4E3A;&#x7684;&#x65B9;&#x5F0F;&#x3002;&#x800C;&#x5E26;&#x63A5;&#x6536;&#x8005;&#x7684;lambda&#x662F;&#x7C7B;&#x4F3C;&#x6269;&#x5C55;&#x51FD;&#x6570;&#x7684;&#x5B9A;&#x4E49;&#x884C;&#x4E3A;&#x7684;&#x65B9;&#x5F0F;&#x3002;</p>
+</blockquote>
+<p>&#x8FDB;&#x4E00;&#x6B65;&#x91CD;&#x6784;&#x521D;&#x59CB;&#x7684;alphabet&#x51FD;&#x6570;&#xFF0C;&#x53BB;&#x6389;&#x989D;&#x5916;&#x7684;stringBuilder&#x53D8;&#x91CF;&#x3002;</p>
+<pre><code class="lang-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">alphabet</span><span class="hljs-params">()</span></span> = with(StringBuilder()) {
+    <span class="hljs-keyword">for</span> (letter <span class="hljs-keyword">in</span> <span class="hljs-string">&apos;A&apos;</span>..<span class="hljs-string">&apos;Z&apos;</span>) {
+        append(letter)
+    }
+    append(<span class="hljs-string">&quot;\nNow I know the alphabet!&quot;</span>)
+    toString()
+}
+</code></pre>
+<blockquote>
+<p><strong>&#x65B9;&#x6CD5;&#x540D;&#x79F0;&#x51B2;&#x7A81;</strong></p>
+<p>&#x5982;&#x679C;&#x4F60;&#x5F53;&#x4F5C;&#x53C2;&#x6570;&#x4F20;&#x7ED9;with&#x7684;&#x5BF9;&#x8C61;&#x5DF2;&#x7ECF;&#x6709;&#x8FD9;&#x6837;&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x8BE5;&#x65B9;&#x6CD5;&#x7684;&#x540D;&#x79F0;&#x548C;&#x4F60;&#x6B63;&#x5728;&#x4F7F;&#x7528;with&#x7684;&#x7C7B;&#x4E2D;&#x7684;&#x65B9;&#x6CD5;&#x4E00;&#x6837;&#xFF0C;&#x600E;&#x4E48;&#x529E;&#xFF1F;&#x8FD9;&#x79CD;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x53EF;&#x4EE5;&#x7ED9;this&#x5F15;&#x7528;&#x52A0;&#x4E0A;&#x663E;&#x5F0F;&#x7684;&#x6807;&#x7B7E;&#x6765;&#x8868;&#x660E;&#x4F60;&#x8981;&#x8C03;&#x7528;&#x7684;&#x662F;&#x54EA;&#x4E2A;&#x65B9;&#x6CD5;&#x3002;&#x5047;&#x8BBE;&#x51FD;&#x6570;alphabet&#x662F;&#x7C7B;OuterClass&#x7684;&#x4E00;&#x4E2A;&#x65B9;&#x6CD5;&#x3002;&#x5982;&#x679C;&#x4F60;&#x60F3;&#x5F15;&#x7528;&#x7684;&#x662F;&#x5B9A;&#x4E49;&#x5728;&#x5916;&#x90E8;&#x7C7B;&#x7684;toString&#x65B9;&#x6CD5;&#x800C;&#x4E0D;&#x662F;StringBuilder&#xFF0C;&#x53EF;&#x4EE5;&#x7528;&#x4E0B;&#x9762;&#x8FD9;&#x79CD;&#x8BED;&#x6CD5;&#xFF1A;</p>
+<p>this@OuterClass.toString()</p>
+</blockquote>
+<p>with&#x8FD4;&#x56DE;&#x7684;&#x503C;&#x662F;&#x6267;&#x884C;lambda&#x4EE3;&#x7801;&#x7684;&#x7ED3;&#x679C;&#xFF0C;&#x8BE5;&#x7ED3;&#x679C;&#x5C31;&#x662F;lambda&#x4E2D;&#x7684;&#x6700;&#x540E;&#x4E00;&#x4E2A;&#x8868;&#x8FBE;&#x5F0F;(&#x7684;&#x503C;)&#x3002;&#x4F46;&#x6709;&#x65F6;&#x5019;&#x4F60;&#x60F3;&#x8FD4;&#x56DE;&#x7684;&#x662F;&#x63A5;&#x6536;&#x8005;&#x5BF9;&#x8C61;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x6267;&#x884C;lambda&#x7684;&#x7ED3;&#x679C;&#x3002;&#x8FD9;&#x65F6;apply&#x5E93;&#x51FD;&#x6570;&#x5C31;&#x6D3E;&#x4E0A;&#x7528;&#x573A;&#x4E86;&#x3002;</p>
+<h1 id="&#x6C42;&#x548C;"><a name="&#x6C42;&#x548C;" class="anchor-navigation-ex-anchor" href="#&#x6C42;&#x548C;"><i class="fa fa-link" aria-hidden="true"></i></a>15. &#x6C42;&#x548C;</h1>
+<h2 id="sum"><a name="sum" class="anchor-navigation-ex-anchor" href="#sum"><i class="fa fa-link" aria-hidden="true"></i></a>15.1. sum</h2>
+<p>sum&#xFF1A;&#x5BF9;&#x6570;&#x503C;&#x7C7B;&#x578B;&#x7684;list&#x6C42;&#x548C;</p>
+<pre><code class="lang-kotlin">run {
+    <span class="hljs-keyword">val</span> list = listOf(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>)
+    println(list.sum())
+}
+</code></pre>
+<h2 id="sumby"><a name="sumby" class="anchor-navigation-ex-anchor" href="#sumby"><i class="fa fa-link" aria-hidden="true"></i></a>15.2. sumBy</h2>
+<pre><code class="lang-kotlin">run {
+    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Obj</span></span>(<span class="hljs-keyword">val</span> a: <span class="hljs-built_in">Int</span>, <span class="hljs-keyword">val</span> b: <span class="hljs-built_in">Int</span>)
+
+    <span class="hljs-keyword">val</span> list = List(<span class="hljs-number">5</span>) {
+        Obj(it, it)
+    }
+    println(list.sumBy { it.a + it.b })
+}
+</code></pre>
+<h2 id="fold"><a name="fold" class="anchor-navigation-ex-anchor" href="#fold"><i class="fa fa-link" aria-hidden="true"></i></a>15.3. fold</h2>
+<pre><code class="lang-kotlin"><span class="hljs-comment">// fold</span>
+println(<span class="hljs-string">&quot;fold&quot;</span>)
+run {
+    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Obj</span></span>(<span class="hljs-keyword">val</span> a: <span class="hljs-built_in">Int</span>, <span class="hljs-keyword">val</span> b: <span class="hljs-built_in">Int</span>)
+
+    <span class="hljs-keyword">val</span> list = List(<span class="hljs-number">3</span>) {
+        Obj(it, it)
+    }
+    <span class="hljs-comment">// accumulator&#x4E3A;&#x6BCF;&#x6B21;&#x6267;&#x884C;lambda&#x7684;&#x8FD4;&#x56DE;&#x7ED3;&#x679C;</span>
+    println(list.fold(<span class="hljs-number">10</span>) { accumulator, obj -&gt;
+        println(<span class="hljs-string">&quot;accumulator=<span class="hljs-subst">$accumulator</span>&quot;</span>)
+        accumulator + obj.a * obj.b
+    })
+}
+</code></pre>
+<pre><code>fold
+accumulator=10
+accumulator=10
+accumulator=11
+15
+</code></pre><h2 id="reduce"><a name="reduce" class="anchor-navigation-ex-anchor" href="#reduce"><i class="fa fa-link" aria-hidden="true"></i></a>15.4. reduce</h2>
+<p>reduce&#x65B9;&#x6CD5;&#x548C;fold&#x7C7B;&#x4F3C;&#xFF0C;&#x533A;&#x522B;&#x5C31;&#x662F;&#x6CA1;&#x6709;&#x521D;&#x59CB;&#x503C;&#x3002;</p>
+<h1 id="&#x5206;&#x7EC4;"><a name="&#x5206;&#x7EC4;" class="anchor-navigation-ex-anchor" href="#&#x5206;&#x7EC4;"><i class="fa fa-link" aria-hidden="true"></i></a>16. &#x5206;&#x7EC4;</h1>
+<h2 id="groupby"><a name="groupby" class="anchor-navigation-ex-anchor" href="#groupby"><i class="fa fa-link" aria-hidden="true"></i></a>16.1. groupBy</h2>
+<p><strong>&#x628A;&#x5217;&#x8868;&#x8F6C;&#x6362;&#x6210;&#x5206;&#x7EC4;&#x7684;map</strong></p>
+<p>&#x5047;&#x8BBE;&#x4F60;&#x9700;&#x8981;&#x628A;&#x6240;&#x6709;&#x5143;&#x7D20;&#x6309;&#x7167;&#x4E0D;&#x540C;&#x7684;&#x7279;&#x5F81;&#x5212;&#x5206;&#x6210;&#x4E0D;&#x540C;&#x7684;&#x5206;&#x7EC4;&#x3002;&#x4F8B;&#x5982;&#xFF0C;&#x4F60;&#x60F3;&#x628A;&#x4EBA;&#x6309;&#x5E74;&#x9F84;&#x5206;&#x7EC4;&#xFF0C;&#x76F8;&#x540C;&#x5E74;&#x9F84;&#x7684;&#x4EBA;&#x653E;&#x5728;&#x4E00;&#x7EC4;&#x3002;&#x628A;&#x8FD9;&#x4E2A;&#x7279;&#x5F81;&#x76F4;&#x63A5;&#x5F53;&#x4F5C;&#x53C2;&#x6570;&#x4F20;&#x9012;&#x5341;&#x5206;&#x65B9;&#x4FBF;&#x3002;groupBy&#x51FD;&#x6570;&#x53EF;&#x4EE5;&#x5E2E;&#x4F60;&#x505A;&#x5230;&#x8FD9;&#x4E00;&#x70B9;:</p>
+<pre><code class="lang-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> {
+    <span class="hljs-keyword">val</span> canBeInClub27 = { p: Person -&gt; p.age &lt;= <span class="hljs-number">28</span> }
+    <span class="hljs-keyword">val</span> people = listOf(
+            Person(<span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-number">27</span>)
+            , Person(<span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-number">27</span>)
+            , Person(<span class="hljs-string">&quot;c&quot;</span>, <span class="hljs-number">29</span>)
+            , Person(<span class="hljs-string">&quot;d&quot;</span>, <span class="hljs-number">29</span>)
+            , Person(<span class="hljs-string">&quot;e&quot;</span>, <span class="hljs-number">28</span>))
+    println(people.groupBy { it.age })
+}
+
+{
+<span class="hljs-number">27</span>=[Person(name=a, age=<span class="hljs-number">27</span>), Person(name=b, age=<span class="hljs-number">27</span>)], 
+<span class="hljs-number">29</span>=[Person(name=c, age=<span class="hljs-number">29</span>), Person(name=d, age=<span class="hljs-number">29</span>)], 
+<span class="hljs-number">28</span>=[Person(name=e, age=<span class="hljs-number">28</span>)]
+}
+</code></pre>
+<p>&#x8FD9;&#x6B21;&#x64CD;&#x4F5C;&#x7684;&#x7ED3;&#x679C;&#x662F;&#x4E00;&#x4E2A; map&#xFF0C;&#x662F;&#x5143;&#x7D20;&#x5206;&#x7EC4;&#x4F9D;&#x636E;&#x7684;&#x952E;(&#x8FD9;&#x4E2A;&#x4F8B;&#x5B50;&#x4E2D;&#x662F;age)&#x548C;&#x5143;&#x7D20;&#x5206;&#x7EC4;(persons) &#x4E4B;&#x95F4;&#x7684;&#x6620;&#x5C04;&#x3002;</p>
+<h1 id="&#x6241;&#x5E73;&#x5316;"><a name="&#x6241;&#x5E73;&#x5316;" class="anchor-navigation-ex-anchor" href="#&#x6241;&#x5E73;&#x5316;"><i class="fa fa-link" aria-hidden="true"></i></a>17. &#x6241;&#x5E73;&#x5316;</h1>
+<h2 id="flatten"><a name="flatten" class="anchor-navigation-ex-anchor" href="#flatten"><i class="fa fa-link" aria-hidden="true"></i></a>17.1. flatten</h2>
+<p>&#x5408;&#x5E76;&#x96C6;&#x5408;</p>
+<h2 id="flatmap"><a name="flatmap" class="anchor-navigation-ex-anchor" href="#flatmap"><i class="fa fa-link" aria-hidden="true"></i></a>17.2. flatMap</h2>
+<p><strong>&#x5904;&#x7406;&#x5D4C;&#x5957;&#x96C6;&#x5408;&#x4E2D;&#x7684;&#x5143;&#x7D20;</strong></p>
+<p>flatMap&#x51FD;&#x6570;&#x505A;&#x4E86;&#x4E24;&#x4EF6;&#x4E8B;&#x60C5;&#xFF1A;&#x9996;&#x5148;&#x6839;&#x636E;&#x4F5C;&#x4E3A;&#x5B9E;&#x53C2;&#x7ED9;&#x5B9A;&#x7684;&#x51FD;&#x6570;&#x5BF9;&#x96C6;&#x5408;&#x4E2D;&#x7684;&#x6BCF;&#x4E2A;&#x5143;&#x7D20;&#x505A;&#x53D8;&#x6362;&#xFF0C;&#x7136;&#x540E;&#x628A;&#x591A;&#x4E2A;&#x5217;&#x8868;&#x5408;&#x5E76;&#x6210;&#x4E00;&#x4E2A;&#x5217;&#x8868;&#x3002;</p>
+<pre><code class="lang-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> {
+    <span class="hljs-keyword">val</span> strings= listOf(<span class="hljs-string">&quot;abc&quot;</span>,<span class="hljs-string">&quot;cdef&quot;</span>)
+    println(strings.flatMap { it.toUpperCase().toList() })
+}
+
+[A, B, C, C, D, E, F]
+</code></pre>
+<p><img src="../../assets/12.jpg" alt="12"></p>
+<p>&#x5B57;&#x7B26;&#x4E32;&#x4E0A;&#x7684;toList&#x51FD;&#x6570;&#x628A;&#x5B83;&#x8F6C;&#x6362;&#x6210;&#x5B57;&#x7B26;&#x5217;&#x8868;&#x3002;&#x5982;&#x679C;&#x548C;tolist&#x4E00;&#x8D77;&#x4F7F;&#x7528;&#x7684;&#x662F;map&#x51FD;&#x6570;&#xFF0C;&#x4F60;&#x4F1A;&#x5F97;&#x5230;&#x4E00;&#x4E2A;&#x5B57;&#x7B26;&#x5217;&#x8868;&#x7684;&#x5217;&#x8868;&#xFF0C;&#x5C31;&#x5982;&#x540C;&#x56FE;&#x4E2D;&#x7684;&#x7B2C;&#x4E8C;&#x884C;&#x3002;flatMap&#x51FD;&#x6570;&#x8FD8;&#x4F1A;&#x6267;&#x884C;&#x540E;&#x9762;&#x7684;&#x6B65;&#x9AA4;&#xFF0C;&#x5E76;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x5305;&#x542B;&#x6240;&#x6709;&#x5143;&#x7D20;(&#x5B57;&#x7B26;)&#x7684;&#x5217;&#x8868;&#x3002;</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="基础总结.html" class="navigation navigation-prev " aria-label="Previous page: 基础总结">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="泛型总结.html" class="navigation navigation-next " aria-label="Next page: 泛型总结">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"标准库函数总结","level":"1.2.3.4","depth":3,"next":{"title":"泛型总结","level":"1.2.3.5","depth":3,"path":"01 语言/03 Kotlin/泛型总结.md","ref":"./01 语言/03 Kotlin/泛型总结.md","articles":[]},"previous":{"title":"基础总结","level":"1.2.3.3","depth":3,"path":"01 语言/03 Kotlin/基础总结.md","ref":"./01 语言/03 Kotlin/基础总结.md","articles":[]},"dir":"ltr"},"config":{"plugins":["highlight","search","livereload","splitter","expandable-chapters-small","anchors","anchor-navigation-ex"],"styles":{"website":"./styles/website.css"},"pluginsConfig":{"livereload":{},"splitter":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"anchor-navigation-ex":{"associatedWithSummary":true,"float":{"floatIcon":"fa fa-navicon","level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"mode":"float","multipleH1":true,"pageTop":{"level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"printLog":false,"showGoTop":true,"showLevel":true},"expandable-chapters-small":{},"sharing":{"all":["facebook","google","twitter","weibo","instapaper"],"facebook":true,"google":false,"instapaper":false,"twitter":true,"vk":false,"weibo":false},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"theme":"default","author":"Mezzsy","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Mezzsy is here","language":"zh-hans","gitbook":"3.2.3"},"file":{"path":"01 语言/03 Kotlin/标准库函数总结.md","mtime":"2023-11-01T14:33:04.981Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2024-09-17T13:19:34.226Z"},"basePath":"../..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../gitbook/gitbook.js"></script>
+    <script src="../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-splitter/splitter.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-expandable-chapters-small/expandable-chapters-small.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

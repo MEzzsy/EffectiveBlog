@@ -1,0 +1,4232 @@
+
+<!DOCTYPE HTML>
+<html lang="zh-hans" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Handler源码分析 · Mezzsy is here</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        <meta name="author" content="Mezzsy">
+        
+        
+    
+    <link rel="stylesheet" href="../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-splitter/splitter.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-expandable-chapters-small/expandable-chapters-small.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-anchors/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-anchor-navigation-ex/style/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="LeakCanary.html" />
+    
+    
+    <link rel="prev" href="Glide源码分析.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="输入并搜索" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    00 介绍
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../../01 语言/">
+            
+                <a href="../../01 语言/">
+            
+                    
+                    01 语言
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../../01 语言/01 Cpp/">
+            
+                <a href="../../01 语言/01 Cpp/">
+            
+                    
+                    01 Cpp
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.1" data-path="../../01 语言/01 Cpp/原理总结/">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/">
+            
+                    
+                    原理总结
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.1.1" data-path="../../01 语言/01 Cpp/原理总结/其它.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/其它.html">
+            
+                    
+                    其它
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.2" data-path="../../01 语言/01 Cpp/原理总结/函数.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/函数.html">
+            
+                    
+                    函数
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.3" data-path="../../01 语言/01 Cpp/原理总结/对象.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/对象.html">
+            
+                    
+                    对象
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.4" data-path="../../01 语言/01 Cpp/原理总结/成员变量.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/成员变量.html">
+            
+                    
+                    成员变量
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.5" data-path="../../01 语言/01 Cpp/原理总结/执行期.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/执行期.html">
+            
+                    
+                    执行期
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.6" data-path="../../01 语言/01 Cpp/原理总结/构造函数.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/构造函数.html">
+            
+                    
+                    构造函数
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.7" data-path="../../01 语言/01 Cpp/原理总结/构造析构拷贝.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/构造析构拷贝.html">
+            
+                    
+                    构造析构拷贝
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2" data-path="../../01 语言/01 Cpp/用法总结/">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/">
+            
+                    
+                    用法总结
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.2.1" data-path="../../01 语言/01 Cpp/用法总结/IO总结.html">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/IO总结.html">
+            
+                    
+                    IO总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.2" data-path="../../01 语言/01 Cpp/用法总结/RTTI总结.html">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/RTTI总结.html">
+            
+                    
+                    RTTI总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.3" data-path="../../01 语言/01 Cpp/用法总结/cpp原理总结.html">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/cpp原理总结.html">
+            
+                    
+                    cpp原理总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.4" data-path="../../01 语言/01 Cpp/用法总结/关键字总结.html">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/关键字总结.html">
+            
+                    
+                    关键字总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.5" data-path="../../01 语言/01 Cpp/用法总结/内存模型和名称空间.html">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/内存模型和名称空间.html">
+            
+                    
+                    内存模型和名称空间
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.6" data-path="../../01 语言/01 Cpp/用法总结/函数总结.html">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/函数总结.html">
+            
+                    
+                    函数总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.7" data-path="../../01 语言/01 Cpp/用法总结/动态内存和智能指针.html">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/动态内存和智能指针.html">
+            
+                    
+                    动态内存和智能指针
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.8" data-path="../../01 语言/01 Cpp/用法总结/基础总结.html">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/基础总结.html">
+            
+                    
+                    基础总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.9" data-path="../../01 语言/01 Cpp/用法总结/容器总结.html">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/容器总结.html">
+            
+                    
+                    容器总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.10" data-path="../../01 语言/01 Cpp/用法总结/异常总结.html">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/异常总结.html">
+            
+                    
+                    异常总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.11" data-path="../../01 语言/01 Cpp/用法总结/泛型总结.html">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/泛型总结.html">
+            
+                    
+                    泛型总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.12" data-path="../../01 语言/01 Cpp/用法总结/类总结.html">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/类总结.html">
+            
+                    
+                    类总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.3" data-path="../../01 语言/01 Cpp/知识点/">
+            
+                <a href="../../01 语言/01 Cpp/知识点/">
+            
+                    
+                    知识点
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.3.1" data-path="../../01 语言/01 Cpp/知识点/基础.html">
+            
+                <a href="../../01 语言/01 Cpp/知识点/基础.html">
+            
+                    
+                    基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.3.2" data-path="../../01 语言/01 Cpp/知识点/类.html">
+            
+                <a href="../../01 语言/01 Cpp/知识点/类.html">
+            
+                    
+                    类
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.3.3" data-path="../../01 语言/01 Cpp/知识点/线程.html">
+            
+                <a href="../../01 语言/01 Cpp/知识点/线程.html">
+            
+                    
+                    线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../../01 语言/02 Java/">
+            
+                <a href="../../01 语言/02 Java/">
+            
+                    
+                    02 Java
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.2.1" data-path="../../01 语言/02 Java/Java-IO.html">
+            
+                <a href="../../01 语言/02 Java/Java-IO.html">
+            
+                    
+                    Java-IO
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.2" data-path="../../01 语言/02 Java/Java反射机制和泛型.html">
+            
+                <a href="../../01 语言/02 Java/Java反射机制和泛型.html">
+            
+                    
+                    Java反射机制和泛型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.3" data-path="../../01 语言/02 Java/Java基础知识.html">
+            
+                <a href="../../01 语言/02 Java/Java基础知识.html">
+            
+                    
+                    Java基础知识
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.4" data-path="../../01 语言/02 Java/Java异常机制.html">
+            
+                <a href="../../01 语言/02 Java/Java异常机制.html">
+            
+                    
+                    Java异常机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.5" data-path="../../01 语言/02 Java/并发.html">
+            
+                <a href="../../01 语言/02 Java/并发.html">
+            
+                    
+                    并发
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.6" data-path="../../01 语言/02 Java/异常.html">
+            
+                <a href="../../01 语言/02 Java/异常.html">
+            
+                    
+                    异常
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.7" data-path="../../01 语言/02 Java/禁止在foreach循环里进行元素的remove-add操作.html">
+            
+                <a href="../../01 语言/02 Java/禁止在foreach循环里进行元素的remove-add操作.html">
+            
+                    
+                    禁止在foreach循环里进行元素的remove-add操作
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.8" data-path="../../01 语言/02 Java/类和接口.html">
+            
+                <a href="../../01 语言/02 Java/类和接口.html">
+            
+                    
+                    类和接口
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="../../01 语言/03 Kotlin/">
+            
+                <a href="../../01 语言/03 Kotlin/">
+            
+                    
+                    03 Kotlin
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.3.1" data-path="../../01 语言/03 Kotlin/Lambda总结.html">
+            
+                <a href="../../01 语言/03 Kotlin/Lambda总结.html">
+            
+                    
+                    Lambda总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.2" data-path="../../01 语言/03 Kotlin/函数总结.html">
+            
+                <a href="../../01 语言/03 Kotlin/函数总结.html">
+            
+                    
+                    函数总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.3" data-path="../../01 语言/03 Kotlin/基础总结.html">
+            
+                <a href="../../01 语言/03 Kotlin/基础总结.html">
+            
+                    
+                    基础总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.4" data-path="../../01 语言/03 Kotlin/标准库函数总结.html">
+            
+                <a href="../../01 语言/03 Kotlin/标准库函数总结.html">
+            
+                    
+                    标准库函数总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.5" data-path="../../01 语言/03 Kotlin/泛型总结.html">
+            
+                <a href="../../01 语言/03 Kotlin/泛型总结.html">
+            
+                    
+                    泛型总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.6" data-path="../../01 语言/03 Kotlin/注解和反射总结.html">
+            
+                <a href="../../01 语言/03 Kotlin/注解和反射总结.html">
+            
+                    
+                    注解和反射总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.7" data-path="../../01 语言/03 Kotlin/类型总结.html">
+            
+                <a href="../../01 语言/03 Kotlin/类型总结.html">
+            
+                    
+                    类型总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.8" data-path="../../01 语言/03 Kotlin/类总结.html">
+            
+                <a href="../../01 语言/03 Kotlin/类总结.html">
+            
+                    
+                    类总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.9" data-path="../../01 语言/03 Kotlin/运算符总结.html">
+            
+                <a href="../../01 语言/03 Kotlin/运算符总结.html">
+            
+                    
+                    运算符总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4" data-path="../../01 语言/04 Python/">
+            
+                <a href="../../01 语言/04 Python/">
+            
+                    
+                    04 Python
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.4.1" data-path="../../01 语言/04 Python/Python学习.html">
+            
+                <a href="../../01 语言/04 Python/Python学习.html">
+            
+                    
+                    Python学习
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../../02 计算机系统/">
+            
+                <a href="../../02 计算机系统/">
+            
+                    
+                    02 计算机系统
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../../02 计算机系统/01-操作系统.html">
+            
+                <a href="../../02 计算机系统/01-操作系统.html">
+            
+                    
+                    01-操作系统
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../../02 计算机系统/02-内存.html">
+            
+                <a href="../../02 计算机系统/02-内存.html">
+            
+                    
+                    02-内存
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../../02 计算机系统/03-线程.html">
+            
+                <a href="../../02 计算机系统/03-线程.html">
+            
+                    
+                    03-线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../../02 计算机系统/04-编译链接.html">
+            
+                <a href="../../02 计算机系统/04-编译链接.html">
+            
+                    
+                    04-编译链接
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../../02 计算机系统/深入理解计算机系统/">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/">
+            
+                    
+                    深入理解计算机系统
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.5.1" data-path="../../02 计算机系统/深入理解计算机系统/01-计算机系统漫游.html">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/01-计算机系统漫游.html">
+            
+                    
+                    01-计算机系统漫游
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.2" data-path="../../02 计算机系统/深入理解计算机系统/02-信息的表示和处理.html">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/02-信息的表示和处理.html">
+            
+                    
+                    02-信息的表示和处理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.3" data-path="../../02 计算机系统/深入理解计算机系统/07-链接.html">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/07-链接.html">
+            
+                    
+                    07-链接
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.4" data-path="../../02 计算机系统/深入理解计算机系统/09-虚拟内存.html">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/09-虚拟内存.html">
+            
+                    
+                    09-虚拟内存
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../../03 Java/">
+            
+                <a href="../../03 Java/">
+            
+                    
+                    03 Java
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../../03 Java/01 Java知识点/">
+            
+                <a href="../../03 Java/01 Java知识点/">
+            
+                    
+                    01 Java知识点
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1.1" data-path="../../03 Java/01 Java知识点/Java基础知识.html">
+            
+                <a href="../../03 Java/01 Java知识点/Java基础知识.html">
+            
+                    
+                    Java基础知识
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.2" data-path="../../03 Java/01 Java知识点/Java问题.html">
+            
+                <a href="../../03 Java/01 Java知识点/Java问题.html">
+            
+                    
+                    Java问题
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.3" data-path="../../03 Java/01 Java知识点/泛型.html">
+            
+                <a href="../../03 Java/01 Java知识点/泛型.html">
+            
+                    
+                    泛型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.4" data-path="../../03 Java/01 Java知识点/注解.html">
+            
+                <a href="../../03 Java/01 Java知识点/注解.html">
+            
+                    
+                    注解
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../../03 Java/02 Java虚拟机/">
+            
+                <a href="../../03 Java/02 Java虚拟机/">
+            
+                    
+                    02 Java虚拟机
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.2.1" data-path="../../03 Java/02 Java虚拟机/01-Java介绍.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/01-Java介绍.html">
+            
+                    
+                    01-Java介绍
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.2" data-path="../../03 Java/02 Java虚拟机/02-内存区域.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/02-内存区域.html">
+            
+                    
+                    02-内存区域
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.3" data-path="../../03 Java/02 Java虚拟机/03-垃圾收集TODO.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/03-垃圾收集TODO.html">
+            
+                    
+                    03-垃圾收集TODO
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.4" data-path="../../03 Java/02 Java虚拟机/06-类文件结构.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/06-类文件结构.html">
+            
+                    
+                    06-类文件结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.5" data-path="../../03 Java/02 Java虚拟机/07-虚拟机类加载机制.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/07-虚拟机类加载机制.html">
+            
+                    
+                    07-虚拟机类加载机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.6" data-path="../../03 Java/02 Java虚拟机/08-虚拟机字节码执行引擎.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/08-虚拟机字节码执行引擎.html">
+            
+                    
+                    08-虚拟机字节码执行引擎
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.7" data-path="../../03 Java/02 Java虚拟机/12-Java内存模型与线程.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/12-Java内存模型与线程.html">
+            
+                    
+                    12-Java内存模型与线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.8" data-path="../../03 Java/02 Java虚拟机/13-线程安全与锁优化.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/13-线程安全与锁优化.html">
+            
+                    
+                    13-线程安全与锁优化
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../../03 Java/03 常用源码分析/">
+            
+                <a href="../../03 Java/03 常用源码分析/">
+            
+                    
+                    03 常用源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.3.1" data-path="../../03 Java/03 常用源码分析/ArrayList源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/ArrayList源码分析.html">
+            
+                    
+                    ArrayList源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.2" data-path="../../03 Java/03 常用源码分析/ConcurrentHashMap源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/ConcurrentHashMap源码分析.html">
+            
+                    
+                    ConcurrentHashMap源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.3" data-path="../../03 Java/03 常用源码分析/HashMap源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/HashMap源码分析.html">
+            
+                    
+                    HashMap源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.4" data-path="../../03 Java/03 常用源码分析/HashTable源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/HashTable源码分析.html">
+            
+                    
+                    HashTable源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.5" data-path="../../03 Java/03 常用源码分析/LinkedHashMap源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/LinkedHashMap源码分析.html">
+            
+                    
+                    LinkedHashMap源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.6" data-path="../../03 Java/03 常用源码分析/LinkedList源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/LinkedList源码分析.html">
+            
+                    
+                    LinkedList源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.7" data-path="../../03 Java/03 常用源码分析/ThreadLocal源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/ThreadLocal源码分析.html">
+            
+                    
+                    ThreadLocal源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.8" data-path="../../03 Java/03 常用源码分析/线程池源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/线程池源码分析.html">
+            
+                    
+                    线程池源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../../04 源码分析/">
+            
+                <a href="../../04 源码分析/">
+            
+                    
+                    04 源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../../04 源码分析/AddressSanitizer.html">
+            
+                <a href="../../04 源码分析/AddressSanitizer.html">
+            
+                    
+                    AddressSanitizer
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../../04 源码分析/ByteX.html">
+            
+                <a href="../../04 源码分析/ByteX.html">
+            
+                    
+                    ByteX
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="../../04 源码分析/PltHook.html">
+            
+                <a href="../../04 源码分析/PltHook.html">
+            
+                    
+                    PltHook
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="../../04 源码分析/Raphael分析.html">
+            
+                <a href="../../04 源码分析/Raphael分析.html">
+            
+                    
+                    Raphael分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.5" data-path="../../04 源码分析/基于fp的栈回朔.html">
+            
+                <a href="../../04 源码分析/基于fp的栈回朔.html">
+            
+                    
+                    基于fp的栈回朔
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    05 Android
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../01 Android底层源码分析/">
+            
+                <a href="../01 Android底层源码分析/">
+            
+                    
+                    01 Android底层源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1.1" data-path="../01 Android底层源码分析/01 系统启动过程.html">
+            
+                <a href="../01 Android底层源码分析/01 系统启动过程.html">
+            
+                    
+                    01 系统启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.2" data-path="../01 Android底层源码分析/02 应用进程启动过程.html">
+            
+                <a href="../01 Android底层源码分析/02 应用进程启动过程.html">
+            
+                    
+                    02 应用进程启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.3" data-path="../01 Android底层源码分析/03 Activity启动过程.html">
+            
+                <a href="../01 Android底层源码分析/03 Activity启动过程.html">
+            
+                    
+                    03 Activity启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.4" data-path="../01 Android底层源码分析/04 其它组件启动过程.html">
+            
+                <a href="../01 Android底层源码分析/04 其它组件启动过程.html">
+            
+                    
+                    04 其它组件启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.5" data-path="../01 Android底层源码分析/05 Context总结.html">
+            
+                <a href="../01 Android底层源码分析/05 Context总结.html">
+            
+                    
+                    05 Context总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.6" data-path="../01 Android底层源码分析/06 AMS.html">
+            
+                <a href="../01 Android底层源码分析/06 AMS.html">
+            
+                    
+                    06 AMS
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.7" data-path="../01 Android底层源码分析/07 WM.html">
+            
+                <a href="../01 Android底层源码分析/07 WM.html">
+            
+                    
+                    07 WM
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.8" data-path="../01 Android底层源码分析/08 WMS.html">
+            
+                <a href="../01 Android底层源码分析/08 WMS.html">
+            
+                    
+                    08 WMS
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.9" data-path="../01 Android底层源码分析/10 JNI.html">
+            
+                <a href="../01 Android底层源码分析/10 JNI.html">
+            
+                    
+                    10 JNI
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.10" data-path="../01 Android底层源码分析/13 ClassLoader.html">
+            
+                <a href="../01 Android底层源码分析/13 ClassLoader.html">
+            
+                    
+                    13 ClassLoader
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.11" data-path="../01 Android底层源码分析/14 热修复.html">
+            
+                <a href="../01 Android底层源码分析/14 热修复.html">
+            
+                    
+                    14 热修复
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.12" data-path="../01 Android底层源码分析/15 Hook.html">
+            
+                <a href="../01 Android底层源码分析/15 Hook.html">
+            
+                    
+                    15 Hook
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.13" data-path="../01 Android底层源码分析/16 插件化.html">
+            
+                <a href="../01 Android底层源码分析/16 插件化.html">
+            
+                    
+                    16 插件化
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.14" data-path="../01 Android底层源码分析/17 绘制流程-生产者.html">
+            
+                <a href="../01 Android底层源码分析/17 绘制流程-生产者.html">
+            
+                    
+                    17 绘制流程-生产者
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.15" data-path="../01 Android底层源码分析/18 绘制流程-消费者.html">
+            
+                <a href="../01 Android底层源码分析/18 绘制流程-消费者.html">
+            
+                    
+                    18 绘制流程-消费者
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.16" data-path="../01 Android底层源码分析/19 渲染总结.html">
+            
+                <a href="../01 Android底层源码分析/19 渲染总结.html">
+            
+                    
+                    19 渲染总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.17" data-path="../01 Android底层源码分析/20 硬件加速.html">
+            
+                <a href="../01 Android底层源码分析/20 硬件加速.html">
+            
+                    
+                    20 硬件加速
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="../02 Android应用和原理/">
+            
+                <a href="../02 Android应用和原理/">
+            
+                    
+                    02 Android应用和原理
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.2.1" data-path="../02 Android应用和原理/Android动画.html">
+            
+                <a href="../02 Android应用和原理/Android动画.html">
+            
+                    
+                    Android动画
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.2" data-path="../02 Android应用和原理/Android消息机制.html">
+            
+                <a href="../02 Android应用和原理/Android消息机制.html">
+            
+                    
+                    Android消息机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.3" data-path="../02 Android应用和原理/Android的跨进程通信.html">
+            
+                <a href="../02 Android应用和原理/Android的跨进程通信.html">
+            
+                    
+                    Android的跨进程通信
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.4" data-path="../02 Android应用和原理/Android类加载机制.html">
+            
+                <a href="../02 Android应用和原理/Android类加载机制.html">
+            
+                    
+                    Android类加载机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.5" data-path="../02 Android应用和原理/Android线程.html">
+            
+                <a href="../02 Android应用和原理/Android线程.html">
+            
+                    
+                    Android线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.6" data-path="../02 Android应用和原理/Drawable.html">
+            
+                <a href="../02 Android应用和原理/Drawable.html">
+            
+                    
+                    Drawable
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.7" data-path="../02 Android应用和原理/View手势事件.html">
+            
+                <a href="../02 Android应用和原理/View手势事件.html">
+            
+                    
+                    View手势事件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.8" data-path="../02 Android应用和原理/View绘制基础.html">
+            
+                <a href="../02 Android应用和原理/View绘制基础.html">
+            
+                    
+                    View绘制基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.9" data-path="../02 Android应用和原理/四大组件.html">
+            
+                <a href="../02 Android应用和原理/四大组件.html">
+            
+                    
+                    四大组件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.10" data-path="../02 Android应用和原理/性能优化.html">
+            
+                <a href="../02 Android应用和原理/性能优化.html">
+            
+                    
+                    性能优化
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.11" data-path="../02 Android应用和原理/虚拟机.html">
+            
+                <a href="../02 Android应用和原理/虚拟机.html">
+            
+                    
+                    虚拟机
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.12" data-path="../02 Android应用和原理/面试题.html">
+            
+                <a href="../02 Android应用和原理/面试题.html">
+            
+                    
+                    面试题
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3" data-path="../03 Android应用手册/">
+            
+                <a href="../03 Android应用手册/">
+            
+                    
+                    03 Android应用手册
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.3.1" data-path="../03 Android应用手册/四大组件/">
+            
+                <a href="../03 Android应用手册/四大组件/">
+            
+                    
+                    四大组件
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.3.1.1" data-path="../03 Android应用手册/四大组件/Android启动模式研究.html">
+            
+                <a href="../03 Android应用手册/四大组件/Android启动模式研究.html">
+            
+                    
+                    Android启动模式研究
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.1.2" data-path="../03 Android应用手册/四大组件/Android生命周期.html">
+            
+                <a href="../03 Android应用手册/四大组件/Android生命周期.html">
+            
+                    
+                    Android生命周期
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.1.3" data-path="../03 Android应用手册/四大组件/Broadcast.html">
+            
+                <a href="../03 Android应用手册/四大组件/Broadcast.html">
+            
+                    
+                    Broadcast
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.2" data-path="../03 Android应用手册/架构组件/">
+            
+                <a href="../03 Android应用手册/架构组件/">
+            
+                    
+                    架构组件
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.3.2.1" data-path="../03 Android应用手册/架构组件/LiveData.html">
+            
+                <a href="../03 Android应用手册/架构组件/LiveData.html">
+            
+                    
+                    LiveData
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.2.2" data-path="../03 Android应用手册/架构组件/Navigation.html">
+            
+                <a href="../03 Android应用手册/架构组件/Navigation.html">
+            
+                    
+                    Navigation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.2.3" data-path="../03 Android应用手册/架构组件/ViewModel.html">
+            
+                <a href="../03 Android应用手册/架构组件/ViewModel.html">
+            
+                    
+                    ViewModel
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3" data-path="../03 Android应用手册/视图/">
+            
+                <a href="../03 Android应用手册/视图/">
+            
+                    
+                    视图
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.3.3.1" data-path="../03 Android应用手册/视图/Android动画.html">
+            
+                <a href="../03 Android应用手册/视图/Android动画.html">
+            
+                    
+                    Android动画
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.2" data-path="../03 Android应用手册/视图/Android布局.html">
+            
+                <a href="../03 Android应用手册/视图/Android布局.html">
+            
+                    
+                    Android布局
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.3" data-path="../03 Android应用手册/视图/Android控件.html">
+            
+                <a href="../03 Android应用手册/视图/Android控件.html">
+            
+                    
+                    Android控件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.4" data-path="../03 Android应用手册/视图/Drawable.html">
+            
+                <a href="../03 Android应用手册/视图/Drawable.html">
+            
+                    
+                    Drawable
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.5" data-path="../03 Android应用手册/视图/View绘制.html">
+            
+                <a href="../03 Android应用手册/视图/View绘制.html">
+            
+                    
+                    View绘制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.6" data-path="../03 Android应用手册/视图/视图相关工具类.html">
+            
+                <a href="../03 Android应用手册/视图/视图相关工具类.html">
+            
+                    
+                    视图相关工具类
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.7" data-path="../03 Android应用手册/视图/资源文件.html">
+            
+                <a href="../03 Android应用手册/视图/资源文件.html">
+            
+                    
+                    资源文件
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.4" data-path="../03 Android应用手册/项目/">
+            
+                <a href="../03 Android应用手册/项目/">
+            
+                    
+                    项目
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.3.4.1" data-path="../03 Android应用手册/项目/命令行调试.html">
+            
+                <a href="../03 Android应用手册/项目/命令行调试.html">
+            
+                    
+                    命令行调试
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.4.2" data-path="../03 Android应用手册/项目/打包.html">
+            
+                <a href="../03 Android应用手册/项目/打包.html">
+            
+                    
+                    打包
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    04 常用类源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.4.1" data-path="AsyncTask源码分析.html">
+            
+                <a href="AsyncTask源码分析.html">
+            
+                    
+                    AsyncTask源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.2" data-path="EventBus源码分析.html">
+            
+                <a href="EventBus源码分析.html">
+            
+                    
+                    EventBus源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.3" data-path="Glide源码分析.html">
+            
+                <a href="Glide源码分析.html">
+            
+                    
+                    Glide源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.6.4.4" data-path="Handler源码分析.html">
+            
+                <a href="Handler源码分析.html">
+            
+                    
+                    Handler源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.5" data-path="LeakCanary.html">
+            
+                <a href="LeakCanary.html">
+            
+                    
+                    LeakCanary
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.6" data-path="LinearLayout源码分析.html">
+            
+                <a href="LinearLayout源码分析.html">
+            
+                    
+                    LinearLayout源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.7" data-path="ListView源码分析.html">
+            
+                <a href="ListView源码分析.html">
+            
+                    
+                    ListView源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.8" data-path="LruCache源码分析.html">
+            
+                <a href="LruCache源码分析.html">
+            
+                    
+                    LruCache源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.9" data-path="OkHttp3源码分析.html">
+            
+                <a href="OkHttp3源码分析.html">
+            
+                    
+                    OkHttp3源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.10" data-path="Retrofit2源码分析.html">
+            
+                <a href="Retrofit2源码分析.html">
+            
+                    
+                    Retrofit2源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.11" data-path="RxJava2源码分析.html">
+            
+                <a href="RxJava2源码分析.html">
+            
+                    
+                    RxJava2源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.12" data-path="SparseArray源码分析.html">
+            
+                <a href="SparseArray源码分析.html">
+            
+                    
+                    SparseArray源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.5" data-path="../05 性能优化工具/">
+            
+                <a href="../05 性能优化工具/">
+            
+                    
+                    05 性能优化工具
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.5.1" data-path="../05 性能优化工具/cpu工具.html">
+            
+                <a href="../05 性能优化工具/cpu工具.html">
+            
+                    
+                    cpu工具
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../../06 计算机网络/">
+            
+                <a href="../../06 计算机网络/">
+            
+                    
+                    06 计算机网络
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.1" data-path="../../06 计算机网络/计算机网络.html">
+            
+                <a href="../../06 计算机网络/计算机网络.html">
+            
+                    
+                    计算机网络
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../../07 设计模式/">
+            
+                <a href="../../07 设计模式/">
+            
+                    
+                    07 设计模式
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.8.1" data-path="../../07 设计模式/Builder模式.html">
+            
+                <a href="../../07 设计模式/Builder模式.html">
+            
+                    
+                    Builder模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.2" data-path="../../07 设计模式/代理模式.html">
+            
+                <a href="../../07 设计模式/代理模式.html">
+            
+                    
+                    代理模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3" data-path="../../07 设计模式/其它设计模式/">
+            
+                <a href="../../07 设计模式/其它设计模式/">
+            
+                    
+                    其它设计模式
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.8.3.1" data-path="../../07 设计模式/其它设计模式/中介者模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/中介者模式.html">
+            
+                    
+                    中介者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.2" data-path="../../07 设计模式/其它设计模式/享元模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/享元模式.html">
+            
+                    
+                    享元模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.3" data-path="../../07 设计模式/其它设计模式/原型模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/原型模式.html">
+            
+                    
+                    原型模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.4" data-path="../../07 设计模式/其它设计模式/命令模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/命令模式.html">
+            
+                    
+                    命令模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.5" data-path="../../07 设计模式/其它设计模式/备忘录模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/备忘录模式.html">
+            
+                    
+                    备忘录模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.6" data-path="../../07 设计模式/其它设计模式/外观模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/外观模式.html">
+            
+                    
+                    外观模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.7" data-path="../../07 设计模式/其它设计模式/工厂方法模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/工厂方法模式.html">
+            
+                    
+                    工厂方法模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.8" data-path="../../07 设计模式/其它设计模式/抽象工厂模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/抽象工厂模式.html">
+            
+                    
+                    抽象工厂模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.9" data-path="../../07 设计模式/其它设计模式/框架模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/框架模式.html">
+            
+                    
+                    框架模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.10" data-path="../../07 设计模式/其它设计模式/桥接模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/桥接模式.html">
+            
+                    
+                    桥接模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.11" data-path="../../07 设计模式/其它设计模式/模板方法模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/模板方法模式.html">
+            
+                    
+                    模板方法模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.12" data-path="../../07 设计模式/其它设计模式/状态模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/状态模式.html">
+            
+                    
+                    状态模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.13" data-path="../../07 设计模式/其它设计模式/策略模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/策略模式.html">
+            
+                    
+                    策略模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.14" data-path="../../07 设计模式/其它设计模式/组合模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/组合模式.html">
+            
+                    
+                    组合模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.15" data-path="../../07 设计模式/其它设计模式/装饰模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/装饰模式.html">
+            
+                    
+                    装饰模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.16" data-path="../../07 设计模式/其它设计模式/解释器模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/解释器模式.html">
+            
+                    
+                    解释器模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.17" data-path="../../07 设计模式/其它设计模式/访问者模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/访问者模式.html">
+            
+                    
+                    访问者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.18" data-path="../../07 设计模式/其它设计模式/责任链模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/责任链模式.html">
+            
+                    
+                    责任链模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.19" data-path="../../07 设计模式/其它设计模式/迭代器模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/迭代器模式.html">
+            
+                    
+                    迭代器模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.20" data-path="../../07 设计模式/其它设计模式/适配器模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/适配器模式.html">
+            
+                    
+                    适配器模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.21" data-path="../../07 设计模式/其它设计模式/静态工厂方法模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/静态工厂方法模式.html">
+            
+                    
+                    静态工厂方法模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.4" data-path="../../07 设计模式/单例模式.html">
+            
+                <a href="../../07 设计模式/单例模式.html">
+            
+                    
+                    单例模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.5" data-path="../../07 设计模式/架构模式.html">
+            
+                <a href="../../07 设计模式/架构模式.html">
+            
+                    
+                    架构模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.6" data-path="../../07 设计模式/生产者消费者模式.html">
+            
+                <a href="../../07 设计模式/生产者消费者模式.html">
+            
+                    
+                    生产者消费者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.7" data-path="../../07 设计模式/观察者模式.html">
+            
+                <a href="../../07 设计模式/观察者模式.html">
+            
+                    
+                    观察者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="../../08 杂项/">
+            
+                <a href="../../08 杂项/">
+            
+                    
+                    08 杂项
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.9.1" data-path="../../08 杂项/git手册/">
+            
+                <a href="../../08 杂项/git手册/">
+            
+                    
+                    git手册
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.2" data-path="../../08 杂项/常用命令/">
+            
+                <a href="../../08 杂项/常用命令/">
+            
+                    
+                    常用命令
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3" data-path="../../08 杂项/环境搭建记录/">
+            
+                <a href="../../08 杂项/环境搭建记录/">
+            
+                    
+                    环境搭建记录
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.9.3.1" data-path="../../08 杂项/环境搭建记录/环境搭建.html">
+            
+                <a href="../../08 杂项/环境搭建记录/环境搭建.html">
+            
+                    
+                    环境搭建
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10" data-path="../../09 Gradle总结/">
+            
+                <a href="../../09 Gradle总结/">
+            
+                    
+                    09 Gradle总结
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.10.1" data-path="../../09 Gradle总结/Gradle总结.html">
+            
+                <a href="../../09 Gradle总结/Gradle总结.html">
+            
+                    
+                    Gradle总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11" data-path="../../10 机器学习/">
+            
+                <a href="../../10 机器学习/">
+            
+                    
+                    10 机器学习
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.11.1" data-path="../../10 机器学习/动量和NAG.html">
+            
+                <a href="../../10 机器学习/动量和NAG.html">
+            
+                    
+                    动量和NAG
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11.2" data-path="../../10 机器学习/机器学习周志华笔记/">
+            
+                <a href="../../10 机器学习/机器学习周志华笔记/">
+            
+                    
+                    机器学习周志华笔记
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.11.2.1" data-path="../../10 机器学习/机器学习周志华笔记/第一章-绪论.html">
+            
+                <a href="../../10 机器学习/机器学习周志华笔记/第一章-绪论.html">
+            
+                    
+                    第一章-绪论
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11.2.2" data-path="../../10 机器学习/机器学习周志华笔记/第三章-线性模型.html">
+            
+                <a href="../../10 机器学习/机器学习周志华笔记/第三章-线性模型.html">
+            
+                    
+                    第三章-线性模型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11.2.3" data-path="../../10 机器学习/机器学习周志华笔记/第二章-模型评估与选择.html">
+            
+                <a href="../../10 机器学习/机器学习周志华笔记/第二章-模型评估与选择.html">
+            
+                    
+                    第二章-模型评估与选择
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12" data-path="../../11 知识点/">
+            
+                <a href="../../11 知识点/">
+            
+                    
+                    11 知识点
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.12.1" data-path="../../11 知识点/04-操作系统.html">
+            
+                <a href="../../11 知识点/04-操作系统.html">
+            
+                    
+                    04-操作系统
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.2" data-path="../../11 知识点/06-数据结构.html">
+            
+                <a href="../../11 知识点/06-数据结构.html">
+            
+                    
+                    06-数据结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.3" data-path="../../11 知识点/07-第三方库.html">
+            
+                <a href="../../11 知识点/07-第三方库.html">
+            
+                    
+                    07-第三方库
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.4" data-path="../../11 知识点/08-设计模式.html">
+            
+                <a href="../../11 知识点/08-设计模式.html">
+            
+                    
+                    08-设计模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.5" data-path="../../11 知识点/09-算法.html">
+            
+                <a href="../../11 知识点/09-算法.html">
+            
+                    
+                    09-算法
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.6" data-path="../../11 知识点/10-计算机底层基础.html">
+            
+                <a href="../../11 知识点/10-计算机底层基础.html">
+            
+                    
+                    10-计算机底层基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13" data-path="../../12 读书笔记/">
+            
+                <a href="../../12 读书笔记/">
+            
+                    
+                    12 读书笔记
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.13.1" data-path="../../12 读书笔记/1984.html">
+            
+                <a href="../../12 读书笔记/1984.html">
+            
+                    
+                    1984
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13.2" data-path="../../12 读书笔记/两晋.html">
+            
+                <a href="../../12 读书笔记/两晋.html">
+            
+                    
+                    两晋
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13.3" data-path="../../12 读书笔记/我们从未中产过.html">
+            
+                <a href="../../12 读书笔记/我们从未中产过.html">
+            
+                    
+                    我们从未中产过
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13.4" data-path="../../12 读书笔记/文化大革命简史.html">
+            
+                <a href="../../12 读书笔记/文化大革命简史.html">
+            
+                    
+                    文化大革命简史
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13.5" data-path="../../12 读书笔记/认知觉醒.html">
+            
+                <a href="../../12 读书笔记/认知觉醒.html">
+            
+                    
+                    认知觉醒
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.14" data-path="../../13 车道级导航/">
+            
+                <a href="../../13 车道级导航/">
+            
+                    
+                    13 车道级导航
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.14.1" data-path="../../13 车道级导航/01-Frenet坐标系.html">
+            
+                <a href="../../13 车道级导航/01-Frenet坐标系.html">
+            
+                    
+                    01-Frenet坐标系
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.14.2" data-path="../../13 车道级导航/02-最短路径算法.html">
+            
+                <a href="../../13 车道级导航/02-最短路径算法.html">
+            
+                    
+                    02-最短路径算法
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.14.3" data-path="../../13 车道级导航/03-数据结构.html">
+            
+                <a href="../../13 车道级导航/03-数据结构.html">
+            
+                    
+                    03-数据结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            本书使用 GitBook 发布
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../.." >Handler源码分析</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <div id="anchor-navigation-ex-navbar"><i class="fa fa-navicon"></i><ul><li><span class="title-icon "></span><a href="#looper"><b>1. </b>Looper</a></li><ul><li><span class="title-icon "></span><a href="#prepare"><b>1.1. </b>prepare</a></li><li><span class="title-icon "></span><a href="#&#x6784;&#x9020;&#x51FD;&#x6570;"><b>1.2. </b>&#x6784;&#x9020;&#x51FD;&#x6570;</a></li><li><span class="title-icon "></span><a href="#loop"><b>1.3. </b>loop</a></li></ul><li><span class="title-icon "></span><a href="#messagequeue"><b>2. </b>MessageQueue</a></li><ul><li><span class="title-icon "></span><a href="#&#x6784;&#x9020;&#x65B9;&#x6CD5;"><b>2.1. </b>&#x6784;&#x9020;&#x65B9;&#x6CD5;</a></li><li><span class="title-icon "></span><a href="#next"><b>2.2. </b>next</a></li><li><span class="title-icon "></span><a href="#enqueuemessage"><b>2.3. </b>enqueueMessage</a></li><li><span class="title-icon "></span><a href="#nativepollonce"><b>2.4. </b>nativePollOnce</a></li></ul><li><span class="title-icon "></span><a href="#native&#x5C42;&#x7684;&#x6D88;&#x606F;&#x5FAA;&#x73AF;"><b>3. </b>Native&#x5C42;&#x7684;&#x6D88;&#x606F;&#x5FAA;&#x73AF;</a></li><ul><li><span class="title-icon "></span><a href="#native&#x5C42;&#x6D88;&#x606F;&#x5FAA;&#x73AF;"><b>3.1. </b>Native&#x5C42;&#x6D88;&#x606F;&#x5FAA;&#x73AF;</a></li><li><span class="title-icon "></span><a href="#&#x539F;&#x7406;"><b>3.2. </b>&#x539F;&#x7406;</a></li><li><span class="title-icon "></span><a href="#&#x6CE8;&#x518C;fd"><b>3.3. </b>&#x6CE8;&#x518C;fd</a></li><li><span class="title-icon "></span><a href="#write-fd"><b>3.4. </b>write fd</a></li><li><span class="title-icon "></span><a href="#nativepollonce_1"><b>3.5. </b>nativePollOnce</a></li><li><span class="title-icon "></span><a href="#&#x603B;&#x7ED3;"><b>3.6. </b>&#x603B;&#x7ED3;</a></li></ul><li><span class="title-icon "></span><a href="#handler"><b>4. </b>Handler</a></li><ul><li><span class="title-icon "></span><a href="#dispatchmessage"><b>4.1. </b>dispatchMessage</a></li><li><span class="title-icon "></span><a href="#sendmessageattime"><b>4.2. </b>sendMessageAtTime</a></li></ul><li><span class="title-icon "></span><a href="#idlehandler"><b>5. </b>IdleHandler</a></li><li><span class="title-icon "></span><a href="#&#x5F02;&#x6B65;&#x6D88;&#x606F;"><b>6. </b>&#x5F02;&#x6B65;&#x6D88;&#x606F;</a></li><ul><li><span class="title-icon "></span><a href="#&#x8BBE;&#x7F6E;&#x5F02;&#x6B65;&#x6D88;&#x606F;"><b>6.1. </b>&#x8BBE;&#x7F6E;&#x5F02;&#x6B65;&#x6D88;&#x606F;</a></li><li><span class="title-icon "></span><a href="#viewrootimplscheduletraversals"><b>6.2. </b>ViewRootImpl#scheduleTraversals</a></li></ul><li><span class="title-icon "></span><a href="#&#x603B;&#x7ED3;_1"><b>7. </b>&#x603B;&#x7ED3;</a></li><ul><li><span class="title-icon "></span><a href="#&#x6D88;&#x606F;&#x5FAA;&#x73AF;&#x51C6;&#x5907;"><b>7.1. </b>&#x6D88;&#x606F;&#x5FAA;&#x73AF;&#x51C6;&#x5907;</a></li><li><span class="title-icon "></span><a href="#&#x6D88;&#x606F;&#x5FAA;&#x73AF;"><b>7.2. </b>&#x6D88;&#x606F;&#x5FAA;&#x73AF;</a></li><li><span class="title-icon "></span><a href="#&#x7EC6;&#x8282;"><b>7.3. </b>&#x7EC6;&#x8282;</a></li><li><span class="title-icon "></span><a href="#idlehandler&#x603B;&#x7ED3;"><b>7.4. </b>IdleHandler&#x603B;&#x7ED3;</a></li><li><span class="title-icon "></span><a href="#&#x5F02;&#x6B65;&#x6D88;&#x606F;&#x603B;&#x7ED3;"><b>7.5. </b>&#x5F02;&#x6B65;&#x6D88;&#x606F;&#x603B;&#x7ED3;</a></li></ul><li><span class="title-icon "></span><a href="#&#x51E0;&#x4E2A;&#x95EE;&#x9898;"><b>8. </b>&#x51E0;&#x4E2A;&#x95EE;&#x9898;</a></li><ul><li><span class="title-icon "></span><a href="#&#x4E3A;&#x4EC0;&#x4E48;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x53EA;&#x6709;&#x4E00;&#x4E2A;looper&#x3001;&#x53EA;&#x6709;&#x4E00;&#x4E2A;messagequeue&#xFF1F;"><b>8.1. </b>&#x4E3A;&#x4EC0;&#x4E48;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x53EA;&#x6709;&#x4E00;&#x4E2A;Looper&#x3001;&#x53EA;&#x6709;&#x4E00;&#x4E2A;MessageQueue&#xFF1F;</a></li><li><span class="title-icon "></span><a href="#&#x662F;&#x4E0D;&#x662F;&#x4EFB;&#x4F55;&#x7EBF;&#x7A0B;&#x90FD;&#x53EF;&#x4EE5;&#x5B9E;&#x4F8B;&#x5316;handler&#xFF1F;&#x6709;&#x6CA1;&#x6709;&#x4EC0;&#x4E48;&#x7EA6;&#x675F;&#x6761;&#x4EF6;&#xFF1F;"><b>8.2. </b>&#x662F;&#x4E0D;&#x662F;&#x4EFB;&#x4F55;&#x7EBF;&#x7A0B;&#x90FD;&#x53EF;&#x4EE5;&#x5B9E;&#x4F8B;&#x5316;Handler&#xFF1F;&#x6709;&#x6CA1;&#x6709;&#x4EC0;&#x4E48;&#x7EA6;&#x675F;&#x6761;&#x4EF6;&#xFF1F;</a></li><li><span class="title-icon "></span><a href="#looperloop&#x662F;&#x4E00;&#x4E2A;&#x6B7B;&#x5FAA;&#x73AF;&#xFF0C;&#x62FF;&#x4E0D;&#x5230;&#x9700;&#x8981;&#x5904;&#x7406;&#x7684;message&#x5C31;&#x4F1A;&#x963B;&#x585E;&#xFF0C;&#x90A3;&#x5728;ui&#x7EBF;&#x7A0B;&#x4E2D;&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x4F1A;&#x5BFC;&#x81F4;anr&#xFF1F;"><b>8.3. </b>Looper.loop&#x662F;&#x4E00;&#x4E2A;&#x6B7B;&#x5FAA;&#x73AF;&#xFF0C;&#x62FF;&#x4E0D;&#x5230;&#x9700;&#x8981;&#x5904;&#x7406;&#x7684;Message&#x5C31;&#x4F1A;&#x963B;&#x585E;&#xFF0C;&#x90A3;&#x5728;UI&#x7EBF;&#x7A0B;&#x4E2D;&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x4F1A;&#x5BFC;&#x81F4;ANR&#xFF1F;</a></li><li><span class="title-icon "></span><a href="#looper&#x662F;&#x600E;&#x6837;&#x5173;&#x8054;&#x5F53;&#x524D;&#x7EBF;&#x7A0B;&#x7684;&#xFF1F;"><b>8.4. </b>Looper&#x662F;&#x600E;&#x6837;&#x5173;&#x8054;&#x5F53;&#x524D;&#x7EBF;&#x7A0B;&#x7684;&#xFF1F;</a></li><li><span class="title-icon "></span><a href="#looper&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x5E94;&#x8BE5;&#x5F00;&#x542F;"><b>8.5. </b>Looper&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x5E94;&#x8BE5;&#x5F00;&#x542F;</a></li><li><span class="title-icon "></span><a href="#&#x5982;&#x679C;&#x4E00;&#x4E2A;&#x5EF6;&#x8FDF;&#x6D88;&#x606F;&#x8FD8;&#x6CA1;&#x5230;&#x65F6;&#x95F4;&#xFF0C;&#x600E;&#x4E48;&#x5904;&#x7406;&#xFF1F;"><b>8.6. </b>&#x5982;&#x679C;&#x4E00;&#x4E2A;&#x5EF6;&#x8FDF;&#x6D88;&#x606F;&#x8FD8;&#x6CA1;&#x5230;&#x65F6;&#x95F4;&#xFF0C;&#x600E;&#x4E48;&#x5904;&#x7406;&#xFF1F;</a></li><li><span class="title-icon "></span><a href="#&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x5141;&#x8BB8;&#x5728;&#x5B50;&#x7EBF;&#x7A0B;&#x8BBF;&#x95EE;ui&#xFF1F;"><b>8.7. </b>&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x5141;&#x8BB8;&#x5728;&#x5B50;&#x7EBF;&#x7A0B;&#x8BBF;&#x95EE;UI&#xFF1F;</a></li></ul></ul></div><a href="#looper" id="anchorNavigationExGoTop"><i class="fa fa-arrow-up"></i></a><h1 id="looper"><a name="looper" class="anchor-navigation-ex-anchor" href="#looper"><i class="fa fa-link" aria-hidden="true"></i></a>1. Looper</h1>
+<p>&#x5B98;&#x65B9;&#x7684;&#x4F7F;&#x7528;&#x4F8B;&#x5B50;&#xFF1A;</p>
+<pre><code class="lang-java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LooperThread</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Thread</span> </span>{
+    <span class="hljs-keyword">public</span> Handler mHandler;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>{
+        Looper.prepare();
+        mHandler = <span class="hljs-keyword">new</span> Handler() {
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">handleMessage</span><span class="hljs-params">(Message msg)</span> </span>{
+                <span class="hljs-comment">// process incoming messages here</span>
+            }
+        };
+        Looper.loop();
+    }
+}
+</code></pre>
+<h2 id="prepare"><a name="prepare" class="anchor-navigation-ex-anchor" href="#prepare"><i class="fa fa-link" aria-hidden="true"></i></a>1.1. prepare</h2>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">prepare</span><span class="hljs-params">()</span> </span>{
+    prepare(<span class="hljs-keyword">true</span>);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">prepare</span><span class="hljs-params">(<span class="hljs-keyword">boolean</span> quitAllowed)</span> </span>{
+    <span class="hljs-keyword">if</span> (sThreadLocal.get() != <span class="hljs-keyword">null</span>) {
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> RuntimeException(<span class="hljs-string">&quot;Only one Looper may be created per thread&quot;</span>);
+    }
+    sThreadLocal.set(<span class="hljs-keyword">new</span> Looper(quitAllowed));
+}
+</code></pre>
+<p>prepare&#x65B9;&#x6CD5;&#x5728;&#x5F53;&#x524D;&#x7EBF;&#x7A0B;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;Looper&#xFF0C;&#x5E76;&#x8BBE;&#x7F6E;&#x5230;ThreadLocal&#x4E2D;&#x3002;</p>
+<h2 id="&#x6784;&#x9020;&#x51FD;&#x6570;"><a name="&#x6784;&#x9020;&#x51FD;&#x6570;" class="anchor-navigation-ex-anchor" href="#&#x6784;&#x9020;&#x51FD;&#x6570;"><i class="fa fa-link" aria-hidden="true"></i></a>1.2. &#x6784;&#x9020;&#x51FD;&#x6570;</h2>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">Looper</span><span class="hljs-params">(<span class="hljs-keyword">boolean</span> quitAllowed)</span> </span>{
+    mQueue = <span class="hljs-keyword">new</span> MessageQueue(quitAllowed);
+    mThread = Thread.currentThread();
+}
+</code></pre>
+<p>Looper&#x521B;&#x5EFA;&#x65F6;&#xFF0C;&#x4F1A;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;MessageQueue</p>
+<h2 id="loop"><a name="loop" class="anchor-navigation-ex-anchor" href="#loop"><i class="fa fa-link" aria-hidden="true"></i></a>1.3. loop</h2>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">final</span> Looper me = myLooper();
+    <span class="hljs-keyword">if</span> (me == <span class="hljs-keyword">null</span>) {
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> RuntimeException(<span class="hljs-string">&quot;No Looper; Looper.prepare() wasn&apos;t called on this thread.&quot;</span>);
+    }
+    <span class="hljs-keyword">final</span> MessageQueue queue = me.mQueue;
+
+    <span class="hljs-comment">// Make sure the identity of this thread is that of the local process,</span>
+    <span class="hljs-comment">// and keep track of what that identity token actually is.</span>
+    Binder.clearCallingIdentity();
+    <span class="hljs-keyword">final</span> <span class="hljs-keyword">long</span> ident = Binder.clearCallingIdentity();
+
+    <span class="hljs-comment">// Allow overriding a threshold with a system prop. e.g.</span>
+    <span class="hljs-comment">// adb shell &apos;setprop log.looper.1000.main.slow 1 &amp;&amp; stop &amp;&amp; start&apos;</span>
+    <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> thresholdOverride =
+            SystemProperties.getInt(<span class="hljs-string">&quot;log.looper.&quot;</span>
+                    + Process.myUid() + <span class="hljs-string">&quot;.&quot;</span>
+                    + Thread.currentThread().getName()
+                    + <span class="hljs-string">&quot;.slow&quot;</span>, <span class="hljs-number">0</span>);
+
+    <span class="hljs-keyword">boolean</span> slowDeliveryDetected = <span class="hljs-keyword">false</span>;
+
+    <span class="hljs-comment">// &#x5F00;&#x542F;&#x6B7B;&#x5FAA;&#x73AF;</span>
+    <span class="hljs-keyword">for</span> (;;) {
+        <span class="hljs-comment">// &#x8C03;&#x7528;MessageQueue&#x7684;next&#x6765;&#x53D6;&#x51FA;&#x4E00;&#x4E2A;msg</span>
+        Message msg = queue.next(); <span class="hljs-comment">// might block</span>
+        <span class="hljs-keyword">if</span> (msg == <span class="hljs-keyword">null</span>) {
+            <span class="hljs-comment">// No message indicates that the message queue is quitting.</span>
+            <span class="hljs-keyword">return</span>;
+        }
+
+        <span class="hljs-comment">// &#x7701;&#x7565;&#x65E5;&#x5FD7;&#x4EE3;&#x7801;</span>
+        <span class="hljs-comment">// Make sure the observer won&apos;t change while processing a transaction.</span>
+        <span class="hljs-keyword">final</span> Observer observer = sObserver;
+
+        <span class="hljs-keyword">final</span> <span class="hljs-keyword">long</span> traceTag = me.mTraceTag;
+        <span class="hljs-keyword">long</span> slowDispatchThresholdMs = me.mSlowDispatchThresholdMs;
+        <span class="hljs-keyword">long</span> slowDeliveryThresholdMs = me.mSlowDeliveryThresholdMs;
+        <span class="hljs-keyword">if</span> (thresholdOverride &gt; <span class="hljs-number">0</span>) {
+            slowDispatchThresholdMs = thresholdOverride;
+            slowDeliveryThresholdMs = thresholdOverride;
+        }
+        <span class="hljs-keyword">final</span> <span class="hljs-keyword">boolean</span> logSlowDelivery = (slowDeliveryThresholdMs &gt; <span class="hljs-number">0</span>) &amp;&amp; (msg.when &gt; <span class="hljs-number">0</span>);
+        <span class="hljs-keyword">final</span> <span class="hljs-keyword">boolean</span> logSlowDispatch = (slowDispatchThresholdMs &gt; <span class="hljs-number">0</span>);
+
+        <span class="hljs-keyword">final</span> <span class="hljs-keyword">boolean</span> needStartTime = logSlowDelivery || logSlowDispatch;
+        <span class="hljs-keyword">final</span> <span class="hljs-keyword">boolean</span> needEndTime = logSlowDispatch;
+
+        <span class="hljs-keyword">if</span> (traceTag != <span class="hljs-number">0</span> &amp;&amp; Trace.isTagEnabled(traceTag)) {
+            Trace.traceBegin(traceTag, msg.target.getTraceName(msg));
+        }
+
+        <span class="hljs-keyword">final</span> <span class="hljs-keyword">long</span> dispatchStart = needStartTime ? SystemClock.uptimeMillis() : <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">final</span> <span class="hljs-keyword">long</span> dispatchEnd;
+        Object token = <span class="hljs-keyword">null</span>;
+        <span class="hljs-keyword">if</span> (observer != <span class="hljs-keyword">null</span>) {
+            token = observer.messageDispatchStarting();
+        }
+        <span class="hljs-keyword">long</span> origWorkSource = ThreadLocalWorkSource.setUid(msg.workSourceUid);
+        <span class="hljs-keyword">try</span> {
+            <span class="hljs-comment">// &#x901A;&#x8FC7;msg&#x5BF9;&#x5E94;&#x7684;Handler&#x6765;&#x5206;&#x53D1;&#x6B64;msg</span>
+            msg.target.dispatchMessage(msg);
+            <span class="hljs-keyword">if</span> (observer != <span class="hljs-keyword">null</span>) {
+                observer.messageDispatched(token, msg);
+            }
+            dispatchEnd = needEndTime ? SystemClock.uptimeMillis() : <span class="hljs-number">0</span>;
+        } <span class="hljs-keyword">catch</span> (Exception exception) {
+            <span class="hljs-keyword">if</span> (observer != <span class="hljs-keyword">null</span>) {
+                observer.dispatchingThrewException(token, msg, exception);
+            }
+            <span class="hljs-keyword">throw</span> exception;
+        } <span class="hljs-keyword">finally</span> {
+            ThreadLocalWorkSource.restore(origWorkSource);
+            <span class="hljs-keyword">if</span> (traceTag != <span class="hljs-number">0</span>) {
+                Trace.traceEnd(traceTag);
+            }
+        }
+        <span class="hljs-keyword">if</span> (logSlowDelivery) {
+            <span class="hljs-keyword">if</span> (slowDeliveryDetected) {
+                <span class="hljs-keyword">if</span> ((dispatchStart - msg.when) &lt;= <span class="hljs-number">10</span>) {
+                    Slog.w(TAG, <span class="hljs-string">&quot;Drained&quot;</span>);
+                    slowDeliveryDetected = <span class="hljs-keyword">false</span>;
+                }
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-keyword">if</span> (showSlowLog(slowDeliveryThresholdMs, msg.when, dispatchStart, <span class="hljs-string">&quot;delivery&quot;</span>,
+                        msg)) {
+                    <span class="hljs-comment">// Once we write a slow delivery log, suppress until the queue drains.</span>
+                    slowDeliveryDetected = <span class="hljs-keyword">true</span>;
+                }
+            }
+        }
+        <span class="hljs-keyword">if</span> (logSlowDispatch) {
+            showSlowLog(slowDispatchThresholdMs, dispatchStart, dispatchEnd, <span class="hljs-string">&quot;dispatch&quot;</span>, msg);
+        }
+
+        <span class="hljs-keyword">if</span> (logging != <span class="hljs-keyword">null</span>) {
+            logging.println(<span class="hljs-string">&quot;&lt;&lt;&lt;&lt;&lt; Finished to &quot;</span> + msg.target + <span class="hljs-string">&quot; &quot;</span> + msg.callback);
+        }
+
+        <span class="hljs-comment">// Make sure that during the course of dispatching the</span>
+        <span class="hljs-comment">// identity of the thread wasn&apos;t corrupted.</span>
+        <span class="hljs-keyword">final</span> <span class="hljs-keyword">long</span> newIdent = Binder.clearCallingIdentity();
+        <span class="hljs-keyword">if</span> (ident != newIdent) {
+            Log.wtf(TAG, <span class="hljs-string">&quot;Thread identity changed from 0x&quot;</span>
+                    + Long.toHexString(ident) + <span class="hljs-string">&quot; to 0x&quot;</span>
+                    + Long.toHexString(newIdent) + <span class="hljs-string">&quot; while dispatching to &quot;</span>
+                    + msg.target.getClass().getName() + <span class="hljs-string">&quot; &quot;</span>
+                    + msg.callback + <span class="hljs-string">&quot; what=&quot;</span> + msg.what);
+        }
+
+        msg.recycleUnchecked();
+    }
+}
+</code></pre>
+<p>loop&#x5C0F;&#x7ED3;&#xFF1A;</p>
+<ol>
+<li>&#x5728;&#x5F53;&#x524D;&#x7EBF;&#x7A0B;&#x4E2D;&#x5F00;&#x542F;&#x4E00;&#x4E2A;&#x6B7B;&#x5FAA;&#x73AF;&#xFF0C;&#x4ECE;MessageQueue&#x4E2D;&#x53D6;&#x51FA;&#x4E0B;&#x4E00;&#x4E2A;Message&#xFF0C;&#x4EA4;&#x7ED9;Message&#x5BF9;&#x5E94;&#x7684;Handler&#x53BB;&#x5206;&#x53D1;&#x3002;</li>
+</ol>
+<h1 id="messagequeue"><a name="messagequeue" class="anchor-navigation-ex-anchor" href="#messagequeue"><i class="fa fa-link" aria-hidden="true"></i></a>2. MessageQueue</h1>
+<h2 id="&#x6784;&#x9020;&#x65B9;&#x6CD5;"><a name="&#x6784;&#x9020;&#x65B9;&#x6CD5;" class="anchor-navigation-ex-anchor" href="#&#x6784;&#x9020;&#x65B9;&#x6CD5;"><i class="fa fa-link" aria-hidden="true"></i></a>2.1. &#x6784;&#x9020;&#x65B9;&#x6CD5;</h2>
+<pre><code class="lang-java">MessageQueue(<span class="hljs-keyword">boolean</span> quitAllowed) {
+    mQuitAllowed = quitAllowed;
+    mPtr = nativeInit();
+}
+</code></pre>
+<pre><code class="lang-cpp"><span class="hljs-function"><span class="hljs-keyword">static</span> jlong <span class="hljs-title">android_os_MessageQueue_nativeInit</span><span class="hljs-params">(JNIEnv* env, jclass clazz)</span> </span>{
+    NativeMessageQueue* nativeMessageQueue = <span class="hljs-keyword">new</span> NativeMessageQueue();
+    <span class="hljs-keyword">if</span> (!nativeMessageQueue) {
+        jniThrowRuntimeException(env, <span class="hljs-string">&quot;Unable to allocate native queue&quot;</span>);
+        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+    }
+
+    nativeMessageQueue-&gt;incStrong(env);
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">reinterpret_cast</span>&lt;jlong&gt;(nativeMessageQueue);
+}
+</code></pre>
+<p>&#x5728;Native&#x5C42;&#x4E5F;&#x521B;&#x5EFA;&#x4E86;&#x4E00;&#x4E2A;&#x5BF9;&#x5E94;&#x7684;NativeMessageQueue&#x3002;</p>
+<h2 id="next"><a name="next" class="anchor-navigation-ex-anchor" href="#next"><i class="fa fa-link" aria-hidden="true"></i></a>2.2. next</h2>
+<pre><code class="lang-java"><span class="hljs-function">Message <span class="hljs-title">next</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">final</span> <span class="hljs-keyword">long</span> ptr = mPtr;
+    <span class="hljs-keyword">if</span> (ptr == <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+    }
+
+    <span class="hljs-comment">// &#x521D;&#x59CB;&#x5316;&#x4E3A;-1</span>
+    <span class="hljs-keyword">int</span> pendingIdleHandlerCount = -<span class="hljs-number">1</span>; 
+    <span class="hljs-keyword">int</span> nextPollTimeoutMillis = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">for</span> (;;) {
+        <span class="hljs-keyword">if</span> (nextPollTimeoutMillis != <span class="hljs-number">0</span>) {
+            Binder.flushPendingCommands();
+        }
+
+        <span class="hljs-comment">// &#x8C03;&#x7528;&#x8FD9;&#x4E2A;nativePollOnce&#x4F1A;&#x7B49;&#x5F85;wake&#xFF0C;&#x5982;&#x679C;&#x8D85;&#x8FC7;nextPollTimeoutMillis&#x65F6;&#x95F4;&#xFF0C;&#x5219;&#x4E0D;&#x7BA1;&#x6709;&#x6CA1;&#x6709;&#x88AB;&#x5524;&#x9192;&#x90FD;&#x4F1A;&#x8FD4;&#x56DE;&#x3002;</span>
+        nativePollOnce(ptr, nextPollTimeoutMillis);
+
+        <span class="hljs-keyword">synchronized</span> (<span class="hljs-keyword">this</span>) {
+            <span class="hljs-keyword">final</span> <span class="hljs-keyword">long</span> now = SystemClock.uptimeMillis();
+            Message prevMsg = <span class="hljs-keyword">null</span>;
+            Message msg = mMessages;
+            <span class="hljs-keyword">if</span> (msg != <span class="hljs-keyword">null</span> &amp;&amp; msg.target == <span class="hljs-keyword">null</span>) {
+                <span class="hljs-comment">// msg.target&#x4E3A;&#x7A7A;&#x7684;&#x60C5;&#x51B5;&#xFF0C;&#x53EA;&#x6709;MessageQueue.postSyncBarrier&#x3002;&#x5F02;&#x6B65;&#x6D88;&#x606F;&#x53EA;&#x80FD;&#x7ED3;&#x5408;Barrier&#x4F7F;&#x7528;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x8BF4;&#x5C31;&#x7B97;&#x6709;&#x5F02;&#x6B65;&#x7684;&#x6D88;&#x606F;&#xFF0C;&#x4F46;&#x662F;&#x6CA1;&#x6709;&#x8BBE;&#x7F6E;Barrier&#xFF0C;&#x4E5F;&#x662F;&#x6CA1;&#x6548;&#x679C;&#x7684;&#x3002;</span>
+                <span class="hljs-keyword">do</span> {
+                    prevMsg = msg;
+                    msg = msg.next;
+                } <span class="hljs-keyword">while</span> (msg != <span class="hljs-keyword">null</span> &amp;&amp; !msg.isAsynchronous());
+            }
+            <span class="hljs-keyword">if</span> (msg != <span class="hljs-keyword">null</span>) {
+                <span class="hljs-keyword">if</span> (now &lt; msg.when) {
+                    nextPollTimeoutMillis = (<span class="hljs-keyword">int</span>) Math.min(msg.when - now, Integer.MAX_VALUE);
+                } <span class="hljs-keyword">else</span> {
+                    mBlocked = <span class="hljs-keyword">false</span>;
+                    <span class="hljs-keyword">if</span> (prevMsg != <span class="hljs-keyword">null</span>) {
+                        prevMsg.next = msg.next;
+                    } <span class="hljs-keyword">else</span> {
+                        mMessages = msg.next;
+                    }
+                    msg.next = <span class="hljs-keyword">null</span>;
+                    msg.markInUse();
+                    <span class="hljs-keyword">return</span> msg;
+                }
+            } <span class="hljs-keyword">else</span> {
+                nextPollTimeoutMillis = -<span class="hljs-number">1</span>;
+            }
+
+            <span class="hljs-keyword">if</span> (mQuitting) {
+                dispose();
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+            }
+
+            <span class="hljs-comment">// </span>
+            <span class="hljs-keyword">if</span> (pendingIdleHandlerCount &lt; <span class="hljs-number">0</span>
+                    &amp;&amp; (mMessages == <span class="hljs-keyword">null</span> || now &lt; mMessages.when)) {
+                pendingIdleHandlerCount = mIdleHandlers.size();
+            }
+            <span class="hljs-comment">// &#x5982;&#x679C;&#x6CA1;&#x6709;IdleHandler&#xFF0C;&#x5C31;&#x6267;&#x884C;&#x963B;&#x585E;</span>
+            <span class="hljs-keyword">if</span> (pendingIdleHandlerCount &lt;= <span class="hljs-number">0</span>) {
+                mBlocked = <span class="hljs-keyword">true</span>;
+                <span class="hljs-keyword">continue</span>;
+            }
+
+            <span class="hljs-keyword">if</span> (mPendingIdleHandlers == <span class="hljs-keyword">null</span>) {
+                mPendingIdleHandlers = <span class="hljs-keyword">new</span> IdleHandler[Math.max(pendingIdleHandlerCount, <span class="hljs-number">4</span>)];
+            }
+            mPendingIdleHandlers = mIdleHandlers.toArray(mPendingIdleHandlers);
+        }
+
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; pendingIdleHandlerCount; i++) {
+            <span class="hljs-keyword">final</span> IdleHandler idler = mPendingIdleHandlers[i];
+            mPendingIdleHandlers[i] = <span class="hljs-keyword">null</span>; 
+
+            <span class="hljs-keyword">boolean</span> keep = <span class="hljs-keyword">false</span>;
+            <span class="hljs-keyword">try</span> {
+                keep = idler.queueIdle();
+            } <span class="hljs-keyword">catch</span> (Throwable t) {
+                Log.wtf(TAG, <span class="hljs-string">&quot;IdleHandler threw exception&quot;</span>, t);
+            }
+
+            <span class="hljs-keyword">if</span> (!keep) {
+                <span class="hljs-keyword">synchronized</span> (<span class="hljs-keyword">this</span>) {
+                    mIdleHandlers.remove(idler);
+                }
+            }
+        }
+
+        <span class="hljs-comment">// &#x4E00;&#x6B21;next&#x53EA;&#x4F1A;&#x56DE;&#x8C03;&#x4E00;&#x6B21;IdleHandler</span>
+        pendingIdleHandlerCount = <span class="hljs-number">0</span>;
+
+        nextPollTimeoutMillis = <span class="hljs-number">0</span>;
+    }
+}
+</code></pre>
+<p>&#x5C0F;&#x7ED3;&#xFF1A;</p>
+<ol>
+<li>&#x627E;&#x5230;&#x4E0B;&#x4E00;&#x4E2A;Msg&#x5E76;return&#x3002;</li>
+<li>&#x5982;&#x679C;&#x4E0B;&#x4E00;&#x4E2A;&#x6D88;&#x606F;&#x8FD8;&#x6CA1;&#x5230;&#x6267;&#x884C;&#x65F6;&#x95F4;&#xFF0C;&#x5C31;&#x8C03;&#x7528;nativePollOnce&#x7B49;&#x5F85;nextPollTimeoutMillis&#x65F6;&#x95F4;&#x3002;&#x6216;&#x8005;&#x5728;&#x4E0B;&#x6B21;enqueueMessage&#x5E76;&#x4E14;msg&#x7684;when&#x7B26;&#x5408;&#x6267;&#x884C;&#x8981;&#x6C42;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x8C03;&#x7528;nativeWake&#x8FDB;&#x884C;&#x5524;&#x9192;&#x3002;</li>
+</ol>
+<h2 id="enqueuemessage"><a name="enqueuemessage" class="anchor-navigation-ex-anchor" href="#enqueuemessage"><i class="fa fa-link" aria-hidden="true"></i></a>2.3. enqueueMessage</h2>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">boolean</span> <span class="hljs-title">enqueueMessage</span><span class="hljs-params">(Message msg, <span class="hljs-keyword">long</span> when)</span> </span>{
+    <span class="hljs-keyword">if</span> (msg.target == <span class="hljs-keyword">null</span>) {
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalArgumentException(<span class="hljs-string">&quot;Message must have a target.&quot;</span>);
+    }
+    <span class="hljs-keyword">if</span> (msg.isInUse()) {
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalStateException(msg + <span class="hljs-string">&quot; This message is already in use.&quot;</span>);
+    }
+
+    <span class="hljs-keyword">synchronized</span> (<span class="hljs-keyword">this</span>) {
+        <span class="hljs-keyword">if</span> (mQuitting) {
+            IllegalStateException e = <span class="hljs-keyword">new</span> IllegalStateException(
+                    msg.target + <span class="hljs-string">&quot; sending message to a Handler on a dead thread&quot;</span>);
+            Log.w(TAG, e.getMessage(), e);
+            msg.recycle();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
+        }
+
+        msg.markInUse();
+        msg.when = when;
+        Message p = mMessages;
+        <span class="hljs-keyword">boolean</span> needWake;
+        <span class="hljs-keyword">if</span> (p == <span class="hljs-keyword">null</span> || when == <span class="hljs-number">0</span> || when &lt; p.when) {
+            <span class="hljs-comment">// New head, wake up the event queue if blocked.</span>
+            msg.next = p;
+            mMessages = msg;
+            needWake = mBlocked;
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-comment">// Inserted within the middle of the queue.  Usually we don&apos;t have to wake</span>
+            <span class="hljs-comment">// up the event queue unless there is a barrier at the head of the queue</span>
+            <span class="hljs-comment">// and the message is the earliest asynchronous message in the queue.</span>
+            needWake = mBlocked &amp;&amp; p.target == <span class="hljs-keyword">null</span> &amp;&amp; msg.isAsynchronous();
+            Message prev;
+            <span class="hljs-keyword">for</span> (;;) {
+                prev = p;
+                p = p.next;
+                <span class="hljs-keyword">if</span> (p == <span class="hljs-keyword">null</span> || when &lt; p.when) {
+                    <span class="hljs-keyword">break</span>;
+                }
+                <span class="hljs-keyword">if</span> (needWake &amp;&amp; p.isAsynchronous()) {
+                    needWake = <span class="hljs-keyword">false</span>;
+                }
+            }
+            msg.next = p; <span class="hljs-comment">// invariant: p == prev.next</span>
+            prev.next = msg;
+        }
+
+        <span class="hljs-comment">// We can assume mPtr != 0 because mQuitting is false.</span>
+        <span class="hljs-keyword">if</span> (needWake) {
+            nativeWake(mPtr);
+        }
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
+}
+</code></pre>
+<ol>
+<li>Message&#x7684;&#x94FE;&#x8868;&#x987A;&#x5E8F;&#x6309;&#x7167;when&#xFF08;&#x8FD0;&#x884C;&#x65F6;&#x95F4;&#xFF0C;delay&#x7684;&#x539F;&#x7406;&#x5C31;&#x662F;delay&#x52A0;&#x4E0A;&#x5F53;&#x524D;&#x65F6;&#x95F4;&#x5F97;&#x5230;&#x6700;&#x7EC8;&#x7684;&#x8FD0;&#x884C;&#x65F6;&#x95F4;&#xFF09;&#x6765;&#x7684;&#x3002;
+&#x5982;&#x679C;&#x6709;&#x4E2A;Message enqueue&#xFF0C;&#x90A3;&#x4E48;&#x904D;&#x5386;&#x94FE;&#x8868;&#xFF0C;&#x6BD4;&#x8F83;when&#xFF0C;&#x5C06;&#x8BE5;msg&#x653E;&#x7F6E;&#x5728;&#x5408;&#x9002;&#x7684;&#x4F4D;&#x7F6E;&#x3002;</li>
+</ol>
+<h2 id="nativepollonce"><a name="nativepollonce" class="anchor-navigation-ex-anchor" href="#nativepollonce"><i class="fa fa-link" aria-hidden="true"></i></a>2.4. nativePollOnce</h2>
+<blockquote>
+<p>  nativePollOnce(ptr, nextPollTimeoutMillis)&#x6211;&#x4E4B;&#x524D;&#x4E00;&#x76F4;&#x4EE5;&#x4E3A;&#x662F;&#x7B49;nextPollTimeoutMillis&#x65F6;&#x95F4;&#xFF0C;&#x867D;&#x7136;&#x4ECE;&#x6548;&#x679C;&#x4E0A;&#x6765;&#x770B;&#xFF0C;&#x786E;&#x5B9E;&#x7B49;&#x4E86;nextPollTimeoutMillis&#x65F6;&#x95F4;&#xFF0C;&#x4F46;&#x662F;&#x4ECE;&#x51FD;&#x6570;&#x540D;&#x79F0;&#x4E0A;&#x770B;&#x4E0D;&#x51FA;&#x7B49;&#x7684;&#x903B;&#x8F91;&#xFF0C;&#x8FD9;&#x6B21;&#x770B;&#x4E86;native&#x5C42;&#x7684;&#x4EE3;&#x7801;&#xFF0C;&#x53D1;&#x73B0;nativePollOnce&#x548C;native&#x7684;MessageQueue&#x6709;&#x5173;&#x3002;</p>
+</blockquote>
+<p>&#x89C1;Native MessageQueue&#x90E8;&#x5206;</p>
+<h1 id="native&#x5C42;&#x7684;&#x6D88;&#x606F;&#x5FAA;&#x73AF;"><a name="native&#x5C42;&#x7684;&#x6D88;&#x606F;&#x5FAA;&#x73AF;" class="anchor-navigation-ex-anchor" href="#native&#x5C42;&#x7684;&#x6D88;&#x606F;&#x5FAA;&#x73AF;"><i class="fa fa-link" aria-hidden="true"></i></a>3. Native&#x5C42;&#x7684;&#x6D88;&#x606F;&#x5FAA;&#x73AF;</h1>
+<blockquote>
+<p>  &#x6587;&#x6863;&#xFF1A;<a href="https://developer.android.com/ndk/reference/group/looper" target="_blank">https://developer.android.com/ndk/reference/group/looper</a></p>
+</blockquote>
+<h2 id="native&#x5C42;&#x6D88;&#x606F;&#x5FAA;&#x73AF;"><a name="native&#x5C42;&#x6D88;&#x606F;&#x5FAA;&#x73AF;" class="anchor-navigation-ex-anchor" href="#native&#x5C42;&#x6D88;&#x606F;&#x5FAA;&#x73AF;"><i class="fa fa-link" aria-hidden="true"></i></a>3.1. Native&#x5C42;&#x6D88;&#x606F;&#x5FAA;&#x73AF;</h2>
+<p>Native&#x5C42;&#x6D88;&#x606F;&#x5FAA;&#x73AF;&#x7684;&#x5927;&#x81F4;&#x5B9E;&#x73B0;&#x65B9;&#x5F0F;&#xFF08;&#x7EBF;&#x7A0B;&#x4E4B;&#x95F4;&#x7684;&#x6D88;&#x606F;&#x901A;&#x4FE1;&#xFF09;&#xFF1A;</p>
+<ol>
+<li>&#x901A;&#x8FC7;ALooper_acquire&#x83B7;&#x53D6;Native Looper&#x5BF9;&#x8C61;&#x3002;</li>
+<li>&#x901A;&#x8FC7;eventfd&#x521B;&#x5EFA;&#x4E00;&#x4E2A;fd&#xFF0C;&#x5E76;&#x901A;&#x8FC7;ALooper_addFd&#x6765;&#x6CE8;&#x518C;&#x8FD9;&#x4E2A;fd&#x3002;</li>
+<li>&#x5176;&#x5B83;&#x7EBF;&#x7A0B;&#x9700;&#x8981;&#x7ED9;&#x76EE;&#x6807;&#x7EBF;&#x7A0B;&#x53D1;&#x9001;&#x6D88;&#x606F;&#x65F6;&#xFF0C;&#x7528;write(fd)&#x7684;&#x65B9;&#x5F0F;&#x6765;&#x901A;&#x77E5;&#x3002;</li>
+<li>ALooper_addFd&#x8C03;&#x7528;&#x65F6;&#xFF0C;&#x9700;&#x8981;&#x8BBE;&#x7F6E;&#x4E00;&#x4E2A;callback&#xFF0C;&#x5F53;&#x5176;&#x5B83;&#x7EBF;&#x7A0B;&#x901A;&#x77E5;&#x65F6;&#xFF0C;&#x8FD9;&#x4E2A;callback&#x4F1A;&#x6267;&#x884C;&#xFF0C;&#x5E76;&#x4E14;&#x662F;&#x5728;&#x76EE;&#x6807;&#x7EBF;&#x7A0B;&#x6267;&#x884C;&#x7684;&#x3002;</li>
+<li>&#x901A;&#x8FC7;ALooper_release&#x91CA;&#x653E;&#x8D44;&#x6E90;&#x3002;</li>
+</ol>
+<h2 id="&#x539F;&#x7406;"><a name="&#x539F;&#x7406;" class="anchor-navigation-ex-anchor" href="#&#x539F;&#x7406;"><i class="fa fa-link" aria-hidden="true"></i></a>3.2. &#x539F;&#x7406;</h2>
+<p>Native&#x5C42;&#x7684;&#x6D88;&#x606F;&#x5FAA;&#x73AF;&#x5B9E;&#x73B0;&#x7684;&#x6838;&#x5FC3;&#x662F;epoll&#xFF0C;epoll&#x7684;&#x7B80;&#x5355;&#x5B9E;&#x7528;&#x65B9;&#x5F0F;&#x89C1;demo&#x3002;</p>
+<h2 id="&#x6CE8;&#x518C;fd"><a name="&#x6CE8;&#x518C;fd" class="anchor-navigation-ex-anchor" href="#&#x6CE8;&#x518C;fd"><i class="fa fa-link" aria-hidden="true"></i></a>3.3. &#x6CE8;&#x518C;fd</h2>
+<pre><code class="lang-cpp"><span class="hljs-keyword">int</span> Looper::addFd(<span class="hljs-keyword">int</span> fd, <span class="hljs-keyword">int</span> ident, <span class="hljs-keyword">int</span> events, <span class="hljs-keyword">const</span> sp&lt;LooperCallback&gt;&amp; callback, <span class="hljs-keyword">void</span>* data) {
+    <span class="hljs-comment">// ...</span>
+
+    { <span class="hljs-comment">// acquire lock</span>
+        AutoMutex _l(mLock);
+        <span class="hljs-comment">// ...</span>
+        <span class="hljs-comment">// &#x8BE5;fd&#x7684;&#x5E8F;&#x53F7;</span>
+        <span class="hljs-keyword">const</span> SequenceNumber seq = mNextRequestSeq++;
+
+        Request request;
+        request.fd = fd;
+        request.ident = ident;
+        request.events = events;
+        request.callback = callback;
+        request.data = data;
+
+        epoll_event eventItem = createEpollEvent(request.getEpollEvents(), seq);
+        <span class="hljs-keyword">auto</span> seq_it = mSequenceNumberByFd.find(fd);
+        <span class="hljs-keyword">if</span> (seq_it == mSequenceNumberByFd.end()) {
+            <span class="hljs-keyword">int</span> epollResult = epoll_ctl(mEpollFd.get(), EPOLL_CTL_ADD, fd, &amp;eventItem);
+            <span class="hljs-keyword">if</span> (epollResult &lt; <span class="hljs-number">0</span>) {
+                ALOGE(<span class="hljs-string">&quot;Error adding epoll events for fd %d: %s&quot;</span>, fd, strerror(errno));
+                <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+            }
+            mRequests.emplace(seq, request);
+            mSequenceNumberByFd.emplace(fd, seq);
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">int</span> epollResult = epoll_ctl(mEpollFd.get(), EPOLL_CTL_MOD, fd, &amp;eventItem);
+            <span class="hljs-keyword">if</span> (epollResult &lt; <span class="hljs-number">0</span>) {
+                <span class="hljs-keyword">if</span> (errno == ENOENT) {
+                    epollResult = epoll_ctl(mEpollFd.get(), EPOLL_CTL_ADD, fd, &amp;eventItem);
+                    <span class="hljs-keyword">if</span> (epollResult &lt; <span class="hljs-number">0</span>) {
+                        ALOGE(<span class="hljs-string">&quot;Error modifying or adding epoll events for fd %d: %s&quot;</span>,
+                                fd, strerror(errno));
+                        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+                    }
+                    scheduleEpollRebuildLocked();
+                } <span class="hljs-keyword">else</span> {
+                    ALOGE(<span class="hljs-string">&quot;Error modifying epoll events for fd %d: %s&quot;</span>, fd, strerror(errno));
+                    <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+                }
+            }
+            <span class="hljs-keyword">const</span> SequenceNumber oldSeq = seq_it-&gt;second;
+            mRequests.erase(oldSeq);
+            mRequests.emplace(seq, request);
+            seq_it-&gt;second = seq;
+        }
+    } <span class="hljs-comment">// release lock</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;
+}
+</code></pre>
+<p>&#x6CE8;&#x518C;fd&#x4E5F;&#x5C31;&#x662F;&#x901A;&#x8FC7;epoll_ctl&#x6765;add&#x4E00;&#x4E2A;&#x65B0;&#x7684;epoll event&#xFF0C;&#x8BE5;fd&#x5BF9;&#x5E94;&#x4E00;&#x4E2A;&#x65B0;&#x7684;&#x5E8F;&#x53F7;SequenceNumber&#xFF0C;&#x5E76;&#x8D4B;&#x503C;&#x7ED9;epoll event&#x3002;</p>
+<h2 id="write-fd"><a name="write-fd" class="anchor-navigation-ex-anchor" href="#write-fd"><i class="fa fa-link" aria-hidden="true"></i></a>3.4. write fd</h2>
+<p>write fd&#x9700;&#x8981;&#x5176;&#x5B83;&#x7EBF;&#x7A0B;&#x8C03;&#x7528;&#x3002;&#x5982;&#x679C;write&#x4E86;&#xFF0C;&#x90A3;&#x4E48;epoll_wait&#x662F;&#x4F1A;&#x8FD4;&#x56DE;&#x5BF9;&#x5E94;&#x7684;event&#x7684;&#x3002;</p>
+<h2 id="nativepollonce_1"><a name="nativepollonce_1" class="anchor-navigation-ex-anchor" href="#nativepollonce_1"><i class="fa fa-link" aria-hidden="true"></i></a>3.5. nativePollOnce</h2>
+<pre><code class="lang-cpp"><span class="hljs-keyword">int</span> Looper::pollOnce(<span class="hljs-keyword">int</span> timeoutMillis, <span class="hljs-keyword">int</span>* outFd, <span class="hljs-keyword">int</span>* outEvents, <span class="hljs-keyword">void</span>** outData) {
+    <span class="hljs-keyword">int</span> result = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">for</span> (;;) {
+        <span class="hljs-keyword">while</span> (mResponseIndex &lt; mResponses.size()) {
+            <span class="hljs-keyword">const</span> Response&amp; response = mResponses.itemAt(mResponseIndex++);
+            <span class="hljs-keyword">int</span> ident = response.request.ident;
+            <span class="hljs-keyword">if</span> (ident &gt;= <span class="hljs-number">0</span>) {
+                <span class="hljs-keyword">int</span> fd = response.request.fd;
+                <span class="hljs-keyword">int</span> events = response.events;
+                <span class="hljs-keyword">void</span>* data = response.request.data;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> DEBUG_POLL_AND_WAKE</span>
+                ALOGD(<span class="hljs-string">&quot;%p ~ pollOnce - returning signalled identifier %d: &quot;</span>
+                        <span class="hljs-string">&quot;fd=%d, events=0x%x, data=%p&quot;</span>,
+                        <span class="hljs-keyword">this</span>, ident, fd, events, data);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+                <span class="hljs-keyword">if</span> (outFd != <span class="hljs-literal">nullptr</span>) *outFd = fd;
+                <span class="hljs-keyword">if</span> (outEvents != <span class="hljs-literal">nullptr</span>) *outEvents = events;
+                <span class="hljs-keyword">if</span> (outData != <span class="hljs-literal">nullptr</span>) *outData = data;
+                <span class="hljs-keyword">return</span> ident;
+            }
+        }
+
+        <span class="hljs-keyword">if</span> (result != <span class="hljs-number">0</span>) {
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> DEBUG_POLL_AND_WAKE</span>
+            ALOGD(<span class="hljs-string">&quot;%p ~ pollOnce - returning result %d&quot;</span>, <span class="hljs-keyword">this</span>, result);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+            <span class="hljs-keyword">if</span> (outFd != <span class="hljs-literal">nullptr</span>) *outFd = <span class="hljs-number">0</span>;
+            <span class="hljs-keyword">if</span> (outEvents != <span class="hljs-literal">nullptr</span>) *outEvents = <span class="hljs-number">0</span>;
+            <span class="hljs-keyword">if</span> (outData != <span class="hljs-literal">nullptr</span>) *outData = <span class="hljs-literal">nullptr</span>;
+            <span class="hljs-keyword">return</span> result;
+        }
+
+        result = pollInner(timeoutMillis);
+    }
+}
+
+<span class="hljs-keyword">int</span> Looper::pollInner(<span class="hljs-keyword">int</span> timeoutMillis) {
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> DEBUG_POLL_AND_WAKE</span>
+    ALOGD(<span class="hljs-string">&quot;%p ~ pollOnce - waiting: timeoutMillis=%d&quot;</span>, <span class="hljs-keyword">this</span>, timeoutMillis);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+    <span class="hljs-comment">// Adjust the timeout based on when the next message is due.</span>
+    <span class="hljs-keyword">if</span> (timeoutMillis != <span class="hljs-number">0</span> &amp;&amp; mNextMessageUptime != LLONG_MAX) {
+        <span class="hljs-keyword">nsecs_t</span> now = systemTime(SYSTEM_TIME_MONOTONIC);
+        <span class="hljs-keyword">int</span> messageTimeoutMillis = toMillisecondTimeoutDelay(now, mNextMessageUptime);
+        <span class="hljs-keyword">if</span> (messageTimeoutMillis &gt;= <span class="hljs-number">0</span>
+                &amp;&amp; (timeoutMillis &lt; <span class="hljs-number">0</span> || messageTimeoutMillis &lt; timeoutMillis)) {
+            timeoutMillis = messageTimeoutMillis;
+        }
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> DEBUG_POLL_AND_WAKE</span>
+        ALOGD(<span class="hljs-string">&quot;%p ~ pollOnce - next message in %&quot;</span> PRId64 <span class="hljs-string">&quot;ns, adjusted timeout: timeoutMillis=%d&quot;</span>,
+                <span class="hljs-keyword">this</span>, mNextMessageUptime - now, timeoutMillis);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+    }
+
+    <span class="hljs-comment">// Poll.</span>
+    <span class="hljs-keyword">int</span> result = POLL_WAKE;
+    mResponses.clear();
+    mResponseIndex = <span class="hljs-number">0</span>;
+
+    <span class="hljs-comment">// We are about to idle.</span>
+    mPolling = <span class="hljs-literal">true</span>;
+
+    <span class="hljs-keyword">struct</span> epoll_event eventItems[EPOLL_MAX_EVENTS];
+    <span class="hljs-keyword">int</span> eventCount = epoll_wait(mEpollFd.get(), eventItems, EPOLL_MAX_EVENTS, timeoutMillis);
+
+    <span class="hljs-comment">// No longer idling.</span>
+    mPolling = <span class="hljs-literal">false</span>;
+
+    <span class="hljs-comment">// Acquire lock.</span>
+    mLock.lock();
+
+    <span class="hljs-comment">// Rebuild epoll set if needed.</span>
+    <span class="hljs-keyword">if</span> (mEpollRebuildRequired) {
+        mEpollRebuildRequired = <span class="hljs-literal">false</span>;
+        rebuildEpollLocked();
+        <span class="hljs-keyword">goto</span> Done;
+    }
+
+    <span class="hljs-comment">// Check for poll error.</span>
+    <span class="hljs-keyword">if</span> (eventCount &lt; <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">if</span> (errno == EINTR) {
+            <span class="hljs-keyword">goto</span> Done;
+        }
+        ALOGW(<span class="hljs-string">&quot;Poll failed with an unexpected error: %s&quot;</span>, strerror(errno));
+        result = POLL_ERROR;
+        <span class="hljs-keyword">goto</span> Done;
+    }
+
+    <span class="hljs-comment">// Check for poll timeout.</span>
+    <span class="hljs-keyword">if</span> (eventCount == <span class="hljs-number">0</span>) {
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> DEBUG_POLL_AND_WAKE</span>
+        ALOGD(<span class="hljs-string">&quot;%p ~ pollOnce - timeout&quot;</span>, <span class="hljs-keyword">this</span>);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+        result = POLL_TIMEOUT;
+        <span class="hljs-keyword">goto</span> Done;
+    }
+
+    <span class="hljs-comment">// Handle all events.</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> DEBUG_POLL_AND_WAKE</span>
+    ALOGD(<span class="hljs-string">&quot;%p ~ pollOnce - handling events from %d fds&quot;</span>, <span class="hljs-keyword">this</span>, eventCount);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; eventCount; i++) {
+        <span class="hljs-keyword">const</span> SequenceNumber seq = eventItems[i].data.u64;
+        <span class="hljs-keyword">uint32_t</span> epollEvents = eventItems[i].events;
+        <span class="hljs-keyword">if</span> (seq == WAKE_EVENT_FD_SEQ) {
+            <span class="hljs-keyword">if</span> (epollEvents &amp; EPOLLIN) {
+                awoken();
+            } <span class="hljs-keyword">else</span> {
+                ALOGW(<span class="hljs-string">&quot;Ignoring unexpected epoll events 0x%x on wake event fd.&quot;</span>, epollEvents);
+            }
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">const</span> <span class="hljs-keyword">auto</span>&amp; request_it = mRequests.find(seq);
+            <span class="hljs-keyword">if</span> (request_it != mRequests.end()) {
+                <span class="hljs-keyword">const</span> <span class="hljs-keyword">auto</span>&amp; request = request_it-&gt;second;
+                <span class="hljs-keyword">int</span> events = <span class="hljs-number">0</span>;
+                <span class="hljs-keyword">if</span> (epollEvents &amp; EPOLLIN) events |= EVENT_INPUT;
+                <span class="hljs-keyword">if</span> (epollEvents &amp; EPOLLOUT) events |= EVENT_OUTPUT;
+                <span class="hljs-keyword">if</span> (epollEvents &amp; EPOLLERR) events |= EVENT_ERROR;
+                <span class="hljs-keyword">if</span> (epollEvents &amp; EPOLLHUP) events |= EVENT_HANGUP;
+                mResponses.push({.seq = seq, .events = events, .request = request});
+            } <span class="hljs-keyword">else</span> {
+                ALOGW(<span class="hljs-string">&quot;Ignoring unexpected epoll events 0x%x for sequence number %&quot;</span> PRIu64
+                      <span class="hljs-string">&quot; that is no longer registered.&quot;</span>,
+                      epollEvents, seq);
+            }
+        }
+    }
+Done: ;
+
+    <span class="hljs-comment">// Invoke pending message callbacks.</span>
+    mNextMessageUptime = LLONG_MAX;
+    <span class="hljs-keyword">while</span> (mMessageEnvelopes.size() != <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">nsecs_t</span> now = systemTime(SYSTEM_TIME_MONOTONIC);
+        <span class="hljs-keyword">const</span> MessageEnvelope&amp; messageEnvelope = mMessageEnvelopes.itemAt(<span class="hljs-number">0</span>);
+        <span class="hljs-keyword">if</span> (messageEnvelope.uptime &lt;= now) {
+            <span class="hljs-comment">// Remove the envelope from the list.</span>
+            <span class="hljs-comment">// We keep a strong reference to the handler until the call to handleMessage</span>
+            <span class="hljs-comment">// finishes.  Then we drop it so that the handler can be deleted *before*</span>
+            <span class="hljs-comment">// we reacquire our lock.</span>
+            { <span class="hljs-comment">// obtain handler</span>
+                sp&lt;MessageHandler&gt; handler = messageEnvelope.handler;
+                Message message = messageEnvelope.message;
+                mMessageEnvelopes.removeAt(<span class="hljs-number">0</span>);
+                mSendingMessage = <span class="hljs-literal">true</span>;
+                mLock.unlock();
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> DEBUG_POLL_AND_WAKE || DEBUG_CALLBACKS</span>
+                ALOGD(<span class="hljs-string">&quot;%p ~ pollOnce - sending message: handler=%p, what=%d&quot;</span>,
+                        <span class="hljs-keyword">this</span>, handler.get(), message.what);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+                handler-&gt;handleMessage(message);
+            } <span class="hljs-comment">// release handler</span>
+
+            mLock.lock();
+            mSendingMessage = <span class="hljs-literal">false</span>;
+            result = POLL_CALLBACK;
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-comment">// The last message left at the head of the queue determines the next wakeup time.</span>
+            mNextMessageUptime = messageEnvelope.uptime;
+            <span class="hljs-keyword">break</span>;
+        }
+    }
+
+    <span class="hljs-comment">// Release lock.</span>
+    mLock.unlock();
+
+    <span class="hljs-comment">// Invoke all response callbacks.</span>
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">size_t</span> i = <span class="hljs-number">0</span>; i &lt; mResponses.size(); i++) {
+        Response&amp; response = mResponses.editItemAt(i);
+        <span class="hljs-keyword">if</span> (response.request.ident == POLL_CALLBACK) {
+            <span class="hljs-keyword">int</span> fd = response.request.fd;
+            <span class="hljs-keyword">int</span> events = response.events;
+            <span class="hljs-keyword">void</span>* data = response.request.data;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> DEBUG_POLL_AND_WAKE || DEBUG_CALLBACKS</span>
+            ALOGD(<span class="hljs-string">&quot;%p ~ pollOnce - invoking fd event callback %p: fd=%d, events=0x%x, data=%p&quot;</span>,
+                    <span class="hljs-keyword">this</span>, response.request.callback.get(), fd, events, data);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+            <span class="hljs-comment">// Invoke the callback.  Note that the file descriptor may be closed by</span>
+            <span class="hljs-comment">// the callback (and potentially even reused) before the function returns so</span>
+            <span class="hljs-comment">// we need to be a little careful when removing the file descriptor afterwards.</span>
+            <span class="hljs-keyword">int</span> callbackResult = response.request.callback-&gt;handleEvent(fd, events, data);
+            <span class="hljs-keyword">if</span> (callbackResult == <span class="hljs-number">0</span>) {
+                AutoMutex _l(mLock);
+                removeSequenceNumberLocked(response.seq);
+            }
+
+            <span class="hljs-comment">// Clear the callback reference in the response structure promptly because we</span>
+            <span class="hljs-comment">// will not clear the response vector itself until the next poll.</span>
+            response.request.callback.clear();
+            result = POLL_CALLBACK;
+        }
+    }
+    <span class="hljs-keyword">return</span> result;
+}
+</code></pre>
+<blockquote>
+<p>  &#x4EE5;&#x4E0A;&#x4EE3;&#x7801;&#x6CA1;&#x6709;&#x5220;&#x6539;&#xFF0C;&#x4F46;&#x4E5F;&#x4E0D;&#x9700;&#x8981;&#x770B;&#xFF0C;&#x4E0B;&#x9762;&#x603B;&#x7ED3;</p>
+</blockquote>
+<ol>
+<li>&#x5176;&#x5B83;&#x7EBF;&#x7A0B;write fd&#xFF0C;epoll_wait&#x624D;&#x80FD;&#x53D6;&#x5F97;&#x4E8B;&#x4EF6;&#x3002;</li>
+<li>epoll_wait&#x4F1A;&#x963B;&#x585E;&#x7EBF;&#x7A0B;&#xFF0C;&#x7B49;&#x7684;&#x65F6;&#x95F4;&#x5C31;&#x662F;nativePollOnce&#x4F20;&#x5165;&#x7684;&#x65F6;&#x95F4;&#x3002;</li>
+<li>epoll_wait&#x83B7;&#x53D6;&#x5230;&#x4E00;&#x5B9A;&#x7684;events&#x65F6;&#xFF0C;&#x6839;&#x636E;&#x5176;&#x4E2D;&#x7684;&#x5E8F;&#x53F7;&#xFF08;&#x6CE8;&#x518C;fd&#x65F6;&#x4F20;&#x5165;&#x7684;&#xFF09;&#xFF0C;&#x83B7;&#x53D6;&#x5BF9;&#x5E94;&#x7684;Request&#x5BF9;&#x8C61;&#xFF0C;&#x5E76;callback&#xFF08;&#x6CE8;&#x518C;fd&#x65F6;&#x4F20;&#x5165;&#x7684;&#xFF09;&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x5B9E;&#x73B0;&#x4E86;&#x5728;&#x76EE;&#x6807;&#x7EBF;&#x7A0B;&#x56DE;&#x8C03;&#x4E8B;&#x4EF6;&#x3002;</li>
+</ol>
+<h2 id="&#x603B;&#x7ED3;"><a name="&#x603B;&#x7ED3;" class="anchor-navigation-ex-anchor" href="#&#x603B;&#x7ED3;"><i class="fa fa-link" aria-hidden="true"></i></a>3.6. &#x603B;&#x7ED3;</h2>
+<p>Android&#x7684;&#x6D88;&#x606F;&#x5FAA;&#x73AF;&#x4E3B;&#x8981;&#x662F;Java&#x5C42;&#xFF0C;&#x4E0D;&#x8FC7;&#x5728;Java&#x5C42;&#x7684;&#x6D88;&#x606F;&#x7A7A;&#x95F2;&#x671F;&#xFF0C;&#x4E5F;&#x4F1A;&#x901A;&#x8FC7;nativePollOnce&#x8FDB;&#x884C;native&#x5C42;&#x7684;&#x6D88;&#x606F;&#x5FAA;&#x73AF;&#x3002;</p>
+<h1 id="handler"><a name="handler" class="anchor-navigation-ex-anchor" href="#handler"><i class="fa fa-link" aria-hidden="true"></i></a>4. Handler</h1>
+<h2 id="dispatchmessage"><a name="dispatchmessage" class="anchor-navigation-ex-anchor" href="#dispatchmessage"><i class="fa fa-link" aria-hidden="true"></i></a>4.1. dispatchMessage</h2>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">dispatchMessage</span><span class="hljs-params">(@NonNull Message msg)</span> </span>{
+    <span class="hljs-keyword">if</span> (msg.callback != <span class="hljs-keyword">null</span>) {
+        handleCallback(msg);
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">if</span> (mCallback != <span class="hljs-keyword">null</span>) {
+            <span class="hljs-keyword">if</span> (mCallback.handleMessage(msg)) {
+                <span class="hljs-keyword">return</span>;
+            }
+        }
+        handleMessage(msg);
+    }
+}
+</code></pre>
+<ol>
+<li>&#x5982;&#x679C;msg&#x6709;callback&#xFF0C;&#x90A3;&#x4E48;&#x4EA4;&#x7ED9;msg&#x7684;callback&#x6765;&#x6267;&#x884C;&#x6B64;msg&#x3002;</li>
+<li>&#x5982;&#x679C;Handler&#x8BBE;&#x7F6E;&#x4E86;callback&#xFF0C;&#x90A3;&#x4E48;&#x4EA4;&#x7ED9;callback&#x7684;handleMessage&#x6765;&#x5904;&#x7406;&#x3002;</li>
+<li>&#x5982;&#x679C;callback&#x7684;handleMessage&#x8FD4;&#x56DE;false&#xFF0C;&#x90A3;&#x4E48;Handler&#x81EA;&#x5DF1;&#x5904;&#x7406;&#xFF08;handleMessage&#xFF09;&#x3002;</li>
+</ol>
+<h2 id="sendmessageattime"><a name="sendmessageattime" class="anchor-navigation-ex-anchor" href="#sendmessageattime"><i class="fa fa-link" aria-hidden="true"></i></a>4.2. sendMessageAtTime</h2>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">sendMessageAtTime</span><span class="hljs-params">(@NonNull Message msg, <span class="hljs-keyword">long</span> uptimeMillis)</span> </span>{
+    MessageQueue queue = mQueue;
+    <span class="hljs-keyword">if</span> (queue == <span class="hljs-keyword">null</span>) {
+        RuntimeException e = <span class="hljs-keyword">new</span> RuntimeException(
+                <span class="hljs-keyword">this</span> + <span class="hljs-string">&quot; sendMessageAtTime() called with no mQueue&quot;</span>);
+        Log.w(<span class="hljs-string">&quot;Looper&quot;</span>, e.getMessage(), e);
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
+    }
+    <span class="hljs-keyword">return</span> enqueueMessage(queue, msg, uptimeMillis);
+}
+</code></pre>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">enqueueMessage</span><span class="hljs-params">(@NonNull MessageQueue queue, @NonNull Message msg,
+        <span class="hljs-keyword">long</span> uptimeMillis)</span> </span>{
+    msg.target = <span class="hljs-keyword">this</span>;
+    msg.workSourceUid = ThreadLocalWorkSource.getUid();
+
+    <span class="hljs-keyword">if</span> (mAsynchronous) {
+        msg.setAsynchronous(<span class="hljs-keyword">true</span>);
+    }
+    <span class="hljs-keyword">return</span> queue.enqueueMessage(msg, uptimeMillis);
+}
+</code></pre>
+<ol>
+<li>sendMessage&#x7684;&#x4E00;&#x7CFB;&#x5217;&#x65B9;&#x6CD5;&#x6700;&#x7EC8;&#x8C03;&#x7528;&#x7684;&#x662F;sendMessageAtTime&#x3002;</li>
+<li>&#x5C06;msg&#x7684;target&#x8BBE;&#x7F6E;&#x4E3A;Handler&#x672C;&#x8EAB;&#x3002;</li>
+</ol>
+<h1 id="idlehandler"><a name="idlehandler" class="anchor-navigation-ex-anchor" href="#idlehandler"><i class="fa fa-link" aria-hidden="true"></i></a>5. IdleHandler</h1>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TestHandlerActivity</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">BaseDemoActivity</span> </span>{
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String TAG = <span class="hljs-string">&quot;TestHandlerActivity&quot;</span>;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onCreate</span><span class="hljs-params">(Bundle savedInstanceState)</span> </span>{
+        <span class="hljs-keyword">super</span>.onCreate(savedInstanceState);
+        Executors.newSingleThreadExecutor().execute(<span class="hljs-keyword">new</span> MyTestHandler());
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyTestHandler</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Runnable</span> </span>{
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>{
+            Looper.prepare();
+            Looper.myQueue().addIdleHandler(<span class="hljs-keyword">new</span> MyIdleHandler(<span class="hljs-keyword">false</span>));
+            Looper.myQueue().addIdleHandler(<span class="hljs-keyword">new</span> MyIdleHandler(<span class="hljs-keyword">true</span>));
+            <span class="hljs-keyword">final</span> Handler handler = <span class="hljs-keyword">new</span> Handler(<span class="hljs-keyword">new</span> Handler.Callback() {
+                <span class="hljs-meta">@Override</span>
+                <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">handleMessage</span><span class="hljs-params">(@NonNull Message msg)</span> </span>{
+                    Log.i(TAG, <span class="hljs-string">&quot;handleMessage: &quot;</span> + msg.what);
+                    <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
+                }
+            });
+            handler.sendEmptyMessageDelayed(<span class="hljs-number">1</span>, <span class="hljs-number">2000</span>);
+            Looper.loop();
+        }
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyIdleHandler</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">MessageQueue</span>.<span class="hljs-title">IdleHandler</span> </span>{
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">boolean</span> queueIdle;
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">MyIdleHandler</span><span class="hljs-params">(<span class="hljs-keyword">boolean</span> queueIdle)</span> </span>{
+            <span class="hljs-keyword">this</span>.queueIdle = queueIdle;
+            Log.i(TAG, <span class="hljs-string">&quot;new MyIdleHandler: &quot;</span> + hashCode() +
+                    <span class="hljs-string">&quot;, queueIdle = &quot;</span> + queueIdle);
+        }
+
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">queueIdle</span><span class="hljs-params">()</span> </span>{
+            Log.i(TAG, <span class="hljs-string">&quot;queueIdle: &quot;</span> + hashCode());
+            <span class="hljs-keyword">return</span> queueIdle;
+        }
+    }
+
+}
+</code></pre>
+<pre><code>TestHandlerActivity: new MyIdleHandler: 143851827, queueIdle = false
+TestHandlerActivity: new MyIdleHandler: 29127918, queueIdle = true
+TestHandlerActivity: queueIdle: 143851827
+TestHandlerActivity: queueIdle: 29127918
+TestHandlerActivity: handleMessage: 1
+TestHandlerActivity: queueIdle: 29127918
+</code></pre><h1 id="&#x5F02;&#x6B65;&#x6D88;&#x606F;"><a name="&#x5F02;&#x6B65;&#x6D88;&#x606F;" class="anchor-navigation-ex-anchor" href="#&#x5F02;&#x6B65;&#x6D88;&#x606F;"><i class="fa fa-link" aria-hidden="true"></i></a>6. &#x5F02;&#x6B65;&#x6D88;&#x606F;</h1>
+<p>MessageQueue</p>
+<pre><code class="lang-java"><span class="hljs-comment">// &#x8FD9;&#x91CC;msg&#x662F;&#x5934;msg</span>
+<span class="hljs-keyword">if</span> (msg != <span class="hljs-keyword">null</span> &amp;&amp; msg.target == <span class="hljs-keyword">null</span>) {
+    <span class="hljs-comment">// msg.target&#x4E3A;&#x7A7A;&#x7684;&#x60C5;&#x51B5;&#xFF0C;&#x53EA;&#x6709;MessageQueue.postSyncBarrier&#x3002;&#x5F02;&#x6B65;&#x6D88;&#x606F;&#x53EA;&#x80FD;&#x7ED3;&#x5408;Barrier&#x4F7F;&#x7528;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x8BF4;&#x5C31;&#x7B97;&#x6709;&#x5F02;&#x6B65;&#x7684;&#x6D88;&#x606F;&#xFF0C;&#x4F46;&#x662F;&#x6CA1;&#x6709;&#x8BBE;&#x7F6E;Barrier&#xFF0C;&#x4E5F;&#x662F;&#x6CA1;&#x6548;&#x679C;&#x7684;&#x3002;</span>
+    <span class="hljs-keyword">do</span> {
+        prevMsg = msg;
+        msg = msg.next;
+    } <span class="hljs-keyword">while</span> (msg != <span class="hljs-keyword">null</span> &amp;&amp; !msg.isAsynchronous());
+}
+</code></pre>
+<p>&#x5728;MessageQueue&#x7684;next&#x65B9;&#x6CD5;&#x4E2D;&#xFF0C;&#x5982;&#x679C;&#x53D1;&#x73B0;&#x5934;msg&#x662F;&#x6CA1;&#x6709;target&#xFF0C;&#x90A3;&#x4E48;&#x5C31;&#x4E00;&#x76F4;&#x627E;&#x4E0B;&#x4E00;&#x4E2A;&#x5F02;&#x6B65;&#x6D88;&#x606F;&#x3002;</p>
+<h2 id="&#x8BBE;&#x7F6E;&#x5F02;&#x6B65;&#x6D88;&#x606F;"><a name="&#x8BBE;&#x7F6E;&#x5F02;&#x6B65;&#x6D88;&#x606F;" class="anchor-navigation-ex-anchor" href="#&#x8BBE;&#x7F6E;&#x5F02;&#x6B65;&#x6D88;&#x606F;"><i class="fa fa-link" aria-hidden="true"></i></a>6.1. &#x8BBE;&#x7F6E;&#x5F02;&#x6B65;&#x6D88;&#x606F;</h2>
+<pre><code class="lang-java"><span class="hljs-comment">/**
+ * Sets whether the message is asynchronous, meaning that it is not
+ * subject to {<span class="hljs-doctag">@link</span> Looper} synchronization barriers.
+ * &lt;p&gt;
+ * Certain operations, such as view invalidation, may introduce synchronization
+ * barriers into the {<span class="hljs-doctag">@link</span> Looper}&apos;s message queue to prevent subsequent messages
+ * from being delivered until some condition is met.  In the case of view invalidation,
+ * messages which are posted after a call to {<span class="hljs-doctag">@link</span> android.view.View#invalidate}
+ * are suspended by means of a synchronization barrier until the next frame is
+ * ready to be drawn.  The synchronization barrier ensures that the invalidation
+ * request is completely handled before resuming.
+ * &lt;/p&gt;&lt;p&gt;
+ * Asynchronous messages are exempt from synchronization barriers.  They typically
+ * represent interrupts, input events, and other signals that must be handled independently
+ * even while other work has been suspended.
+ * &lt;/p&gt;&lt;p&gt;
+ * Note that asynchronous messages may be delivered out of order with respect to
+ * synchronous messages although they are always delivered in order among themselves.
+ * If the relative order of these messages matters then they probably should not be
+ * asynchronous in the first place.  Use with caution.
+ * &lt;/p&gt;
+ *
+ * <span class="hljs-doctag">@param</span> async True if the message is asynchronous.
+ *
+ * <span class="hljs-doctag">@see</span> #isAsynchronous()
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setAsynchronous</span><span class="hljs-params">(<span class="hljs-keyword">boolean</span> async)</span> </span>{
+    <span class="hljs-keyword">if</span> (async) {
+        flags |= FLAG_ASYNCHRONOUS;
+    } <span class="hljs-keyword">else</span> {
+        flags &amp;= ~FLAG_ASYNCHRONOUS;
+    }
+}
+</code></pre>
+<p>&#x8FD9;&#x91CC;&#x4E3B;&#x8981;&#x8D34;&#x51FA;&#x6CE8;&#x91CA;&#x3002;&#x610F;&#x601D;&#x662F;&#xFF0C;&#x67D0;&#x4E9B;&#x64CD;&#x4F5C;&#xFF0C;&#x6BD4;&#x5982;view&#x7684;invalidation&#x3002;&#x901A;&#x8FC7;&#x653E;&#x7F6E;&#x4E00;&#x4E2A;barrier&#xFF0C;&#x6765;&#x963B;&#x6B62;&#x6709;&#x6D88;&#x606F;&#x653E;&#x5728;&#x5B83;&#x524D;&#x9762;&#x3002;</p>
+<blockquote>
+<p>  &#x4E2A;&#x4EBA;&#x7406;&#x89E3;&#xFF1A;</p>
+<p>  view&#x7684;&#x5237;&#x65B0;&#x4E5F;&#x662F;&#x901A;&#x8FC7;Handler&#x6765;&#x5B8C;&#x6210;&#x7684;&#x3002;&#x5982;&#x679C;view&#x9700;&#x8981;&#x5237;&#x65B0;&#xFF0C;&#x4F46;&#x662F;&#x6709;&#x4E2A;&#x6D88;&#x606F;&#x653E;&#x5728;&#x5237;&#x65B0;&#x6D88;&#x606F;&#x524D;&#x4E86;&#xFF0C;&#x90A3;&#x4E48;&#x5C31;&#x65E0;&#x6CD5;&#x6267;&#x884C;&#x5237;&#x65B0;&#x3002;</p>
+<p>  &#x76F8;&#x5F53;&#x4E8E;&#x9AD8;&#x4F18;&#x5904;&#x7406;&#x6D88;&#x606F;&#x3002;</p>
+</blockquote>
+<h2 id="viewrootimplscheduletraversals"><a name="viewrootimplscheduletraversals" class="anchor-navigation-ex-anchor" href="#viewrootimplscheduletraversals"><i class="fa fa-link" aria-hidden="true"></i></a>6.2. ViewRootImpl#scheduleTraversals</h2>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">scheduleTraversals</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">if</span> (!mTraversalScheduled) {
+        mTraversalScheduled = <span class="hljs-keyword">true</span>;
+        mTraversalBarrier = mHandler.getLooper().getQueue().postSyncBarrier();
+        mChoreographer.postCallback(
+                Choreographer.CALLBACK_TRAVERSAL, mTraversalRunnable, <span class="hljs-keyword">null</span>);
+        notifyRendererOfFramePending();
+        pokeDrawLockIfNeeded();
+    }
+}
+</code></pre>
+<p>Choreographer.java</p>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">postCallback</span><span class="hljs-params">(<span class="hljs-keyword">int</span> callbackType, Runnable action, Object token)</span> </span>{
+    postCallbackDelayed(callbackType, action, token, <span class="hljs-number">0</span>);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">postCallbackDelayed</span><span class="hljs-params">(<span class="hljs-keyword">int</span> callbackType, Runnable action, Object token, <span class="hljs-keyword">long</span> delayMillis)</span> </span>{
+    <span class="hljs-comment">// ...</span>
+    postCallbackDelayedInternal(callbackType, action, token, delayMillis);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">postCallbackDelayedInternal</span><span class="hljs-params">(<span class="hljs-keyword">int</span> callbackType, Object action, Object token, <span class="hljs-keyword">long</span> delayMillis)</span> </span>{
+    <span class="hljs-comment">// ...</span>
+    <span class="hljs-keyword">synchronized</span> (mLock) {
+        <span class="hljs-keyword">final</span> <span class="hljs-keyword">long</span> now = SystemClock.uptimeMillis();
+        <span class="hljs-keyword">final</span> <span class="hljs-keyword">long</span> dueTime = now + delayMillis;
+        mCallbackQueues[callbackType].addCallbackLocked(dueTime, action, token);
+
+        <span class="hljs-keyword">if</span> (dueTime &lt;= now) {
+            scheduleFrameLocked(now);
+        } <span class="hljs-keyword">else</span> {
+            Message msg = mHandler.obtainMessage(MSG_DO_SCHEDULE_CALLBACK, action);
+            msg.arg1 = callbackType;
+            <span class="hljs-comment">// &#x8BBE;&#x7F6E;&#x5F02;&#x6B65;&#x6807;&#x8BB0;</span>
+            msg.setAsynchronous(<span class="hljs-keyword">true</span>);
+            mHandler.sendMessageAtTime(msg, dueTime);
+        }
+    }
+}
+</code></pre>
+<p>ViewRootImpl&#x5728;&#x8FDB;&#x884C;view&#x7684;&#x5237;&#x65B0;&#x65F6;&#xFF0C;&#x653E;&#x7F6E;&#x4E86;&#x4E00;&#x4E2A;Barrier&#x3002;&#x7136;&#x540E;post&#x4E86;&#x4E00;&#x4E2A;&#x5F02;&#x6B65;&#x6D88;&#x606F;&#xFF0C;&#x6539;&#x6D88;&#x606F;&#x7528;&#x4E8E;&#x4E3B;&#x7EBF;&#x7A0B;&#x6E32;&#x67D3;&#x3002;</p>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">postSyncBarrier</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">return</span> postSyncBarrier(SystemClock.uptimeMillis());
+}
+
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> <span class="hljs-title">postSyncBarrier</span><span class="hljs-params">(<span class="hljs-keyword">long</span> when)</span> </span>{
+    <span class="hljs-comment">// Enqueue a new sync barrier token.</span>
+    <span class="hljs-comment">// We don&apos;t need to wake the queue because the purpose of a barrier is to stall it.</span>
+    <span class="hljs-keyword">synchronized</span> (<span class="hljs-keyword">this</span>) {
+        <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> token = mNextBarrierToken++;
+        <span class="hljs-keyword">final</span> Message msg = Message.obtain();
+        msg.markInUse();
+        msg.when = when;
+        msg.arg1 = token;
+
+        Message prev = <span class="hljs-keyword">null</span>;
+        Message p = mMessages;
+        <span class="hljs-keyword">if</span> (when != <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">while</span> (p != <span class="hljs-keyword">null</span> &amp;&amp; p.when &lt;= when) {
+                prev = p;
+                p = p.next;
+            }
+        }
+        <span class="hljs-keyword">if</span> (prev != <span class="hljs-keyword">null</span>) { <span class="hljs-comment">// invariant: p == prev.next</span>
+            msg.next = p;
+            prev.next = msg;
+        } <span class="hljs-keyword">else</span> {
+            msg.next = p;
+            mMessages = msg;
+        }
+        <span class="hljs-keyword">return</span> token;
+    }
+}
+</code></pre>
+<p>&#x5C0F;&#x7ED3;&#xFF1A;</p>
+<ol>
+<li>&#x6D88;&#x606F;&#x961F;&#x5217;&#x5FAA;&#x73AF;&#x6267;&#x884C;&#xFF0C;&#x4E0D;&#x4E00;&#x5B9A;&#x662F;&#x5B8C;&#x5168;&#x6309;&#x7167;&#x65F6;&#x95F4;&#x4E32;&#x884C;&#x6267;&#x884C;&#x7684;&#xFF0C;&#x662F;&#x53EF;&#x4EE5;&#x6709;&#x5F02;&#x6B65;&#x6D88;&#x606F;&#x7684;&#x3002;</li>
+<li>&#x5F02;&#x6B65;&#x6D88;&#x606F;&#x76F8;&#x5F53;&#x4E8E;&#x9AD8;&#x4F18;msg&#xFF0C;&#x5F53;&#x5B58;&#x5728;Barrier&#x4E14;&#x5B58;&#x5728;&#x5F02;&#x6B65;&#x6D88;&#x606F;&#x65F6;&#xFF0C;&#x5F02;&#x6B65;&#x6D88;&#x606F;&#x4F1A;&#x88AB;&#x5904;&#x7406;&#x3002;</li>
+<li>&#x5F02;&#x6B65;&#x6D88;&#x606F;&#x5FC5;&#x987B;&#x7ED3;&#x5408;Barrier&#x4F7F;&#x7528;&#xFF0C;&#x5982;&#x679C;&#x6CA1;&#x6709;&#x8BBE;&#x7F6E;Barrier&#xFF0C;&#x4E5F;&#x662F;&#x6CA1;&#x6548;&#x679C;&#x7684;&#x3002;</li>
+<li>&#x8BBE;&#x7F6E;&#x4E86;Barrier&#xFF0C;&#x8981;&#x5BF9;&#x5E94;&#x7684;&#x79FB;&#x9664;&#x6389;&#x5B83;&#xFF0C;&#x5426;&#x5219;&#x540C;&#x6B65;&#x6D88;&#x606F;&#x518D;&#x4E5F;&#x4E0D;&#x4F1A;&#x88AB;&#x5904;&#x7406;&#x3002;</li>
+</ol>
+<h1 id="&#x603B;&#x7ED3;_1"><a name="&#x603B;&#x7ED3;_1" class="anchor-navigation-ex-anchor" href="#&#x603B;&#x7ED3;_1"><i class="fa fa-link" aria-hidden="true"></i></a>7. &#x603B;&#x7ED3;</h1>
+<ol>
+<li>Handler&#x5BF9;&#x5E94;Android&#x7684;&#x6D88;&#x606F;&#x673A;&#x5236;&#x3002;</li>
+<li>Android&#x6D88;&#x606F;&#x673A;&#x5236;&#x4E3B;&#x8981;&#x662F;&#x6307;Handler + Looper + MessageQueue&#x3002;</li>
+<li>&#x7EBF;&#x7A0B;&#x662F;&#x9ED8;&#x8BA4;&#x6CA1;&#x6709;Looper&#xFF0C;&#x5982;&#x679C;&#x9700;&#x8981;&#x4F7F;&#x7528;Handler&#x9700;&#x8981;&#x521B;&#x5EFA;Looper&#x3002;Looper&#x521B;&#x5EFA;&#x65F6;&#x4F1A;&#x521B;&#x5EFA;MessageQueue&#x3002;</li>
+<li>MessageQueue&#x5185;&#x90E8;&#x7528;&#x5355;&#x94FE;&#x8868;&#x5B58;&#x50A8;Message&#x3002;</li>
+</ol>
+<h2 id="&#x6D88;&#x606F;&#x5FAA;&#x73AF;&#x51C6;&#x5907;"><a name="&#x6D88;&#x606F;&#x5FAA;&#x73AF;&#x51C6;&#x5907;" class="anchor-navigation-ex-anchor" href="#&#x6D88;&#x606F;&#x5FAA;&#x73AF;&#x51C6;&#x5907;"><i class="fa fa-link" aria-hidden="true"></i></a>7.1. &#x6D88;&#x606F;&#x5FAA;&#x73AF;&#x51C6;&#x5907;</h2>
+<ol>
+<li>&#x901A;&#x8FC7;Looper.prepare&#x521B;&#x5EFA;&#x4E00;&#x4E2A;Looper&#x5BF9;&#x8C61;&#xFF0C;&#x5E76;&#x653E;&#x5165;&#x5F53;&#x524D;&#x7EBF;&#x7A0B;&#x7684;ThreadLocal&#x4E2D;&#x3002;</li>
+<li>&#x521B;&#x5EFA;Looper&#x65F6;&#xFF0C;&#x4F1A;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;MessageQueue&#x3002;</li>
+<li>&#x8C03;&#x7528;Looper.loop&#x5F00;&#x542F;&#x6D88;&#x606F;&#x5FAA;&#x73AF;&#xFF0C;&#x4E0D;&#x65AD;&#x8C03;&#x7528;MessageQueue&#x7684;next&#x65B9;&#x6CD5;&#x53D6;&#x51FA;&#x4E00;&#x4E2A;msg&#xFF0C;&#x5E76;&#x901A;&#x8FC7;msg&#x5BF9;&#x5E94;&#x7684;Handler&#x6765;&#x5904;&#x7406;&#x6B64;msg&#x3002;</li>
+</ol>
+<h2 id="&#x6D88;&#x606F;&#x5FAA;&#x73AF;"><a name="&#x6D88;&#x606F;&#x5FAA;&#x73AF;" class="anchor-navigation-ex-anchor" href="#&#x6D88;&#x606F;&#x5FAA;&#x73AF;"><i class="fa fa-link" aria-hidden="true"></i></a>7.2. &#x6D88;&#x606F;&#x5FAA;&#x73AF;</h2>
+<ol>
+<li>Handler post&#x4E00;&#x4E2A;runnable&#x6216;send&#x4E00;&#x4E2A;message&#xFF08;post&#x6700;&#x7EC8;&#x662F;&#x901A;&#x8FC7;send&#x5B8C;&#x6210;&#x7684;&#xFF09;&#x3002;</li>
+<li>&#x8FD9;&#x4E2A;message&#x4F1A;&#x5E26;&#x4E0A;&#x5F53;&#x524D;&#x7684;&#x65F6;&#x95F4;&#x6233;&#xFF0C;&#x5982;&#x679C;&#x662F;delay&#x6D88;&#x606F;&#xFF0C;&#x5219;&#x52A0;&#x4E0A;delay&#x3002;</li>
+<li>&#x8C03;&#x7528;MessageQueue&#x7684;enqueueMessage&#x65B9;&#x6CD5;&#x5C06;&#x6D88;&#x606F;&#x653E;&#x5165;&#x6D88;&#x606F;&#x961F;&#x5217;&#x4E2D;&#xFF0C;msg&#x662F;&#x6309;&#x7167;&#x65F6;&#x95F4;&#x6233;&#xFF08;when&#xFF09;&#x6392;&#x5E8F;&#x7684;&#x3002;</li>
+<li>&#x6700;&#x540E;Looper&#x5904;&#x7406;&#xFF0C;&#x4E0D;&#x65AD;&#x7684;&#x83B7;&#x53D6;&#x6D88;&#x606F;&#xFF0C;&#x5E76;&#x901A;&#x8FC7;msg&#x5BF9;&#x5E94;&#x7684;Handler&#x6765;&#x5904;&#x7406;&#x6B64;msg&#x3002;</li>
+<li>&#x5982;&#x679C;msg&#x6709;callback&#xFF0C;&#x90A3;&#x4E48;&#x6267;&#x884C;callback&#x3002;&#x5982;&#x679C;&#x6CA1;&#x6709;callback&#xFF0C;&#x4F46;&#x662F;Handler&#x8BBE;&#x7F6E;&#x4E86;callback&#xFF0C;&#x90A3;&#x4E48;&#x4EA4;&#x7ED9;callback&#x7684;handleMessage&#x6765;&#x5904;&#x7406;&#x3002;&#x5982;&#x679C;callback&#x7684;handleMessage&#x8FD4;&#x56DE;false&#xFF0C;&#x90A3;&#x4E48;Handler&#x81EA;&#x5DF1;&#x5904;&#x7406;&#xFF08;handleMessage&#xFF09;&#x3002;</li>
+</ol>
+<h2 id="&#x7EC6;&#x8282;"><a name="&#x7EC6;&#x8282;" class="anchor-navigation-ex-anchor" href="#&#x7EC6;&#x8282;"><i class="fa fa-link" aria-hidden="true"></i></a>7.3. &#x7EC6;&#x8282;</h2>
+<ol>
+<li>&#x521B;&#x5EFA;&#x4E00;&#x4E2A;Message&#x3002;&#x7528;obtain&#x65B9;&#x6CD5;&#x662F;&#x4E3A;&#x4E86;&#x590D;&#x7528;Message&#xFF0C;&#x56E0;&#x4E3A;Handler&#x7684;&#x6D88;&#x606F;&#x5FAA;&#x73AF;&#x662F;&#x5F88;&#x9891;&#x7E41;&#x7684;&#x3002;</li>
+<li>Handler&#x7684;sendMessage&#x7CFB;&#x5217;&#x65B9;&#x6CD5;&#x548C;post&#x7CFB;&#x5217;&#x65B9;&#x6CD5;&#xFF08;post&#x5185;&#x90E8;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;msg&#xFF0C;&#x7136;&#x540E;&#x5C06;runnable&#x8BBE;&#x7F6E;&#x7ED9;msg&#xFF09;&#xFF0C;&#x6700;&#x7EC8;&#x8C03;&#x7528;enqueueMessage&#x65B9;&#x6CD5;&#x8C03;&#x7ED9;messageQueue&#x3002;</li>
+<li>&#x5982;&#x679C;&#x5F53;&#x524D;MessageQueue&#x963B;&#x585E;&#x4E86;&#xFF0C;&#x5E76;&#x4E14;&#x8FD9;&#x4E2A;msg&#x88AB;&#x653E;&#x5728;MessageQueue&#x7684;&#x5F00;&#x5934;&#xFF0C;&#x90A3;&#x4E48;&#x5C31;&#x5524;&#x9192;&#x5F53;&#x524D;&#x7EBF;&#x7A0B;&#xFF08;nativeWake&#xFF09;&#x3002;</li>
+<li>Looper&#x5185;&#x90E8;&#x662F;&#x4E00;&#x4E2A;&#x6B7B;&#x5FAA;&#x73AF;&#xFF0C;&#x901A;&#x8FC7;MessageQueue&#x7684;next&#x65B9;&#x6CD5;&#x627E;&#x5230;&#x65B0;msg&#xFF0C;&#x4EA4;&#x7ED9;&#x7531;Handler&#x7684;dispatchMessage&#x65B9;&#x6CD5;&#x6765;&#x5904;&#x7406;&#x3002;
+&#x5982;&#x679C;&#x5934;msg&#x8FD8;&#x6CA1;&#x5230;&#x6267;&#x884C;&#x65F6;&#x95F4;&#xFF08;now &lt; when&#xFF09;&#xFF0C;&#x90A3;&#x4E48;&#x5C31;&#x963B;&#x585E;&#x5F53;&#x524D;&#x7EBF;&#x7A0B;&#x4E00;&#x6BB5;&#x65F6;&#x95F4;&#xFF08;nativePollOnce&#xFF09;&#x3002;</li>
+<li>&#x5982;&#x679C;&#x8FD9;&#x4E2A;message&#x5185;&#x90E8;&#x6709;&#x4E2A;runnable&#xFF0C;&#x5C31;&#x6267;&#x884C;runnable&#x3002;
+&#x5982;&#x679C;Handler&#x6709;Callback&#xFF0C;&#x5C31;&#x6267;&#x884C;Callback&#x7684;handleMessage&#x65B9;&#x6CD5;&#xFF0C;&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x6709;&#x4E2A;boolean&#x8FD4;&#x56DE;&#x503C;&#xFF0C;&#x5982;&#x679C;&#x8FD4;&#x56DE;false&#xFF0C;&#x5C31;&#x6267;&#x884C;Handler&#x4E2D;&#x7684;handleMessage&#x65B9;&#x6CD5;&#xFF0C;&#x5982;&#x679C;&#x4E3A;true&#xFF0C;&#x90A3;&#x4E48;&#x6D88;&#x606F;&#x5904;&#x7406;&#x5B8C;&#x6BD5;&#x3002;</li>
+</ol>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">dispatchMessage</span><span class="hljs-params">(@NonNull Message msg)</span> </span>{
+    <span class="hljs-keyword">if</span> (msg.callback != <span class="hljs-keyword">null</span>) {
+        handleCallback(msg);
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">if</span> (mCallback != <span class="hljs-keyword">null</span>) {
+            <span class="hljs-keyword">if</span> (mCallback.handleMessage(msg)) {
+                <span class="hljs-keyword">return</span>;
+            }
+        }
+        handleMessage(msg);
+    }
+}
+</code></pre>
+<h2 id="idlehandler&#x603B;&#x7ED3;"><a name="idlehandler&#x603B;&#x7ED3;" class="anchor-navigation-ex-anchor" href="#idlehandler&#x603B;&#x7ED3;"><i class="fa fa-link" aria-hidden="true"></i></a>7.4. IdleHandler&#x603B;&#x7ED3;</h2>
+<ol>
+<li>&#x5982;&#x679C;MessageQueue&#x6CE8;&#x518C;&#x4E86;IdleHandler&#xFF0C;&#x90A3;&#x4E48;&#x5728;&#x6CA1;&#x6709;msg&#x6267;&#x884C;&#x7684;&#x7A7A;&#x6863;&#x671F;&#x4F1A;&#x56DE;&#x8C03;IdleHandler&#x7684;queueIdle&#x65B9;&#x6CD5;&#x3002;&#x5982;&#x679C;&#x8FD4;&#x56DE;false&#xFF0C;&#x5219;&#x8BE5;IdleHandler&#x88AB;&#x79FB;&#x9664;&#x51FA;MessageQueue&#xFF1B;&#x5982;&#x679C;&#x8FD4;&#x56DE;true&#xFF0C;&#x5219;&#x7EE7;&#x7EED;&#x4FDD;&#x7559;&#x8BE5;IdleHandler&#x3002;&#x4E00;&#x4E2A;next&#x65B9;&#x6CD5;&#x53EA;&#x4F1A;&#x56DE;&#x8C03;&#x4E00;&#x6B21;IdleHandler&#x3002;&#x5982;&#x679C;&#x56DE;&#x8C03;&#x5B8C;IdleHandler&#x8FD8;&#x6CA1;&#x5230;msg&#x7684;&#x6267;&#x884C;&#x65F6;&#x95F4;&#xFF0C;&#x90A3;&#x4E48;&#x4F9D;&#x7136;&#x8C03;&#x7528;nativePollOnce&#x8FDB;&#x884C;&#x963B;&#x585E;&#x3002;</li>
+</ol>
+<h2 id="&#x5F02;&#x6B65;&#x6D88;&#x606F;&#x603B;&#x7ED3;"><a name="&#x5F02;&#x6B65;&#x6D88;&#x606F;&#x603B;&#x7ED3;" class="anchor-navigation-ex-anchor" href="#&#x5F02;&#x6B65;&#x6D88;&#x606F;&#x603B;&#x7ED3;"><i class="fa fa-link" aria-hidden="true"></i></a>7.5. &#x5F02;&#x6B65;&#x6D88;&#x606F;&#x603B;&#x7ED3;</h2>
+<ol>
+<li>&#x5F02;&#x6B65;&#x6D88;&#x606F;&#x5E38;&#x89C1;&#x7528;&#x9014;&#xFF1A;ViewRootImpl&#x5728;&#x8FDB;&#x884C;view&#x7684;&#x5237;&#x65B0;&#x65F6;&#xFF0C;&#x653E;&#x7F6E;&#x4E86;&#x4E00;&#x4E2A;Barrier&#xFF0C;&#x7D27;&#x63A5;&#x7740;post&#x4E86;&#x4E00;&#x4E2A;&#x5F02;&#x6B65;&#x6D88;&#x606F;&#xFF0C;&#x8BE5;&#x6D88;&#x606F;&#x7528;&#x4E8E;&#x4E3B;&#x7EBF;&#x7A0B;&#x6E32;&#x67D3;&#x3002;</li>
+<li>Barrier&#x6D88;&#x606F;&#x5165;&#x5217;&#x65F6;&#xFF0C;&#x5982;&#x679C;Barrier&#x662F;&#x7B2C;&#x4E00;&#x4E2A;&#x6D88;&#x606F;&#xFF0C;&#x90A3;&#x4E48;&#x4F1A;&#x5524;&#x9192;&#x7EBF;&#x7A0B;&#x3002;</li>
+<li>&#x6D88;&#x606F;&#x961F;&#x5217;&#x5FAA;&#x73AF;&#x65F6;&#xFF0C;&#x5F53;&#x9996;&#x4E2A;&#x6D88;&#x606F;&#x4E3A;Barrier&#x65F6;&#xFF0C;&#x4F1A;&#x53BB;&#x5BFB;&#x627E;&#x7B2C;&#x4E00;&#x4E2A;&#x5F02;&#x6B65;&#x6D88;&#x606F;&#x3002;</li>
+<li>&#x5F02;&#x6B65;&#x6D88;&#x606F;&#x5FC5;&#x987B;&#x7ED3;&#x5408;Barrier&#x4F7F;&#x7528;&#xFF0C;&#x5982;&#x679C;&#x6CA1;&#x6709;&#x8BBE;&#x7F6E;Barrier&#xFF0C;&#x4E5F;&#x662F;&#x6CA1;&#x6548;&#x679C;&#x7684;&#x3002;</li>
+<li>&#x8BBE;&#x7F6E;&#x4E86;Barrier&#xFF0C;&#x8981;&#x5BF9;&#x5E94;&#x7684;&#x79FB;&#x9664;&#x6389;&#x5B83;&#xFF0C;&#x5426;&#x5219;&#x540C;&#x6B65;&#x6D88;&#x606F;&#x518D;&#x4E5F;&#x4E0D;&#x4F1A;&#x88AB;&#x5904;&#x7406;&#x3002;</li>
+</ol>
+<h1 id="&#x51E0;&#x4E2A;&#x95EE;&#x9898;"><a name="&#x51E0;&#x4E2A;&#x95EE;&#x9898;" class="anchor-navigation-ex-anchor" href="#&#x51E0;&#x4E2A;&#x95EE;&#x9898;"><i class="fa fa-link" aria-hidden="true"></i></a>8. &#x51E0;&#x4E2A;&#x95EE;&#x9898;</h1>
+<h2 id="&#x4E3A;&#x4EC0;&#x4E48;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x53EA;&#x6709;&#x4E00;&#x4E2A;looper&#x3001;&#x53EA;&#x6709;&#x4E00;&#x4E2A;messagequeue&#xFF1F;"><a name="&#x4E3A;&#x4EC0;&#x4E48;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x53EA;&#x6709;&#x4E00;&#x4E2A;looper&#x3001;&#x53EA;&#x6709;&#x4E00;&#x4E2A;messagequeue&#xFF1F;" class="anchor-navigation-ex-anchor" href="#&#x4E3A;&#x4EC0;&#x4E48;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x53EA;&#x6709;&#x4E00;&#x4E2A;looper&#x3001;&#x53EA;&#x6709;&#x4E00;&#x4E2A;messagequeue&#xFF1F;"><i class="fa fa-link" aria-hidden="true"></i></a>8.1. &#x4E3A;&#x4EC0;&#x4E48;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x53EA;&#x6709;&#x4E00;&#x4E2A;Looper&#x3001;&#x53EA;&#x6709;&#x4E00;&#x4E2A;MessageQueue&#xFF1F;</h2>
+<pre><code class="lang-java"><span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> ThreadLocal&lt;Looper&gt; sThreadLocal = <span class="hljs-keyword">new</span> ThreadLocal&lt;Looper&gt;();
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">prepare</span><span class="hljs-params">(<span class="hljs-keyword">boolean</span> quitAllowed)</span> </span>{
+    <span class="hljs-keyword">if</span> (sThreadLocal.get() != <span class="hljs-keyword">null</span>) {
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> RuntimeException(<span class="hljs-string">&quot;Only one Looper may be created per thread&quot;</span>);
+    }
+    sThreadLocal.set(<span class="hljs-keyword">new</span> Looper(quitAllowed));
+}
+</code></pre>
+<p>&#x7B2C;&#x4E00;&#x6B21;&#x7528;prepare&#x521B;&#x5EFA;Looper&#x7684;&#x65F6;&#x5019;&#x4F1A;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;Looper&#x5BF9;&#x8C61;&#x5E76;&#x653E;&#x5165;sThreadLocal&#xFF0C;&#x5982;&#x679C;&#x518D;&#x6B21;&#x8C03;&#x7528;&#xFF0C;get&#x65B9;&#x6CD5;&#x8FD4;&#x56DE;&#x7684;&#x4E0D;&#x4E3A;null&#xFF0C;&#x4F1A;&#x62A5;&#x9519;&#x3002;</p>
+<p>&#x81F3;&#x4E8E;MessageQueue&#xFF0C;Looper&#x4E2D;&#x6709;&#x8FD9;&#x4E48;&#x4E00;&#x4E2A;&#x53D8;&#x91CF;&#xFF1A;</p>
+<pre><code class="lang-java"><span class="hljs-keyword">final</span> MessageQueue mQueue;
+
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">Looper</span><span class="hljs-params">(<span class="hljs-keyword">boolean</span> quitAllowed)</span> </span>{
+        mQueue = <span class="hljs-keyword">new</span> MessageQueue(quitAllowed);
+        mThread = Thread.currentThread();
+}
+</code></pre>
+<p>MessageQueue&#x662F;final&#x5BF9;&#x8C61;&#xFF0C;&#x53E6;&#x5916;&#x521B;&#x5EFA;Handler&#x7684;&#x65F6;&#x5019;</p>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Handler</span><span class="hljs-params">(Callback callback&#xFF0C; <span class="hljs-keyword">boolean</span> async)</span> </span>{
+    <span class="hljs-comment">//...&#x7701;&#x7565;</span>
+    mQueue = mLooper.mQueue;
+    <span class="hljs-comment">//...&#x7701;&#x7565;</span>
+}
+</code></pre>
+<ol>
+<li>MessageQueue&#x7528;&#x7684;&#x662F;Looper&#x7684;MessageQueue&#x5BF9;&#x8C61;&#xFF0C;&#x800C;Looper&#x53EA;&#x6709;&#x4E00;&#x4E2A;&#xFF0C;&#x90A3;&#x4E48;MessageQueue&#x4E5F;&#x53EA;&#x6709;&#x4E00;&#x4E2A;&#x3002;</li>
+<li>&#x53EF;&#x4EE5;&#x6709;&#x591A;&#x4E2A;Handler&#xFF0C;&#x5728;&#x5206;&#x53D1;&#x6D88;&#x606F;&#x65F6;&#x600E;&#x4E48;&#x533A;&#x5206;&#x4E0D;&#x540C;&#x7684;handler&#xFF1F;
+&#x5728;&#x53D1;&#x9001;&#x6D88;&#x606F;&#x65F6;handler&#x5BF9;&#x8C61;&#x4E0E;Message&#x5BF9;&#x8C61;&#x7ED1;&#x5B9A;&#x5728;&#x4E86;&#x4E00;&#x8D77;&#x3002;&#x5728;&#x5206;&#x53D1;&#x6D88;&#x606F;&#x65F6;&#x9996;&#x5148;&#x53D6;&#x51FA;Message&#x5BF9;&#x8C61;&#xFF0C;&#x7136;&#x540E;&#x5C31;&#x53EF;&#x4EE5;&#x5F97;&#x5230;&#x4E0E;&#x5B83;&#x7ED1;&#x5B9A;&#x5728;&#x4E00;&#x8D77;&#x7684;Handler&#x5BF9;&#x8C61;&#x4E86;&#x3002;</li>
+</ol>
+<h2 id="&#x662F;&#x4E0D;&#x662F;&#x4EFB;&#x4F55;&#x7EBF;&#x7A0B;&#x90FD;&#x53EF;&#x4EE5;&#x5B9E;&#x4F8B;&#x5316;handler&#xFF1F;&#x6709;&#x6CA1;&#x6709;&#x4EC0;&#x4E48;&#x7EA6;&#x675F;&#x6761;&#x4EF6;&#xFF1F;"><a name="&#x662F;&#x4E0D;&#x662F;&#x4EFB;&#x4F55;&#x7EBF;&#x7A0B;&#x90FD;&#x53EF;&#x4EE5;&#x5B9E;&#x4F8B;&#x5316;handler&#xFF1F;&#x6709;&#x6CA1;&#x6709;&#x4EC0;&#x4E48;&#x7EA6;&#x675F;&#x6761;&#x4EF6;&#xFF1F;" class="anchor-navigation-ex-anchor" href="#&#x662F;&#x4E0D;&#x662F;&#x4EFB;&#x4F55;&#x7EBF;&#x7A0B;&#x90FD;&#x53EF;&#x4EE5;&#x5B9E;&#x4F8B;&#x5316;handler&#xFF1F;&#x6709;&#x6CA1;&#x6709;&#x4EC0;&#x4E48;&#x7EA6;&#x675F;&#x6761;&#x4EF6;&#xFF1F;"><i class="fa fa-link" aria-hidden="true"></i></a>8.2. &#x662F;&#x4E0D;&#x662F;&#x4EFB;&#x4F55;&#x7EBF;&#x7A0B;&#x90FD;&#x53EF;&#x4EE5;&#x5B9E;&#x4F8B;&#x5316;Handler&#xFF1F;&#x6709;&#x6CA1;&#x6709;&#x4EC0;&#x4E48;&#x7EA6;&#x675F;&#x6761;&#x4EF6;&#xFF1F;</h2>
+<p>&#x9700;&#x8981;&#x6709;Looper&#x3002;</p>
+<h2 id="looperloop&#x662F;&#x4E00;&#x4E2A;&#x6B7B;&#x5FAA;&#x73AF;&#xFF0C;&#x62FF;&#x4E0D;&#x5230;&#x9700;&#x8981;&#x5904;&#x7406;&#x7684;message&#x5C31;&#x4F1A;&#x963B;&#x585E;&#xFF0C;&#x90A3;&#x5728;ui&#x7EBF;&#x7A0B;&#x4E2D;&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x4F1A;&#x5BFC;&#x81F4;anr&#xFF1F;"><a name="looperloop&#x662F;&#x4E00;&#x4E2A;&#x6B7B;&#x5FAA;&#x73AF;&#xFF0C;&#x62FF;&#x4E0D;&#x5230;&#x9700;&#x8981;&#x5904;&#x7406;&#x7684;message&#x5C31;&#x4F1A;&#x963B;&#x585E;&#xFF0C;&#x90A3;&#x5728;ui&#x7EBF;&#x7A0B;&#x4E2D;&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x4F1A;&#x5BFC;&#x81F4;anr&#xFF1F;" class="anchor-navigation-ex-anchor" href="#looperloop&#x662F;&#x4E00;&#x4E2A;&#x6B7B;&#x5FAA;&#x73AF;&#xFF0C;&#x62FF;&#x4E0D;&#x5230;&#x9700;&#x8981;&#x5904;&#x7406;&#x7684;message&#x5C31;&#x4F1A;&#x963B;&#x585E;&#xFF0C;&#x90A3;&#x5728;ui&#x7EBF;&#x7A0B;&#x4E2D;&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x4F1A;&#x5BFC;&#x81F4;anr&#xFF1F;"><i class="fa fa-link" aria-hidden="true"></i></a>8.3. Looper.loop&#x662F;&#x4E00;&#x4E2A;&#x6B7B;&#x5FAA;&#x73AF;&#xFF0C;&#x62FF;&#x4E0D;&#x5230;&#x9700;&#x8981;&#x5904;&#x7406;&#x7684;Message&#x5C31;&#x4F1A;&#x963B;&#x585E;&#xFF0C;&#x90A3;&#x5728;UI&#x7EBF;&#x7A0B;&#x4E2D;&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x4F1A;&#x5BFC;&#x81F4;ANR&#xFF1F;</h2>
+<p>&#x5BF9;&#x4E8E;&#x7EBF;&#x7A0B;&#x65E2;&#x7136;&#x662F;&#x4E00;&#x6BB5;&#x53EF;&#x6267;&#x884C;&#x7684;&#x4EE3;&#x7801;&#xFF0C;&#x5F53;&#x53EF;&#x6267;&#x884C;&#x4EE3;&#x7801;&#x6267;&#x884C;&#x5B8C;&#x6210;&#x540E;&#xFF0C;&#x7EBF;&#x7A0B;&#x751F;&#x547D;&#x5468;&#x671F;&#x4FBF;&#x8BE5;&#x7EC8;&#x6B62;&#x4E86;&#xFF0C;&#x7EBF;&#x7A0B;&#x9000;&#x51FA;&#x3002;&#x800C;&#x5BF9;&#x4E8E;&#x4E3B;&#x7EBF;&#x7A0B;&#xFF0C;&#x662F;&#x7EDD;&#x4E0D;&#x5E0C;&#x671B;&#x4F1A;&#x88AB;&#x8FD0;&#x884C;&#x4E00;&#x6BB5;&#x65F6;&#x95F4;&#xFF0C;&#x81EA;&#x5DF1;&#x5C31;&#x9000;&#x51FA;&#xFF0C;&#x90A3;&#x4E48;&#x5982;&#x4F55;&#x4FDD;&#x8BC1;&#x80FD;&#x4E00;&#x76F4;&#x5B58;&#x6D3B;&#x5462;&#xFF1F;&#x7B80;&#x5355;&#x505A;&#x6CD5;&#x5C31;&#x662F;&#x53EF;&#x6267;&#x884C;&#x4EE3;&#x7801;&#x662F;&#x80FD;&#x4E00;&#x76F4;&#x6267;&#x884C;&#x4E0B;&#x53BB;&#x7684;&#xFF0C;&#x6B7B;&#x5FAA;&#x73AF;&#x4FBF;&#x80FD;&#x4FDD;&#x8BC1;&#x4E0D;&#x4F1A;&#x88AB;&#x9000;&#x51FA;&#x3002;</p>
+<p>&#x53E6;&#x5916;&#xFF0C;&#x56E0;&#x4E3A;Android&#x7684;&#x662F;&#x7531;&#x4E8B;&#x4EF6;&#x9A71;&#x52A8;&#x7684;&#xFF0C;looper.loop() &#x4E0D;&#x65AD;&#x5730;&#x63A5;&#x6536;&#x4E8B;&#x4EF6;&#x3001;&#x5904;&#x7406;&#x4E8B;&#x4EF6;&#xFF0C;&#x6BCF;&#x4E00;&#x4E2A;&#x70B9;&#x51FB;&#x89E6;&#x6478;&#x6216;&#x8005;&#x8BF4;Activity&#x7684;&#x751F;&#x547D;&#x5468;&#x671F;&#x90FD;&#x662F;&#x8FD0;&#x884C;&#x5728; Looper.loop() &#x7684;&#x63A7;&#x5236;&#x4E4B;&#x4E0B;&#xFF0C;&#x5982;&#x679C;&#x5B83;&#x505C;&#x6B62;&#x4E86;&#xFF0C;&#x5E94;&#x7528;&#x4E5F;&#x5C31;&#x505C;&#x6B62;&#x4E86;&#x3002;</p>
+<h2 id="looper&#x662F;&#x600E;&#x6837;&#x5173;&#x8054;&#x5F53;&#x524D;&#x7EBF;&#x7A0B;&#x7684;&#xFF1F;"><a name="looper&#x662F;&#x600E;&#x6837;&#x5173;&#x8054;&#x5F53;&#x524D;&#x7EBF;&#x7A0B;&#x7684;&#xFF1F;" class="anchor-navigation-ex-anchor" href="#looper&#x662F;&#x600E;&#x6837;&#x5173;&#x8054;&#x5F53;&#x524D;&#x7EBF;&#x7A0B;&#x7684;&#xFF1F;"><i class="fa fa-link" aria-hidden="true"></i></a>8.4. Looper&#x662F;&#x600E;&#x6837;&#x5173;&#x8054;&#x5F53;&#x524D;&#x7EBF;&#x7A0B;&#x7684;&#xFF1F;</h2>
+<p>Looper&#x7684;&#x6709;&#x4E00;&#x4E2A;&#x6210;&#x5458;&#x53D8;&#x91CF;&#xFF0C;&#x8FD9;&#x4E2A;&#x6210;&#x5458;&#x53D8;&#x91CF;&#x5728;&#x521D;&#x59CB;&#x5316;&#x7684;&#x65F6;&#x5019;&#x4F1A;&#x5F15;&#x7528;&#x5F53;&#x524D;&#x7EBF;&#x7A0B;&#x3002;</p>
+<pre><code class="lang-java"><span class="hljs-keyword">final</span> Thread mThread;
+
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">Looper</span><span class="hljs-params">(<span class="hljs-keyword">boolean</span> quitAllowed)</span> </span>{
+    mQueue = <span class="hljs-keyword">new</span> MessageQueue(quitAllowed);
+    mThread = Thread.currentThread();
+}
+</code></pre>
+<h2 id="looper&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x5E94;&#x8BE5;&#x5F00;&#x542F;"><a name="looper&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x5E94;&#x8BE5;&#x5F00;&#x542F;" class="anchor-navigation-ex-anchor" href="#looper&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x5E94;&#x8BE5;&#x5F00;&#x542F;"><i class="fa fa-link" aria-hidden="true"></i></a>8.5. Looper&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x5E94;&#x8BE5;&#x5F00;&#x542F;</h2>
+<p>&#x5728;&#x7EBF;&#x7A0B;&#x5F00;&#x542F;&#x7684;&#x65F6;&#x5019;&#x5F00;&#x542F;&#x3002;</p>
+<h2 id="&#x5982;&#x679C;&#x4E00;&#x4E2A;&#x5EF6;&#x8FDF;&#x6D88;&#x606F;&#x8FD8;&#x6CA1;&#x5230;&#x65F6;&#x95F4;&#xFF0C;&#x600E;&#x4E48;&#x5904;&#x7406;&#xFF1F;"><a name="&#x5982;&#x679C;&#x4E00;&#x4E2A;&#x5EF6;&#x8FDF;&#x6D88;&#x606F;&#x8FD8;&#x6CA1;&#x5230;&#x65F6;&#x95F4;&#xFF0C;&#x600E;&#x4E48;&#x5904;&#x7406;&#xFF1F;" class="anchor-navigation-ex-anchor" href="#&#x5982;&#x679C;&#x4E00;&#x4E2A;&#x5EF6;&#x8FDF;&#x6D88;&#x606F;&#x8FD8;&#x6CA1;&#x5230;&#x65F6;&#x95F4;&#xFF0C;&#x600E;&#x4E48;&#x5904;&#x7406;&#xFF1F;"><i class="fa fa-link" aria-hidden="true"></i></a>8.6. &#x5982;&#x679C;&#x4E00;&#x4E2A;&#x5EF6;&#x8FDF;&#x6D88;&#x606F;&#x8FD8;&#x6CA1;&#x5230;&#x65F6;&#x95F4;&#xFF0C;&#x600E;&#x4E48;&#x5904;&#x7406;&#xFF1F;</h2>
+<p>Looper&#x901A;&#x8FC7;loop&#x65B9;&#x6CD5;&#x4ECE;MeassageQueue&#x7684;next&#x65B9;&#x6CD5;&#x4E2D;&#x53D6;&#x51FA;Message&#x3002;</p>
+<p>&#x5148;&#x8BB0;&#x5F55;&#x5F53;&#x524D;&#x65F6;&#x95F4;now&#xFF0C;&#x7136;&#x540E;&#x53D6;&#x51FA;&#x4E00;&#x4E2A;Message&#xFF0C;&#x5982;&#x679C;&#x8FD9;&#x4E2A;Message&#x7684;when&#x5927;&#x4E8E;now&#xFF0C;&#x5C31;&#x4F1A;&#x8BA1;&#x7B97;&#x4E24;&#x8005;&#x5DEE;&#x503C;nextPollTimeoutMillis&#xFF0C;&#x7136;&#x540E;&#x963B;&#x585E;&#x8FD9;&#x4E48;&#x591A;&#x65F6;&#x95F4;&#x3002;</p>
+<p>&#x5982;&#x679C;&#x5728;&#x8FD8;&#x6CA1;&#x5524;&#x9192;&#x65F6;&#x53C8;&#x63D2;&#x5165;&#x4E86;&#x4E00;&#x4E2A;when&#x5C0F;&#x4E8E;&#x4E4B;&#x524D;Message&#x7684;when&#x7684;Message&#x5462;&#xFF1F;</p>
+<p>&#x5728;MeassageQueue&#x7684;enqueueMessage&#x65B9;&#x6CD5;&#x63D2;&#x5165;Meaasge&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x4F1A;&#x8FDB;&#x884C;&#x5524;&#x9192;&#x3002;</p>
+<h2 id="&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x5141;&#x8BB8;&#x5728;&#x5B50;&#x7EBF;&#x7A0B;&#x8BBF;&#x95EE;ui&#xFF1F;"><a name="&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x5141;&#x8BB8;&#x5728;&#x5B50;&#x7EBF;&#x7A0B;&#x8BBF;&#x95EE;ui&#xFF1F;" class="anchor-navigation-ex-anchor" href="#&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x5141;&#x8BB8;&#x5728;&#x5B50;&#x7EBF;&#x7A0B;&#x8BBF;&#x95EE;ui&#xFF1F;"><i class="fa fa-link" aria-hidden="true"></i></a>8.7. &#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x5141;&#x8BB8;&#x5728;&#x5B50;&#x7EBF;&#x7A0B;&#x8BBF;&#x95EE;UI&#xFF1F;</h2>
+<p>&#x56E0;&#x4E3A;UI&#x63A7;&#x4EF6;&#x4E0D;&#x662F;&#x7EBF;&#x7A0B;&#x5B89;&#x5168;&#x7684;&#xFF0C;&#x5728;&#x591A;&#x7EBF;&#x7A0B;&#x8BBF;&#x95EE;UI&#x63A7;&#x4EF6;&#x4F1A;&#x5904;&#x4E8E;&#x4E0D;&#x53EF;&#x9884;&#x671F;&#x7684;&#x72B6;&#x6001;&#x3002;</p>
+<p><strong>&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x52A0;&#x9501;&#xFF1F;</strong></p>
+<p>&#x9501;&#x673A;&#x5236;&#x4F1A;&#x8BA9;UI&#x8BBF;&#x95EE;&#x903B;&#x8F91;&#x53D8;&#x5F97;&#x590D;&#x6742;&#xFF0C;&#x5176;&#x6B21;&#x4F1A;&#x964D;&#x4F4E;&#x6548;&#x7387;&#x3002;&#x6700;&#x7B80;&#x5355;&#x4E14;&#x9AD8;&#x6548;&#x7684;&#x529E;&#x6CD5;&#x5C31;&#x662F;&#x7528;&#x5355;&#x7EBF;&#x7A0B;&#x6A21;&#x578B;&#x6765;&#x5904;&#x7406;UI&#x64CD;&#x4F5C;&#x3002;</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="Glide源码分析.html" class="navigation navigation-prev " aria-label="Previous page: Glide源码分析">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="LeakCanary.html" class="navigation navigation-next " aria-label="Next page: LeakCanary">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Handler源码分析","level":"1.6.4.4","depth":3,"next":{"title":"LeakCanary","level":"1.6.4.5","depth":3,"path":"05 Android/04 常用类源码分析/LeakCanary.md","ref":"./05 Android/04 常用类源码分析/LeakCanary.md","articles":[]},"previous":{"title":"Glide源码分析","level":"1.6.4.3","depth":3,"path":"05 Android/04 常用类源码分析/Glide源码分析.md","ref":"./05 Android/04 常用类源码分析/Glide源码分析.md","articles":[]},"dir":"ltr"},"config":{"plugins":["highlight","search","livereload","splitter","expandable-chapters-small","anchors","anchor-navigation-ex"],"styles":{"website":"./styles/website.css"},"pluginsConfig":{"livereload":{},"splitter":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"anchor-navigation-ex":{"associatedWithSummary":true,"float":{"floatIcon":"fa fa-navicon","level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"mode":"float","multipleH1":true,"pageTop":{"level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"printLog":false,"showGoTop":true,"showLevel":true},"expandable-chapters-small":{},"sharing":{"all":["facebook","google","twitter","weibo","instapaper"],"facebook":true,"google":false,"instapaper":false,"twitter":true,"vk":false,"weibo":false},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"theme":"default","author":"Mezzsy","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Mezzsy is here","language":"zh-hans","gitbook":"3.2.3"},"file":{"path":"05 Android/04 常用类源码分析/Handler源码分析.md","mtime":"2023-08-27T12:34:17.517Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2024-09-17T13:19:34.226Z"},"basePath":"../..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../gitbook/gitbook.js"></script>
+    <script src="../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-splitter/splitter.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-expandable-chapters-small/expandable-chapters-small.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

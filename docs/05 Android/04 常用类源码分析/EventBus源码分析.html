@@ -1,0 +1,3991 @@
+
+<!DOCTYPE HTML>
+<html lang="zh-hans" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>EventBus源码分析 · Mezzsy is here</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        <meta name="author" content="Mezzsy">
+        
+        
+    
+    <link rel="stylesheet" href="../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-splitter/splitter.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-expandable-chapters-small/expandable-chapters-small.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-anchors/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-anchor-navigation-ex/style/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="Glide源码分析.html" />
+    
+    
+    <link rel="prev" href="AsyncTask源码分析.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="输入并搜索" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    00 介绍
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../../01 语言/">
+            
+                <a href="../../01 语言/">
+            
+                    
+                    01 语言
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../../01 语言/01 Cpp/">
+            
+                <a href="../../01 语言/01 Cpp/">
+            
+                    
+                    01 Cpp
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.1" data-path="../../01 语言/01 Cpp/原理总结/">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/">
+            
+                    
+                    原理总结
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.1.1" data-path="../../01 语言/01 Cpp/原理总结/其它.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/其它.html">
+            
+                    
+                    其它
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.2" data-path="../../01 语言/01 Cpp/原理总结/函数.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/函数.html">
+            
+                    
+                    函数
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.3" data-path="../../01 语言/01 Cpp/原理总结/对象.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/对象.html">
+            
+                    
+                    对象
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.4" data-path="../../01 语言/01 Cpp/原理总结/成员变量.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/成员变量.html">
+            
+                    
+                    成员变量
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.5" data-path="../../01 语言/01 Cpp/原理总结/执行期.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/执行期.html">
+            
+                    
+                    执行期
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.6" data-path="../../01 语言/01 Cpp/原理总结/构造函数.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/构造函数.html">
+            
+                    
+                    构造函数
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.7" data-path="../../01 语言/01 Cpp/原理总结/构造析构拷贝.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/构造析构拷贝.html">
+            
+                    
+                    构造析构拷贝
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2" data-path="../../01 语言/01 Cpp/用法总结/">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/">
+            
+                    
+                    用法总结
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.2.1" data-path="../../01 语言/01 Cpp/用法总结/IO总结.html">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/IO总结.html">
+            
+                    
+                    IO总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.2" data-path="../../01 语言/01 Cpp/用法总结/RTTI总结.html">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/RTTI总结.html">
+            
+                    
+                    RTTI总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.3" data-path="../../01 语言/01 Cpp/用法总结/cpp原理总结.html">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/cpp原理总结.html">
+            
+                    
+                    cpp原理总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.4" data-path="../../01 语言/01 Cpp/用法总结/关键字总结.html">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/关键字总结.html">
+            
+                    
+                    关键字总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.5" data-path="../../01 语言/01 Cpp/用法总结/内存模型和名称空间.html">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/内存模型和名称空间.html">
+            
+                    
+                    内存模型和名称空间
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.6" data-path="../../01 语言/01 Cpp/用法总结/函数总结.html">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/函数总结.html">
+            
+                    
+                    函数总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.7" data-path="../../01 语言/01 Cpp/用法总结/动态内存和智能指针.html">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/动态内存和智能指针.html">
+            
+                    
+                    动态内存和智能指针
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.8" data-path="../../01 语言/01 Cpp/用法总结/基础总结.html">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/基础总结.html">
+            
+                    
+                    基础总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.9" data-path="../../01 语言/01 Cpp/用法总结/容器总结.html">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/容器总结.html">
+            
+                    
+                    容器总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.10" data-path="../../01 语言/01 Cpp/用法总结/异常总结.html">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/异常总结.html">
+            
+                    
+                    异常总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.11" data-path="../../01 语言/01 Cpp/用法总结/泛型总结.html">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/泛型总结.html">
+            
+                    
+                    泛型总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.12" data-path="../../01 语言/01 Cpp/用法总结/类总结.html">
+            
+                <a href="../../01 语言/01 Cpp/用法总结/类总结.html">
+            
+                    
+                    类总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.3" data-path="../../01 语言/01 Cpp/知识点/">
+            
+                <a href="../../01 语言/01 Cpp/知识点/">
+            
+                    
+                    知识点
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.3.1" data-path="../../01 语言/01 Cpp/知识点/基础.html">
+            
+                <a href="../../01 语言/01 Cpp/知识点/基础.html">
+            
+                    
+                    基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.3.2" data-path="../../01 语言/01 Cpp/知识点/类.html">
+            
+                <a href="../../01 语言/01 Cpp/知识点/类.html">
+            
+                    
+                    类
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.3.3" data-path="../../01 语言/01 Cpp/知识点/线程.html">
+            
+                <a href="../../01 语言/01 Cpp/知识点/线程.html">
+            
+                    
+                    线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../../01 语言/02 Java/">
+            
+                <a href="../../01 语言/02 Java/">
+            
+                    
+                    02 Java
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.2.1" data-path="../../01 语言/02 Java/Java-IO.html">
+            
+                <a href="../../01 语言/02 Java/Java-IO.html">
+            
+                    
+                    Java-IO
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.2" data-path="../../01 语言/02 Java/Java反射机制和泛型.html">
+            
+                <a href="../../01 语言/02 Java/Java反射机制和泛型.html">
+            
+                    
+                    Java反射机制和泛型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.3" data-path="../../01 语言/02 Java/Java基础知识.html">
+            
+                <a href="../../01 语言/02 Java/Java基础知识.html">
+            
+                    
+                    Java基础知识
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.4" data-path="../../01 语言/02 Java/Java异常机制.html">
+            
+                <a href="../../01 语言/02 Java/Java异常机制.html">
+            
+                    
+                    Java异常机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.5" data-path="../../01 语言/02 Java/并发.html">
+            
+                <a href="../../01 语言/02 Java/并发.html">
+            
+                    
+                    并发
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.6" data-path="../../01 语言/02 Java/异常.html">
+            
+                <a href="../../01 语言/02 Java/异常.html">
+            
+                    
+                    异常
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.7" data-path="../../01 语言/02 Java/禁止在foreach循环里进行元素的remove-add操作.html">
+            
+                <a href="../../01 语言/02 Java/禁止在foreach循环里进行元素的remove-add操作.html">
+            
+                    
+                    禁止在foreach循环里进行元素的remove-add操作
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.8" data-path="../../01 语言/02 Java/类和接口.html">
+            
+                <a href="../../01 语言/02 Java/类和接口.html">
+            
+                    
+                    类和接口
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="../../01 语言/03 Kotlin/">
+            
+                <a href="../../01 语言/03 Kotlin/">
+            
+                    
+                    03 Kotlin
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.3.1" data-path="../../01 语言/03 Kotlin/Lambda总结.html">
+            
+                <a href="../../01 语言/03 Kotlin/Lambda总结.html">
+            
+                    
+                    Lambda总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.2" data-path="../../01 语言/03 Kotlin/函数总结.html">
+            
+                <a href="../../01 语言/03 Kotlin/函数总结.html">
+            
+                    
+                    函数总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.3" data-path="../../01 语言/03 Kotlin/基础总结.html">
+            
+                <a href="../../01 语言/03 Kotlin/基础总结.html">
+            
+                    
+                    基础总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.4" data-path="../../01 语言/03 Kotlin/标准库函数总结.html">
+            
+                <a href="../../01 语言/03 Kotlin/标准库函数总结.html">
+            
+                    
+                    标准库函数总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.5" data-path="../../01 语言/03 Kotlin/泛型总结.html">
+            
+                <a href="../../01 语言/03 Kotlin/泛型总结.html">
+            
+                    
+                    泛型总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.6" data-path="../../01 语言/03 Kotlin/注解和反射总结.html">
+            
+                <a href="../../01 语言/03 Kotlin/注解和反射总结.html">
+            
+                    
+                    注解和反射总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.7" data-path="../../01 语言/03 Kotlin/类型总结.html">
+            
+                <a href="../../01 语言/03 Kotlin/类型总结.html">
+            
+                    
+                    类型总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.8" data-path="../../01 语言/03 Kotlin/类总结.html">
+            
+                <a href="../../01 语言/03 Kotlin/类总结.html">
+            
+                    
+                    类总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.9" data-path="../../01 语言/03 Kotlin/运算符总结.html">
+            
+                <a href="../../01 语言/03 Kotlin/运算符总结.html">
+            
+                    
+                    运算符总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4" data-path="../../01 语言/04 Python/">
+            
+                <a href="../../01 语言/04 Python/">
+            
+                    
+                    04 Python
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.4.1" data-path="../../01 语言/04 Python/Python学习.html">
+            
+                <a href="../../01 语言/04 Python/Python学习.html">
+            
+                    
+                    Python学习
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../../02 计算机系统/">
+            
+                <a href="../../02 计算机系统/">
+            
+                    
+                    02 计算机系统
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../../02 计算机系统/01-操作系统.html">
+            
+                <a href="../../02 计算机系统/01-操作系统.html">
+            
+                    
+                    01-操作系统
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../../02 计算机系统/02-内存.html">
+            
+                <a href="../../02 计算机系统/02-内存.html">
+            
+                    
+                    02-内存
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../../02 计算机系统/03-线程.html">
+            
+                <a href="../../02 计算机系统/03-线程.html">
+            
+                    
+                    03-线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../../02 计算机系统/04-编译链接.html">
+            
+                <a href="../../02 计算机系统/04-编译链接.html">
+            
+                    
+                    04-编译链接
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../../02 计算机系统/深入理解计算机系统/">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/">
+            
+                    
+                    深入理解计算机系统
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.5.1" data-path="../../02 计算机系统/深入理解计算机系统/01-计算机系统漫游.html">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/01-计算机系统漫游.html">
+            
+                    
+                    01-计算机系统漫游
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.2" data-path="../../02 计算机系统/深入理解计算机系统/02-信息的表示和处理.html">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/02-信息的表示和处理.html">
+            
+                    
+                    02-信息的表示和处理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.3" data-path="../../02 计算机系统/深入理解计算机系统/07-链接.html">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/07-链接.html">
+            
+                    
+                    07-链接
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.4" data-path="../../02 计算机系统/深入理解计算机系统/09-虚拟内存.html">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/09-虚拟内存.html">
+            
+                    
+                    09-虚拟内存
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../../03 Java/">
+            
+                <a href="../../03 Java/">
+            
+                    
+                    03 Java
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../../03 Java/01 Java知识点/">
+            
+                <a href="../../03 Java/01 Java知识点/">
+            
+                    
+                    01 Java知识点
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1.1" data-path="../../03 Java/01 Java知识点/Java基础知识.html">
+            
+                <a href="../../03 Java/01 Java知识点/Java基础知识.html">
+            
+                    
+                    Java基础知识
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.2" data-path="../../03 Java/01 Java知识点/Java问题.html">
+            
+                <a href="../../03 Java/01 Java知识点/Java问题.html">
+            
+                    
+                    Java问题
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.3" data-path="../../03 Java/01 Java知识点/泛型.html">
+            
+                <a href="../../03 Java/01 Java知识点/泛型.html">
+            
+                    
+                    泛型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.4" data-path="../../03 Java/01 Java知识点/注解.html">
+            
+                <a href="../../03 Java/01 Java知识点/注解.html">
+            
+                    
+                    注解
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../../03 Java/02 Java虚拟机/">
+            
+                <a href="../../03 Java/02 Java虚拟机/">
+            
+                    
+                    02 Java虚拟机
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.2.1" data-path="../../03 Java/02 Java虚拟机/01-Java介绍.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/01-Java介绍.html">
+            
+                    
+                    01-Java介绍
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.2" data-path="../../03 Java/02 Java虚拟机/02-内存区域.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/02-内存区域.html">
+            
+                    
+                    02-内存区域
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.3" data-path="../../03 Java/02 Java虚拟机/03-垃圾收集TODO.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/03-垃圾收集TODO.html">
+            
+                    
+                    03-垃圾收集TODO
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.4" data-path="../../03 Java/02 Java虚拟机/06-类文件结构.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/06-类文件结构.html">
+            
+                    
+                    06-类文件结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.5" data-path="../../03 Java/02 Java虚拟机/07-虚拟机类加载机制.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/07-虚拟机类加载机制.html">
+            
+                    
+                    07-虚拟机类加载机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.6" data-path="../../03 Java/02 Java虚拟机/08-虚拟机字节码执行引擎.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/08-虚拟机字节码执行引擎.html">
+            
+                    
+                    08-虚拟机字节码执行引擎
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.7" data-path="../../03 Java/02 Java虚拟机/12-Java内存模型与线程.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/12-Java内存模型与线程.html">
+            
+                    
+                    12-Java内存模型与线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.8" data-path="../../03 Java/02 Java虚拟机/13-线程安全与锁优化.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/13-线程安全与锁优化.html">
+            
+                    
+                    13-线程安全与锁优化
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../../03 Java/03 常用源码分析/">
+            
+                <a href="../../03 Java/03 常用源码分析/">
+            
+                    
+                    03 常用源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.3.1" data-path="../../03 Java/03 常用源码分析/ArrayList源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/ArrayList源码分析.html">
+            
+                    
+                    ArrayList源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.2" data-path="../../03 Java/03 常用源码分析/ConcurrentHashMap源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/ConcurrentHashMap源码分析.html">
+            
+                    
+                    ConcurrentHashMap源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.3" data-path="../../03 Java/03 常用源码分析/HashMap源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/HashMap源码分析.html">
+            
+                    
+                    HashMap源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.4" data-path="../../03 Java/03 常用源码分析/HashTable源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/HashTable源码分析.html">
+            
+                    
+                    HashTable源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.5" data-path="../../03 Java/03 常用源码分析/LinkedHashMap源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/LinkedHashMap源码分析.html">
+            
+                    
+                    LinkedHashMap源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.6" data-path="../../03 Java/03 常用源码分析/LinkedList源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/LinkedList源码分析.html">
+            
+                    
+                    LinkedList源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.7" data-path="../../03 Java/03 常用源码分析/ThreadLocal源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/ThreadLocal源码分析.html">
+            
+                    
+                    ThreadLocal源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.8" data-path="../../03 Java/03 常用源码分析/线程池源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/线程池源码分析.html">
+            
+                    
+                    线程池源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../../04 源码分析/">
+            
+                <a href="../../04 源码分析/">
+            
+                    
+                    04 源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../../04 源码分析/AddressSanitizer.html">
+            
+                <a href="../../04 源码分析/AddressSanitizer.html">
+            
+                    
+                    AddressSanitizer
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../../04 源码分析/ByteX.html">
+            
+                <a href="../../04 源码分析/ByteX.html">
+            
+                    
+                    ByteX
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="../../04 源码分析/PltHook.html">
+            
+                <a href="../../04 源码分析/PltHook.html">
+            
+                    
+                    PltHook
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="../../04 源码分析/Raphael分析.html">
+            
+                <a href="../../04 源码分析/Raphael分析.html">
+            
+                    
+                    Raphael分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.5" data-path="../../04 源码分析/基于fp的栈回朔.html">
+            
+                <a href="../../04 源码分析/基于fp的栈回朔.html">
+            
+                    
+                    基于fp的栈回朔
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    05 Android
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../01 Android底层源码分析/">
+            
+                <a href="../01 Android底层源码分析/">
+            
+                    
+                    01 Android底层源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1.1" data-path="../01 Android底层源码分析/01 系统启动过程.html">
+            
+                <a href="../01 Android底层源码分析/01 系统启动过程.html">
+            
+                    
+                    01 系统启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.2" data-path="../01 Android底层源码分析/02 应用进程启动过程.html">
+            
+                <a href="../01 Android底层源码分析/02 应用进程启动过程.html">
+            
+                    
+                    02 应用进程启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.3" data-path="../01 Android底层源码分析/03 Activity启动过程.html">
+            
+                <a href="../01 Android底层源码分析/03 Activity启动过程.html">
+            
+                    
+                    03 Activity启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.4" data-path="../01 Android底层源码分析/04 其它组件启动过程.html">
+            
+                <a href="../01 Android底层源码分析/04 其它组件启动过程.html">
+            
+                    
+                    04 其它组件启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.5" data-path="../01 Android底层源码分析/05 Context总结.html">
+            
+                <a href="../01 Android底层源码分析/05 Context总结.html">
+            
+                    
+                    05 Context总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.6" data-path="../01 Android底层源码分析/06 AMS.html">
+            
+                <a href="../01 Android底层源码分析/06 AMS.html">
+            
+                    
+                    06 AMS
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.7" data-path="../01 Android底层源码分析/07 WM.html">
+            
+                <a href="../01 Android底层源码分析/07 WM.html">
+            
+                    
+                    07 WM
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.8" data-path="../01 Android底层源码分析/08 WMS.html">
+            
+                <a href="../01 Android底层源码分析/08 WMS.html">
+            
+                    
+                    08 WMS
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.9" data-path="../01 Android底层源码分析/10 JNI.html">
+            
+                <a href="../01 Android底层源码分析/10 JNI.html">
+            
+                    
+                    10 JNI
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.10" data-path="../01 Android底层源码分析/13 ClassLoader.html">
+            
+                <a href="../01 Android底层源码分析/13 ClassLoader.html">
+            
+                    
+                    13 ClassLoader
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.11" data-path="../01 Android底层源码分析/14 热修复.html">
+            
+                <a href="../01 Android底层源码分析/14 热修复.html">
+            
+                    
+                    14 热修复
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.12" data-path="../01 Android底层源码分析/15 Hook.html">
+            
+                <a href="../01 Android底层源码分析/15 Hook.html">
+            
+                    
+                    15 Hook
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.13" data-path="../01 Android底层源码分析/16 插件化.html">
+            
+                <a href="../01 Android底层源码分析/16 插件化.html">
+            
+                    
+                    16 插件化
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.14" data-path="../01 Android底层源码分析/17 绘制流程-生产者.html">
+            
+                <a href="../01 Android底层源码分析/17 绘制流程-生产者.html">
+            
+                    
+                    17 绘制流程-生产者
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.15" data-path="../01 Android底层源码分析/18 绘制流程-消费者.html">
+            
+                <a href="../01 Android底层源码分析/18 绘制流程-消费者.html">
+            
+                    
+                    18 绘制流程-消费者
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.16" data-path="../01 Android底层源码分析/19 渲染总结.html">
+            
+                <a href="../01 Android底层源码分析/19 渲染总结.html">
+            
+                    
+                    19 渲染总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.17" data-path="../01 Android底层源码分析/20 硬件加速.html">
+            
+                <a href="../01 Android底层源码分析/20 硬件加速.html">
+            
+                    
+                    20 硬件加速
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="../02 Android应用和原理/">
+            
+                <a href="../02 Android应用和原理/">
+            
+                    
+                    02 Android应用和原理
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.2.1" data-path="../02 Android应用和原理/Android动画.html">
+            
+                <a href="../02 Android应用和原理/Android动画.html">
+            
+                    
+                    Android动画
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.2" data-path="../02 Android应用和原理/Android消息机制.html">
+            
+                <a href="../02 Android应用和原理/Android消息机制.html">
+            
+                    
+                    Android消息机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.3" data-path="../02 Android应用和原理/Android的跨进程通信.html">
+            
+                <a href="../02 Android应用和原理/Android的跨进程通信.html">
+            
+                    
+                    Android的跨进程通信
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.4" data-path="../02 Android应用和原理/Android类加载机制.html">
+            
+                <a href="../02 Android应用和原理/Android类加载机制.html">
+            
+                    
+                    Android类加载机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.5" data-path="../02 Android应用和原理/Android线程.html">
+            
+                <a href="../02 Android应用和原理/Android线程.html">
+            
+                    
+                    Android线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.6" data-path="../02 Android应用和原理/Drawable.html">
+            
+                <a href="../02 Android应用和原理/Drawable.html">
+            
+                    
+                    Drawable
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.7" data-path="../02 Android应用和原理/View手势事件.html">
+            
+                <a href="../02 Android应用和原理/View手势事件.html">
+            
+                    
+                    View手势事件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.8" data-path="../02 Android应用和原理/View绘制基础.html">
+            
+                <a href="../02 Android应用和原理/View绘制基础.html">
+            
+                    
+                    View绘制基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.9" data-path="../02 Android应用和原理/四大组件.html">
+            
+                <a href="../02 Android应用和原理/四大组件.html">
+            
+                    
+                    四大组件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.10" data-path="../02 Android应用和原理/性能优化.html">
+            
+                <a href="../02 Android应用和原理/性能优化.html">
+            
+                    
+                    性能优化
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.11" data-path="../02 Android应用和原理/虚拟机.html">
+            
+                <a href="../02 Android应用和原理/虚拟机.html">
+            
+                    
+                    虚拟机
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.12" data-path="../02 Android应用和原理/面试题.html">
+            
+                <a href="../02 Android应用和原理/面试题.html">
+            
+                    
+                    面试题
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3" data-path="../03 Android应用手册/">
+            
+                <a href="../03 Android应用手册/">
+            
+                    
+                    03 Android应用手册
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.3.1" data-path="../03 Android应用手册/四大组件/">
+            
+                <a href="../03 Android应用手册/四大组件/">
+            
+                    
+                    四大组件
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.3.1.1" data-path="../03 Android应用手册/四大组件/Android启动模式研究.html">
+            
+                <a href="../03 Android应用手册/四大组件/Android启动模式研究.html">
+            
+                    
+                    Android启动模式研究
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.1.2" data-path="../03 Android应用手册/四大组件/Android生命周期.html">
+            
+                <a href="../03 Android应用手册/四大组件/Android生命周期.html">
+            
+                    
+                    Android生命周期
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.1.3" data-path="../03 Android应用手册/四大组件/Broadcast.html">
+            
+                <a href="../03 Android应用手册/四大组件/Broadcast.html">
+            
+                    
+                    Broadcast
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.2" data-path="../03 Android应用手册/架构组件/">
+            
+                <a href="../03 Android应用手册/架构组件/">
+            
+                    
+                    架构组件
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.3.2.1" data-path="../03 Android应用手册/架构组件/LiveData.html">
+            
+                <a href="../03 Android应用手册/架构组件/LiveData.html">
+            
+                    
+                    LiveData
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.2.2" data-path="../03 Android应用手册/架构组件/Navigation.html">
+            
+                <a href="../03 Android应用手册/架构组件/Navigation.html">
+            
+                    
+                    Navigation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.2.3" data-path="../03 Android应用手册/架构组件/ViewModel.html">
+            
+                <a href="../03 Android应用手册/架构组件/ViewModel.html">
+            
+                    
+                    ViewModel
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3" data-path="../03 Android应用手册/视图/">
+            
+                <a href="../03 Android应用手册/视图/">
+            
+                    
+                    视图
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.3.3.1" data-path="../03 Android应用手册/视图/Android动画.html">
+            
+                <a href="../03 Android应用手册/视图/Android动画.html">
+            
+                    
+                    Android动画
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.2" data-path="../03 Android应用手册/视图/Android布局.html">
+            
+                <a href="../03 Android应用手册/视图/Android布局.html">
+            
+                    
+                    Android布局
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.3" data-path="../03 Android应用手册/视图/Android控件.html">
+            
+                <a href="../03 Android应用手册/视图/Android控件.html">
+            
+                    
+                    Android控件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.4" data-path="../03 Android应用手册/视图/Drawable.html">
+            
+                <a href="../03 Android应用手册/视图/Drawable.html">
+            
+                    
+                    Drawable
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.5" data-path="../03 Android应用手册/视图/View绘制.html">
+            
+                <a href="../03 Android应用手册/视图/View绘制.html">
+            
+                    
+                    View绘制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.6" data-path="../03 Android应用手册/视图/视图相关工具类.html">
+            
+                <a href="../03 Android应用手册/视图/视图相关工具类.html">
+            
+                    
+                    视图相关工具类
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.7" data-path="../03 Android应用手册/视图/资源文件.html">
+            
+                <a href="../03 Android应用手册/视图/资源文件.html">
+            
+                    
+                    资源文件
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.4" data-path="../03 Android应用手册/项目/">
+            
+                <a href="../03 Android应用手册/项目/">
+            
+                    
+                    项目
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.3.4.1" data-path="../03 Android应用手册/项目/命令行调试.html">
+            
+                <a href="../03 Android应用手册/项目/命令行调试.html">
+            
+                    
+                    命令行调试
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.4.2" data-path="../03 Android应用手册/项目/打包.html">
+            
+                <a href="../03 Android应用手册/项目/打包.html">
+            
+                    
+                    打包
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    04 常用类源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.4.1" data-path="AsyncTask源码分析.html">
+            
+                <a href="AsyncTask源码分析.html">
+            
+                    
+                    AsyncTask源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.6.4.2" data-path="EventBus源码分析.html">
+            
+                <a href="EventBus源码分析.html">
+            
+                    
+                    EventBus源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.3" data-path="Glide源码分析.html">
+            
+                <a href="Glide源码分析.html">
+            
+                    
+                    Glide源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.4" data-path="Handler源码分析.html">
+            
+                <a href="Handler源码分析.html">
+            
+                    
+                    Handler源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.5" data-path="LeakCanary.html">
+            
+                <a href="LeakCanary.html">
+            
+                    
+                    LeakCanary
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.6" data-path="LinearLayout源码分析.html">
+            
+                <a href="LinearLayout源码分析.html">
+            
+                    
+                    LinearLayout源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.7" data-path="ListView源码分析.html">
+            
+                <a href="ListView源码分析.html">
+            
+                    
+                    ListView源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.8" data-path="LruCache源码分析.html">
+            
+                <a href="LruCache源码分析.html">
+            
+                    
+                    LruCache源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.9" data-path="OkHttp3源码分析.html">
+            
+                <a href="OkHttp3源码分析.html">
+            
+                    
+                    OkHttp3源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.10" data-path="Retrofit2源码分析.html">
+            
+                <a href="Retrofit2源码分析.html">
+            
+                    
+                    Retrofit2源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.11" data-path="RxJava2源码分析.html">
+            
+                <a href="RxJava2源码分析.html">
+            
+                    
+                    RxJava2源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.12" data-path="SparseArray源码分析.html">
+            
+                <a href="SparseArray源码分析.html">
+            
+                    
+                    SparseArray源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.5" data-path="../05 性能优化工具/">
+            
+                <a href="../05 性能优化工具/">
+            
+                    
+                    05 性能优化工具
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.5.1" data-path="../05 性能优化工具/cpu工具.html">
+            
+                <a href="../05 性能优化工具/cpu工具.html">
+            
+                    
+                    cpu工具
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../../06 计算机网络/">
+            
+                <a href="../../06 计算机网络/">
+            
+                    
+                    06 计算机网络
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.1" data-path="../../06 计算机网络/计算机网络.html">
+            
+                <a href="../../06 计算机网络/计算机网络.html">
+            
+                    
+                    计算机网络
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../../07 设计模式/">
+            
+                <a href="../../07 设计模式/">
+            
+                    
+                    07 设计模式
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.8.1" data-path="../../07 设计模式/Builder模式.html">
+            
+                <a href="../../07 设计模式/Builder模式.html">
+            
+                    
+                    Builder模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.2" data-path="../../07 设计模式/代理模式.html">
+            
+                <a href="../../07 设计模式/代理模式.html">
+            
+                    
+                    代理模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3" data-path="../../07 设计模式/其它设计模式/">
+            
+                <a href="../../07 设计模式/其它设计模式/">
+            
+                    
+                    其它设计模式
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.8.3.1" data-path="../../07 设计模式/其它设计模式/中介者模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/中介者模式.html">
+            
+                    
+                    中介者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.2" data-path="../../07 设计模式/其它设计模式/享元模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/享元模式.html">
+            
+                    
+                    享元模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.3" data-path="../../07 设计模式/其它设计模式/原型模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/原型模式.html">
+            
+                    
+                    原型模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.4" data-path="../../07 设计模式/其它设计模式/命令模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/命令模式.html">
+            
+                    
+                    命令模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.5" data-path="../../07 设计模式/其它设计模式/备忘录模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/备忘录模式.html">
+            
+                    
+                    备忘录模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.6" data-path="../../07 设计模式/其它设计模式/外观模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/外观模式.html">
+            
+                    
+                    外观模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.7" data-path="../../07 设计模式/其它设计模式/工厂方法模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/工厂方法模式.html">
+            
+                    
+                    工厂方法模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.8" data-path="../../07 设计模式/其它设计模式/抽象工厂模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/抽象工厂模式.html">
+            
+                    
+                    抽象工厂模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.9" data-path="../../07 设计模式/其它设计模式/框架模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/框架模式.html">
+            
+                    
+                    框架模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.10" data-path="../../07 设计模式/其它设计模式/桥接模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/桥接模式.html">
+            
+                    
+                    桥接模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.11" data-path="../../07 设计模式/其它设计模式/模板方法模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/模板方法模式.html">
+            
+                    
+                    模板方法模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.12" data-path="../../07 设计模式/其它设计模式/状态模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/状态模式.html">
+            
+                    
+                    状态模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.13" data-path="../../07 设计模式/其它设计模式/策略模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/策略模式.html">
+            
+                    
+                    策略模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.14" data-path="../../07 设计模式/其它设计模式/组合模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/组合模式.html">
+            
+                    
+                    组合模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.15" data-path="../../07 设计模式/其它设计模式/装饰模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/装饰模式.html">
+            
+                    
+                    装饰模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.16" data-path="../../07 设计模式/其它设计模式/解释器模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/解释器模式.html">
+            
+                    
+                    解释器模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.17" data-path="../../07 设计模式/其它设计模式/访问者模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/访问者模式.html">
+            
+                    
+                    访问者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.18" data-path="../../07 设计模式/其它设计模式/责任链模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/责任链模式.html">
+            
+                    
+                    责任链模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.19" data-path="../../07 设计模式/其它设计模式/迭代器模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/迭代器模式.html">
+            
+                    
+                    迭代器模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.20" data-path="../../07 设计模式/其它设计模式/适配器模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/适配器模式.html">
+            
+                    
+                    适配器模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.21" data-path="../../07 设计模式/其它设计模式/静态工厂方法模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/静态工厂方法模式.html">
+            
+                    
+                    静态工厂方法模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.4" data-path="../../07 设计模式/单例模式.html">
+            
+                <a href="../../07 设计模式/单例模式.html">
+            
+                    
+                    单例模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.5" data-path="../../07 设计模式/架构模式.html">
+            
+                <a href="../../07 设计模式/架构模式.html">
+            
+                    
+                    架构模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.6" data-path="../../07 设计模式/生产者消费者模式.html">
+            
+                <a href="../../07 设计模式/生产者消费者模式.html">
+            
+                    
+                    生产者消费者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.7" data-path="../../07 设计模式/观察者模式.html">
+            
+                <a href="../../07 设计模式/观察者模式.html">
+            
+                    
+                    观察者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="../../08 杂项/">
+            
+                <a href="../../08 杂项/">
+            
+                    
+                    08 杂项
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.9.1" data-path="../../08 杂项/git手册/">
+            
+                <a href="../../08 杂项/git手册/">
+            
+                    
+                    git手册
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.2" data-path="../../08 杂项/常用命令/">
+            
+                <a href="../../08 杂项/常用命令/">
+            
+                    
+                    常用命令
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3" data-path="../../08 杂项/环境搭建记录/">
+            
+                <a href="../../08 杂项/环境搭建记录/">
+            
+                    
+                    环境搭建记录
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.9.3.1" data-path="../../08 杂项/环境搭建记录/环境搭建.html">
+            
+                <a href="../../08 杂项/环境搭建记录/环境搭建.html">
+            
+                    
+                    环境搭建
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10" data-path="../../09 Gradle总结/">
+            
+                <a href="../../09 Gradle总结/">
+            
+                    
+                    09 Gradle总结
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.10.1" data-path="../../09 Gradle总结/Gradle总结.html">
+            
+                <a href="../../09 Gradle总结/Gradle总结.html">
+            
+                    
+                    Gradle总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11" data-path="../../10 机器学习/">
+            
+                <a href="../../10 机器学习/">
+            
+                    
+                    10 机器学习
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.11.1" data-path="../../10 机器学习/动量和NAG.html">
+            
+                <a href="../../10 机器学习/动量和NAG.html">
+            
+                    
+                    动量和NAG
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11.2" data-path="../../10 机器学习/机器学习周志华笔记/">
+            
+                <a href="../../10 机器学习/机器学习周志华笔记/">
+            
+                    
+                    机器学习周志华笔记
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.11.2.1" data-path="../../10 机器学习/机器学习周志华笔记/第一章-绪论.html">
+            
+                <a href="../../10 机器学习/机器学习周志华笔记/第一章-绪论.html">
+            
+                    
+                    第一章-绪论
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11.2.2" data-path="../../10 机器学习/机器学习周志华笔记/第三章-线性模型.html">
+            
+                <a href="../../10 机器学习/机器学习周志华笔记/第三章-线性模型.html">
+            
+                    
+                    第三章-线性模型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11.2.3" data-path="../../10 机器学习/机器学习周志华笔记/第二章-模型评估与选择.html">
+            
+                <a href="../../10 机器学习/机器学习周志华笔记/第二章-模型评估与选择.html">
+            
+                    
+                    第二章-模型评估与选择
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12" data-path="../../11 知识点/">
+            
+                <a href="../../11 知识点/">
+            
+                    
+                    11 知识点
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.12.1" data-path="../../11 知识点/04-操作系统.html">
+            
+                <a href="../../11 知识点/04-操作系统.html">
+            
+                    
+                    04-操作系统
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.2" data-path="../../11 知识点/06-数据结构.html">
+            
+                <a href="../../11 知识点/06-数据结构.html">
+            
+                    
+                    06-数据结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.3" data-path="../../11 知识点/07-第三方库.html">
+            
+                <a href="../../11 知识点/07-第三方库.html">
+            
+                    
+                    07-第三方库
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.4" data-path="../../11 知识点/08-设计模式.html">
+            
+                <a href="../../11 知识点/08-设计模式.html">
+            
+                    
+                    08-设计模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.5" data-path="../../11 知识点/09-算法.html">
+            
+                <a href="../../11 知识点/09-算法.html">
+            
+                    
+                    09-算法
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.6" data-path="../../11 知识点/10-计算机底层基础.html">
+            
+                <a href="../../11 知识点/10-计算机底层基础.html">
+            
+                    
+                    10-计算机底层基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13" data-path="../../12 读书笔记/">
+            
+                <a href="../../12 读书笔记/">
+            
+                    
+                    12 读书笔记
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.13.1" data-path="../../12 读书笔记/1984.html">
+            
+                <a href="../../12 读书笔记/1984.html">
+            
+                    
+                    1984
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13.2" data-path="../../12 读书笔记/两晋.html">
+            
+                <a href="../../12 读书笔记/两晋.html">
+            
+                    
+                    两晋
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13.3" data-path="../../12 读书笔记/我们从未中产过.html">
+            
+                <a href="../../12 读书笔记/我们从未中产过.html">
+            
+                    
+                    我们从未中产过
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13.4" data-path="../../12 读书笔记/文化大革命简史.html">
+            
+                <a href="../../12 读书笔记/文化大革命简史.html">
+            
+                    
+                    文化大革命简史
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13.5" data-path="../../12 读书笔记/认知觉醒.html">
+            
+                <a href="../../12 读书笔记/认知觉醒.html">
+            
+                    
+                    认知觉醒
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.14" data-path="../../13 车道级导航/">
+            
+                <a href="../../13 车道级导航/">
+            
+                    
+                    13 车道级导航
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.14.1" data-path="../../13 车道级导航/01-Frenet坐标系.html">
+            
+                <a href="../../13 车道级导航/01-Frenet坐标系.html">
+            
+                    
+                    01-Frenet坐标系
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.14.2" data-path="../../13 车道级导航/02-最短路径算法.html">
+            
+                <a href="../../13 车道级导航/02-最短路径算法.html">
+            
+                    
+                    02-最短路径算法
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.14.3" data-path="../../13 车道级导航/03-数据结构.html">
+            
+                <a href="../../13 车道级导航/03-数据结构.html">
+            
+                    
+                    03-数据结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            本书使用 GitBook 发布
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../.." >EventBus源码分析</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <div id="anchor-navigation-ex-navbar"><i class="fa fa-navicon"></i><ul><li><span class="title-icon "></span><a href="#eventbus&#x7684;&#x57FA;&#x672C;&#x4F7F;&#x7528;"><b>1. </b>EventBus&#x7684;&#x57FA;&#x672C;&#x4F7F;&#x7528;</a></li><ul><li><span class="title-icon "></span><a href="#&#x5FEB;&#x901F;&#x4F7F;&#x7528;"><b>1.1. </b>&#x5FEB;&#x901F;&#x4F7F;&#x7528;</a></li><li><span class="title-icon "></span><a href="#&#x7EBF;&#x7A0B;&#x6A21;&#x5F0F;"><b>1.2. </b>&#x7EBF;&#x7A0B;&#x6A21;&#x5F0F;</a></li><ul><li><span class="title-icon "></span><a href="#posting"><b>1.2.1. </b>POSTING</a></li><li><span class="title-icon "></span><a href="#main"><b>1.2.2. </b>MAIN</a></li><li><span class="title-icon "></span><a href="#mainordered"><b>1.2.3. </b>MAIN_ORDERED</a></li><li><span class="title-icon "></span><a href="#background"><b>1.2.4. </b>BACKGROUND</a></li><li><span class="title-icon "></span><a href="#async"><b>1.2.5. </b>ASYNC</a></li></ul><li><span class="title-icon "></span><a href="#&#x5EF6;&#x8FDF;&#x4E8B;&#x4EF6;"><b>1.3. </b>&#x5EF6;&#x8FDF;&#x4E8B;&#x4EF6;</a></li><li><span class="title-icon "></span><a href="#subscriber-index"><b>1.4. </b>Subscriber Index</a></li><li><span class="title-icon "></span><a href="#&#x5176;&#x4ED6;&#x529F;&#x80FD;"><b>1.5. </b>&#x5176;&#x4ED6;&#x529F;&#x80FD;</a></li></ul><li><span class="title-icon "></span><a href="#eventbus&#x6E90;&#x7801;&#x5206;&#x6790;"><b>2. </b>EventBus&#x6E90;&#x7801;&#x5206;&#x6790;</a></li><ul><li><span class="title-icon "></span><a href="#getdefault"><b>2.1. </b>getDefault</a></li><li><span class="title-icon "></span><a href="#&#x6CE8;&#x518C;register"><b>2.2. </b>&#x6CE8;&#x518C;register</a></li><ul><li><span class="title-icon "></span><a href="#subscribermethodfinderfindsubscribermethods"><b>2.2.1. </b>SubscriberMethodFinder#findSubscriberMethods</a></li><li><span class="title-icon "></span><a href="#subscribermethodfinderfindusinginfo"><b>2.2.2. </b>SubscriberMethodFinder#findUsingInfo</a></li><li><span class="title-icon "></span><a href="#eventbussubscribe"><b>2.2.3. </b>EventBus#subscribe</a></li><li><span class="title-icon "></span><a href="#&#x5C0F;&#x7ED3;"><b>2.2.4. </b>&#x5C0F;&#x7ED3;</a></li></ul><li><span class="title-icon "></span><a href="#&#x53D1;&#x9001;&#x4E8B;&#x4EF6;post"><b>2.3. </b>&#x53D1;&#x9001;&#x4E8B;&#x4EF6;post</a></li><ul><li><span class="title-icon "></span><a href="#eventbuspostsingleevent"><b>2.3.1. </b>EventBus#postSingleEvent</a></li><li><span class="title-icon "></span><a href="#eventbusposttosubscription"><b>2.3.2. </b>EventBus#postToSubscription</a></li><li><span class="title-icon "></span><a href="#&#x5C0F;&#x7ED3;_1"><b>2.3.3. </b>&#x5C0F;&#x7ED3;</a></li></ul><li><span class="title-icon "></span><a href="#&#x53D1;&#x9001;sticky&#x4E8B;&#x4EF6;poststicky"><b>2.4. </b>&#x53D1;&#x9001;Sticky&#x4E8B;&#x4EF6;postSticky</a></li><li><span class="title-icon "></span><a href="#&#x89E3;&#x6CE8;&#x518C;unregister"><b>2.5. </b>&#x89E3;&#x6CE8;&#x518C;unregister</a></li></ul><li><span class="title-icon "></span><a href="#&#x4E2A;&#x4EBA;&#x603B;&#x7ED3;"><b>3. </b>&#x4E2A;&#x4EBA;&#x603B;&#x7ED3;</a></li></ul></div><a href="#eventbus&#x7684;&#x57FA;&#x672C;&#x4F7F;&#x7528;" id="anchorNavigationExGoTop"><i class="fa fa-arrow-up"></i></a><h1 id="eventbus&#x7684;&#x57FA;&#x672C;&#x4F7F;&#x7528;"><a name="eventbus&#x7684;&#x57FA;&#x672C;&#x4F7F;&#x7528;" class="anchor-navigation-ex-anchor" href="#eventbus&#x7684;&#x57FA;&#x672C;&#x4F7F;&#x7528;"><i class="fa fa-link" aria-hidden="true"></i></a>1. EventBus&#x7684;&#x57FA;&#x672C;&#x4F7F;&#x7528;</h1>
+<blockquote>
+<p>  &#x4F7F;&#x7528;&#x7248;&#x672C;&#xFF1A;3.2.0&#x3002;</p>
+</blockquote>
+<p>EventBus&#x662F;&#x89C2;&#x5BDF;&#x8005;&#x6A21;&#x5F0F;&#x7684;&#x5177;&#x4F53;&#x5B9E;&#x73B0;&#xFF0C;&#x5F53;&#x67D0;&#x5904;&#x4EA7;&#x751F;&#x4E8B;&#x4EF6;&#x65F6;&#xFF0C;&#x5176;&#x8BA2;&#x9605;&#x8005;&#x5C31;&#x4F1A;&#x6536;&#x5230;&#x6D88;&#x606F;&#x5E76;&#x4F5C;&#x51FA;&#x53CD;&#x5E94;&#x3002;&#x672C;&#x7AE0;&#x4ECB;&#x7ECD;EventBus&#x7684;&#x57FA;&#x672C;&#x4F7F;&#x7528;&#x3002;&#x66F4;&#x591A;&#x7684;&#x4F7F;&#x7528;&#x53EF;&#x4EE5;&#x53C2;&#x7167;<a href="https://greenrobot.org/eventbus/" target="_blank">&#x5B98;&#x7F51;</a>&#x3002;</p>
+<h2 id="&#x5FEB;&#x901F;&#x4F7F;&#x7528;"><a name="&#x5FEB;&#x901F;&#x4F7F;&#x7528;" class="anchor-navigation-ex-anchor" href="#&#x5FEB;&#x901F;&#x4F7F;&#x7528;"><i class="fa fa-link" aria-hidden="true"></i></a>1.1. &#x5FEB;&#x901F;&#x4F7F;&#x7528;</h2>
+<p>&#x4F7F;&#x7528;&#x8005;&#x9700;&#x8981;&#x5C06;&#x67D0;&#x4E00;&#x4E8B;&#x4EF6;&#x62BD;&#x8C61;&#x6210;Java&#x7C7B;&#xFF0C;&#x4EE5;&#x53CA;&#x7F16;&#x5199;&#x5BF9;&#x5E94;&#x8BA2;&#x9605;&#x8005;&#x7684;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#x3002;&#x8FD9;&#x91CC;&#x4E3E;&#x4E00;&#x4E2A;&#x4F8B;&#x5B50;&#xFF0C;&#x5E76;&#x4E0D;&#x5177;&#x6709;&#x5B9E;&#x9645;&#x610F;&#x4E49;&#xFF0C;&#x5982;&#xFF1A;</p>
+<p><strong>&#x4E8B;&#x4EF6;&#x53D1;&#x9001;</strong></p>
+<pre><code class="lang-java"><span class="hljs-meta">@Override</span>
+<span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onResume</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">super</span>.onResume();
+    EventBus.getDefault().post(<span class="hljs-keyword">new</span> ResumeEvent(<span class="hljs-string">&quot;onResume&quot;</span>));
+}
+</code></pre>
+<p>&#x8FD9;&#x91CC;&#x5C06;Activity&#x7684;onResume&#x65B9;&#x6CD5;&#x4F5C;&#x4E3A;&#x4E00;&#x4E2A;&#x4E8B;&#x4EF6;&#xFF0C;&#x5F53;onResume&#x56DE;&#x8C03;&#x65F6;&#xFF0C;&#x4F1A;&#x53D1;&#x9001;&#x4E00;&#x4E2A;&#x4E8B;&#x4EF6;ResumeEvent&#x3002;</p>
+<p><strong>&#x4E8B;&#x4EF6;</strong></p>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ResumeEvent</span> </span>{
+    String message;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ResumeEvent</span><span class="hljs-params">(String message)</span> </span>{
+        <span class="hljs-keyword">this</span>.message = message;
+    }
+}
+</code></pre>
+<p><strong>&#x4E8B;&#x4EF6;&#x7684;&#x8BA2;&#x9605;&#x8005;</strong></p>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EventSubscriber</span> </span>{
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String TAG = <span class="hljs-string">&quot;EventSubscriber&quot;</span>;
+    <span class="hljs-keyword">private</span> String mName;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">EventSubscriber</span><span class="hljs-params">(String name)</span> </span>{
+        mName = name;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">register</span><span class="hljs-params">()</span> </span>{
+        EventBus.getDefault().register(<span class="hljs-keyword">this</span>);
+    }
+
+    <span class="hljs-meta">@Subscribe</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onEvent</span><span class="hljs-params">(ResumeEvent event)</span> </span>{
+        Log.i(TAG, <span class="hljs-string">&quot;onEvent: name = &quot;</span> + mName
+                + <span class="hljs-string">&quot; ,message = &quot;</span> + event.message
+                + <span class="hljs-string">&quot; ,thread = &quot;</span> + Thread.currentThread().getName());
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">unregister</span><span class="hljs-params">()</span> </span>{
+        EventBus.getDefault().unregister(<span class="hljs-keyword">this</span>);
+    }
+
+}
+</code></pre>
+<p>EventBus.getDefault()&#x8FD4;&#x56DE;&#x9ED8;&#x8BA4;&#x7684;EventBus&#x5BF9;&#x8C61;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x7528;EventBus.builder()&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x81EA;&#x5B9A;&#x4E49;&#x7684;EventBus&#x5BF9;&#x8C61;&#xFF0C;&#x4E00;&#x822C;&#x4F7F;&#x7528;&#x9ED8;&#x8BA4;&#x7684;EventBus&#x5BF9;&#x8C61;&#x3002;</p>
+<p>register&#x65B9;&#x6CD5;&#x4F20;&#x5165;&#x4E00;&#x4E2A;&#x8BA2;&#x9605;&#x8005;&#x5BF9;&#x8C61;&#xFF0C;unregister&#x7528;&#x6765;&#x89E3;&#x6CE8;&#x518C;&#xFF0C;&#x9632;&#x6B62;&#x5185;&#x5B58;&#x6CC4;&#x6F0F;&#x3002;</p>
+<p>@Subscribe&#x6CE8;&#x89E3;&#x6807;&#x8BC6;&#x8BA2;&#x9605;&#x8005;&#x7684;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#xFF0C;&#x8981;&#x6C42;&#x662F;&#x65B9;&#x6CD5;&#x4FEE;&#x9970;&#x7B26;&#x662F;public&#x5E76;&#x4E14;&#x53C2;&#x6570;&#x53EA;&#x80FD;&#x662F;&#x4E8B;&#x4EF6;&#x7684;&#x7C7B;&#x578B;&#xFF0C;&#x5426;&#x8005;&#x4F1A;&#x65E0;&#x6CD5;&#x627E;&#x5230;&#x5BF9;&#x5E94;&#x7684;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#xFF0C;&#x8FD9;&#x91CC;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#x7684;&#x903B;&#x8F91;&#x5C31;&#x662F;&#x6253;&#x5370;&#x65E5;&#x5FD7;&#x3002;</p>
+<p><strong>&#x6CE8;&#x518C;&#x548C;&#x89E3;&#x6CE8;&#x518C;</strong></p>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EventBusActivity</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">BaseActivity</span> </span>{
+    <span class="hljs-keyword">private</span> EventSubscriber mEventSubscriber;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onCreate</span><span class="hljs-params">(Bundle savedInstanceState)</span> </span>{
+        <span class="hljs-comment">//...</span>
+        mEventSubscriber = <span class="hljs-keyword">new</span> EventSubscriber(<span class="hljs-string">&quot;&#x5C0F;&#x660E;&quot;</span>);
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onStart</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">super</span>.onStart();
+        mEventSubscriber.register();
+    }
+
+    <span class="hljs-comment">//...</span>
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onStop</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">super</span>.onStop();
+        mEventSubscriber.unregister();
+    }
+}
+</code></pre>
+<p><strong>&#x8F93;&#x51FA;&#x65E5;&#x5FD7;</strong></p>
+<pre><code>EventSubscriber: onEvent: name = &#x5C0F;&#x660E; ,message = onResume ,thread = main
+</code></pre><p>&#x53EF;&#x4EE5;&#x770B;&#x5230;&#xFF0C;&#x4E8B;&#x4EF6;&#x53D1;&#x751F;&#x65F6;&#xFF0C;&#x8BA2;&#x9605;&#x8005;&#x505A;&#x51FA;&#x4E86;&#x5177;&#x4F53;&#x7684;&#x56DE;&#x5E94;&#x3002;</p>
+<h2 id="&#x7EBF;&#x7A0B;&#x6A21;&#x5F0F;"><a name="&#x7EBF;&#x7A0B;&#x6A21;&#x5F0F;" class="anchor-navigation-ex-anchor" href="#&#x7EBF;&#x7A0B;&#x6A21;&#x5F0F;"><i class="fa fa-link" aria-hidden="true"></i></a>1.2. &#x7EBF;&#x7A0B;&#x6A21;&#x5F0F;</h2>
+<p>EventBus&#x6709;&#x4E94;&#x79CD;&#x7EBF;&#x7A0B;&#x6A21;&#x5F0F;&#xFF0C;&#x7528;&#x6765;&#x6307;&#x5B9A;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#x6240;&#x5728;&#x7EBF;&#x7A0B;&#xFF0C;&#x5728;&#x6CE8;&#x89E3;@Subscribe&#x4E2D;&#x8FDB;&#x884C;&#x6307;&#x5B9A;&#x3002;</p>
+<h3 id="posting"><a name="posting" class="anchor-navigation-ex-anchor" href="#posting"><i class="fa fa-link" aria-hidden="true"></i></a>1.2.1. POSTING</h3>
+<p>&#x9ED8;&#x8BA4;&#x7684;&#x6A21;&#x5F0F;&#xFF0C;&#x4E8B;&#x4EF6;&#x5728;&#x54EA;&#x4E2A;&#x7EBF;&#x7A0B;&#x53D1;&#x9001;&#x5C31;&#x5728;&#x54EA;&#x4E2A;&#x7EBF;&#x7A0B;&#x5904;&#x7406;&#x3002;&#x4EE5;&#x4E0B;&#x7684;&#x4EE3;&#x7801;&#x5C06;&#x5728;&#x4E0A;&#x8FF0;&#x4EE3;&#x7801;&#x7684;&#x57FA;&#x7840;&#x4E0A;&#x8FDB;&#x884C;&#x4FEE;&#x6539;&#xFF1A;</p>
+<pre><code class="lang-java"><span class="hljs-meta">@Override</span>
+<span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onResume</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">super</span>.onResume();
+    EventBus.getDefault().post(<span class="hljs-keyword">new</span> PostingEvent(<span class="hljs-string">&quot;&#x4E3B;&#x7EBF;&#x7A0B;&quot;</span>));
+    <span class="hljs-keyword">new</span> Thread(<span class="hljs-keyword">new</span> Runnable() {
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>{
+            EventBus.getDefault().post(<span class="hljs-keyword">new</span> PostingEvent(<span class="hljs-string">&quot;&#x5B50;&#x7EBF;&#x7A0B;&quot;</span>));
+        }
+    }, <span class="hljs-string">&quot;thread-eventbus&quot;</span>).start();
+}
+</code></pre>
+<pre><code class="lang-java"><span class="hljs-meta">@Subscribe</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onEvent</span><span class="hljs-params">(PostingEvent event)</span> </span>{
+    Log.i(TAG, <span class="hljs-string">&quot;onEvent: name = &quot;</span> + mName
+            + <span class="hljs-string">&quot; ,message = &quot;</span> + event.message
+            + <span class="hljs-string">&quot; ,thread = &quot;</span> + Thread.currentThread().getName());
+}
+</code></pre>
+<p>&#x8F93;&#x51FA;log&#xFF1A;</p>
+<pre><code>EventSubscriber: PostingEvent: name = &#x5C0F;&#x660E; ,message = &#x4E3B;&#x7EBF;&#x7A0B; ,thread = main
+EventSubscriber: PostingEvent: name = &#x5C0F;&#x660E; ,message = &#x5B50;&#x7EBF;&#x7A0B; ,thread = thread-eventbus
+</code></pre><p>&#x65E5;&#x5FD7;&#x663E;&#x793A;&#xFF0C;&#x5728;&#x4E3B;&#x7EBF;&#x7A0B;post&#x7684;&#x4E8B;&#x4EF6;&#x4F1A;&#x5728;&#x4E3B;&#x7EBF;&#x7A0B;&#x88AB;&#x5904;&#x7406;&#xFF0C;&#x5728;&#x5B50;&#x7EBF;&#x7A0B;post&#x7684;&#x7EBF;&#x7A0B;&#x4F1A;&#x5728;&#x5B50;&#x7EBF;&#x7A0B;&#x88AB;&#x5904;&#x7406;&#x3002;</p>
+<h3 id="main"><a name="main" class="anchor-navigation-ex-anchor" href="#main"><i class="fa fa-link" aria-hidden="true"></i></a>1.2.2. MAIN</h3>
+<p>&#x6307;&#x5B9A;&#x5728;Android&#x4E3B;&#x7EBF;&#x7A0B;&#x4E2D;&#x8FDB;&#x884C;&#x65B9;&#x6CD5;&#x5904;&#x7406;&#x3002;</p>
+<p>&#x5148;&#x67E5;&#x770B;&#x5728;&#x4E3B;&#x7EBF;&#x7A0B;post&#x4E8B;&#x4EF6;&#x7684;&#x60C5;&#x51B5;&#xFF1A;</p>
+<pre><code class="lang-java"><span class="hljs-meta">@Override</span>
+<span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onResume</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">super</span>.onResume();
+    <span class="hljs-keyword">new</span> Thread(<span class="hljs-keyword">new</span> Runnable() {
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>{
+            EventBus.getDefault().post(<span class="hljs-keyword">new</span> MainEvent(<span class="hljs-string">&quot;&#x5B50;&#x7EBF;&#x7A0B;&quot;</span>));
+        }
+    }, <span class="hljs-string">&quot;thread-eventbus&quot;</span>).start();
+    EventBus.getDefault().post(<span class="hljs-keyword">new</span> MainEvent(<span class="hljs-string">&quot;&#x4E3B;&#x7EBF;&#x7A0B;&quot;</span>));
+}
+</code></pre>
+<p>&#x5728;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#x4E2D;&#x53C8;post&#x4E86;&#x4E00;&#x4E2A;&#x4E8B;&#x4EF6;&#x3002;</p>
+<pre><code class="lang-java"><span class="hljs-meta">@Subscribe</span>(threadMode = ThreadMode.MAIN)
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onEvent</span><span class="hljs-params">(MainEvent event)</span> </span>{
+    Log.i(TAG, <span class="hljs-string">&quot;MainEvent: name = &quot;</span> + mName
+            + <span class="hljs-string">&quot; ,message = &quot;</span> + event.message
+            + <span class="hljs-string">&quot; ,thread = &quot;</span> + Thread.currentThread().getName());
+    Log.i(TAG, <span class="hljs-string">&quot;MainEvent: end. message = &quot;</span> + event.message);
+}
+</code></pre>
+<p>log&#x5982;&#x4E0B;&#xFF1A;</p>
+<pre><code>EventSubscriber: MainEvent: name = &#x5C0F;&#x660E; ,message = &#x4E3B;&#x7EBF;&#x7A0B; ,thread = main
+EventSubscriber: MainEvent: end. message = &#x4E3B;&#x7EBF;&#x7A0B;
+EventSubscriber: MainEvent: name = &#x5C0F;&#x660E; ,message = &#x5B50;&#x7EBF;&#x7A0B; ,thread = main
+EventSubscriber: MainEvent: end. message = &#x5B50;&#x7EBF;&#x7A0B;
+</code></pre><h3 id="mainordered"><a name="mainordered" class="anchor-navigation-ex-anchor" href="#mainordered"><i class="fa fa-link" aria-hidden="true"></i></a>1.2.3. MAIN_ORDERED</h3>
+<p>MAIN_ORDERED&#x4E5F;&#x662F;&#x5728;&#x4E3B;&#x7EBF;&#x7A0B;&#x4E2D;&#x6267;&#x884C;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#xFF0C;&#x548C;MAIN&#x4E0D;&#x540C;&#x7684;&#x662F;&#xFF0C;MAIN&#x4F1A;&#x53EF;&#x80FD;&#x51FA;&#x73B0;&#x8FD9;&#x79CD;&#x60C5;&#x51B5;&#xFF0C;&#x5148;postA&#x4E8B;&#x4EF6;&#xFF0C;&#x7136;&#x540E;postB&#x4E8B;&#x4EF6;&#xFF0C;&#x4F46;&#x662F;B&#x5148;&#x6267;&#x884C;&#x5B8C;&#xFF0C;&#x7136;&#x540E;A&#x6267;&#x884C;&#x5B8C;&#x3002;MAIN_ORDERED&#x4FDD;&#x8BC1;&#x4E86;&#x987A;&#x5E8F;&#xFF0C;&#x5148;post&#x7684;&#x5148;&#x6267;&#x884C;&#x5B8C;&#x3002;</p>
+<p>&#x5982;&#xFF1A;</p>
+<p><strong>MAIN&#x6A21;&#x5F0F;</strong></p>
+<pre><code class="lang-java"><span class="hljs-meta">@Override</span>
+<span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onResume</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">super</span>.onResume();
+    <span class="hljs-keyword">new</span> Thread(<span class="hljs-keyword">new</span> Runnable() {
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>{
+            EventBus.getDefault().post(<span class="hljs-keyword">new</span> MainEvent(<span class="hljs-string">&quot;&#x5B50;&#x7EBF;&#x7A0B;&quot;</span>));
+        }
+    }, <span class="hljs-string">&quot;thread-eventbus&quot;</span>).start();
+}
+</code></pre>
+<p>&#x5728;&#x5B50;&#x7EBF;&#x7A0B;post&#x4E00;&#x4E2A;&#x4E8B;&#x4EF6;&#x3002;</p>
+<pre><code class="lang-java"><span class="hljs-meta">@Subscribe</span>(threadMode = ThreadMode.MAIN)
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onEvent</span><span class="hljs-params">(MainEvent event)</span> </span>{
+    Log.i(TAG, <span class="hljs-string">&quot;MainEvent: name = &quot;</span> + mName
+            + <span class="hljs-string">&quot; ,message = &quot;</span> + event.message
+            + <span class="hljs-string">&quot; ,thread = &quot;</span> + Thread.currentThread().getName());
+    EventBus.getDefault().post(<span class="hljs-keyword">new</span> AnotherMainEvent(<span class="hljs-string">&quot;aaa&quot;</span>));
+    Log.i(TAG, <span class="hljs-string">&quot;MainEvent: end. message = &quot;</span> + event.message);
+}
+
+<span class="hljs-meta">@Subscribe</span>(threadMode = ThreadMode.MAIN)
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onEvent</span><span class="hljs-params">(AnotherMainEvent event)</span> </span>{
+    Log.i(TAG, <span class="hljs-string">&quot;AnotherMainEvent: name = &quot;</span> + mName
+            + <span class="hljs-string">&quot; ,message = &quot;</span> + event.message
+            + <span class="hljs-string">&quot; ,thread = &quot;</span> + Thread.currentThread().getName());
+    Log.i(TAG, <span class="hljs-string">&quot;AnotherMainEvent: end. message = &quot;</span> + event.message);
+}
+</code></pre>
+<p>&#x5728;&#x7B2C;&#x4E00;&#x4E2A;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#x4E2D;&#x53C8;post&#x53E6;&#x4E00;&#x4E2A;MAIN&#x6A21;&#x5F0F;&#x7684;&#x4E8B;&#x4EF6;&#x3002;</p>
+<p>&#x65E5;&#x5FD7;&#xFF1A;</p>
+<pre><code>EventSubscriber: MainEvent: name = &#x5C0F;&#x660E; ,message = &#x5B50;&#x7EBF;&#x7A0B; ,thread = main
+EventSubscriber: AnotherMainEvent: name = &#x5C0F;&#x660E; ,message = aaa ,thread = main
+EventSubscriber: AnotherMainEvent: end. message = aaa
+EventSubscriber: MainEvent: end. message = &#x5B50;&#x7EBF;&#x7A0B;
+</code></pre><p>&#x800C;&#x7C7B;&#x4F3C;&#x7684;&#x4EE3;&#x7801;&#x5728;MAIN_ORDERED&#x4E0B;&#x7684;&#x65E5;&#x5FD7;&#xFF1A;</p>
+<pre><code>EventSubscriber: MainOrderedEvent: name = &#x5C0F;&#x660E; ,message = &#x5B50;&#x7EBF;&#x7A0B; ,thread = main
+EventSubscriber: MainOrderedEvent: end. message = &#x5B50;&#x7EBF;&#x7A0B;
+EventSubscriber: AnotherMainOrderedEvent: name = &#x5C0F;&#x660E; ,message = aaa ,thread = main
+EventSubscriber: AnotherMainOrderedEvent: end. message = aaa
+</code></pre><h3 id="background"><a name="background" class="anchor-navigation-ex-anchor" href="#background"><i class="fa fa-link" aria-hidden="true"></i></a>1.2.4. BACKGROUND</h3>
+<p>&#x5982;&#x679C;&#x5728;&#x4E3B;&#x7EBF;&#x7A0B;post&#xFF0C;&#x90A3;&#x4E48;&#x5728;&#x5B50;&#x7EBF;&#x7A0B;&#x4E2D;&#x5904;&#x7406;&#xFF1B;&#x5982;&#x679C;&#x5728;&#x5B50;&#x7EBF;&#x7A0B;post&#xFF0C;&#x90A3;&#x4E48;&#x5C31;&#x5728;&#x539F;&#x7EBF;&#x7A0B;&#x4E2D;&#x5904;&#x7406;&#x3002;</p>
+<pre><code class="lang-java"><span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onResume</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">super</span>.onResume();
+        EventBus.getDefault().post(<span class="hljs-keyword">new</span> BackgroundEvent(<span class="hljs-string">&quot;&#x4E3B;&#x7EBF;&#x7A0B;&quot;</span>));
+        <span class="hljs-keyword">new</span> Thread(<span class="hljs-keyword">new</span> Runnable() {
+            <span class="hljs-meta">@Override</span>
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>{
+                EventBus.getDefault().post(<span class="hljs-keyword">new</span> BackgroundEvent(<span class="hljs-string">&quot;&#x5B50;&#x7EBF;&#x7A0B;&quot;</span>));
+            }
+        }, <span class="hljs-string">&quot;thread-eventbus&quot;</span>).start();
+    }
+</code></pre>
+<pre><code class="lang-java"><span class="hljs-meta">@Subscribe</span>(threadMode = ThreadMode.BACKGROUND)
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onEvent</span><span class="hljs-params">(BackgroundEvent event)</span> </span>{
+    Log.i(TAG, <span class="hljs-string">&quot;BackgroundEvent: name = &quot;</span> + mName
+            + <span class="hljs-string">&quot; ,message = &quot;</span> + event.message
+            + <span class="hljs-string">&quot; ,thread = &quot;</span> + Thread.currentThread().getName());
+}
+</code></pre>
+<p>log&#x5982;&#x4E0B;&#xFF1A;</p>
+<pre><code>EventSubscriber: BackgroundEvent: name = &#x5C0F;&#x660E; ,message = &#x4E3B;&#x7EBF;&#x7A0B; ,thread = pool-1-thread-1
+EventSubscriber: BackgroundEvent: name = &#x5C0F;&#x660E; ,message = &#x5B50;&#x7EBF;&#x7A0B; ,thread = thread-eventbus
+</code></pre><h3 id="async"><a name="async" class="anchor-navigation-ex-anchor" href="#async"><i class="fa fa-link" aria-hidden="true"></i></a>1.2.5. ASYNC</h3>
+<p>&#x4E0D;&#x7BA1;&#x5728;&#x4EC0;&#x4E48;&#x7EBF;&#x7A0B;post&#xFF0C;&#x90FD;&#x4F1A;&#x5728;&#x53E6;&#x4E00;&#x4E2A;&#x5B50;&#x7EBF;&#x7A0B;&#x4E2D;&#x5904;&#x7406;&#x3002;</p>
+<pre><code class="lang-java"><span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onResume</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">super</span>.onResume();
+        EventBus.getDefault().post(<span class="hljs-keyword">new</span> AsyncEvent(<span class="hljs-string">&quot;&#x4E3B;&#x7EBF;&#x7A0B;&quot;</span>));
+        <span class="hljs-keyword">new</span> Thread(<span class="hljs-keyword">new</span> Runnable() {
+            <span class="hljs-meta">@Override</span>
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>{
+                EventBus.getDefault().post(<span class="hljs-keyword">new</span> AsyncEvent(<span class="hljs-string">&quot;&#x5B50;&#x7EBF;&#x7A0B;&quot;</span>));
+            }
+        }, <span class="hljs-string">&quot;thread-eventbus&quot;</span>).start();
+    }
+</code></pre>
+<pre><code class="lang-java"><span class="hljs-meta">@Subscribe</span>(threadMode = ThreadMode.ASYNC)
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onEvent</span><span class="hljs-params">(AsyncEvent event)</span> </span>{
+    Log.i(TAG, <span class="hljs-string">&quot;AsyncEvent: name = &quot;</span> + mName
+            + <span class="hljs-string">&quot; ,message = &quot;</span> + event.message
+            + <span class="hljs-string">&quot; ,thread = &quot;</span> + Thread.currentThread().getName());
+}
+</code></pre>
+<p>&#x65E5;&#x5FD7;&#x5982;&#x4E0B;&#xFF1A;</p>
+<pre><code>EventSubscriber: AsyncEvent: name = &#x5C0F;&#x660E; ,message = &#x4E3B;&#x7EBF;&#x7A0B; ,thread = pool-1-thread-1
+EventSubscriber: AsyncEvent: name = &#x5C0F;&#x660E; ,message = &#x5B50;&#x7EBF;&#x7A0B; ,thread = pool-1-thread-1
+</code></pre><h2 id="&#x5EF6;&#x8FDF;&#x4E8B;&#x4EF6;"><a name="&#x5EF6;&#x8FDF;&#x4E8B;&#x4EF6;" class="anchor-navigation-ex-anchor" href="#&#x5EF6;&#x8FDF;&#x4E8B;&#x4EF6;"><i class="fa fa-link" aria-hidden="true"></i></a>1.3. &#x5EF6;&#x8FDF;&#x4E8B;&#x4EF6;</h2>
+<p>EventBus&#x8FD8;&#x63D0;&#x4F9B;&#x4E86;&#x5EF6;&#x8FDF;&#x4E8B;&#x4EF6;&#xFF0C;&#x4F7F;&#x5F97;&#x90A3;&#x4E9B;&#x8BA2;&#x9605;&#x6B64;&#x4E8B;&#x4EF6;&#x540C;&#x65F6;&#x521D;&#x59CB;&#x5316;&#x5728;&#x4E8B;&#x4EF6;&#x53D1;&#x751F;&#x4E4B;&#x540E;&#x7684;&#x5BF9;&#x8C61;&#x80FD;&#x591F;&#x54CD;&#x5E94;&#x6B64;&#x4E8B;&#x4EF6;&#x3002;&#x4F7F;&#x7528;&#x5F88;&#x7B80;&#x5355;&#xFF0C;&#x53EA;&#x8981;&#x8C03;&#x7528;EventBus&#x5BF9;&#x8C61;&#x7684;postSticky&#x65B9;&#x6CD5;&#x5373;&#x53EF;&#xFF1A;</p>
+<pre><code class="lang-java">EventBus.getDefault().postSticky(<span class="hljs-keyword">new</span> StickyEvent(<span class="hljs-string">&quot;onCreate&quot;</span>));
+</code></pre>
+<p>&#x5F53;&#x4E0D;&#x60F3;&#x5EF6;&#x8FDF;&#x4E8B;&#x4EF6;&#x88AB;&#x540E;&#x7EED;&#x8BA2;&#x9605;&#x8005;&#x63A5;&#x6536;&#x65F6;&#xFF0C;&#x53EF;&#x4EE5;&#x8C03;&#x7528;EventBus&#x5BF9;&#x8C61;&#x7684;removeStickyEvent&#x65B9;&#x6CD5;&#x8FDB;&#x884C;&#x79FB;&#x9664;&#xFF1A;</p>
+<pre><code class="lang-java">StickyEvent stickyEvent = EventBus.getDefault().getStickyEvent(StickyEvent.class);
+<span class="hljs-keyword">if</span> (stickyEvent != <span class="hljs-keyword">null</span>) {
+    EventBus.getDefault().removeStickyEvent(StickyEvent.class);
+}
+</code></pre>
+<p>&#x53E6;&#x5916;&#xFF0C;&#x8BA2;&#x9605;&#x8005;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#x7684;&#x6CE8;&#x89E3;&#x8981;&#x8BBE;&#x7F6E;sticky&#x4E3A;true&#xFF1A;</p>
+<pre><code class="lang-java"><span class="hljs-meta">@Subscribe</span>(sticky = <span class="hljs-keyword">true</span>,threadMode = ThreadMode.MAIN)
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onEvent</span><span class="hljs-params">(StickyEvent event)</span> </span>{
+    Log.i(TAG, <span class="hljs-string">&quot;AsyncEvent: name = &quot;</span> + mName
+            + <span class="hljs-string">&quot; ,message = &quot;</span> + event.message
+            + <span class="hljs-string">&quot; ,thread = &quot;</span> + Thread.currentThread().getName());
+}
+</code></pre>
+<p>&#x4E0B;&#x9762;&#x7684;&#x793A;&#x4F8B;&#x4E3A;&#x4E24;&#x4E2A;&#x6309;&#x94AE;&#xFF0C;&#x4E00;&#x4E2A;&#x6309;&#x94AE;&#x7528;&#x6765;&#x521B;&#x5EFA;&#x8BA2;&#x9605;&#x8005;&#xFF0C;&#x4E00;&#x4E2A;&#x6309;&#x94AE;&#x7528;&#x6765;&#x505C;&#x6B62;&#x5EF6;&#x8FDF;&#x4E8B;&#x4EF6;&#xFF0C;&#x800C;&#x5EF6;&#x8FDF;&#x4E8B;&#x4EF6;&#x7684;&#x53D1;&#x751F;&#x5728;&#x5B83;&#x4EEC;&#x524D;&#x9762;&#x3002;</p>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EventBusActivity</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">BaseActivity</span> </span>{
+    <span class="hljs-keyword">private</span> List&lt;EventSubscriber&gt; mEventSubscribers;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onCreate</span><span class="hljs-params">(Bundle savedInstanceState)</span> </span>{
+        <span class="hljs-keyword">super</span>.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_event_bus);
+        mEventSubscribers = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+        findViewById(R.id.btn_create_subscriber).setOnClickListener(<span class="hljs-keyword">new</span> View.OnClickListener() {
+            <span class="hljs-meta">@Override</span>
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onClick</span><span class="hljs-params">(View v)</span> </span>{
+                Log.i(EventSubscriber.TAG, <span class="hljs-string">&quot;&#x521B;&#x5EFA;&#x8BA2;&#x9605;&#x8005;&quot;</span>);
+                String name = String.valueOf(System.currentTimeMillis());
+                EventSubscriber eventSubscriber = <span class="hljs-keyword">new</span> EventSubscriber(name);
+                eventSubscriber.register();
+                mEventSubscribers.add(eventSubscriber);
+            }
+        });
+        findViewById(R.id.btn_stop).setOnClickListener(<span class="hljs-keyword">new</span> View.OnClickListener() {
+            <span class="hljs-meta">@Override</span>
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onClick</span><span class="hljs-params">(View v)</span> </span>{
+                Log.i(EventSubscriber.TAG, <span class="hljs-string">&quot;&#x505C;&#x6B62;&#x5EF6;&#x8FDF;&#x4E8B;&#x4EF6;&quot;</span>);
+                StickyEvent stickyEvent = EventBus.getDefault().getStickyEvent(StickyEvent.class);
+                <span class="hljs-keyword">if</span> (stickyEvent != <span class="hljs-keyword">null</span>) {
+                    EventBus.getDefault().removeStickyEvent(StickyEvent.class);
+                }
+            }
+        });
+
+        EventBus.getDefault().postSticky(<span class="hljs-keyword">new</span> StickyEvent(<span class="hljs-string">&quot;onCreate&quot;</span>));
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onStop</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">super</span>.onStop();
+        <span class="hljs-keyword">for</span> (EventSubscriber eventSubscriber : mEventSubscribers) {
+            eventSubscriber.unregister();
+        }
+    }
+}
+</code></pre>
+<p>&#x65E5;&#x5FD7;&#x5982;&#x4E0B;&#xFF1A;</p>
+<pre><code>EventSubscriber: &#x521B;&#x5EFA;&#x8BA2;&#x9605;&#x8005;
+EventSubscriber: AsyncEvent: name = 1589614794126 ,message = onCreate ,thread = main
+EventSubscriber: &#x521B;&#x5EFA;&#x8BA2;&#x9605;&#x8005;
+EventSubscriber: AsyncEvent: name = 1589614795482 ,message = onCreate ,thread = main
+EventSubscriber: &#x521B;&#x5EFA;&#x8BA2;&#x9605;&#x8005;
+EventSubscriber: AsyncEvent: name = 1589614796669 ,message = onCreate ,thread = main
+EventSubscriber: &#x505C;&#x6B62;&#x5EF6;&#x8FDF;&#x4E8B;&#x4EF6;
+EventSubscriber: &#x521B;&#x5EFA;&#x8BA2;&#x9605;&#x8005;
+EventSubscriber: &#x521B;&#x5EFA;&#x8BA2;&#x9605;&#x8005;
+</code></pre><p>&#x5982;&#x65E5;&#x5FD7;&#x6240;&#x793A;&#xFF0C;&#x5F53;&#x505C;&#x6B62;&#x5EF6;&#x8FDF;&#x4E8B;&#x4EF6;&#x540E;&#xFF0C;&#x521B;&#x5EFA;&#x8BA2;&#x9605;&#x8005;&#x5DF2;&#x7ECF;&#x4E0D;&#x4F1A;&#x518D;&#x8FDB;&#x884C;&#x5904;&#x7406;&#x3002;</p>
+<h2 id="subscriber-index"><a name="subscriber-index" class="anchor-navigation-ex-anchor" href="#subscriber-index"><i class="fa fa-link" aria-hidden="true"></i></a>1.4. Subscriber Index</h2>
+<p>EventBus&#x5904;&#x7406;&#x65B9;&#x6CD5;&#x662F;&#x5728;&#x8FD0;&#x884C;&#x65F6;&#x901A;&#x8FC7;&#x53CD;&#x5C04;&#x8C03;&#x7528;&#x7684;&#xFF0C;3.0&#x4E4B;&#x540E;&#xFF0C;&#x53EF;&#x4EE5;&#x5728;&#x7F16;&#x8BD1;&#x671F;&#x751F;&#x6210;&#x6CE8;&#x91CA;&#x5904;&#x7406;&#x5668;&#x3002;&#x7528;&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x53EF;&#x4EE5;&#x63D0;&#x5347;&#x6027;&#x80FD;&#x3002;</p>
+<p>&#x4F7F;&#x7528;&#x65B9;&#x6CD5;&#xFF0C;&#x5728;app&#x7684;build.gradle&#x91CC;&#x6DFB;&#x52A0;&#x4E0B;&#x9762;&#x7684;&#x4EE3;&#x7801;&#xFF1A;</p>
+<pre><code class="lang-groovy">android {
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [ <span class="hljs-string">eventBusIndex :</span> <span class="hljs-string">&apos;com.example.myapp.MyEventBusIndex&apos;</span> ]
+            }
+        }
+    }
+}
+
+dependencies {
+    <span class="hljs-keyword">def</span> eventbus_version = <span class="hljs-string">&apos;3.2.0&apos;</span>
+    implementation <span class="hljs-string">&quot;org.greenrobot:eventbus:$eventbus_version&quot;</span>
+    annotationProcessor <span class="hljs-string">&quot;org.greenrobot:eventbus-annotation-processor:$eventbus_version&quot;</span>
+}
+</code></pre>
+<p>&#x7136;&#x540E;&#x7F16;&#x8BD1;&#x9879;&#x76EE;&#xFF0C;&#x9879;&#x76EE;&#x4F1A;&#x751F;&#x6210;MyEventBusIndex&#x7C7B;&#x3002;&#x7136;&#x540E;&#x5C06;&#x8FD9;&#x4E2A;Index&#x7C7B;&#x52A0;&#x5165;&#x5230;EventBus&#x5BF9;&#x8C61;&#xFF1A;</p>
+<pre><code class="lang-java">EventBus eventBus = EventBus.builder().addIndex(<span class="hljs-keyword">new</span> MyEventBusIndex()).build();
+</code></pre>
+<p>&#x5982;&#x679C;&#x60F3;EventBus.getDefault&#x7684;&#x5BF9;&#x8C61;&#x4E5F;&#x6709;&#x8FD9;&#x79CD;&#x529F;&#x80FD;&#xFF0C;&#x53EF;&#x4EE5;&#x8FD9;&#x6837;&#x4F7F;&#x7528;&#xFF1A;</p>
+<pre><code class="lang-java">EventBus.builder().addIndex(<span class="hljs-keyword">new</span> MyEventBusIndex()).installDefaultEventBus();
+</code></pre>
+<h2 id="&#x5176;&#x4ED6;&#x529F;&#x80FD;"><a name="&#x5176;&#x4ED6;&#x529F;&#x80FD;" class="anchor-navigation-ex-anchor" href="#&#x5176;&#x4ED6;&#x529F;&#x80FD;"><i class="fa fa-link" aria-hidden="true"></i></a>1.5. &#x5176;&#x4ED6;&#x529F;&#x80FD;</h2>
+<p>EventBus&#x8FD8;&#x6709;&#x4E00;&#x4E9B;&#x5176;&#x5B83;&#x529F;&#x80FD;&#xFF0C;&#x6BD4;&#x5982;&#x81EA;&#x5B9A;&#x4E49;EventBus&#x5BF9;&#x8C61;&#x3001;&#x4F18;&#x5148;&#x7EA7;&#x7B49;&#x3002;&#x6709;&#x5174;&#x8DA3;&#x7684;&#x8BFB;&#x8005;&#x53EF;&#x4EE5;&#x81EA;&#x884C;&#x5206;&#x6790;&#xFF0C;&#x672C;&#x6587;&#x4E0D;&#x518D;&#x4ECB;&#x7ECD;&#x3002;</p>
+<h1 id="eventbus&#x6E90;&#x7801;&#x5206;&#x6790;"><a name="eventbus&#x6E90;&#x7801;&#x5206;&#x6790;" class="anchor-navigation-ex-anchor" href="#eventbus&#x6E90;&#x7801;&#x5206;&#x6790;"><i class="fa fa-link" aria-hidden="true"></i></a>2. EventBus&#x6E90;&#x7801;&#x5206;&#x6790;</h1>
+<p>&#x4E0B;&#x9762;&#x6839;&#x636E;&#x4E0A;&#x6587;&#x7684;&#x57FA;&#x672C;&#x4F7F;&#x7528;&#x6765;&#x5BF9;EventBus&#x6E90;&#x7801;&#x8FDB;&#x884C;&#x5206;&#x6790;&#x3002;</p>
+<h2 id="getdefault"><a name="getdefault" class="anchor-navigation-ex-anchor" href="#getdefault"><i class="fa fa-link" aria-hidden="true"></i></a>2.1. getDefault</h2>
+<p>&#x4ECE;EventBus&#x7684;&#x5165;&#x53E3;&#x5F00;&#x59CB;&#x5206;&#x6790;&#x3002;</p>
+<p><strong>EventBus#getDefault()</strong></p>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> EventBus <span class="hljs-title">getDefault</span><span class="hljs-params">()</span> </span>{
+    EventBus instance = defaultInstance;
+    <span class="hljs-keyword">if</span> (instance == <span class="hljs-keyword">null</span>) {
+        <span class="hljs-keyword">synchronized</span> (EventBus.class) {
+            instance = EventBus.defaultInstance;
+            <span class="hljs-keyword">if</span> (instance == <span class="hljs-keyword">null</span>) {
+                instance = EventBus.defaultInstance = <span class="hljs-keyword">new</span> EventBus();
+            }
+        }
+    }
+    <span class="hljs-keyword">return</span> instance;
+}
+</code></pre>
+<p>&#x8FD9;&#x91CC;&#x5C31;&#x662F;&#x91C7;&#x7528;&#x53CC;&#x91CD;&#x6821;&#x9A8C;&#x5E76;&#x52A0;&#x9501;(DCL)&#x7684;&#x5355;&#x4F8B;&#x6A21;&#x5F0F;&#x751F;&#x6210;EventBus&#x5B9E;&#x4F8B;&#x3002; </p>
+<h2 id="&#x6CE8;&#x518C;register"><a name="&#x6CE8;&#x518C;register" class="anchor-navigation-ex-anchor" href="#&#x6CE8;&#x518C;register"><i class="fa fa-link" aria-hidden="true"></i></a>2.2. &#x6CE8;&#x518C;register</h2>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">register</span><span class="hljs-params">(Object subscriber)</span> </span>{
+    Class&lt;?&gt; subscriberClass = subscriber.getClass();
+    List&lt;SubscriberMethod&gt; subscriberMethods = subscriberMethodFinder.findSubscriberMethods(subscriberClass);
+    <span class="hljs-keyword">synchronized</span> (<span class="hljs-keyword">this</span>) {
+        <span class="hljs-keyword">for</span> (SubscriberMethod subscriberMethod : subscriberMethods) {
+            subscribe(subscriber, subscriberMethod);
+        }
+    }
+}
+</code></pre>
+<p>&#x7B2C;&#x4E00;&#x884C;&#x4EE3;&#x7801;&#x83B7;&#x53D6;&#x4E86;&#x8BA2;&#x9605;&#x8005;&#x7684;class&#x5BF9;&#x8C61;&#xFF0C;&#x7136;&#x540E;&#x7B2C;&#x4E8C;&#x884C;&#x4EE3;&#x7801;&#x627E;&#x51FA;&#x6240;&#x6709;&#x8BA2;&#x9605;&#x7684;&#x65B9;&#x6CD5;&#x3002;</p>
+<h3 id="subscribermethodfinderfindsubscribermethods"><a name="subscribermethodfinderfindsubscribermethods" class="anchor-navigation-ex-anchor" href="#subscribermethodfinderfindsubscribermethods"><i class="fa fa-link" aria-hidden="true"></i></a>2.2.1. SubscriberMethodFinder#findSubscriberMethods</h3>
+<pre><code class="lang-java"><span class="hljs-function">List&lt;SubscriberMethod&gt; <span class="hljs-title">findSubscriberMethods</span><span class="hljs-params">(Class&lt;?&gt; subscriberClass)</span> </span>{
+    <span class="hljs-comment">//&#x4EE3;&#x7801;1</span>
+    List&lt;SubscriberMethod&gt; subscriberMethods = METHOD_CACHE.get(subscriberClass);
+    <span class="hljs-keyword">if</span> (subscriberMethods != <span class="hljs-keyword">null</span>) {
+        <span class="hljs-keyword">return</span> subscriberMethods;
+    }
+    <span class="hljs-comment">//&#x4EE3;&#x7801;2</span>
+    <span class="hljs-keyword">if</span> (ignoreGeneratedIndex) {
+        subscriberMethods = findUsingReflection(subscriberClass);
+    } <span class="hljs-keyword">else</span> {
+        subscriberMethods = findUsingInfo(subscriberClass);
+    }
+
+    <span class="hljs-keyword">if</span> (subscriberMethods.isEmpty()) {
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> EventBusException(<span class="hljs-string">&quot;Subscriber &quot;</span> + subscriberClass
+                + <span class="hljs-string">&quot; and its super classes have no public methods with the @Subscribe annotation&quot;</span>);
+    } <span class="hljs-keyword">else</span> {
+        METHOD_CACHE.put(subscriberClass, subscriberMethods);
+        <span class="hljs-keyword">return</span> subscriberMethods;
+    }
+}
+</code></pre>
+<p>&#x5206;&#x6790;&#xFF1A;</p>
+<ul>
+<li>&#x4EE3;&#x7801;1&#x67E5;&#x770B;&#x662F;&#x5426;&#x6709;&#x7F13;&#x5B58;&#x3002;</li>
+<li>&#x4EE3;&#x7801;2&#x7684;ignoreGeneratedIndex&#x53D8;&#x91CF;&#x8868;&#x793A;&#x662F;&#x5426;&#x5F3A;&#x5236;&#x4F7F;&#x7528;&#x53CD;&#x5C04;&#x52A0;&#x8F7D;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#xFF0C;true&#x4E3A;&#x5F3A;&#x5236;&#x4F7F;&#x7528;&#xFF0C;&#x9ED8;&#x8BA4;&#x4E3A;false&#x3002;&#x53EF;&#x901A;&#x8FC7;EventBusBuilder&#x8BBE;&#x7F6E;&#x3002;&#x8FD9;&#x91CC;&#x4EE5;false&#x8FDB;&#x884C;&#x5206;&#x6790;&#x3002;</li>
+</ul>
+<p>&#x540E;&#x9762;&#x751F;&#x6210;subscriberMethods&#x6210;&#x529F;&#x7684;&#x8BDD;&#x4F1A;&#x52A0;&#x5165;&#x5230;&#x7F13;&#x5B58;&#x4E2D;&#xFF0C;&#x5931;&#x8D25;&#x7684;&#x8BDD;&#x4F1A;throw&#x5F02;&#x5E38;&#x3002;</p>
+<pre><code class="lang-java"><span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> EventBusException(<span class="hljs-string">&quot;Subscriber &quot;</span> + subscriberClass + 
+          <span class="hljs-string">&quot; and its super classes have no public methods with the @Subscribe annotation&quot;</span>);
+</code></pre>
+<blockquote>
+<p>&#x629B;&#x51FA;&#x5F02;&#x5E38;&#x8BF4;&#x660E;&#x6DFB;&#x52A0;&#x6CE8;&#x89E3;&#x7684;&#x65B9;&#x6CD5;&#x7684;&#x8BBF;&#x95EE;&#x4FEE;&#x9970;&#x7B26;&#x9700;&#x8981;&#x4E3A;public&#x3002;</p>
+</blockquote>
+<h3 id="subscribermethodfinderfindusinginfo"><a name="subscribermethodfinderfindusinginfo" class="anchor-navigation-ex-anchor" href="#subscribermethodfinderfindusinginfo"><i class="fa fa-link" aria-hidden="true"></i></a>2.2.2. SubscriberMethodFinder#findUsingInfo</h3>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">private</span> List&lt;SubscriberMethod&gt; <span class="hljs-title">findUsingInfo</span><span class="hljs-params">(Class&lt;?&gt; subscriberClass)</span> </span>{
+    FindState findState = prepareFindState();<span class="hljs-comment">//&#x4EE3;&#x7801;1</span>
+    findState.initForSubscriber(subscriberClass);<span class="hljs-comment">//&#x4EE3;&#x7801;2</span>
+    <span class="hljs-keyword">while</span> (findState.clazz != <span class="hljs-keyword">null</span>) {
+        findState.subscriberInfo = getSubscriberInfo(findState);<span class="hljs-comment">//&#x4EE3;&#x7801;3</span>
+        <span class="hljs-keyword">if</span> (findState.subscriberInfo != <span class="hljs-keyword">null</span>) {
+            SubscriberMethod[] array = findState.subscriberInfo.getSubscriberMethods();
+            <span class="hljs-keyword">for</span> (SubscriberMethod subscriberMethod : array) {
+                <span class="hljs-keyword">if</span> (findState.checkAdd(subscriberMethod.method, subscriberMethod.eventType)) {
+                    findState.subscriberMethods.add(subscriberMethod);
+                }
+            }
+        } <span class="hljs-keyword">else</span> {
+            findUsingReflectionInSingleClass(findState);<span class="hljs-comment">//&#x4EE3;&#x7801;4</span>
+        }
+        findState.moveToSuperclass();
+    }
+    <span class="hljs-keyword">return</span> getMethodsAndRelease(findState);<span class="hljs-comment">//&#x4EE3;&#x7801;5</span>
+}
+</code></pre>
+<p>&#x5206;&#x6790;&#xFF1A;</p>
+<ul>
+<li>&#x4EE3;&#x7801;1&#x8868;&#x793A;&#x4ECE;FindState&#x5BF9;&#x8C61;&#x6C60;&#x4E2D;&#x83B7;&#x53D6;&#x4E00;&#x4E2A;FindState&#x5BF9;&#x8C61;&#x3002;</li>
+<li>&#x4EE3;&#x7801;2&#x521D;&#x59CB;&#x5316;FindState&#x5BF9;&#x8C61;&#x3002;</li>
+<li>&#x4EE3;&#x7801;3&#x5230;&#x4EE3;&#x7801;4&#x4E4B;&#x95F4;&#x7684;&#x4EE3;&#x7801;&#x662F;&#x8FD9;&#x6837;&#x7684;&#xFF0C;&#x5728;EventBus&#x57FA;&#x672C;&#x4F7F;&#x7528;&#x4E2D;&#xFF0C;&#x6709;&#x4E2A;Subscriber Index&#x7684;&#x4F18;&#x5316;&#x65B9;&#x6CD5;&#xFF0C;&#x4F7F;&#x5F97;&#x6CE8;&#x89E3;&#x5904;&#x7406;&#x653E;&#x5230;&#x4E86;&#x7F16;&#x8BD1;&#x671F;&#x95F4;&#xFF0C;&#x7F16;&#x8BD1;&#x540E;&#x4F1A;&#x81EA;&#x52A8;&#x751F;&#x6210;&#x7EE7;&#x627F;SubscriberInfoIndex&#x7C7B;&#x578B;&#x7684;&#x7C7B;&#xFF0C;&#x5728;&#x521B;&#x5EFA;EventBus&#x5BF9;&#x8C61;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x901A;&#x8FC7;addIndex&#x65B9;&#x6CD5;&#x5C06;SubscriberInfoIndex&#x5BF9;&#x8C61;&#x4F20;&#x5165;&#x8FDB;&#x53BB;&#x3002;
+&#x5982;&#x679C;&#x4F7F;&#x7528;&#x4E86;&#x8FD9;&#x4E2A;&#x4F18;&#x5316;&#x65B9;&#x6CD5;&#xFF0C;&#x90A3;&#x4E48;&#x5C31;&#x4E0D;&#x7528;&#x901A;&#x8FC7;&#x53CD;&#x5C04;&#x7684;&#x65B9;&#x5F0F;&#x83B7;&#x53D6;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#x4FE1;&#x606F;&#xFF0C;&#x76F4;&#x63A5;&#x5C06;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#x4FE1;&#x606F;&#x5C01;&#x88C5;&#x6210;SubscriberMethod&#x5BF9;&#x8C61;&#x5E76;&#x653E;&#x5165;findState.subscriberMethods&#x4E2D;&#x3002;
+&#x5982;&#x679C;&#x6CA1;&#x6709;&#x4F7F;&#x7528;&#x8FD9;&#x4E2A;&#x4F18;&#x5316;&#x65B9;&#x6CD5;&#xFF0C;&#x5C31;&#x89C1;&#x4EE3;&#x7801;4&#xFF0C;&#x901A;&#x8FC7;&#x53CD;&#x5C04;&#x7684;&#x65B9;&#x5F0F;&#x83B7;&#x53D6;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#x4FE1;&#x606F;&#x3002;</li>
+<li>&#x4EE3;&#x7801;4&#xFF0C;&#x5206;&#x6790;&#x89C1;<code>SubscriberMethodFinder#findUsingReflectionInSingleClass</code></li>
+<li>while&#x5FAA;&#x73AF;&#x4F1A;&#x7EE7;&#x7EED;&#x68C0;&#x67E5;&#x7236;&#x7C7B;(findState.moveToSuperclass&#xFF0C;&#x5F53;&#x7136;&#x9047;&#x5230;&#x7CFB;&#x7EDF;&#x76F8;&#x5173;&#x7684;&#x7C7B;&#xFF08;&#x5982;&#x5305;&#x540D;java&#x5F00;&#x5934;&#x7684;&#x7C7B;&#xFF09;&#x65F6;&#x4F1A;&#x81EA;&#x52A8;&#x8DF3;&#x8FC7;&#xFF0C;&#x4EE5;&#x63D0;&#x5347;&#x6027;&#x80FD;&#x3002;</li>
+<li>&#x4EE3;&#x7801;5&#xFF0C;&#x5C06;findState.subscriberMethods&#x6570;&#x7EC4;&#x8F6C;&#x4E3A;<code>List&lt;SubscriberMethod&gt;</code>&#x5BF9;&#x8C61;&#xFF0C;&#x5E76;&#x5C06;findState&#x91CD;&#x7F6E;&#x5E76;&#x653E;&#x5165;FindState&#x5BF9;&#x8C61;&#x6C60;&#x4E2D;&#x3002;</li>
+</ul>
+<h4 id="subscribermethodfinderfindusingreflectioninsingleclass"><a name="subscribermethodfinderfindusingreflectioninsingleclass" class="anchor-navigation-ex-anchor" href="#subscribermethodfinderfindusingreflectioninsingleclass"><i class="fa fa-link" aria-hidden="true"></i></a><a name="subscribermethodfinderfindusingreflectioninsingleclass" class="plugin-anchor" href="#subscribermethodfinderfindusingreflectioninsingleclass"><i class="fa fa-link" aria-hidden="true"></i></a>SubscriberMethodFinder#findUsingReflectionInSingleClass</h4>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">findUsingReflectionInSingleClass</span><span class="hljs-params">(FindState findState)</span> </span>{
+    Method[] methods;
+    <span class="hljs-keyword">try</span> {
+        methods = findState.clazz.getDeclaredMethods();
+    } <span class="hljs-comment">//&#x3002;&#x3002;&#x3002;catch&#x7565;</span>
+
+    <span class="hljs-keyword">for</span> (Method method : methods) {
+        <span class="hljs-keyword">int</span> modifiers = method.getModifiers();
+        <span class="hljs-keyword">if</span> ((modifiers &amp; Modifier.PUBLIC) != <span class="hljs-number">0</span> &amp;&amp; (modifiers &amp; MODIFIERS_IGNORE) == <span class="hljs-number">0</span>) {
+            Class&lt;?&gt;[] parameterTypes = method.getParameterTypes();
+            <span class="hljs-keyword">if</span> (parameterTypes.length == <span class="hljs-number">1</span>) {
+                Subscribe subscribeAnnotation = method.getAnnotation(Subscribe.class);
+                <span class="hljs-keyword">if</span> (subscribeAnnotation != <span class="hljs-keyword">null</span>) {
+                    Class&lt;?&gt; eventType = parameterTypes[<span class="hljs-number">0</span>];
+                    <span class="hljs-keyword">if</span> (findState.checkAdd(method, eventType)) {
+                        ThreadMode threadMode = subscribeAnnotation.threadMode();
+                        findState.subscriberMethods.add(<span class="hljs-keyword">new</span> SubscriberMethod(method, eventType, threadMode,
+                                subscribeAnnotation.priority(), subscribeAnnotation.sticky()));
+                    }
+                }
+            } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (strictMethodVerification &amp;&amp; method.isAnnotationPresent(Subscribe.class)) {
+                String methodName = method.getDeclaringClass().getName() + <span class="hljs-string">&quot;.&quot;</span> + method.getName();
+                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> EventBusException(<span class="hljs-string">&quot;@Subscribe method &quot;</span> + methodName +
+                        <span class="hljs-string">&quot;must have exactly 1 parameter but has &quot;</span> + parameterTypes.length);
+            }
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (strictMethodVerification &amp;&amp; method.isAnnotationPresent(Subscribe.class)) {
+            String methodName = method.getDeclaringClass().getName() + <span class="hljs-string">&quot;.&quot;</span> + method.getName();
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> EventBusException(methodName +
+                    <span class="hljs-string">&quot; is a illegal @Subscribe method: must be public, non-static, and non-abstract&quot;</span>);
+        }
+    }
+}
+</code></pre>
+<p>&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x5148;&#x662F;&#x83B7;&#x53D6;&#x8BA2;&#x9605;&#x8005;&#x7C7B;&#x7684;&#x6240;&#x6709;&#x58F0;&#x660E;&#x65B9;&#x6CD5;&#xFF0C;&#x5BFB;&#x627E;&#x4FEE;&#x9970;&#x7B26;&#x4E3A;public&#x5E76;&#x4E14;&#x53C2;&#x6570;&#x957F;&#x5EA6;&#x4E3A;1&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x5982;&#x679C;&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x5E26;&#x6709;Subscribe&#x6CE8;&#x89E3;&#xFF0C;&#x90A3;&#x4E48;&#x5C31;&#x63D0;&#x53D6;&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x7684;&#x4FE1;&#x606F;&#xFF0C;&#x5982;&#xFF1A;&#x53C2;&#x6570;&#x7C7B;&#x578B;&#x3001;&#x6CE8;&#x89E3;&#x5185;&#x5BB9;&#x3001;method&#x5BF9;&#x8C61;&#x7B49;&#xFF0C;&#x5C06;&#x8FD9;&#x4E9B;&#x4FE1;&#x606F;&#x5C01;&#x88C5;&#x6210;SubscriberMethod&#x5BF9;&#x8C61;&#x653E;&#x5165;findState.subscriberMethods&#x4E2D;&#x3002;</p>
+<h3 id="eventbussubscribe"><a name="eventbussubscribe" class="anchor-navigation-ex-anchor" href="#eventbussubscribe"><i class="fa fa-link" aria-hidden="true"></i></a>2.2.3. EventBus#subscribe</h3>
+<p>&#x8FD4;&#x56DE;subscriberMethods&#x4E4B;&#x540E;&#xFF0C;register&#x65B9;&#x6CD5;&#x7684;&#x6700;&#x540E;&#x4F1A;&#x8C03;&#x7528;subscribe&#x65B9;&#x6CD5;&#xFF1A; </p>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">subscribe</span><span class="hljs-params">(Object subscriber, SubscriberMethod subscriberMethod)</span> </span>{
+    <span class="hljs-comment">//&#x4EE3;&#x7801;1</span>
+    Class&lt;?&gt; eventType = subscriberMethod.eventType;
+    Subscription newSubscription = <span class="hljs-keyword">new</span> Subscription(subscriber, subscriberMethod);
+    CopyOnWriteArrayList&lt;Subscription&gt; subscriptions = subscriptionsByEventType.get(eventType);
+    <span class="hljs-keyword">if</span> (subscriptions == <span class="hljs-keyword">null</span>) {
+        subscriptions = <span class="hljs-keyword">new</span> CopyOnWriteArrayList&lt;&gt;();
+        subscriptionsByEventType.put(eventType, subscriptions);
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">if</span> (subscriptions.contains(newSubscription)) {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> EventBusException(<span class="hljs-string">&quot;Subscriber &quot;</span> + subscriber.getClass() + <span class="hljs-string">&quot; already registered to event &quot;</span>
+                    + eventType);
+        }
+    }
+
+    <span class="hljs-comment">//&#x4EE3;&#x7801;2</span>
+    <span class="hljs-keyword">int</span> size = subscriptions.size();
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt;= size; i++) {
+        <span class="hljs-keyword">if</span> (i == size || subscriberMethod.priority &gt; subscriptions.get(i).subscriberMethod.priority) {
+            subscriptions.add(i, newSubscription);
+            <span class="hljs-keyword">break</span>;
+        }
+    }
+
+    <span class="hljs-comment">//&#x4EE3;&#x7801;3</span>
+    List&lt;Class&lt;?&gt;&gt; subscribedEvents = typesBySubscriber.get(subscriber);
+    <span class="hljs-keyword">if</span> (subscribedEvents == <span class="hljs-keyword">null</span>) {
+        subscribedEvents = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+        typesBySubscriber.put(subscriber, subscribedEvents);
+    }
+    subscribedEvents.add(eventType);
+
+    <span class="hljs-comment">//&#x4EE3;&#x7801;4</span>
+    <span class="hljs-keyword">if</span> (subscriberMethod.sticky) {
+        <span class="hljs-keyword">if</span> (eventInheritance) {
+            Set&lt;Map.Entry&lt;Class&lt;?&gt;, Object&gt;&gt; entries = stickyEvents.entrySet();
+            <span class="hljs-keyword">for</span> (Map.Entry&lt;Class&lt;?&gt;, Object&gt; entry : entries) {
+                Class&lt;?&gt; candidateEventType = entry.getKey();
+                <span class="hljs-keyword">if</span> (eventType.isAssignableFrom(candidateEventType)) {
+                    Object stickyEvent = entry.getValue();
+                    checkPostStickyEventToSubscription(newSubscription, stickyEvent);
+                }
+            }
+        } <span class="hljs-keyword">else</span> {
+            Object stickyEvent = stickyEvents.get(eventType);
+            checkPostStickyEventToSubscription(newSubscription, stickyEvent);
+        }
+    }
+}
+</code></pre>
+<p>&#x9996;&#x5148;&#x4ECB;&#x7ECD;&#x4E00;&#x4E0B;&#x51FA;&#x73B0;&#x7684;&#x90E8;&#x5206;&#x53D8;&#x91CF;&#xFF1A;</p>
+<ul>
+<li>subscriptionsByEventType&#xFF0C;<code>Map&lt;Class&lt;?&gt;, CopyOnWriteArrayList&lt;Subscription&gt;&gt;</code>&#x7C7B;&#x578B;&#xFF0C;&#x7528;&#x6765;&#x5B58;&#x50A8;&#x4EE5;&#x4E8B;&#x4EF6;&#x7C7B;&#x578B;&#x4E3A;&#x952E;&#x3001;&#x4EE5;Subscription&#x5217;&#x8868;&#x4E3A;&#x503C;&#x7684;&#x952E;&#x503C;&#x5BF9;&#x3002;</li>
+<li>typesBySubscriber&#xFF0C;<code>Map&lt;Object, List&lt;Class&lt;?&gt;&gt;&gt;</code>&#x7C7B;&#x578B;&#xFF0C;&#x7528;&#x6765;&#x5B58;&#x50A8;&#x4EE5;&#x8BA2;&#x9605;&#x8005;&#x5BF9;&#x8C61;&#x4E3A;&#x952E;&#x3001;&#x4EE5;&#x4E8B;&#x4EF6;&#x7C7B;&#x578B;&#x5217;&#x8868;&#x4E3A;&#x503C;&#x7684;&#x952E;&#x503C;&#x5BF9;&#x3002;</li>
+<li>stickyEvents&#xFF0C;<code>Map&lt;Class&lt;?&gt;, Object&gt;</code>&#x7C7B;&#x578B;&#xFF0C;&#x7528;&#x6765;&#x5B58;&#x50A8;&#x4EE5;&#x4E8B;&#x4EF6;&#x7C7B;&#x578B;&#x4E3A;&#x952E;&#x3001;&#x4EE5;&#x4E8B;&#x4EF6;&#x5BF9;&#x8C61;&#x4E3A;&#x503C;&#x7684;&#x952E;&#x503C;&#x5BF9;&#x3002;</li>
+</ul>
+<p>&#x5206;&#x6790;&#xFF1A;</p>
+<ul>
+<li>&#x4EE3;&#x7801;1&#xFF0C;&#x6839;&#x636E;&#x4E8B;&#x4EF6;&#x7C7B;&#x578B;&#x5728;subscriptionsByEventType&#x53BB;&#x67E5;&#x627E;&#x4E00;&#x4E2A;Subscription&#x5217;&#x8868;&#xFF0C;Subscription&#x662F;&#x4E00;&#x4E2A;&#x5C01;&#x88C5;&#x4E86;&#x8BA2;&#x9605;&#x8005;&#x5BF9;&#x8C61;&#x548C;&#x5176;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#x7684;&#x7C7B;&#x578B; &#xFF0C;&#x5982;&#x679C;&#x6CA1;&#x6709;&#x5219;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x65B0;&#x7684;Subscription&#x5217;&#x8868;&#x3002;&#x4ECE;throw&#x4E2D;&#x4E5F;&#x53EF;&#x4EE5;&#x770B;&#x51FA;&#xFF0C;EventBus&#x4E0D;&#x652F;&#x6301;&#x5BF9;&#x540C;&#x4E00;&#x4E2A;&#x5BF9;&#x8C61;&#x8FDB;&#x884C;&#x6CE8;&#x518C;&#x3002;</li>
+<li>&#x4EE3;&#x7801;2&#xFF0C;&#x6839;&#x636E;&#x4F18;&#x5148;&#x7EA7;&#x5C06;newSubscription&#x5BF9;&#x8C61;&#x653E;&#x5165;&#x5230;Subscription&#x5217;&#x8868;&#x4E2D;&#x3002;</li>
+<li>&#x4EE3;&#x7801;3&#xFF0C;&#x5C06;subscriber&#x548C;subscribedEvents&#x653E;&#x5165;typesBySubscriber&#x4E2D;&#x3002;typesBySubscriber&#x5728;&#x5224;&#x65AD;&#x8BA2;&#x9605;&#x8005;&#x662F;&#x5426;&#x6CE8;&#x518C;&#x4EE5;&#x53CA;&#x89E3;&#x6CE8;&#x518C;&#x4E2D;&#x4F1A;&#x7528;&#x5230;&#x3002;</li>
+<li>&#x4EE3;&#x7801;4&#xFF0C;&#x5224;&#x65AD;&#x662F;&#x5426;&#x662F;sticky&#x4E8B;&#x4EF6;&#xFF0C;&#x5982;&#x679C;&#x662F;sticky&#x4E8B;&#x4EF6;&#x7684;&#x8BDD;&#xFF0C;&#x5230;&#x6700;&#x540E;&#x4F1A;&#x8C03;&#x7528;checkPostStickyEventToSubscription&#x65B9;&#x6CD5;&#x3002;&#x8FD9;&#x91CC;&#x6709;&#x4E2A;eventInheritance&#x53D8;&#x91CF;&#xFF0C;&#x9ED8;&#x8BA4;&#x4E3A;true&#xFF0C;&#x5B83;&#x7684;&#x4F5C;&#x7528;&#x662F;&#x8FD9;&#x6837;&#x7684;&#xFF0C;&#x5982;&#x679C;&#x4E3A;true&#xFF0C;&#x5C31;&#x5C06;sticky&#x4E8B;&#x4EF6;&#x5BF9;&#x8C61;&#x4EE5;&#x53CA;&#x7236;&#x7C7B;&#x5BF9;&#x8C61;&#x4F9D;&#x6B21;&#x4F20;&#x5165;checkPostStickyEventToSubscription&#x65B9;&#x6CD5;&#xFF1B;&#x5982;&#x679C;&#x4E3A;false&#xFF0C;&#x53EA;&#x5C06;sticky&#x4E8B;&#x4EF6;&#x5BF9;&#x8C61;&#x672C;&#x8EAB;&#x4F20;&#x5165;checkPostStickyEventToSubscription&#x65B9;&#x6CD5;&#x3002;</li>
+</ul>
+<h4 id="eventbuscheckpoststickyeventtosubscription"><a name="eventbuscheckpoststickyeventtosubscription" class="anchor-navigation-ex-anchor" href="#eventbuscheckpoststickyeventtosubscription"><i class="fa fa-link" aria-hidden="true"></i></a><a name="eventbuscheckpoststickyeventtosubscription" class="plugin-anchor" href="#eventbuscheckpoststickyeventtosubscription"><i class="fa fa-link" aria-hidden="true"></i></a>EventBus#checkPostStickyEventToSubscription</h4>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">checkPostStickyEventToSubscription</span><span class="hljs-params">(Subscription newSubscription, Object stickyEvent)</span> </span>{
+    <span class="hljs-keyword">if</span> (stickyEvent != <span class="hljs-keyword">null</span>) {
+        postToSubscription(newSubscription, stickyEvent, isMainThread());
+    }
+}
+</code></pre>
+<p>checkPostStickyEventToSubscription&#x8C03;&#x7528;&#x4E86;postToSubscription&#x65B9;&#x6CD5;&#xFF0C;postToSubscription&#x65B9;&#x6CD5;&#x7684;&#x5206;&#x6790;&#x89C1;&#x4E0B;&#x3002;</p>
+<h3 id="&#x5C0F;&#x7ED3;"><a name="&#x5C0F;&#x7ED3;" class="anchor-navigation-ex-anchor" href="#&#x5C0F;&#x7ED3;"><i class="fa fa-link" aria-hidden="true"></i></a>2.2.4. &#x5C0F;&#x7ED3;</h3>
+<p>register&#x65B9;&#x6CD5;&#x4E3B;&#x8981;&#x662F;&#x5C06;&#x8BA2;&#x9605;&#x8005;&#x7684;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#x63D0;&#x53D6;&#x5C01;&#x88C5;&#xFF0C;EventBus&#x4F7F;&#x7528;&#x53CD;&#x5C04;&#x548C;&#x7F16;&#x8BD1;&#x671F;&#x5206;&#x6790;&#x7684;&#x65B9;&#x5F0F;&#x8FDB;&#x884C;&#x63D0;&#x53D6;&#x3002;&#x53E6;&#x5916;&#xFF0C;&#x5C06;&#x6B64;&#x671F;&#x95F4;&#x4EA7;&#x751F;&#x7684;&#x90E8;&#x5206;&#x5BF9;&#x8C61;&#x5B58;&#x50A8;&#x5230;Map&#x6216;&#x8005;&#x5217;&#x8868;&#x4E2D;&#x3002;</p>
+<h2 id="&#x53D1;&#x9001;&#x4E8B;&#x4EF6;post"><a name="&#x53D1;&#x9001;&#x4E8B;&#x4EF6;post" class="anchor-navigation-ex-anchor" href="#&#x53D1;&#x9001;&#x4E8B;&#x4EF6;post"><i class="fa fa-link" aria-hidden="true"></i></a>2.3. &#x53D1;&#x9001;&#x4E8B;&#x4EF6;post</h2>
+<p><strong>EventBus#post</strong></p>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">post</span><span class="hljs-params">(Object event)</span> </span>{
+    PostingThreadState postingState = currentPostingThreadState.get();
+    List&lt;Object&gt; eventQueue = postingState.eventQueue;
+    eventQueue.add(event);
+
+    <span class="hljs-keyword">if</span> (!postingState.isPosting) {
+        postingState.isMainThread = isMainThread();
+        postingState.isPosting = <span class="hljs-keyword">true</span>;
+        <span class="hljs-keyword">if</span> (postingState.canceled) {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> EventBusException(<span class="hljs-string">&quot;Internal error. Abort state was not reset&quot;</span>);
+        }
+        <span class="hljs-keyword">try</span> {
+            <span class="hljs-keyword">while</span> (!eventQueue.isEmpty()) {
+                postSingleEvent(eventQueue.remove(<span class="hljs-number">0</span>), postingState);
+            }
+        } <span class="hljs-keyword">finally</span> {
+            postingState.isPosting = <span class="hljs-keyword">false</span>;
+            postingState.isMainThread = <span class="hljs-keyword">false</span>;
+        }
+    }
+}
+</code></pre>
+<p>currentPostingThreadState&#x662F;&#x4E00;&#x4E2A;ThreadLocal&#x7C7B;&#x578B;&#x7684;&#x5BF9;&#x8C61;&#xFF0C;&#x91CC;&#x9762;&#x5B58;&#x50A8;&#x4E86;PostingThreadState&#xFF0C;&#x800C;PostingThreadState&#x4E2D;&#x5305;&#x542B;&#x4E86;&#x4E00;&#x4E2A;eventQueue&#x548C;&#x5176;&#x4ED6;&#x4E00;&#x4E9B;&#x6807;&#x5FD7;&#x4F4D;&#x3002;</p>
+<p>&#x7136;&#x540E;&#x628A;&#x4F20;&#x5165;&#x7684;&#x4E8B;&#x4EF6;&#x5BF9;&#x8C61;&#xFF0C;&#x653E;&#x5165;eventQueue&#x4E2D;&#xFF0C;&#x63A5;&#x7740;&#x5C06;eventQueue&#x7684;&#x5BF9;&#x8C61;&#x53D6;&#x51FA;&#x5E76;&#x4F20;&#x5165;postSingleEvent&#x65B9;&#x6CD5;&#x4E2D;&#x3002;</p>
+<h3 id="eventbuspostsingleevent"><a name="eventbuspostsingleevent" class="anchor-navigation-ex-anchor" href="#eventbuspostsingleevent"><i class="fa fa-link" aria-hidden="true"></i></a>2.3.1. EventBus#postSingleEvent</h3>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">postSingleEvent</span><span class="hljs-params">(Object event, PostingThreadState postingState)</span> <span class="hljs-keyword">throws</span> Error </span>{
+    Class&lt;?&gt; eventClass = event.getClass();
+    <span class="hljs-keyword">boolean</span> subscriptionFound = <span class="hljs-keyword">false</span>;
+    <span class="hljs-keyword">if</span> (eventInheritance) {<span class="hljs-comment">//&#x4EE3;&#x7801;1</span>
+        List&lt;Class&lt;?&gt;&gt; eventTypes = lookupAllEventTypes(eventClass);<span class="hljs-comment">//&#x4EE3;&#x7801;2</span>
+        <span class="hljs-keyword">int</span> countTypes = eventTypes.size();
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> h = <span class="hljs-number">0</span>; h &lt; countTypes; h++) {
+            Class&lt;?&gt; clazz = eventTypes.get(h);
+            subscriptionFound |= postSingleEventForEventType(event, postingState, clazz);
+        }
+    } <span class="hljs-keyword">else</span> {
+        subscriptionFound = postSingleEventForEventType(event, postingState, eventClass);
+    }
+    <span class="hljs-keyword">if</span> (!subscriptionFound) {
+        <span class="hljs-keyword">if</span> (logNoSubscriberMessages) {
+            logger.log(Level.FINE, <span class="hljs-string">&quot;No subscribers registered for event &quot;</span> + eventClass);
+        }
+        <span class="hljs-keyword">if</span> (sendNoSubscriberEvent &amp;&amp; eventClass != NoSubscriberEvent.class &amp;&amp;
+                eventClass != SubscriberExceptionEvent.class) {
+            post(<span class="hljs-keyword">new</span> NoSubscriberEvent(<span class="hljs-keyword">this</span>, event));
+        }
+    }
+}
+</code></pre>
+<ul>
+<li><p>&#x4EE3;&#x7801;1&#xFF0C;eventInheritance&#x5728;register&#x65B9;&#x6CD5;&#x4E2D;&#x4E5F;&#x51FA;&#x73B0;&#x4E86;&#xFF0C;&#x5176;&#x9ED8;&#x8BA4;&#x503C;&#x4E3A;true&#xFF0C;&#x5C31;&#x662F;&#x662F;&#x5426;&#x628A;&#x4E8B;&#x4EF6;&#x7C7B;&#x7684;&#x7236;&#x7C7B;&#x7B97;&#x4E0A;&#x3002;</p>
+</li>
+<li><p>&#x4EE3;&#x7801;2&#xFF0C;lookupAllEventTypes&#x65B9;&#x6CD5;&#x662F;&#x83B7;&#x53D6;&#x4E8B;&#x4EF6;&#x53CA;&#x5176;&#x7236;&#x7C7B;&#xFF0C;&#x5185;&#x90E8;&#x6709;&#x4E2A;&#x7F13;&#x5B58;&#x4EE5;&#x63D0;&#x5347;&#x6027;&#x80FD;&#x3002;</p>
+</li>
+</ul>
+<p>&#x6700;&#x7EC8;&#x90FD;&#x4F1A;&#x8C03;&#x7528;postSingleEventForEventType&#x65B9;&#x6CD5;&#x3002;</p>
+<h4 id="eventbuspostsingleeventforeventtype"><a name="eventbuspostsingleeventforeventtype" class="anchor-navigation-ex-anchor" href="#eventbuspostsingleeventforeventtype"><i class="fa fa-link" aria-hidden="true"></i></a><a name="eventbuspostsingleeventforeventtype" class="plugin-anchor" href="#eventbuspostsingleeventforeventtype"><i class="fa fa-link" aria-hidden="true"></i></a>EventBus#postSingleEventForEventType</h4>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">postSingleEventForEventType</span><span class="hljs-params">(Object event, PostingThreadState postingState, Class&lt;?&gt; eventClass)</span> </span>{
+    <span class="hljs-comment">//&#x4EE3;&#x7801;1</span>
+    CopyOnWriteArrayList&lt;Subscription&gt; subscriptions;
+    <span class="hljs-keyword">synchronized</span> (<span class="hljs-keyword">this</span>) {
+        subscriptions = subscriptionsByEventType.get(eventClass);
+    }
+    <span class="hljs-keyword">if</span> (subscriptions != <span class="hljs-keyword">null</span> &amp;&amp; !subscriptions.isEmpty()) {
+        <span class="hljs-keyword">for</span> (Subscription subscription : subscriptions) {
+            postingState.event = event;
+            postingState.subscription = subscription;
+            <span class="hljs-keyword">boolean</span> aborted;
+            <span class="hljs-keyword">try</span> {
+                postToSubscription(subscription, event, postingState.isMainThread);<span class="hljs-comment">//&#x4EE3;&#x7801;2</span>
+                aborted = postingState.canceled;
+            } <span class="hljs-keyword">finally</span> {
+                postingState.event = <span class="hljs-keyword">null</span>;
+                postingState.subscription = <span class="hljs-keyword">null</span>;
+                postingState.canceled = <span class="hljs-keyword">false</span>;
+            }
+            <span class="hljs-keyword">if</span> (aborted) {
+                <span class="hljs-keyword">break</span>;
+            }
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
+}
+</code></pre>
+<ul>
+<li>&#x4EE3;&#x7801;1&#xFF0C;&#x4E0A;&#x6587;&#x8BF4;&#x8FC7;&#xFF0C;subscriptionsByEventType&#x662F;<code>Map&lt;Class&lt;?&gt;, CopyOnWriteArrayList&lt;Subscription&gt;&gt;</code>&#x7C7B;&#x578B;&#xFF0C;&#x7528;&#x6765;&#x5B58;&#x50A8;&#x4EE5;&#x4E8B;&#x4EF6;&#x7C7B;&#x578B;&#x4E3A;&#x952E;&#x3001;&#x4EE5;Subscription&#x5217;&#x8868;&#x4E3A;&#x503C;&#x7684;&#x952E;&#x503C;&#x5BF9;&#x3002;&#x800C;Subscription&#x662F;&#x4E00;&#x4E2A;&#x5C01;&#x88C5;&#x4E86;&#x8BA2;&#x9605;&#x8005;&#x5BF9;&#x8C61;&#x548C;&#x5176;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#x7684;&#x7C7B;&#x578B;&#x3002;&#x53D6;&#x51FA;&#x7684;<code>CopyOnWriteArrayList&lt;Subscription&gt;</code>&#x5C31;&#x662F;&#x5BF9;&#x67D0;&#x4E8B;&#x4EF6;&#x611F;&#x5174;&#x8DA3;&#x7684;&#x8BA2;&#x9605;&#x8005;&#x96C6;&#x5408;&#x3002;</li>
+<li>&#x4EE3;&#x7801;2&#xFF0C;&#x7136;&#x540E;&#x904D;&#x5386;&#x96C6;&#x5408;&#xFF0C;&#x53D6;&#x51FA;subscription&#x5BF9;&#x8C61;&#x548C;&#x4E8B;&#x4EF6;&#x5BF9;&#x8C61;&#x5E76;&#x8C03;&#x7528;postToSubscription&#x65B9;&#x6CD5;&#x3002;</li>
+</ul>
+<h3 id="eventbusposttosubscription"><a name="eventbusposttosubscription" class="anchor-navigation-ex-anchor" href="#eventbusposttosubscription"><i class="fa fa-link" aria-hidden="true"></i></a>2.3.2. EventBus#postToSubscription</h3>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">postToSubscription</span><span class="hljs-params">(Subscription subscription, Object event, <span class="hljs-keyword">boolean</span> isMainThread)</span> </span>{
+    <span class="hljs-keyword">switch</span> (subscription.subscriberMethod.threadMode) {
+        <span class="hljs-keyword">case</span> POSTING:
+            invokeSubscriber(subscription, event);
+            <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">case</span> MAIN:
+            <span class="hljs-keyword">if</span> (isMainThread) {
+                invokeSubscriber(subscription, event);
+            } <span class="hljs-keyword">else</span> {
+                mainThreadPoster.enqueue(subscription, event);
+            }
+            <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">case</span> MAIN_ORDERED:
+            <span class="hljs-keyword">if</span> (mainThreadPoster != <span class="hljs-keyword">null</span>) {
+                mainThreadPoster.enqueue(subscription, event);
+            } <span class="hljs-keyword">else</span> {
+                invokeSubscriber(subscription, event);
+            }
+            <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">case</span> BACKGROUND:
+            <span class="hljs-keyword">if</span> (isMainThread) {
+                backgroundPoster.enqueue(subscription, event);
+            } <span class="hljs-keyword">else</span> {
+                invokeSubscriber(subscription, event);
+            }
+            <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">case</span> ASYNC:
+            asyncPoster.enqueue(subscription, event);
+            <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">default</span>:
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalStateException(<span class="hljs-string">&quot;Unknown thread mode: &quot;</span> + subscription.subscriberMethod.threadMode);
+    }
+}
+</code></pre>
+<p>&#x6B64;&#x65B9;&#x6CD5;&#x6839;&#x636E;&#x8BA2;&#x9605;&#x8005;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#x7684;&#x6CE8;&#x89E3;&#x4E2D;&#x7684;&#x7EBF;&#x7A0B;&#x6A21;&#x5F0F;threadMode&#xFF0C;&#x6839;&#x636E;&#x5176;&#x6548;&#x679C;&#xFF08;&#x6BCF;&#x4E2A;&#x7EBF;&#x7A0B;&#x6A21;&#x5F0F;&#x7684;&#x6548;&#x679C;&#x53EF;&#x89C1;&#x4E0A;&#x6587;&#x57FA;&#x672C;&#x4F7F;&#x7528;&#xFF09;&#x8FDB;&#x884C;&#x7EBF;&#x7A0B;&#x8C03;&#x5EA6;&#xFF0C;&#x6838;&#x5FC3;&#x65B9;&#x6CD5;&#x662F;invokeSubscriber&#x3002;</p>
+<p>&#x7EBF;&#x7A0B;&#x6A21;&#x5F0F;&#x867D;&#x7136;&#x6709;5&#x79CD;&#xFF0C;&#x4F46;&#x662F;&#x53EF;&#x4EE5;&#x603B;&#x7ED3;&#x4E3A;2&#x79CD;&#xFF08;A&#x3001;B&#x4E3A;&#x4E0D;&#x540C;&#x7EBF;&#x7A0B;&#xFF09;&#xFF1A;</p>
+<ol>
+<li>&#x5728;A&#x7EBF;&#x7A0B;post&#x4E8B;&#x4EF6;&#xFF0C;&#x5728;A&#x7EBF;&#x7A0B;&#x4E2D;&#x5904;&#x7406;&#x3002;</li>
+<li>&#x5728;A&#x7EBF;&#x7A0B;post&#x4E8B;&#x4EF6;&#xFF0C;&#x5728;B&#x7EBF;&#x7A0B;&#x4E2D;&#x5904;&#x7406;&#x3002;</li>
+</ol>
+<p>&#x5BF9;&#x4E8E;&#x7B2C;&#x4E00;&#x79CD;&#x60C5;&#x51B5;&#xFF0C;&#x4E3B;&#x8981;&#x903B;&#x8F91;&#x5728;post&#x65B9;&#x6CD5;&#x4E2D;&#xFF0C;&#x5229;&#x7528;&#x961F;&#x5217;&#x548C;isPosting&#x6807;&#x8BB0;&#x4F4D;&#xFF0C;&#x5148;&#x5C06;&#x4E8B;&#x4EF6;&#x52A0;&#x5165;&#x961F;&#x5217;&#xFF0C;&#x7136;&#x540E;&#x5224;&#x65AD;isPosting&#xFF0C;&#x5982;&#x679C;&#x662F;&#xFF0C;&#x8BF4;&#x660E;&#x6709;&#x5176;&#x5B83;&#x4E8B;&#x4EF6;&#x5728;&#x5904;&#x7406;&#x4E2D;&#xFF0C;&#x90A3;&#x4E48;&#x6B64;&#x4E8B;&#x4EF6;&#x5728;&#x961F;&#x5217;&#x4E2D;&#x7B49;&#x5F85;&#x5904;&#x7406;&#xFF1B;&#x5982;&#x679C;&#x5426;&#xFF0C;&#x90A3;&#x4E48;&#x5C31;&#x76F4;&#x63A5;&#x5904;&#x7406;&#x6B64;&#x4E8B;&#x4EF6;&#x3002;</p>
+<p>&#x5BF9;&#x4E8E;&#x7B2C;&#x4E8C;&#x79CD;&#x60C5;&#x51B5;&#xFF0C;&#x539F;&#x7406;&#x662F;&#x961F;&#x5217;+&#x7EBF;&#x7A0B;&#x6C60;&#xFF0C;&#x5C06;&#x4EFB;&#x52A1;&#x52A0;&#x5165;&#x5230;&#x961F;&#x5217;&#x4E2D;&#xFF0C;&#x4F9D;&#x6B21;&#x4EA4;&#x7ED9;&#x7EBF;&#x7A0B;&#x6C60;&#x5904;&#x7406;&#xFF0C;&#x5178;&#x578B;&#x7684;&#x5F02;&#x6B65;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#x3002;&#xFF08;&#x5982;&#x679C;&#x662F;&#x5728;&#x4E3B;&#x7EBF;&#x7A0B;&#x5904;&#x7406;&#x7684;&#xFF0C;&#x90A3;&#x4E48;&#x662F;&#x5229;&#x7528;Handler&#x8C03;&#x5EA6;&#x5230;&#x4E3B;&#x7EBF;&#x7A0B;&#x4E2D;&#x518D;&#x5904;&#x7406;&#x3002;&#xFF09;</p>
+<h3 id="&#x5C0F;&#x7ED3;_1"><a name="&#x5C0F;&#x7ED3;_1" class="anchor-navigation-ex-anchor" href="#&#x5C0F;&#x7ED3;_1"><i class="fa fa-link" aria-hidden="true"></i></a>2.3.3. &#x5C0F;&#x7ED3;</h3>
+<p>post&#x65B9;&#x6CD5;&#x5C06;&#x4F20;&#x5165;&#x7684;&#x4E8B;&#x4EF6;&#x5BF9;&#x8C61;&#x653E;&#x5230;&#x4E00;&#x4E2A;&#x961F;&#x5217;&#x6392;&#x961F;&#xFF0C;&#x4E0D;&#x65AD;&#x53D6;&#x51FA;&#x7B2C;&#x4E00;&#x4E2A;&#x4E8B;&#x4EF6;&#xFF0C;&#x6839;&#x636E;&#x4E8B;&#x4EF6;&#x7C7B;&#x578B;&#xFF0C;&#x4ECE;Map&#x4E2D;&#x53D6;&#x51FA;&#x5BF9;&#x5E94;&#x7684;&#x8BA2;&#x9605;&#x8005;&#x548C;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#x5217;&#x8868;&#xFF0C;&#x5E76;&#x53CD;&#x5C04;&#x8C03;&#x7528;&#x8BA2;&#x9605;&#x8005;&#x7684;&#x65B9;&#x6CD5;&#x6765;&#x5904;&#x7406;&#x6B64;&#x4E8B;&#x4EF6;&#x3002;</p>
+<h2 id="&#x53D1;&#x9001;sticky&#x4E8B;&#x4EF6;poststicky"><a name="&#x53D1;&#x9001;sticky&#x4E8B;&#x4EF6;poststicky" class="anchor-navigation-ex-anchor" href="#&#x53D1;&#x9001;sticky&#x4E8B;&#x4EF6;poststicky"><i class="fa fa-link" aria-hidden="true"></i></a>2.4. &#x53D1;&#x9001;Sticky&#x4E8B;&#x4EF6;postSticky</h2>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">postSticky</span><span class="hljs-params">(Object event)</span> </span>{
+    <span class="hljs-keyword">synchronized</span> (stickyEvents) {
+        stickyEvents.put(event.getClass(), event);
+    }
+    post(event);
+}
+</code></pre>
+<p>postSticky&#x53EA;&#x6709;&#x4E24;&#x6BB5;&#x4EE3;&#x7801;&#xFF0C;&#x7B2C;&#x4E00;&#x6BB5;&#x662F;&#x5C06;&#x4E8B;&#x4EF6;&#x5B58;&#x50A8;&#x81F3;stickyEvents&#xFF0C;&#x7B49;&#x5F85;&#x540E;&#x9762;&#x5173;&#x6CE8;&#x6B64;&#x4E8B;&#x4EF6;&#x7684;&#x8BA2;&#x9605;&#x8005;&#x4EA7;&#x751F;&#x3002;&#x7B2C;&#x4E8C;&#x6BB5;&#x662F;&#x7ACB;&#x5373;&#x8C03;&#x7528;post&#x65B9;&#x6CD5;&#xFF0C;&#x4F7F;&#x5B58;&#x5728;&#x7684;&#x8BA2;&#x9605;&#x8005;&#x80FD;&#x8FC7;&#x5904;&#x7406;&#x6B64;&#x4E8B;&#x4EF6;&#x3002;</p>
+<p>&#x518D;&#x56DE;&#x8FC7;&#x5934;&#x770B;&#x770B;&#x6CE8;&#x518C;register&#x90A3;&#x4E00;&#x7AE0;&#x7684;&#x6700;&#x540E;&#x4E00;&#x6BB5;&#xFF0C;checkPostStickyEventToSubscription&#x65B9;&#x6CD5;&#x8C03;&#x7528;&#x4E86;postToSubscription&#x65B9;&#x6CD5;&#xFF0C;&#x8FD9;&#x4E00;&#x6BB5;&#x89E3;&#x91CA;&#x4E86;postSticky&#x5982;&#x4F55;&#x4F7F;&#x540E;&#x9762;&#x51FA;&#x73B0;&#x7684;&#x8BA2;&#x9605;&#x8005;&#x80FD;&#x591F;&#x5904;&#x7406;&#x6B64;&#x4E8B;&#x4EF6;&#x3002;&#x5728;&#x6CE8;&#x518C;&#x8BA2;&#x9605;&#x8005;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x5982;&#x679C;&#x53D1;&#x73B0;&#x8BA2;&#x9605;&#x8005;&#x7684;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#x4E2D;&#x5B58;&#x5728;Sticky&#x7C7B;&#x578B;&#x7684;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#xFF0C;&#x90A3;&#x4E48;&#x5C31;&#x5728;&#x5DF2;&#x7ECF;post&#x8FC7;&#x7684;Sticky&#x4E8B;&#x4EF6;&#x5217;&#x8868;&#xFF08;&#x5373;stickyEvents&#xFF09;&#x4E2D;&#x5BFB;&#x627E;&#x5339;&#x914D;&#x7684;&#x4E8B;&#x4EF6;&#x7C7B;&#x578B;&#xFF0C;&#x5E76;&#x7ACB;&#x5373;&#x5904;&#x7406;&#x3002;</p>
+<h2 id="&#x89E3;&#x6CE8;&#x518C;unregister"><a name="&#x89E3;&#x6CE8;&#x518C;unregister" class="anchor-navigation-ex-anchor" href="#&#x89E3;&#x6CE8;&#x518C;unregister"><i class="fa fa-link" aria-hidden="true"></i></a>2.5. &#x89E3;&#x6CE8;&#x518C;unregister</h2>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">synchronized</span> <span class="hljs-keyword">void</span> <span class="hljs-title">unregister</span><span class="hljs-params">(Object subscriber)</span> </span>{
+    List&lt;Class&lt;?&gt;&gt; subscribedTypes = typesBySubscriber.get(subscriber);
+    <span class="hljs-keyword">if</span> (subscribedTypes != <span class="hljs-keyword">null</span>) {
+        <span class="hljs-keyword">for</span> (Class&lt;?&gt; eventType : subscribedTypes) {
+            unsubscribeByEventType(subscriber, eventType);
+        }
+        typesBySubscriber.remove(subscriber);
+    } <span class="hljs-keyword">else</span> {
+        logger.log(Level.WARNING, <span class="hljs-string">&quot;Subscriber to unregister was not registered before: &quot;</span> + subscriber.getClass());
+    }
+}
+</code></pre>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">unsubscribeByEventType</span><span class="hljs-params">(Object subscriber, Class&lt;?&gt; eventType)</span> </span>{
+    List&lt;Subscription&gt; subscriptions = subscriptionsByEventType.get(eventType);
+    <span class="hljs-keyword">if</span> (subscriptions != <span class="hljs-keyword">null</span>) {
+        <span class="hljs-keyword">int</span> size = subscriptions.size();
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; size; i++) {
+            Subscription subscription = subscriptions.get(i);
+            <span class="hljs-keyword">if</span> (subscription.subscriber == subscriber) {
+                subscription.active = <span class="hljs-keyword">false</span>;
+                subscriptions.remove(i);
+                i--;
+                size--;
+            }
+        }
+    }
+}
+</code></pre>
+<p>&#x4E0A;&#x6587;&#x8BB2;&#x8FC7;&#xFF0C;&#x4E0E;&#x8BA2;&#x9605;&#x8005;&#x5BF9;&#x8C61;&#x6709;&#x5173;&#x7684;&#x96C6;&#x5408;&#x6709;&#x8FD9;&#x4E48;&#x4E00;&#x4E9B;&#xFF1A;</p>
+<ul>
+<li>subscriptionsByEventType&#xFF0C;<code>Map&lt;Class&lt;?&gt;, CopyOnWriteArrayList&lt;Subscription&gt;&gt;</code>&#x7C7B;&#x578B;&#xFF0C;&#x7528;&#x6765;&#x5B58;&#x50A8;&#x4EE5;&#x4E8B;&#x4EF6;&#x7C7B;&#x578B;&#x4E3A;&#x952E;&#x3001;&#x4EE5;Subscription&#x5217;&#x8868;&#x4E3A;&#x503C;&#x7684;&#x952E;&#x503C;&#x5BF9;&#x3002;Subscription&#x662F;&#x4E00;&#x4E2A;&#x5C01;&#x88C5;&#x4E86;&#x8BA2;&#x9605;&#x8005;&#x5BF9;&#x8C61;&#x548C;&#x5176;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#x7684;&#x7C7B;&#x578B;&#x3002;</li>
+<li>typesBySubscriber&#xFF0C;<code>Map&lt;Object, List&lt;Class&lt;?&gt;&gt;&gt;</code>&#x7C7B;&#x578B;&#xFF0C;&#x7528;&#x6765;&#x5B58;&#x50A8;&#x4EE5;&#x8BA2;&#x9605;&#x8005;&#x5BF9;&#x8C61;&#x4E3A;&#x952E;&#x3001;&#x4EE5;&#x4E8B;&#x4EF6;&#x7C7B;&#x578B;&#x5217;&#x8868;&#x4E3A;&#x503C;&#x7684;&#x952E;&#x503C;&#x5BF9;&#x3002;</li>
+</ul>
+<p>&#x89E3;&#x6CE8;&#x518C;&#x5C31;&#x662F;&#x628A;&#x4E0E;&#x6B64;&#x8BA2;&#x9605;&#x8005;&#x5BF9;&#x8C61;&#x76F8;&#x5173;&#x7684;&#x4ECE;&#x96C6;&#x5408;&#x4E2D;&#x6E05;&#x9664;&#x3002;</p>
+<h1 id="&#x4E2A;&#x4EBA;&#x603B;&#x7ED3;"><a name="&#x4E2A;&#x4EBA;&#x603B;&#x7ED3;" class="anchor-navigation-ex-anchor" href="#&#x4E2A;&#x4EBA;&#x603B;&#x7ED3;"><i class="fa fa-link" aria-hidden="true"></i></a>3. &#x4E2A;&#x4EBA;&#x603B;&#x7ED3;</h1>
+<p>EventBus&#x4E3B;&#x8981;&#x5173;&#x6CE8;&#x4E24;&#x4E2A;&#x65B9;&#x6CD5;&#xFF1A;register&#x65B9;&#x6CD5;&#x548C;post&#x65B9;&#x6CD5;&#x3002;</p>
+<p>register&#x65B9;&#x6CD5;&#xFF0C;&#x4F20;&#x5165;&#x89C2;&#x5BDF;&#x8005;&#x5BF9;&#x8C61;&#x7684;Class&#x5BF9;&#x8C61;&#xFF0C;&#x7136;&#x540E;&#x901A;&#x8FC7;&#x8FD0;&#x884C;&#x65F6;&#x53CD;&#x5C04;&#x6216;&#x8005;&#x7F16;&#x8BD1;&#x671F;&#x6CE8;&#x89E3;&#x89E3;&#x91CA;&#x5C06;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#x53CA;Subscribe&#x6CE8;&#x89E3;&#x5185;&#x5BB9;&#x653E;&#x5728;&#x4E00;&#x4E2A;&#x5217;&#x8868;&#x91CC;&#xFF0C;&#x5C06;&#x6BCF;&#x4E2A;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#x548C;&#x8BA2;&#x9605;&#x8005;&#x5C01;&#x88C5;&#x6210;Subscription&#x3002;&#x53E6;&#x5916;&#x8FD8;&#x6709;subscriptionsByEventType&#x7684;Map&#xFF0C;&#x952E;&#x4E3A;&#x4E8B;&#x4EF6;&#x7C7B;&#x578B;&#xFF0C;&#x503C;&#x4E3A;&#x4E00;&#x4E2A;&#x5B58;&#x653E;Subscription&#x7684;&#x5217;&#x8868;&#x3002;&#x5BF9;&#x6BCF;&#x4E2A;Subscription&#x6839;&#x636E;&#x5176;&#x4E8B;&#x4EF6;&#x7C7B;&#x578B;&#xFF0C;&#x653E;&#x5165;&#x76F8;&#x5E94;&#x7684;&#x5217;&#x8868;&#x4E2D;&#x3002;&#x603B;&#x4E4B;&#x5C31;&#x662F;&#x5C01;&#x88C5;&#x548C;&#x5B58;&#x50A8;&#x8BA2;&#x9605;&#x8005;&#x7684;&#x4FE1;&#x606F;&#x3002;</p>
+<p>post&#x65B9;&#x6CD5;&#x5C06;&#x4F20;&#x5165;&#x7684;&#x4E8B;&#x4EF6;&#x653E;&#x5230;&#x4E00;&#x4E2A;&#x961F;&#x5217;&#x6392;&#x961F;&#xFF0C;&#x4E0D;&#x65AD;&#x53D6;&#x51FA;&#x7B2C;&#x4E00;&#x4E2A;&#x4E8B;&#x4EF6;&#xFF0C;&#x6839;&#x636E;&#x4E8B;&#x4EF6;&#x7C7B;&#x578B;&#xFF0C;&#x4ECE;subscriptionsByEventType&#x4E2D;&#x53D6;&#x51FA;&#x5217;&#x8868;&#xFF0C;&#x53CD;&#x5C04;&#x8C03;&#x7528;&#x8BA2;&#x9605;&#x8005;&#x7684;&#x5904;&#x7406;&#x65B9;&#x6CD5;&#x3002;</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="AsyncTask源码分析.html" class="navigation navigation-prev " aria-label="Previous page: AsyncTask源码分析">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="Glide源码分析.html" class="navigation navigation-next " aria-label="Next page: Glide源码分析">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"EventBus源码分析","level":"1.6.4.2","depth":3,"next":{"title":"Glide源码分析","level":"1.6.4.3","depth":3,"path":"05 Android/04 常用类源码分析/Glide源码分析.md","ref":"./05 Android/04 常用类源码分析/Glide源码分析.md","articles":[]},"previous":{"title":"AsyncTask源码分析","level":"1.6.4.1","depth":3,"path":"05 Android/04 常用类源码分析/AsyncTask源码分析.md","ref":"./05 Android/04 常用类源码分析/AsyncTask源码分析.md","articles":[]},"dir":"ltr"},"config":{"plugins":["highlight","search","livereload","splitter","expandable-chapters-small","anchors","anchor-navigation-ex"],"styles":{"website":"./styles/website.css"},"pluginsConfig":{"livereload":{},"splitter":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"anchor-navigation-ex":{"associatedWithSummary":true,"float":{"floatIcon":"fa fa-navicon","level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"mode":"float","multipleH1":true,"pageTop":{"level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"printLog":false,"showGoTop":true,"showLevel":true},"expandable-chapters-small":{},"sharing":{"all":["facebook","google","twitter","weibo","instapaper"],"facebook":true,"google":false,"instapaper":false,"twitter":true,"vk":false,"weibo":false},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"theme":"default","author":"Mezzsy","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Mezzsy is here","language":"zh-hans","gitbook":"3.2.3"},"file":{"path":"05 Android/04 常用类源码分析/EventBus源码分析.md","mtime":"2020-05-18T10:11:31.752Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2024-09-17T13:19:34.226Z"},"basePath":"../..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../gitbook/gitbook.js"></script>
+    <script src="../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-splitter/splitter.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-expandable-chapters-small/expandable-chapters-small.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

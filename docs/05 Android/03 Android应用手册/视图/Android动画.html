@@ -1,0 +1,4061 @@
+
+<!DOCTYPE HTML>
+<html lang="zh-hans" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Android动画 · Mezzsy is here</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        <meta name="author" content="Mezzsy">
+        
+        
+    
+    <link rel="stylesheet" href="../../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-splitter/splitter.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-expandable-chapters-small/expandable-chapters-small.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-anchors/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-anchor-navigation-ex/style/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="Android布局.html" />
+    
+    
+    <link rel="prev" href="./" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="输入并搜索" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../../">
+            
+                <a href="../../../">
+            
+                    
+                    00 介绍
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../../../01 语言/">
+            
+                <a href="../../../01 语言/">
+            
+                    
+                    01 语言
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../../../01 语言/01 Cpp/">
+            
+                <a href="../../../01 语言/01 Cpp/">
+            
+                    
+                    01 Cpp
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.1" data-path="../../../01 语言/01 Cpp/原理总结/">
+            
+                <a href="../../../01 语言/01 Cpp/原理总结/">
+            
+                    
+                    原理总结
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.1.1" data-path="../../../01 语言/01 Cpp/原理总结/其它.html">
+            
+                <a href="../../../01 语言/01 Cpp/原理总结/其它.html">
+            
+                    
+                    其它
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.2" data-path="../../../01 语言/01 Cpp/原理总结/函数.html">
+            
+                <a href="../../../01 语言/01 Cpp/原理总结/函数.html">
+            
+                    
+                    函数
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.3" data-path="../../../01 语言/01 Cpp/原理总结/对象.html">
+            
+                <a href="../../../01 语言/01 Cpp/原理总结/对象.html">
+            
+                    
+                    对象
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.4" data-path="../../../01 语言/01 Cpp/原理总结/成员变量.html">
+            
+                <a href="../../../01 语言/01 Cpp/原理总结/成员变量.html">
+            
+                    
+                    成员变量
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.5" data-path="../../../01 语言/01 Cpp/原理总结/执行期.html">
+            
+                <a href="../../../01 语言/01 Cpp/原理总结/执行期.html">
+            
+                    
+                    执行期
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.6" data-path="../../../01 语言/01 Cpp/原理总结/构造函数.html">
+            
+                <a href="../../../01 语言/01 Cpp/原理总结/构造函数.html">
+            
+                    
+                    构造函数
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.7" data-path="../../../01 语言/01 Cpp/原理总结/构造析构拷贝.html">
+            
+                <a href="../../../01 语言/01 Cpp/原理总结/构造析构拷贝.html">
+            
+                    
+                    构造析构拷贝
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2" data-path="../../../01 语言/01 Cpp/用法总结/">
+            
+                <a href="../../../01 语言/01 Cpp/用法总结/">
+            
+                    
+                    用法总结
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.2.1" data-path="../../../01 语言/01 Cpp/用法总结/IO总结.html">
+            
+                <a href="../../../01 语言/01 Cpp/用法总结/IO总结.html">
+            
+                    
+                    IO总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.2" data-path="../../../01 语言/01 Cpp/用法总结/RTTI总结.html">
+            
+                <a href="../../../01 语言/01 Cpp/用法总结/RTTI总结.html">
+            
+                    
+                    RTTI总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.3" data-path="../../../01 语言/01 Cpp/用法总结/cpp原理总结.html">
+            
+                <a href="../../../01 语言/01 Cpp/用法总结/cpp原理总结.html">
+            
+                    
+                    cpp原理总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.4" data-path="../../../01 语言/01 Cpp/用法总结/关键字总结.html">
+            
+                <a href="../../../01 语言/01 Cpp/用法总结/关键字总结.html">
+            
+                    
+                    关键字总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.5" data-path="../../../01 语言/01 Cpp/用法总结/内存模型和名称空间.html">
+            
+                <a href="../../../01 语言/01 Cpp/用法总结/内存模型和名称空间.html">
+            
+                    
+                    内存模型和名称空间
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.6" data-path="../../../01 语言/01 Cpp/用法总结/函数总结.html">
+            
+                <a href="../../../01 语言/01 Cpp/用法总结/函数总结.html">
+            
+                    
+                    函数总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.7" data-path="../../../01 语言/01 Cpp/用法总结/动态内存和智能指针.html">
+            
+                <a href="../../../01 语言/01 Cpp/用法总结/动态内存和智能指针.html">
+            
+                    
+                    动态内存和智能指针
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.8" data-path="../../../01 语言/01 Cpp/用法总结/基础总结.html">
+            
+                <a href="../../../01 语言/01 Cpp/用法总结/基础总结.html">
+            
+                    
+                    基础总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.9" data-path="../../../01 语言/01 Cpp/用法总结/容器总结.html">
+            
+                <a href="../../../01 语言/01 Cpp/用法总结/容器总结.html">
+            
+                    
+                    容器总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.10" data-path="../../../01 语言/01 Cpp/用法总结/异常总结.html">
+            
+                <a href="../../../01 语言/01 Cpp/用法总结/异常总结.html">
+            
+                    
+                    异常总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.11" data-path="../../../01 语言/01 Cpp/用法总结/泛型总结.html">
+            
+                <a href="../../../01 语言/01 Cpp/用法总结/泛型总结.html">
+            
+                    
+                    泛型总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.12" data-path="../../../01 语言/01 Cpp/用法总结/类总结.html">
+            
+                <a href="../../../01 语言/01 Cpp/用法总结/类总结.html">
+            
+                    
+                    类总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.3" data-path="../../../01 语言/01 Cpp/知识点/">
+            
+                <a href="../../../01 语言/01 Cpp/知识点/">
+            
+                    
+                    知识点
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.3.1" data-path="../../../01 语言/01 Cpp/知识点/基础.html">
+            
+                <a href="../../../01 语言/01 Cpp/知识点/基础.html">
+            
+                    
+                    基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.3.2" data-path="../../../01 语言/01 Cpp/知识点/类.html">
+            
+                <a href="../../../01 语言/01 Cpp/知识点/类.html">
+            
+                    
+                    类
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.3.3" data-path="../../../01 语言/01 Cpp/知识点/线程.html">
+            
+                <a href="../../../01 语言/01 Cpp/知识点/线程.html">
+            
+                    
+                    线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../../../01 语言/02 Java/">
+            
+                <a href="../../../01 语言/02 Java/">
+            
+                    
+                    02 Java
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.2.1" data-path="../../../01 语言/02 Java/Java-IO.html">
+            
+                <a href="../../../01 语言/02 Java/Java-IO.html">
+            
+                    
+                    Java-IO
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.2" data-path="../../../01 语言/02 Java/Java反射机制和泛型.html">
+            
+                <a href="../../../01 语言/02 Java/Java反射机制和泛型.html">
+            
+                    
+                    Java反射机制和泛型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.3" data-path="../../../01 语言/02 Java/Java基础知识.html">
+            
+                <a href="../../../01 语言/02 Java/Java基础知识.html">
+            
+                    
+                    Java基础知识
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.4" data-path="../../../01 语言/02 Java/Java异常机制.html">
+            
+                <a href="../../../01 语言/02 Java/Java异常机制.html">
+            
+                    
+                    Java异常机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.5" data-path="../../../01 语言/02 Java/并发.html">
+            
+                <a href="../../../01 语言/02 Java/并发.html">
+            
+                    
+                    并发
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.6" data-path="../../../01 语言/02 Java/异常.html">
+            
+                <a href="../../../01 语言/02 Java/异常.html">
+            
+                    
+                    异常
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.7" data-path="../../../01 语言/02 Java/禁止在foreach循环里进行元素的remove-add操作.html">
+            
+                <a href="../../../01 语言/02 Java/禁止在foreach循环里进行元素的remove-add操作.html">
+            
+                    
+                    禁止在foreach循环里进行元素的remove-add操作
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.8" data-path="../../../01 语言/02 Java/类和接口.html">
+            
+                <a href="../../../01 语言/02 Java/类和接口.html">
+            
+                    
+                    类和接口
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="../../../01 语言/03 Kotlin/">
+            
+                <a href="../../../01 语言/03 Kotlin/">
+            
+                    
+                    03 Kotlin
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.3.1" data-path="../../../01 语言/03 Kotlin/Lambda总结.html">
+            
+                <a href="../../../01 语言/03 Kotlin/Lambda总结.html">
+            
+                    
+                    Lambda总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.2" data-path="../../../01 语言/03 Kotlin/函数总结.html">
+            
+                <a href="../../../01 语言/03 Kotlin/函数总结.html">
+            
+                    
+                    函数总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.3" data-path="../../../01 语言/03 Kotlin/基础总结.html">
+            
+                <a href="../../../01 语言/03 Kotlin/基础总结.html">
+            
+                    
+                    基础总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.4" data-path="../../../01 语言/03 Kotlin/标准库函数总结.html">
+            
+                <a href="../../../01 语言/03 Kotlin/标准库函数总结.html">
+            
+                    
+                    标准库函数总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.5" data-path="../../../01 语言/03 Kotlin/泛型总结.html">
+            
+                <a href="../../../01 语言/03 Kotlin/泛型总结.html">
+            
+                    
+                    泛型总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.6" data-path="../../../01 语言/03 Kotlin/注解和反射总结.html">
+            
+                <a href="../../../01 语言/03 Kotlin/注解和反射总结.html">
+            
+                    
+                    注解和反射总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.7" data-path="../../../01 语言/03 Kotlin/类型总结.html">
+            
+                <a href="../../../01 语言/03 Kotlin/类型总结.html">
+            
+                    
+                    类型总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.8" data-path="../../../01 语言/03 Kotlin/类总结.html">
+            
+                <a href="../../../01 语言/03 Kotlin/类总结.html">
+            
+                    
+                    类总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3.9" data-path="../../../01 语言/03 Kotlin/运算符总结.html">
+            
+                <a href="../../../01 语言/03 Kotlin/运算符总结.html">
+            
+                    
+                    运算符总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4" data-path="../../../01 语言/04 Python/">
+            
+                <a href="../../../01 语言/04 Python/">
+            
+                    
+                    04 Python
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.4.1" data-path="../../../01 语言/04 Python/Python学习.html">
+            
+                <a href="../../../01 语言/04 Python/Python学习.html">
+            
+                    
+                    Python学习
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../../../02 计算机系统/">
+            
+                <a href="../../../02 计算机系统/">
+            
+                    
+                    02 计算机系统
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../../../02 计算机系统/01-操作系统.html">
+            
+                <a href="../../../02 计算机系统/01-操作系统.html">
+            
+                    
+                    01-操作系统
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../../../02 计算机系统/02-内存.html">
+            
+                <a href="../../../02 计算机系统/02-内存.html">
+            
+                    
+                    02-内存
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../../../02 计算机系统/03-线程.html">
+            
+                <a href="../../../02 计算机系统/03-线程.html">
+            
+                    
+                    03-线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../../../02 计算机系统/04-编译链接.html">
+            
+                <a href="../../../02 计算机系统/04-编译链接.html">
+            
+                    
+                    04-编译链接
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../../../02 计算机系统/深入理解计算机系统/">
+            
+                <a href="../../../02 计算机系统/深入理解计算机系统/">
+            
+                    
+                    深入理解计算机系统
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.5.1" data-path="../../../02 计算机系统/深入理解计算机系统/01-计算机系统漫游.html">
+            
+                <a href="../../../02 计算机系统/深入理解计算机系统/01-计算机系统漫游.html">
+            
+                    
+                    01-计算机系统漫游
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.2" data-path="../../../02 计算机系统/深入理解计算机系统/02-信息的表示和处理.html">
+            
+                <a href="../../../02 计算机系统/深入理解计算机系统/02-信息的表示和处理.html">
+            
+                    
+                    02-信息的表示和处理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.3" data-path="../../../02 计算机系统/深入理解计算机系统/07-链接.html">
+            
+                <a href="../../../02 计算机系统/深入理解计算机系统/07-链接.html">
+            
+                    
+                    07-链接
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.4" data-path="../../../02 计算机系统/深入理解计算机系统/09-虚拟内存.html">
+            
+                <a href="../../../02 计算机系统/深入理解计算机系统/09-虚拟内存.html">
+            
+                    
+                    09-虚拟内存
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../../../03 Java/">
+            
+                <a href="../../../03 Java/">
+            
+                    
+                    03 Java
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../../../03 Java/01 Java知识点/">
+            
+                <a href="../../../03 Java/01 Java知识点/">
+            
+                    
+                    01 Java知识点
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1.1" data-path="../../../03 Java/01 Java知识点/Java基础知识.html">
+            
+                <a href="../../../03 Java/01 Java知识点/Java基础知识.html">
+            
+                    
+                    Java基础知识
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.2" data-path="../../../03 Java/01 Java知识点/Java问题.html">
+            
+                <a href="../../../03 Java/01 Java知识点/Java问题.html">
+            
+                    
+                    Java问题
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.3" data-path="../../../03 Java/01 Java知识点/泛型.html">
+            
+                <a href="../../../03 Java/01 Java知识点/泛型.html">
+            
+                    
+                    泛型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.4" data-path="../../../03 Java/01 Java知识点/注解.html">
+            
+                <a href="../../../03 Java/01 Java知识点/注解.html">
+            
+                    
+                    注解
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../../../03 Java/02 Java虚拟机/">
+            
+                <a href="../../../03 Java/02 Java虚拟机/">
+            
+                    
+                    02 Java虚拟机
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.2.1" data-path="../../../03 Java/02 Java虚拟机/01-Java介绍.html">
+            
+                <a href="../../../03 Java/02 Java虚拟机/01-Java介绍.html">
+            
+                    
+                    01-Java介绍
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.2" data-path="../../../03 Java/02 Java虚拟机/02-内存区域.html">
+            
+                <a href="../../../03 Java/02 Java虚拟机/02-内存区域.html">
+            
+                    
+                    02-内存区域
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.3" data-path="../../../03 Java/02 Java虚拟机/03-垃圾收集TODO.html">
+            
+                <a href="../../../03 Java/02 Java虚拟机/03-垃圾收集TODO.html">
+            
+                    
+                    03-垃圾收集TODO
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.4" data-path="../../../03 Java/02 Java虚拟机/06-类文件结构.html">
+            
+                <a href="../../../03 Java/02 Java虚拟机/06-类文件结构.html">
+            
+                    
+                    06-类文件结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.5" data-path="../../../03 Java/02 Java虚拟机/07-虚拟机类加载机制.html">
+            
+                <a href="../../../03 Java/02 Java虚拟机/07-虚拟机类加载机制.html">
+            
+                    
+                    07-虚拟机类加载机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.6" data-path="../../../03 Java/02 Java虚拟机/08-虚拟机字节码执行引擎.html">
+            
+                <a href="../../../03 Java/02 Java虚拟机/08-虚拟机字节码执行引擎.html">
+            
+                    
+                    08-虚拟机字节码执行引擎
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.7" data-path="../../../03 Java/02 Java虚拟机/12-Java内存模型与线程.html">
+            
+                <a href="../../../03 Java/02 Java虚拟机/12-Java内存模型与线程.html">
+            
+                    
+                    12-Java内存模型与线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.8" data-path="../../../03 Java/02 Java虚拟机/13-线程安全与锁优化.html">
+            
+                <a href="../../../03 Java/02 Java虚拟机/13-线程安全与锁优化.html">
+            
+                    
+                    13-线程安全与锁优化
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../../../03 Java/03 常用源码分析/">
+            
+                <a href="../../../03 Java/03 常用源码分析/">
+            
+                    
+                    03 常用源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.3.1" data-path="../../../03 Java/03 常用源码分析/ArrayList源码分析.html">
+            
+                <a href="../../../03 Java/03 常用源码分析/ArrayList源码分析.html">
+            
+                    
+                    ArrayList源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.2" data-path="../../../03 Java/03 常用源码分析/ConcurrentHashMap源码分析.html">
+            
+                <a href="../../../03 Java/03 常用源码分析/ConcurrentHashMap源码分析.html">
+            
+                    
+                    ConcurrentHashMap源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.3" data-path="../../../03 Java/03 常用源码分析/HashMap源码分析.html">
+            
+                <a href="../../../03 Java/03 常用源码分析/HashMap源码分析.html">
+            
+                    
+                    HashMap源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.4" data-path="../../../03 Java/03 常用源码分析/HashTable源码分析.html">
+            
+                <a href="../../../03 Java/03 常用源码分析/HashTable源码分析.html">
+            
+                    
+                    HashTable源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.5" data-path="../../../03 Java/03 常用源码分析/LinkedHashMap源码分析.html">
+            
+                <a href="../../../03 Java/03 常用源码分析/LinkedHashMap源码分析.html">
+            
+                    
+                    LinkedHashMap源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.6" data-path="../../../03 Java/03 常用源码分析/LinkedList源码分析.html">
+            
+                <a href="../../../03 Java/03 常用源码分析/LinkedList源码分析.html">
+            
+                    
+                    LinkedList源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.7" data-path="../../../03 Java/03 常用源码分析/ThreadLocal源码分析.html">
+            
+                <a href="../../../03 Java/03 常用源码分析/ThreadLocal源码分析.html">
+            
+                    
+                    ThreadLocal源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.8" data-path="../../../03 Java/03 常用源码分析/线程池源码分析.html">
+            
+                <a href="../../../03 Java/03 常用源码分析/线程池源码分析.html">
+            
+                    
+                    线程池源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../../../04 源码分析/">
+            
+                <a href="../../../04 源码分析/">
+            
+                    
+                    04 源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../../../04 源码分析/AddressSanitizer.html">
+            
+                <a href="../../../04 源码分析/AddressSanitizer.html">
+            
+                    
+                    AddressSanitizer
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../../../04 源码分析/ByteX.html">
+            
+                <a href="../../../04 源码分析/ByteX.html">
+            
+                    
+                    ByteX
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="../../../04 源码分析/PltHook.html">
+            
+                <a href="../../../04 源码分析/PltHook.html">
+            
+                    
+                    PltHook
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="../../../04 源码分析/Raphael分析.html">
+            
+                <a href="../../../04 源码分析/Raphael分析.html">
+            
+                    
+                    Raphael分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.5" data-path="../../../04 源码分析/基于fp的栈回朔.html">
+            
+                <a href="../../../04 源码分析/基于fp的栈回朔.html">
+            
+                    
+                    基于fp的栈回朔
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    05 Android
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../../01 Android底层源码分析/">
+            
+                <a href="../../01 Android底层源码分析/">
+            
+                    
+                    01 Android底层源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1.1" data-path="../../01 Android底层源码分析/01 系统启动过程.html">
+            
+                <a href="../../01 Android底层源码分析/01 系统启动过程.html">
+            
+                    
+                    01 系统启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.2" data-path="../../01 Android底层源码分析/02 应用进程启动过程.html">
+            
+                <a href="../../01 Android底层源码分析/02 应用进程启动过程.html">
+            
+                    
+                    02 应用进程启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.3" data-path="../../01 Android底层源码分析/03 Activity启动过程.html">
+            
+                <a href="../../01 Android底层源码分析/03 Activity启动过程.html">
+            
+                    
+                    03 Activity启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.4" data-path="../../01 Android底层源码分析/04 其它组件启动过程.html">
+            
+                <a href="../../01 Android底层源码分析/04 其它组件启动过程.html">
+            
+                    
+                    04 其它组件启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.5" data-path="../../01 Android底层源码分析/05 Context总结.html">
+            
+                <a href="../../01 Android底层源码分析/05 Context总结.html">
+            
+                    
+                    05 Context总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.6" data-path="../../01 Android底层源码分析/06 AMS.html">
+            
+                <a href="../../01 Android底层源码分析/06 AMS.html">
+            
+                    
+                    06 AMS
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.7" data-path="../../01 Android底层源码分析/07 WM.html">
+            
+                <a href="../../01 Android底层源码分析/07 WM.html">
+            
+                    
+                    07 WM
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.8" data-path="../../01 Android底层源码分析/08 WMS.html">
+            
+                <a href="../../01 Android底层源码分析/08 WMS.html">
+            
+                    
+                    08 WMS
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.9" data-path="../../01 Android底层源码分析/10 JNI.html">
+            
+                <a href="../../01 Android底层源码分析/10 JNI.html">
+            
+                    
+                    10 JNI
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.10" data-path="../../01 Android底层源码分析/13 ClassLoader.html">
+            
+                <a href="../../01 Android底层源码分析/13 ClassLoader.html">
+            
+                    
+                    13 ClassLoader
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.11" data-path="../../01 Android底层源码分析/14 热修复.html">
+            
+                <a href="../../01 Android底层源码分析/14 热修复.html">
+            
+                    
+                    14 热修复
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.12" data-path="../../01 Android底层源码分析/15 Hook.html">
+            
+                <a href="../../01 Android底层源码分析/15 Hook.html">
+            
+                    
+                    15 Hook
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.13" data-path="../../01 Android底层源码分析/16 插件化.html">
+            
+                <a href="../../01 Android底层源码分析/16 插件化.html">
+            
+                    
+                    16 插件化
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.14" data-path="../../01 Android底层源码分析/17 绘制流程-生产者.html">
+            
+                <a href="../../01 Android底层源码分析/17 绘制流程-生产者.html">
+            
+                    
+                    17 绘制流程-生产者
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.15" data-path="../../01 Android底层源码分析/18 绘制流程-消费者.html">
+            
+                <a href="../../01 Android底层源码分析/18 绘制流程-消费者.html">
+            
+                    
+                    18 绘制流程-消费者
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.16" data-path="../../01 Android底层源码分析/19 渲染总结.html">
+            
+                <a href="../../01 Android底层源码分析/19 渲染总结.html">
+            
+                    
+                    19 渲染总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.17" data-path="../../01 Android底层源码分析/20 硬件加速.html">
+            
+                <a href="../../01 Android底层源码分析/20 硬件加速.html">
+            
+                    
+                    20 硬件加速
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="../../02 Android应用和原理/">
+            
+                <a href="../../02 Android应用和原理/">
+            
+                    
+                    02 Android应用和原理
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.2.1" data-path="../../02 Android应用和原理/Android动画.html">
+            
+                <a href="../../02 Android应用和原理/Android动画.html">
+            
+                    
+                    Android动画
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.2" data-path="../../02 Android应用和原理/Android消息机制.html">
+            
+                <a href="../../02 Android应用和原理/Android消息机制.html">
+            
+                    
+                    Android消息机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.3" data-path="../../02 Android应用和原理/Android的跨进程通信.html">
+            
+                <a href="../../02 Android应用和原理/Android的跨进程通信.html">
+            
+                    
+                    Android的跨进程通信
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.4" data-path="../../02 Android应用和原理/Android类加载机制.html">
+            
+                <a href="../../02 Android应用和原理/Android类加载机制.html">
+            
+                    
+                    Android类加载机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.5" data-path="../../02 Android应用和原理/Android线程.html">
+            
+                <a href="../../02 Android应用和原理/Android线程.html">
+            
+                    
+                    Android线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.6" data-path="../../02 Android应用和原理/Drawable.html">
+            
+                <a href="../../02 Android应用和原理/Drawable.html">
+            
+                    
+                    Drawable
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.7" data-path="../../02 Android应用和原理/View手势事件.html">
+            
+                <a href="../../02 Android应用和原理/View手势事件.html">
+            
+                    
+                    View手势事件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.8" data-path="../../02 Android应用和原理/View绘制基础.html">
+            
+                <a href="../../02 Android应用和原理/View绘制基础.html">
+            
+                    
+                    View绘制基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.9" data-path="../../02 Android应用和原理/四大组件.html">
+            
+                <a href="../../02 Android应用和原理/四大组件.html">
+            
+                    
+                    四大组件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.10" data-path="../../02 Android应用和原理/性能优化.html">
+            
+                <a href="../../02 Android应用和原理/性能优化.html">
+            
+                    
+                    性能优化
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.11" data-path="../../02 Android应用和原理/虚拟机.html">
+            
+                <a href="../../02 Android应用和原理/虚拟机.html">
+            
+                    
+                    虚拟机
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.12" data-path="../../02 Android应用和原理/面试题.html">
+            
+                <a href="../../02 Android应用和原理/面试题.html">
+            
+                    
+                    面试题
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    03 Android应用手册
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.3.1" data-path="../四大组件/">
+            
+                <a href="../四大组件/">
+            
+                    
+                    四大组件
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.3.1.1" data-path="../四大组件/Android启动模式研究.html">
+            
+                <a href="../四大组件/Android启动模式研究.html">
+            
+                    
+                    Android启动模式研究
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.1.2" data-path="../四大组件/Android生命周期.html">
+            
+                <a href="../四大组件/Android生命周期.html">
+            
+                    
+                    Android生命周期
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.1.3" data-path="../四大组件/Broadcast.html">
+            
+                <a href="../四大组件/Broadcast.html">
+            
+                    
+                    Broadcast
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.2" data-path="../架构组件/">
+            
+                <a href="../架构组件/">
+            
+                    
+                    架构组件
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.3.2.1" data-path="../架构组件/LiveData.html">
+            
+                <a href="../架构组件/LiveData.html">
+            
+                    
+                    LiveData
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.2.2" data-path="../架构组件/Navigation.html">
+            
+                <a href="../架构组件/Navigation.html">
+            
+                    
+                    Navigation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.2.3" data-path="../架构组件/ViewModel.html">
+            
+                <a href="../架构组件/ViewModel.html">
+            
+                    
+                    ViewModel
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    视图
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter active" data-level="1.6.3.3.1" data-path="Android动画.html">
+            
+                <a href="Android动画.html">
+            
+                    
+                    Android动画
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.2" data-path="Android布局.html">
+            
+                <a href="Android布局.html">
+            
+                    
+                    Android布局
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.3" data-path="Android控件.html">
+            
+                <a href="Android控件.html">
+            
+                    
+                    Android控件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.4" data-path="Drawable.html">
+            
+                <a href="Drawable.html">
+            
+                    
+                    Drawable
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.5" data-path="View绘制.html">
+            
+                <a href="View绘制.html">
+            
+                    
+                    View绘制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.6" data-path="视图相关工具类.html">
+            
+                <a href="视图相关工具类.html">
+            
+                    
+                    视图相关工具类
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.7" data-path="资源文件.html">
+            
+                <a href="资源文件.html">
+            
+                    
+                    资源文件
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.4" data-path="../项目/">
+            
+                <a href="../项目/">
+            
+                    
+                    项目
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.3.4.1" data-path="../项目/命令行调试.html">
+            
+                <a href="../项目/命令行调试.html">
+            
+                    
+                    命令行调试
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.4.2" data-path="../项目/打包.html">
+            
+                <a href="../项目/打包.html">
+            
+                    
+                    打包
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4" data-path="../../04 常用类源码分析/">
+            
+                <a href="../../04 常用类源码分析/">
+            
+                    
+                    04 常用类源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.4.1" data-path="../../04 常用类源码分析/AsyncTask源码分析.html">
+            
+                <a href="../../04 常用类源码分析/AsyncTask源码分析.html">
+            
+                    
+                    AsyncTask源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.2" data-path="../../04 常用类源码分析/EventBus源码分析.html">
+            
+                <a href="../../04 常用类源码分析/EventBus源码分析.html">
+            
+                    
+                    EventBus源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.3" data-path="../../04 常用类源码分析/Glide源码分析.html">
+            
+                <a href="../../04 常用类源码分析/Glide源码分析.html">
+            
+                    
+                    Glide源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.4" data-path="../../04 常用类源码分析/Handler源码分析.html">
+            
+                <a href="../../04 常用类源码分析/Handler源码分析.html">
+            
+                    
+                    Handler源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.5" data-path="../../04 常用类源码分析/LeakCanary.html">
+            
+                <a href="../../04 常用类源码分析/LeakCanary.html">
+            
+                    
+                    LeakCanary
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.6" data-path="../../04 常用类源码分析/LinearLayout源码分析.html">
+            
+                <a href="../../04 常用类源码分析/LinearLayout源码分析.html">
+            
+                    
+                    LinearLayout源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.7" data-path="../../04 常用类源码分析/ListView源码分析.html">
+            
+                <a href="../../04 常用类源码分析/ListView源码分析.html">
+            
+                    
+                    ListView源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.8" data-path="../../04 常用类源码分析/LruCache源码分析.html">
+            
+                <a href="../../04 常用类源码分析/LruCache源码分析.html">
+            
+                    
+                    LruCache源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.9" data-path="../../04 常用类源码分析/OkHttp3源码分析.html">
+            
+                <a href="../../04 常用类源码分析/OkHttp3源码分析.html">
+            
+                    
+                    OkHttp3源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.10" data-path="../../04 常用类源码分析/Retrofit2源码分析.html">
+            
+                <a href="../../04 常用类源码分析/Retrofit2源码分析.html">
+            
+                    
+                    Retrofit2源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.11" data-path="../../04 常用类源码分析/RxJava2源码分析.html">
+            
+                <a href="../../04 常用类源码分析/RxJava2源码分析.html">
+            
+                    
+                    RxJava2源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.12" data-path="../../04 常用类源码分析/SparseArray源码分析.html">
+            
+                <a href="../../04 常用类源码分析/SparseArray源码分析.html">
+            
+                    
+                    SparseArray源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.5" data-path="../../05 性能优化工具/">
+            
+                <a href="../../05 性能优化工具/">
+            
+                    
+                    05 性能优化工具
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.5.1" data-path="../../05 性能优化工具/cpu工具.html">
+            
+                <a href="../../05 性能优化工具/cpu工具.html">
+            
+                    
+                    cpu工具
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../../../06 计算机网络/">
+            
+                <a href="../../../06 计算机网络/">
+            
+                    
+                    06 计算机网络
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.1" data-path="../../../06 计算机网络/计算机网络.html">
+            
+                <a href="../../../06 计算机网络/计算机网络.html">
+            
+                    
+                    计算机网络
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../../../07 设计模式/">
+            
+                <a href="../../../07 设计模式/">
+            
+                    
+                    07 设计模式
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.8.1" data-path="../../../07 设计模式/Builder模式.html">
+            
+                <a href="../../../07 设计模式/Builder模式.html">
+            
+                    
+                    Builder模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.2" data-path="../../../07 设计模式/代理模式.html">
+            
+                <a href="../../../07 设计模式/代理模式.html">
+            
+                    
+                    代理模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3" data-path="../../../07 设计模式/其它设计模式/">
+            
+                <a href="../../../07 设计模式/其它设计模式/">
+            
+                    
+                    其它设计模式
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.8.3.1" data-path="../../../07 设计模式/其它设计模式/中介者模式.html">
+            
+                <a href="../../../07 设计模式/其它设计模式/中介者模式.html">
+            
+                    
+                    中介者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.2" data-path="../../../07 设计模式/其它设计模式/享元模式.html">
+            
+                <a href="../../../07 设计模式/其它设计模式/享元模式.html">
+            
+                    
+                    享元模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.3" data-path="../../../07 设计模式/其它设计模式/原型模式.html">
+            
+                <a href="../../../07 设计模式/其它设计模式/原型模式.html">
+            
+                    
+                    原型模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.4" data-path="../../../07 设计模式/其它设计模式/命令模式.html">
+            
+                <a href="../../../07 设计模式/其它设计模式/命令模式.html">
+            
+                    
+                    命令模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.5" data-path="../../../07 设计模式/其它设计模式/备忘录模式.html">
+            
+                <a href="../../../07 设计模式/其它设计模式/备忘录模式.html">
+            
+                    
+                    备忘录模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.6" data-path="../../../07 设计模式/其它设计模式/外观模式.html">
+            
+                <a href="../../../07 设计模式/其它设计模式/外观模式.html">
+            
+                    
+                    外观模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.7" data-path="../../../07 设计模式/其它设计模式/工厂方法模式.html">
+            
+                <a href="../../../07 设计模式/其它设计模式/工厂方法模式.html">
+            
+                    
+                    工厂方法模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.8" data-path="../../../07 设计模式/其它设计模式/抽象工厂模式.html">
+            
+                <a href="../../../07 设计模式/其它设计模式/抽象工厂模式.html">
+            
+                    
+                    抽象工厂模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.9" data-path="../../../07 设计模式/其它设计模式/框架模式.html">
+            
+                <a href="../../../07 设计模式/其它设计模式/框架模式.html">
+            
+                    
+                    框架模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.10" data-path="../../../07 设计模式/其它设计模式/桥接模式.html">
+            
+                <a href="../../../07 设计模式/其它设计模式/桥接模式.html">
+            
+                    
+                    桥接模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.11" data-path="../../../07 设计模式/其它设计模式/模板方法模式.html">
+            
+                <a href="../../../07 设计模式/其它设计模式/模板方法模式.html">
+            
+                    
+                    模板方法模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.12" data-path="../../../07 设计模式/其它设计模式/状态模式.html">
+            
+                <a href="../../../07 设计模式/其它设计模式/状态模式.html">
+            
+                    
+                    状态模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.13" data-path="../../../07 设计模式/其它设计模式/策略模式.html">
+            
+                <a href="../../../07 设计模式/其它设计模式/策略模式.html">
+            
+                    
+                    策略模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.14" data-path="../../../07 设计模式/其它设计模式/组合模式.html">
+            
+                <a href="../../../07 设计模式/其它设计模式/组合模式.html">
+            
+                    
+                    组合模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.15" data-path="../../../07 设计模式/其它设计模式/装饰模式.html">
+            
+                <a href="../../../07 设计模式/其它设计模式/装饰模式.html">
+            
+                    
+                    装饰模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.16" data-path="../../../07 设计模式/其它设计模式/解释器模式.html">
+            
+                <a href="../../../07 设计模式/其它设计模式/解释器模式.html">
+            
+                    
+                    解释器模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.17" data-path="../../../07 设计模式/其它设计模式/访问者模式.html">
+            
+                <a href="../../../07 设计模式/其它设计模式/访问者模式.html">
+            
+                    
+                    访问者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.18" data-path="../../../07 设计模式/其它设计模式/责任链模式.html">
+            
+                <a href="../../../07 设计模式/其它设计模式/责任链模式.html">
+            
+                    
+                    责任链模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.19" data-path="../../../07 设计模式/其它设计模式/迭代器模式.html">
+            
+                <a href="../../../07 设计模式/其它设计模式/迭代器模式.html">
+            
+                    
+                    迭代器模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.20" data-path="../../../07 设计模式/其它设计模式/适配器模式.html">
+            
+                <a href="../../../07 设计模式/其它设计模式/适配器模式.html">
+            
+                    
+                    适配器模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.21" data-path="../../../07 设计模式/其它设计模式/静态工厂方法模式.html">
+            
+                <a href="../../../07 设计模式/其它设计模式/静态工厂方法模式.html">
+            
+                    
+                    静态工厂方法模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.4" data-path="../../../07 设计模式/单例模式.html">
+            
+                <a href="../../../07 设计模式/单例模式.html">
+            
+                    
+                    单例模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.5" data-path="../../../07 设计模式/架构模式.html">
+            
+                <a href="../../../07 设计模式/架构模式.html">
+            
+                    
+                    架构模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.6" data-path="../../../07 设计模式/生产者消费者模式.html">
+            
+                <a href="../../../07 设计模式/生产者消费者模式.html">
+            
+                    
+                    生产者消费者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.7" data-path="../../../07 设计模式/观察者模式.html">
+            
+                <a href="../../../07 设计模式/观察者模式.html">
+            
+                    
+                    观察者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="../../../08 杂项/">
+            
+                <a href="../../../08 杂项/">
+            
+                    
+                    08 杂项
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.9.1" data-path="../../../08 杂项/git手册/">
+            
+                <a href="../../../08 杂项/git手册/">
+            
+                    
+                    git手册
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.2" data-path="../../../08 杂项/常用命令/">
+            
+                <a href="../../../08 杂项/常用命令/">
+            
+                    
+                    常用命令
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3" data-path="../../../08 杂项/环境搭建记录/">
+            
+                <a href="../../../08 杂项/环境搭建记录/">
+            
+                    
+                    环境搭建记录
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.9.3.1" data-path="../../../08 杂项/环境搭建记录/环境搭建.html">
+            
+                <a href="../../../08 杂项/环境搭建记录/环境搭建.html">
+            
+                    
+                    环境搭建
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10" data-path="../../../09 Gradle总结/">
+            
+                <a href="../../../09 Gradle总结/">
+            
+                    
+                    09 Gradle总结
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.10.1" data-path="../../../09 Gradle总结/Gradle总结.html">
+            
+                <a href="../../../09 Gradle总结/Gradle总结.html">
+            
+                    
+                    Gradle总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11" data-path="../../../10 机器学习/">
+            
+                <a href="../../../10 机器学习/">
+            
+                    
+                    10 机器学习
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.11.1" data-path="../../../10 机器学习/动量和NAG.html">
+            
+                <a href="../../../10 机器学习/动量和NAG.html">
+            
+                    
+                    动量和NAG
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11.2" data-path="../../../10 机器学习/机器学习周志华笔记/">
+            
+                <a href="../../../10 机器学习/机器学习周志华笔记/">
+            
+                    
+                    机器学习周志华笔记
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.11.2.1" data-path="../../../10 机器学习/机器学习周志华笔记/第一章-绪论.html">
+            
+                <a href="../../../10 机器学习/机器学习周志华笔记/第一章-绪论.html">
+            
+                    
+                    第一章-绪论
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11.2.2" data-path="../../../10 机器学习/机器学习周志华笔记/第三章-线性模型.html">
+            
+                <a href="../../../10 机器学习/机器学习周志华笔记/第三章-线性模型.html">
+            
+                    
+                    第三章-线性模型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11.2.3" data-path="../../../10 机器学习/机器学习周志华笔记/第二章-模型评估与选择.html">
+            
+                <a href="../../../10 机器学习/机器学习周志华笔记/第二章-模型评估与选择.html">
+            
+                    
+                    第二章-模型评估与选择
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12" data-path="../../../11 知识点/">
+            
+                <a href="../../../11 知识点/">
+            
+                    
+                    11 知识点
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.12.1" data-path="../../../11 知识点/04-操作系统.html">
+            
+                <a href="../../../11 知识点/04-操作系统.html">
+            
+                    
+                    04-操作系统
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.2" data-path="../../../11 知识点/06-数据结构.html">
+            
+                <a href="../../../11 知识点/06-数据结构.html">
+            
+                    
+                    06-数据结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.3" data-path="../../../11 知识点/07-第三方库.html">
+            
+                <a href="../../../11 知识点/07-第三方库.html">
+            
+                    
+                    07-第三方库
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.4" data-path="../../../11 知识点/08-设计模式.html">
+            
+                <a href="../../../11 知识点/08-设计模式.html">
+            
+                    
+                    08-设计模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.5" data-path="../../../11 知识点/09-算法.html">
+            
+                <a href="../../../11 知识点/09-算法.html">
+            
+                    
+                    09-算法
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.6" data-path="../../../11 知识点/10-计算机底层基础.html">
+            
+                <a href="../../../11 知识点/10-计算机底层基础.html">
+            
+                    
+                    10-计算机底层基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13" data-path="../../../12 读书笔记/">
+            
+                <a href="../../../12 读书笔记/">
+            
+                    
+                    12 读书笔记
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.13.1" data-path="../../../12 读书笔记/1984.html">
+            
+                <a href="../../../12 读书笔记/1984.html">
+            
+                    
+                    1984
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13.2" data-path="../../../12 读书笔记/两晋.html">
+            
+                <a href="../../../12 读书笔记/两晋.html">
+            
+                    
+                    两晋
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13.3" data-path="../../../12 读书笔记/我们从未中产过.html">
+            
+                <a href="../../../12 读书笔记/我们从未中产过.html">
+            
+                    
+                    我们从未中产过
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13.4" data-path="../../../12 读书笔记/文化大革命简史.html">
+            
+                <a href="../../../12 读书笔记/文化大革命简史.html">
+            
+                    
+                    文化大革命简史
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13.5" data-path="../../../12 读书笔记/认知觉醒.html">
+            
+                <a href="../../../12 读书笔记/认知觉醒.html">
+            
+                    
+                    认知觉醒
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.14" data-path="../../../13 车道级导航/">
+            
+                <a href="../../../13 车道级导航/">
+            
+                    
+                    13 车道级导航
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.14.1" data-path="../../../13 车道级导航/01-Frenet坐标系.html">
+            
+                <a href="../../../13 车道级导航/01-Frenet坐标系.html">
+            
+                    
+                    01-Frenet坐标系
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.14.2" data-path="../../../13 车道级导航/02-最短路径算法.html">
+            
+                <a href="../../../13 车道级导航/02-最短路径算法.html">
+            
+                    
+                    02-最短路径算法
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.14.3" data-path="../../../13 车道级导航/03-数据结构.html">
+            
+                <a href="../../../13 车道级导航/03-数据结构.html">
+            
+                    
+                    03-数据结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            本书使用 GitBook 发布
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../../.." >Android动画</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <div id="anchor-navigation-ex-navbar"><i class="fa fa-navicon"></i><ul><li><span class="title-icon "></span><a href="#&#x9010;&#x5E27;&#x52A8;&#x753B;"><b>1. </b>&#x9010;&#x5E27;&#x52A8;&#x753B;</a></li><ul><li><span class="title-icon "></span><a href="#xml&#x5F62;&#x5F0F;"><b>1.1. </b>xml&#x5F62;&#x5F0F;</a></li><ul><li><span class="title-icon "></span><a href="#&#x521B;&#x5EFA;"><b>1.1.1. </b>&#x521B;&#x5EFA;</a></li><li><span class="title-icon "></span><a href="#&#x4F7F;&#x7528;"><b>1.1.2. </b>&#x4F7F;&#x7528;</a></li><li><span class="title-icon "></span><a href="#&#x4EE3;&#x7801;&#x65B9;&#x5F0F;"><b>1.1.3. </b>&#x4EE3;&#x7801;&#x65B9;&#x5F0F;</a></li></ul></ul><li><span class="title-icon "></span><a href="#view&#x52A8;&#x753B;"><b>2. </b>View&#x52A8;&#x753B;</a></li><ul><li><span class="title-icon "></span><a href="#set"><b>2.1. </b>set</a></li><li><span class="title-icon "></span><a href="#translate"><b>2.2. </b>translate</a></li><li><span class="title-icon "></span><a href="#scale"><b>2.3. </b>scale</a></li><li><span class="title-icon "></span><a href="#rotate"><b>2.4. </b>rotate</a></li><li><span class="title-icon "></span><a href="#alpha"><b>2.5. </b>alpha</a></li><li><span class="title-icon "></span><a href="#&#x7279;&#x6B8A;&#x4F7F;&#x7528;&#x573A;&#x666F;"><b>2.6. </b>&#x7279;&#x6B8A;&#x4F7F;&#x7528;&#x573A;&#x666F;</a></li><ul><li><span class="title-icon "></span><a href="#demo"><b>2.6.1. </b>demo</a></li></ul></ul><li><span class="title-icon "></span><a href="#&#x5C5E;&#x6027;&#x52A8;&#x753B;"><b>3. </b>&#x5C5E;&#x6027;&#x52A8;&#x753B;</a></li><ul><li><span class="title-icon "></span><a href="#viewpropertyanimator"><b>3.1. </b>ViewPropertyAnimator</a></li><li><span class="title-icon "></span><a href="#objectanimator"><b>3.2. </b>ObjectAnimator</a></li><li><span class="title-icon "></span><a href="#&#x63D2;&#x503C;&#x5668;interpolator"><b>3.3. </b>&#x63D2;&#x503C;&#x5668;Interpolator</a></li><ul><li><span class="title-icon "></span><a href="#acceleratedecelerateinterpolator"><b>3.3.1. </b>AccelerateDecelerateInterpolator</a></li><li><span class="title-icon "></span><a href="#linearinterpolator"><b>3.3.2. </b>LinearInterpolator</a></li><li><span class="title-icon "></span><a href="#accelerateinterpolator"><b>3.3.3. </b>AccelerateInterpolator</a></li><li><span class="title-icon "></span><a href="#decelerateinterpolator"><b>3.3.4. </b>DecelerateInterpolator</a></li><li><span class="title-icon "></span><a href="#anticipateinterpolator"><b>3.3.5. </b>AnticipateInterpolator</a></li><li><span class="title-icon "></span><a href="#overshootinterpolator"><b>3.3.6. </b>OvershootInterpolator</a></li><li><span class="title-icon "></span><a href="#anticipateovershootinterpolator"><b>3.3.7. </b>AnticipateOvershootInterpolator</a></li><li><span class="title-icon "></span><a href="#bounceinterpolator"><b>3.3.8. </b>BounceInterpolator</a></li><li><span class="title-icon "></span><a href="#cycleinterpolator"><b>3.3.9. </b>CycleInterpolator</a></li><li><span class="title-icon "></span><a href="#pathinterpolator"><b>3.3.10. </b>PathInterpolator</a></li><li><span class="title-icon "></span><a href="#fastoutlinearininterpolator"><b>3.3.11. </b>FastOutLinearInInterpolator</a></li><li><span class="title-icon "></span><a href="#fastoutslowininterpolator"><b>3.3.12. </b>FastOutSlowInInterpolator</a></li><li><span class="title-icon "></span><a href="#linearoutslowininterpolator"><b>3.3.13. </b>LinearOutSlowInInterpolator</a></li></ul><li><span class="title-icon "></span><a href="#&#x8BBE;&#x7F6E;&#x76D1;&#x542C;&#x5668;"><b>3.4. </b>&#x8BBE;&#x7F6E;&#x76D1;&#x542C;&#x5668;</a></li><ul><li><span class="title-icon "></span><a href="#viewpropertyanimatorsetlistener--objectanimatoraddlistener"><b>3.4.1. </b>ViewPropertyAnimator.setListener() / ObjectAnimator.addListener()</a></li><li><span class="title-icon "></span><a href="#viewpropertyanimatorsetupdatelistener--objectanimatoraddupdatelistener"><b>3.4.2. </b>ViewPropertyAnimator.setUpdateListener() / ObjectAnimator.addUpdateListener()</a></li><li><span class="title-icon "></span><a href="#objectanimatoraddpauselistener"><b>3.4.3. </b>ObjectAnimator.addPauseListener()</a></li><li><span class="title-icon "></span><a href="#viewpropertyanimatorwithstartactionendaction"><b>3.4.4. </b>ViewPropertyAnimator.withStartAction/EndAction()</a></li></ul><li><span class="title-icon "></span><a href="#&#x65E0;&#x6CD5;&#x4F7F;&#x7528;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x6216;&#x8005;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x4E0D;&#x8D77;&#x4F5C;&#x7528;&#x7684;&#x60C5;&#x51B5;&#x548C;&#x89E3;&#x51B3;&#x65B9;&#x6CD5;"><b>3.5. </b>&#x65E0;&#x6CD5;&#x4F7F;&#x7528;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x6216;&#x8005;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x4E0D;&#x8D77;&#x4F5C;&#x7528;&#x7684;&#x60C5;&#x51B5;&#x548C;&#x89E3;&#x51B3;&#x65B9;&#x6CD5;</a></li><li><span class="title-icon "></span><a href="#&#x5E38;&#x7528;&#x7684;&#x573A;&#x666F;"><b>3.6. </b>&#x5E38;&#x7528;&#x7684;&#x573A;&#x666F;</a></li><ul><li><span class="title-icon "></span><a href="#demo_1"><b>3.6.1. </b>demo</a></li></ul><li><span class="title-icon "></span><a href="#typeevaluator"><b>3.7. </b>TypeEvaluator</a></li><ul><li><span class="title-icon "></span><a href="#argbevaluator"><b>3.7.1. </b>ArgbEvaluator</a></li><li><span class="title-icon "></span><a href="#&#x81EA;&#x5B9A;&#x4E49;-evaluator"><b>3.7.2. </b>&#x81EA;&#x5B9A;&#x4E49; Evaluator</a></li><li><span class="title-icon "></span><a href="#ofobject"><b>3.7.3. </b>ofObject()</a></li></ul><li><span class="title-icon "></span><a href="#propertyvaluesholder-&#x540C;&#x4E00;&#x4E2A;&#x52A8;&#x753B;&#x4E2D;&#x6539;&#x53D8;&#x591A;&#x4E2A;&#x5C5E;&#x6027;"><b>3.8. </b>PropertyValuesHolder &#x540C;&#x4E00;&#x4E2A;&#x52A8;&#x753B;&#x4E2D;&#x6539;&#x53D8;&#x591A;&#x4E2A;&#x5C5E;&#x6027;</a></li><li><span class="title-icon "></span><a href="#animatorset-&#x591A;&#x4E2A;&#x52A8;&#x753B;&#x914D;&#x5408;&#x6267;&#x884C;"><b>3.9. </b>AnimatorSet &#x591A;&#x4E2A;&#x52A8;&#x753B;&#x914D;&#x5408;&#x6267;&#x884C;</a></li><li><span class="title-icon "></span><a href="#propertyvaluesholdersofkeyframe-&#x628A;&#x540C;&#x4E00;&#x4E2A;&#x5C5E;&#x6027;&#x62C6;&#x5206;"><b>3.10. </b>PropertyValuesHolders.ofKeyframe() &#x628A;&#x540C;&#x4E00;&#x4E2A;&#x5C5E;&#x6027;&#x62C6;&#x5206;</a></li></ul></ul></div><a href="#&#x9010;&#x5E27;&#x52A8;&#x753B;" id="anchorNavigationExGoTop"><i class="fa fa-arrow-up"></i></a><h1 id="&#x9010;&#x5E27;&#x52A8;&#x753B;"><a name="&#x9010;&#x5E27;&#x52A8;&#x753B;" class="anchor-navigation-ex-anchor" href="#&#x9010;&#x5E27;&#x52A8;&#x753B;"><i class="fa fa-link" aria-hidden="true"></i></a>1. &#x9010;&#x5E27;&#x52A8;&#x753B;</h1>
+<p>&#x5E27;&#x52A8;&#x753B;&#x7684;&#x5B9E;&#x73B0;&#x65B9;&#x5F0F;&#x6709;&#x4E24;&#x79CD;&#xFF1A;</p>
+<h2 id="xml&#x5F62;&#x5F0F;"><a name="xml&#x5F62;&#x5F0F;" class="anchor-navigation-ex-anchor" href="#xml&#x5F62;&#x5F0F;"><i class="fa fa-link" aria-hidden="true"></i></a>1.1. xml&#x5F62;&#x5F0F;</h2>
+<h3 id="&#x521B;&#x5EFA;"><a name="&#x521B;&#x5EFA;" class="anchor-navigation-ex-anchor" href="#&#x521B;&#x5EFA;"><i class="fa fa-link" aria-hidden="true"></i></a>1.1.1. &#x521B;&#x5EFA;</h3>
+<p>&#x5728;res/drawable&#x6587;&#x4EF6;&#x5939;&#x4E0B;&#x65B0;&#x5EFA;animation-list&#x7684;XML&#x5B9E;&#x73B0;&#x5E27;&#x52A8;&#x753B;</p>
+<p>1&#x3001;&#x9996;&#x5148;&#x5728;res/drawable&#x6587;&#x4EF6;&#x5939;&#x4E0B;&#x6DFB;&#x52A0;&#x56FE;&#x7247;</p>
+<p>2&#x3001;&#x65B0;&#x5EFA;anim_0.xml </p>
+<blockquote>
+<p>&#x770B;&#x7684;&#x5185;&#x5BB9;&#x8BF4;&#x5728;anim&#x6587;&#x4EF6;&#x5939;&#x4E0B;&#x521B;&#x5EFA;xml&#x6587;&#x4EF6;&#xFF0C;&#x4F46;&#x662F;&#x5728;&#x8F93;&#x5165;animation-list&#x540E;Android Studio&#x81EA;&#x52A8;&#x7EA0;&#x9519;&#x628A;&#x6587;&#x4EF6;&#x653E;&#x8FDB;&#x4E86;drawable&#x6587;&#x4EF6;&#x5939;</p>
+</blockquote>
+<pre><code class="lang-xml"><span class="php"><span class="hljs-meta">&lt;?</span>xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;utf-8&quot;</span><span class="hljs-meta">?&gt;</span></span>
+<span class="hljs-tag">&lt;<span class="hljs-name">animation-list</span> <span class="hljs-attr">xmlns:android</span>=<span class="hljs-string">&quot;http://schemas.android.com/apk/res/android&quot;</span>
+    <span class="hljs-attr">android:oneshot</span>=<span class="hljs-string">&quot;false&quot;</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">item</span>
+        <span class="hljs-attr">android:drawable</span>=<span class="hljs-string">&quot;@drawable/a&quot;</span>
+        <span class="hljs-attr">android:duration</span>=<span class="hljs-string">&quot;300&quot;</span>/&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">item</span>
+        <span class="hljs-attr">android:drawable</span>=<span class="hljs-string">&quot;@drawable/b&quot;</span>
+        <span class="hljs-attr">android:duration</span>=<span class="hljs-string">&quot;300&quot;</span>/&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">item</span>
+        <span class="hljs-attr">android:drawable</span>=<span class="hljs-string">&quot;@drawable/c&quot;</span>
+        <span class="hljs-attr">android:duration</span>=<span class="hljs-string">&quot;300&quot;</span>/&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">animation-list</span>&gt;</span>
+</code></pre>
+<p>android:oneshot &#x63A7;&#x5236;&#x52A8;&#x753B;&#x662F;&#x5426;&#x5FAA;&#x73AF;&#x64AD;&#x653E;</p>
+<p>android:duration &#x63A7;&#x5236;&#x6BCF;&#x4E00;&#x5E27;&#x7684;&#x64AD;&#x653E;&#x65F6;&#x95F4;</p>
+<h3 id="&#x4F7F;&#x7528;"><a name="&#x4F7F;&#x7528;" class="anchor-navigation-ex-anchor" href="#&#x4F7F;&#x7528;"><i class="fa fa-link" aria-hidden="true"></i></a>1.1.2. &#x4F7F;&#x7528;</h3>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">ImageView</span>
+    <span class="hljs-attr">android:id</span>=<span class="hljs-string">&quot;@+id/img&quot;</span>
+    <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">&quot;100dp&quot;</span>
+    <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">&quot;100dp&quot;</span>
+    <span class="hljs-attr">android:layout_centerInParent</span>=<span class="hljs-string">&quot;true&quot;</span>
+    <span class="hljs-attr">android:background</span>=<span class="hljs-string">&quot;@drawable/anim_0&quot;</span>/&gt;</span>
+</code></pre>
+<pre><code class="lang-java">ImageView imageView=findViewById(R.id.img);
+AnimationDrawable animationDrawable= (AnimationDrawable) imageView.getBackground();
+animationDrawable.start();
+</code></pre>
+<h3 id="&#x4EE3;&#x7801;&#x65B9;&#x5F0F;"><a name="&#x4EE3;&#x7801;&#x65B9;&#x5F0F;" class="anchor-navigation-ex-anchor" href="#&#x4EE3;&#x7801;&#x65B9;&#x5F0F;"><i class="fa fa-link" aria-hidden="true"></i></a>1.1.3. &#x4EE3;&#x7801;&#x65B9;&#x5F0F;</h3>
+<p>&#x4E0D;&#x5E38;&#x4F7F;&#x7528;&#xFF0C;&#x6545;&#x7565;&#x3002;</p>
+<h1 id="view&#x52A8;&#x753B;"><a name="view&#x52A8;&#x753B;" class="anchor-navigation-ex-anchor" href="#view&#x52A8;&#x753B;"><i class="fa fa-link" aria-hidden="true"></i></a>2. View&#x52A8;&#x753B;</h1>
+<p>&#x4F7F;&#x7528;View&#x52A8;&#x753B;&#x6846;&#x67B6;&#x53EF;&#x4EE5;&#x5728;Views&#x4E0A;&#x6267;&#x884C;&#x8865;&#x95F4;&#x52A8;&#x753B;&#x3002; &#x8865;&#x95F4;&#x52A8;&#x753B;&#x662F;&#x6307;&#x53EA;&#x8981;&#x6307;&#x5B9A;&#x52A8;&#x753B;&#x7684;&#x5F00;&#x59CB;&#x3001;&#x52A8;&#x753B;&#x7ED3;&#x675F;&#x7684;&quot;&#x5173;&#x952E;&#x5E27;&quot;&#xFF0C;&#x800C;&#x52A8;&#x753B;&#x53D8;&#x5316;&#x7684;&quot;&#x4E2D;&#x95F4;&#x5E27;&quot;&#x7531;&#x7CFB;&#x7EDF;&#x8BA1;&#x7B97;&#x5E76;&#x8865;&#x9F50;&#xFF1B;&#x65E0;&#x8BBA;&#x52A8;&#x753B;&#x600E;&#x6837;&#x6539;&#x53D8;View&#x7684;&#x663E;&#x793A;&#x533A;&#x57DF;&#xFF08;&#x79FB;&#x52A8;&#x6216;&#x8005;&#x6539;&#x53D8;&#x5927;&#x5C0F;&#xFF09;&#xFF0C;&#x6301;&#x6709;&#x8BE5;&#x52A8;&#x753B;&#x7684;View&#x7684;&#x8FB9;&#x754C;&#x4E0D;&#x4F1A;&#x81EA;&#x52A8;&#x8C03;&#x6574;&#x6765;&#x9002;&#x5E94;View&#x7684;&#x663E;&#x793A;&#x533A;&#x57DF;&#xFF0C; &#x5373;&#x4F7F;&#x5982;&#x6B64;&#xFF0C;&#x8BE5;&#x52A8;&#x753B;&#x4ECD;&#x5C06;&#x88AB;&#x7ED8;&#x5236;&#x5728;&#x8D85;&#x51FA;&#x5176;&#x89C6;&#x56FE;&#x8FB9;&#x754C;&#x5E76;&#x4E14;&#x4E0D;&#x4F1A;&#x88AB;&#x526A;&#x88C1;&#xFF0C; &#x4F46;&#x662F;&#xFF0C;&#x5982;&#x679C;&#x52A8;&#x753B;&#x8D85;&#x8FC7;&#x7236;&#x89C6;&#x56FE;&#x7684;&#x8FB9;&#x754C;&#xFF0C;&#x5219;&#x4F1A;&#x51FA;&#x73B0;&#x88C1;&#x526A;&#x3002;&#x5728;Android&#x4E2D;&#x7684;View&#x52A8;&#x753B;&#x6846;&#x67B6;&#x4E2D;&#x4E00;&#x5171;&#x63D0;&#x4F9B;&#x4E86;AlphaAnimation&#xFF08;&#x900F;&#x660E;&#x5EA6;&#x52A8;&#x753B;&#xFF09;&#x3001;RotateAnimation&#xFF08;&#x65CB;&#x8F6C;&#x52A8;&#x753B;&#xFF09;&#x3001;ScaleAnimation&#xFF08;&#x7F29;&#x653E;&#x52A8;&#x753B;&#xFF09;&#x3001;TranslateAnimation&#xFF08;&#x5E73;&#x79FB;&#x52A8;&#x753B;&#xFF09;&#x56DB;&#x79CD;&#x7C7B;&#x578B;&#x7684;&#x8865;&#x95F4;&#x52A8;&#x753B;&#x3002;</p>
+<p>VIew&#x52A8;&#x753B;&#x7684;&#x4F5C;&#x7528;&#x5BF9;&#x8C61;&#x662F;View&#xFF0C;&#x652F;&#x6301;4&#x79CD;&#x52A8;&#x753B;&#x6548;&#x679C;&#xFF0C;&#x5206;&#x522B;&#x662F;&#x5E73;&#x79FB;&#x3001;&#x7F29;&#x653E;&#x3001;&#x65CB;&#x8F6C;&#x548C;&#x900F;&#x660E;&#x5EA6;&#x52A8;&#x753B;&#x3002;</p>
+<p>View&#x52A8;&#x753B;&#x7684;&#x56DB;&#x79CD;&#x53D8;&#x6362;&#x6548;&#x679C;&#x5BF9;&#x5E94;&#x7740;Animation&#x7684;&#x56DB;&#x4E2A;&#x5B50;&#x7C7B;&#xFF1A;TranslateAnimation&#x3001;ScaleAnimation&#x3001;RotateAnimation&#x548C;AlphaAnimation&#x3002;</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">&#x540D;&#x79F0;</th>
+<th style="text-align:center">&#x6807;&#x7B7E;</th>
+<th style="text-align:center">&#x5B50;&#x7C7B;</th>
+<th style="text-align:center">&#x6548;&#x679C;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">&#x5E73;&#x79FB;&#x52A8;&#x753B;</td>
+<td style="text-align:center">\<translate\></translate\></td>
+<td style="text-align:center">TranslateAnimation</td>
+<td style="text-align:center">&#x79FB;&#x52A8;View</td>
+</tr>
+<tr>
+<td style="text-align:center">&#x7F29;&#x653E;&#x52A8;&#x753B;</td>
+<td style="text-align:center">\<scale\></scale\></td>
+<td style="text-align:center">ScaleAnimation</td>
+<td style="text-align:center">&#x653E;&#x5927;&#x6216;&#x7F29;&#x5C0F;View</td>
+</tr>
+<tr>
+<td style="text-align:center">&#x65CB;&#x8F6C;&#x52A8;&#x753B;</td>
+<td style="text-align:center">\<rotate\></rotate\></td>
+<td style="text-align:center">RotateAnimation</td>
+<td style="text-align:center">&#x65CB;&#x8F6C;View</td>
+</tr>
+<tr>
+<td style="text-align:center">&#x900F;&#x660E;&#x5EA6;&#x52A8;&#x753B;</td>
+<td style="text-align:center">\<alpha\></alpha\></td>
+<td style="text-align:center">AlphaAnimation</td>
+<td style="text-align:center">&#x6539;&#x53D8;View&#x7684;&#x900F;&#x660E;&#x5EA6;</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-xml"><span class="php"><span class="hljs-meta">&lt;?</span>xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;utf-8&quot;</span><span class="hljs-meta">?&gt;</span></span>
+<span class="hljs-tag">&lt;<span class="hljs-name">set</span> <span class="hljs-attr">xmlns:android</span>=<span class="hljs-string">&quot;http://schemas.android.com/apk/res/android&quot;</span>
+    <span class="hljs-attr">android:interpolator</span>=<span class="hljs-string">&quot;&quot;</span>
+    <span class="hljs-attr">android:duration</span>=<span class="hljs-string">&quot;11&quot;</span>
+    <span class="hljs-attr">android:fillAfter</span>=<span class="hljs-string">&quot;true&quot;</span>
+    <span class="hljs-attr">android:shareInterpolator</span>=<span class="hljs-string">&quot;true&quot;</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">alpha</span>
+        <span class="hljs-attr">android:fromAlpha</span>=<span class="hljs-string">&quot;1.0&quot;</span>
+        <span class="hljs-attr">android:toAlpha</span>=<span class="hljs-string">&quot;1.0&quot;</span>/&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">scale</span>
+        <span class="hljs-attr">android:fromXScale</span>=<span class="hljs-string">&quot;1.0&quot;</span>
+        <span class="hljs-attr">android:toXScale</span>=<span class="hljs-string">&quot;1.0&quot;</span>
+        <span class="hljs-attr">android:fromYScale</span>=<span class="hljs-string">&quot;1.0&quot;</span>
+        <span class="hljs-attr">android:toYScale</span>=<span class="hljs-string">&quot;1.0&quot;</span>
+        <span class="hljs-attr">android:pivotX</span>=<span class="hljs-string">&quot;1.0&quot;</span>
+        <span class="hljs-attr">android:pivotY</span>=<span class="hljs-string">&quot;1.0&quot;</span>/&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">translate</span>
+        <span class="hljs-attr">android:fromXDelta</span>=<span class="hljs-string">&quot;1.0&quot;</span>
+        <span class="hljs-attr">android:toXDelta</span>=<span class="hljs-string">&quot;1.0&quot;</span>
+        <span class="hljs-attr">android:fromYDelta</span>=<span class="hljs-string">&quot;1.0&quot;</span>
+        <span class="hljs-attr">android:toYDelta</span>=<span class="hljs-string">&quot;1.0&quot;</span>/&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">rotate</span>
+        <span class="hljs-attr">android:fromDegrees</span>=<span class="hljs-string">&quot;1.0&quot;</span>
+        <span class="hljs-attr">android:toDegrees</span>=<span class="hljs-string">&quot;1.0&quot;</span>
+        <span class="hljs-attr">android:pivotY</span>=<span class="hljs-string">&quot;1.0&quot;</span>
+        <span class="hljs-attr">android:pivotX</span>=<span class="hljs-string">&quot;1.0&quot;</span>/&gt;</span>
+
+<span class="hljs-tag">&lt;/<span class="hljs-name">set</span>&gt;</span>
+</code></pre>
+<h2 id="set"><a name="set" class="anchor-navigation-ex-anchor" href="#set"><i class="fa fa-link" aria-hidden="true"></i></a>2.1. set</h2>
+<ul>
+<li>android:interpolator
+&#x8868;&#x793A;&#x52A8;&#x753B;&#x96C6;&#x5408;&#x6240;&#x91C7;&#x7528;&#x7684;&#x63D2;&#x503C;&#x5668;&#xFF0C;&#x63D2;&#x503C;&#x5668;&#x5F71;&#x54CD;&#x52A8;&#x753B;&#x7684;&#x901F;&#x5EA6;&#xFF0C;&#x8FD9;&#x4E2A;&#x5C5E;&#x6027;&#x53EF;&#x4EE5;&#x4E0D;&#x6307;&#x5B9A;&#xFF0C;&#x9ED8;&#x8BA4;&#x4E3A;&#x52A0;&#x901F;&#x51CF;&#x901F;&#x63D2;&#x503C;&#x5668;&#x3002;</li>
+<li>android:shareInterpolator
+&#x8868;&#x793A;&#x96C6;&#x5408;&#x4E2D;&#x7684;&#x52A8;&#x753B;&#x662F;&#x5426;&#x548C;&#x96C6;&#x5408;&#x5171;&#x4EAB;&#x540C;&#x4E00;&#x4E2A;&#x63D2;&#x503C;&#x5668;&#x3002;&#x5982;&#x679C;&#x4E0D;&#x6307;&#x5B9A;&#xFF0C;&#x90A3;&#x4E48;&#x5B50;&#x52A8;&#x753B;&#x5C31;&#x9700;&#x8981;&#x5355;&#x72EC;&#x6307;&#x5B9A;&#x63D2;&#x503C;&#x5668;&#x6216;&#x8005;&#x9ED8;&#x8BA4;&#x7684;&#x63D2;&#x503C;&#x5668;&#x3002;</li>
+<li>android:duration
+&#x52A8;&#x753B;&#x6301;&#x7EED;&#x7684;&#x65F6;&#x95F4;&#xFF0C;&#x9ED8;&#x8BA4;&#x503C;&#x662F;0 (&#x5355;&#x4F4D;ms)  </li>
+<li>android:fillAfter=&quot;true&quot;
+&#x52A8;&#x753B;&#x7ED3;&#x675F;&#x540E;View&#x662F;&#x5426;&#x505C;&#x7559;&#x5728;&#x7ED3;&#x675F;&#x4F4D;&#x7F6E;&#xFF0C;true&#x8868;&#x793A;View&#x505C;&#x7559;&#xFF0C;false&#x53CD;&#x4E4B;&#x3002;</li>
+<li>android:repeatCount 
+&#x8BBE;&#x7F6E;&#x52A8;&#x753B;&#x91CD;&#x590D;&#x6267;&#x884C;&#x7684;&#x6B21;&#x6570;  &#xFF0C;&#x9ED8;&#x8BA4;&#x503C;&#x662F;0   </li>
+<li>android:repeatMode 
+&#x8BBE;&#x7F6E;&#x52A8;&#x753B;&#x91CD;&#x590D;&#x7684;&#x6A21;&#x5F0F;&#xFF0C;&#x5176;&#x503C;&#x53EF;&#x4EE5;&#x6709;&#xFF0C;restart( 1 )&#xFF0C;&#x8868;&#x793A;&#x987A;&#x5E8F;&#x64AD;&#x653E;&#xFF0C;reverse&#xFF08;2&#xFF09;&#x8868;&#x793A;&#x91CD;&#x590D;&#x7684;&#x65F6;&#x5019;&#x9006;&#x5411;&#x64AD;&#x653E;</li>
+<li>android:startOffset
+&#x8BBE;&#x7F6E;&#x5F00;&#x59CB;&#x7684;&#x5EF6;&#x8FDF;&#x7684;&#x65F6;&#x95F4;(&#x5355;&#x4F4D;ms)  &#xFF0C;&#x9ED8;&#x8BA4;&#x503C;&#x662F;0</li>
+</ul>
+<h2 id="translate"><a name="translate" class="anchor-navigation-ex-anchor" href="#translate"><i class="fa fa-link" aria-hidden="true"></i></a>2.2. translate</h2>
+<ul>
+<li>android:fromXDelta
+&#x8868;&#x793A;x&#x7684;&#x8D77;&#x59CB;&#x503C;&#xFF0C;&#x6BD4;&#x5982;0&#xFF0C;&#x4F8B;&#x5982;&#xFF1A;&#x5982;50&#x8868;&#x793A;&#x4EE5;&#x5F53;&#x524D;View&#x5DE6;&#x4E0A;&#x89D2;&#x5750;&#x6807;&#x52A0;50px&#x4E3A;&#x521D;&#x59CB;&#x70B9;&#x3001;50%&#x8868;&#x793A;&#x4EE5;&#x5F53;&#x524D;View&#x7684;&#x5DE6;&#x4E0A;&#x89D2;&#x52A0;&#x4E0A;&#x5F53;&#x524D;View&#x5BBD;&#x9AD8;&#x7684;50%&#x505A;&#x4E3A;&#x521D;&#x59CB;&#x70B9;&#x3001;50%p&#x8868;&#x793A;&#x4EE5;&#x5F53;&#x524D;View&#x7684;&#x5DE6;&#x4E0A;&#x89D2;&#x52A0;&#x4E0A;&#x7236;&#x63A7;&#x4EF6;&#x5BBD;&#x9AD8;&#x7684;50%&#x505A;&#x4E3A;&#x521D;&#x59CB;&#x70B9;</li>
+<li>android:toXDelta
+&#x8868;&#x793A;x&#x7684;&#x7ED3;&#x675F;&#x503C;&#xFF0C;&#x6BD4;&#x5982;100</li>
+<li>android:fromYDelta</li>
+<li>android:toYDelta</li>
+</ul>
+<h2 id="scale"><a name="scale" class="anchor-navigation-ex-anchor" href="#scale"><i class="fa fa-link" aria-hidden="true"></i></a>2.3. scale</h2>
+<ul>
+<li>android:fromXScale
+&#x6C34;&#x5E73;&#x65B9;&#x5411;&#x7F29;&#x653E;&#x7684;&#x8D77;&#x59CB;&#x503C;&#xFF0C;&#x6BD4;&#x5982;0.5</li>
+<li>android:toXScale
+&#x6C34;&#x5E73;&#x65B9;&#x5411;&#x7F29;&#x653E;&#x7684;&#x7ED3;&#x675F;&#x503C;&#xFF0C;&#x6BD4;&#x5982;1.2</li>
+<li>android:pivotX
+&#x7F29;&#x653E;&#x7684;&#x8F74;&#x70B9;&#x7684;x&#x5750;&#x6807;&#xFF0C;&#x4F8B;&#x5982;&#xFF1A;&#x5982;50&#x8868;&#x793A;&#x4EE5;&#x5F53;&#x524D;View&#x5DE6;&#x4E0A;&#x89D2;&#x5750;&#x6807;&#x52A0;50px&#x4E3A;&#x521D;&#x59CB;&#x70B9;&#x3001;50%&#x8868;&#x793A;&#x4EE5;&#x5F53;&#x524D;View&#x7684;&#x5DE6;&#x4E0A;&#x89D2;&#x52A0;&#x4E0A;&#x5F53;&#x524D;View&#x5BBD;&#x9AD8;&#x7684;50%&#x505A;&#x4E3A;&#x521D;&#x59CB;&#x70B9;&#x3001;50%p&#x8868;&#x793A;&#x4EE5;&#x5F53;&#x524D;View&#x7684;&#x5DE6;&#x4E0A;&#x89D2;&#x52A0;&#x4E0A;&#x7236;&#x63A7;&#x4EF6;&#x5BBD;&#x9AD8;&#x7684;50%&#x505A;&#x4E3A;&#x521D;&#x59CB;&#x70B9;</li>
+<li>android:fromYScale</li>
+<li>android:toYScale</li>
+<li>android:pivotY</li>
+</ul>
+<h2 id="rotate"><a name="rotate" class="anchor-navigation-ex-anchor" href="#rotate"><i class="fa fa-link" aria-hidden="true"></i></a>2.4. rotate</h2>
+<ul>
+<li>android:fromDegrees
+&#x65CB;&#x8F6C;&#x5F00;&#x59CB;&#x7684;&#x89D2;&#x5EA6;&#xFF0C;&#x6BD4;&#x5982;0</li>
+<li>android:toDegrees
+&#x65CB;&#x8F6C;&#x7ED3;&#x675F;&#x7684;&#x89D2;&#x5EA6;&#xFF0C;&#x6BD4;&#x5982;180&#xFF0C;ps&#xFF1A;toDegrees -fromDegrees &gt; 0&#xFF0C;&#x5219;&#x987A;&#x65F6;&#x9488;&#x65CB;&#x8F6C;&#xFF1B;&#x5426;&#x5219;&#xFF0C;&#x9006;&#x65F6;&#x9488;&#x65CB;&#x8F6C;&#x3002;</li>
+<li>android:pivotY
+&#x65CB;&#x8F6C;&#x7684;&#x8F74;&#x70B9;&#x7684;x&#x5750;&#x6807;</li>
+<li>android:pivotX
+&#x65CB;&#x8F6C;&#x7684;&#x8F74;&#x70B9;&#x7684;y&#x5750;&#x6807;</li>
+</ul>
+<h2 id="alpha"><a name="alpha" class="anchor-navigation-ex-anchor" href="#alpha"><i class="fa fa-link" aria-hidden="true"></i></a>2.5. alpha</h2>
+<ul>
+<li>android:fromAlpha
+&#x8868;&#x793A;&#x900F;&#x660E;&#x5EA6;&#x7684;&#x8D77;&#x59CB;&#x503C;&#xFF0C;&#x6BD4;&#x5982;0.1,&#x8FD9;&#x91CC;&#x8BBE;&#x7F6E;&#x4E3A;0.0&#xFF0C;&#x8868;&#x793A;&#x5B8C;&#x5168;&#x900F;&#x660E;&#xFF0C;&#x53D6;&#x503C;&#x8303;&#x56F4;0~1</li>
+<li>android:toAlpha
+&#x8868;&#x793A;&#x900F;&#x660E;&#x5EA6;&#x7684;&#x7ED3;&#x675F;&#x503C;&#xFF0C;&#x6BD4;&#x5982;1</li>
+</ul>
+<p><strong>&#x4F7F;&#x7528;</strong></p>
+<pre><code class="lang-xml"><span class="php"><span class="hljs-meta">&lt;?</span>xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;utf-8&quot;</span><span class="hljs-meta">?&gt;</span></span>
+<span class="hljs-tag">&lt;<span class="hljs-name">set</span> <span class="hljs-attr">xmlns:android</span>=<span class="hljs-string">&quot;http://schemas.android.com/apk/res/android&quot;</span>
+    <span class="hljs-attr">android:fillAfter</span>=<span class="hljs-string">&quot;true&quot;</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">translate</span>
+        <span class="hljs-attr">android:duration</span>=<span class="hljs-string">&quot;1000&quot;</span>
+        <span class="hljs-attr">android:fromXDelta</span>=<span class="hljs-string">&quot;0&quot;</span>
+        <span class="hljs-attr">android:toXDelta</span>=<span class="hljs-string">&quot;0&quot;</span>
+        <span class="hljs-attr">android:fromYDelta</span>=<span class="hljs-string">&quot;100&quot;</span>
+        <span class="hljs-attr">android:toYDelta</span>=<span class="hljs-string">&quot;100&quot;</span>/&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">rotate</span>
+        <span class="hljs-attr">android:duration</span>=<span class="hljs-string">&quot;4000&quot;</span>
+        <span class="hljs-attr">android:fromDegrees</span>=<span class="hljs-string">&quot;0&quot;</span>
+        <span class="hljs-attr">android:toDegrees</span>=<span class="hljs-string">&quot;90&quot;</span>/&gt;</span>
+
+<span class="hljs-tag">&lt;/<span class="hljs-name">set</span>&gt;</span>
+</code></pre>
+<pre><code class="lang-java">imageView = findViewById(R.id.img);
+Animation animation = AnimationUtils.loadAnimation(<span class="hljs-keyword">this</span>, R.anim.anim);
+imageView.startAnimation(animation);
+</code></pre>
+<h2 id="&#x7279;&#x6B8A;&#x4F7F;&#x7528;&#x573A;&#x666F;"><a name="&#x7279;&#x6B8A;&#x4F7F;&#x7528;&#x573A;&#x666F;" class="anchor-navigation-ex-anchor" href="#&#x7279;&#x6B8A;&#x4F7F;&#x7528;&#x573A;&#x666F;"><i class="fa fa-link" aria-hidden="true"></i></a>2.6. &#x7279;&#x6B8A;&#x4F7F;&#x7528;&#x573A;&#x666F;</h2>
+<p>View&#x52A8;&#x753B;&#x53EF;&#x4EE5;&#x5728;&#x4E00;&#x4E9B;&#x7279;&#x6B8A;&#x7684;&#x573A;&#x666F;&#x4E0B;&#x4F7F;&#x7528;&#xFF0C;&#x6BD4;&#x5982;&#x5728;ViewGroup&#x4E2D;&#x53EF;&#x4EE5;&#x63A7;&#x5236;&#x5B50;&#x5143;&#x7D20;&#x7684;&#x51FA;&#x573A;&#x6548;&#x679C;&#xFF0C;&#x5728;Activity&#x4E2D;&#x53EF;&#x4EE5;&#x5B9E;&#x73B0;&#x4E0D;&#x540C;&#x7684;Activity&#x4E4B;&#x95F4;&#x7684;&#x5207;&#x6362;&#x6548;&#x679C;&#x3002;</p>
+<p><strong>LayoutAnimation</strong></p>
+<p>LayoutAnimation&#x4F5C;&#x7528;&#x4E8E;ViewGroup&#xFF0C;&#x4E3A;ViewGroup&#x6307;&#x5B9A;&#x4E00;&#x4E2A;&#x52A8;&#x753B;&#xFF0C;&#x8FD9;&#x6837;&#x5B83;&#x7684;&#x5B50;&#x5143;&#x7D20;&#x51FA;&#x573A;&#x65F6;&#x90FD;&#x4F1A;&#x5177;&#x6709;&#x8FD9;&#x79CD;&#x52A8;&#x753B;&#x6548;&#x679C;&#x3002;&#x8FD9;&#x79CD;&#x6548;&#x679C;&#x5E38;&#x5E38;&#x7528;&#x5728;ListView&#x4E0A;&#xFF0C;&#x4F46;&#x76EE;&#x524D;RecyclerView&#x5185;&#x7F6E;&#x4E86;&#x52A8;&#x753B;&#xFF0C;&#x987E;&#x7565;&#x8FC7;&#x3002;</p>
+<p><strong>Activity&#x7684;&#x5207;&#x6362;&#x6548;&#x679C;</strong></p>
+<p>Activity&#x6709;&#x9ED8;&#x8BA4;&#x7684;&#x5207;&#x6362;&#x6548;&#x679C;&#xFF0C;&#x4F46;&#x662F;&#x8FD9;&#x4E2A;&#x6548;&#x679C;&#x662F;&#x53EF;&#x4EE5;&#x81EA;&#x5B9A;&#x4E49;&#x7684;&#xFF0C;&#x4E3B;&#x8981;&#x7528;&#x5230;<code>overridePendingTransition</code>&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#xFF0C;&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x5FC5;&#x987B;&#x5728;startActivity&#x65B9;&#x6CD5;&#x6216;&#x8005;finish&#x65B9;&#x6CD5;&#x4E4B;&#x540E;&#x8C03;&#x7528;&#x624D;&#x80FD;&#x751F;&#x6548;&#x3002;</p>
+<h3 id="demo"><a name="demo" class="anchor-navigation-ex-anchor" href="#demo"><i class="fa fa-link" aria-hidden="true"></i></a>2.6.1. demo</h3>
+<p><strong>R.anim.anim_enter</strong></p>
+<pre><code class="lang-xml"><span class="php"><span class="hljs-meta">&lt;?</span>xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;utf-8&quot;</span><span class="hljs-meta">?&gt;</span></span>
+<span class="hljs-tag">&lt;<span class="hljs-name">set</span> <span class="hljs-attr">xmlns:android</span>=<span class="hljs-string">&quot;http://schemas.android.com/apk/res/android&quot;</span>
+    <span class="hljs-attr">android:duration</span>=<span class="hljs-string">&quot;2000&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">alpha</span>
+        <span class="hljs-attr">android:fromAlpha</span>=<span class="hljs-string">&quot;0.0&quot;</span>
+        <span class="hljs-attr">android:toAlpha</span>=<span class="hljs-string">&quot;1.0&quot;</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">set</span>&gt;</span>
+</code></pre>
+<p><strong>R.anim.anim_exit</strong></p>
+<pre><code class="lang-xml"><span class="php"><span class="hljs-meta">&lt;?</span>xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;utf-8&quot;</span><span class="hljs-meta">?&gt;</span></span>
+<span class="hljs-tag">&lt;<span class="hljs-name">set</span> <span class="hljs-attr">xmlns:android</span>=<span class="hljs-string">&quot;http://schemas.android.com/apk/res/android&quot;</span>
+    <span class="hljs-attr">android:duration</span>=<span class="hljs-string">&quot;2000&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">alpha</span>
+        <span class="hljs-attr">android:fromAlpha</span>=<span class="hljs-string">&quot;1.0&quot;</span>
+        <span class="hljs-attr">android:toAlpha</span>=<span class="hljs-string">&quot;0.0&quot;</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">set</span>&gt;</span>
+</code></pre>
+<p>&#x542F;&#x52A8;&#x53E6;&#x4E00;&#x4E2A;Activity&#x3002;</p>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">open</span><span class="hljs-params">(View view)</span> </span>{
+    Intent intent = <span class="hljs-keyword">new</span> Intent(<span class="hljs-keyword">this</span>, D20BActivity.class);
+    startActivity(intent);
+    overridePendingTransition(R.anim.anim_enter, R.anim.anim_exit);
+}
+</code></pre>
+<p>&#x9000;&#x51FA;</p>
+<pre><code class="lang-java"><span class="hljs-meta">@Override</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">finish</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">super</span>.finish();
+    overridePendingTransition(R.anim.anim_enter, R.anim.anim_exit);
+}
+</code></pre>
+<h1 id="&#x5C5E;&#x6027;&#x52A8;&#x753B;"><a name="&#x5C5E;&#x6027;&#x52A8;&#x753B;" class="anchor-navigation-ex-anchor" href="#&#x5C5E;&#x6027;&#x52A8;&#x753B;"><i class="fa fa-link" aria-hidden="true"></i></a>3. &#x5C5E;&#x6027;&#x52A8;&#x753B;</h1>
+<p>&#x4E0E;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x76F8;&#x6BD4;View&#x52A8;&#x753B;&#x5B58;&#x5728;&#x4E00;&#x4E2A;&#x7F3A;&#x9677;&#xFF0C;View&#x52A8;&#x753B;&#x6539;&#x53D8;&#x7684;&#x53EA;&#x662F;View&#x7684;&#x663E;&#x793A;&#xFF0C;&#x800C;&#x6CA1;&#x6709;&#x6539;&#x53D8;View&#x7684;&#x54CD;&#x5E94;&#x533A;&#x57DF;&#xFF0C;&#x5E76;&#x4E14;View&#x52A8;&#x753B;&#x53EA;&#x80FD;&#x5BF9;View&#x505A;&#x56DB;&#x79CD;&#x7C7B;&#x578B;&#x7684;&#x8865;&#x95F4;&#x52A8;&#x753B;&#xFF0C;&#x56E0;&#x6B64;Google&#x5728;Android3.0&#x53CA;&#x5176;&#x540E;&#x7EED;&#x7248;&#x672C;&#x4E2D;&#x6DFB;&#x52A0;&#x4E86;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x6846;&#x67B6;&#x3002;&#x540C;&#x6837;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x6846;&#x67B6;&#x8FD8;&#x63D0;&#x4F9B;&#x4E86;&#x52A8;&#x753B;&#x96C6;&#x5408;&#x7C7B;&#xFF08;AnimatorSet&#xFF09;&#xFF0C;&#x901A;&#x8FC7;&#x52A8;&#x753B;&#x96C6;&#x5408;&#x7C7B;&#xFF08;AnimatorSet&#xFF09;&#x53EF;&#x4EE5;&#x5C06;&#x591A;&#x4E2A;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x4EE5;&#x7EC4;&#x5408;&#x7684;&#x5F62;&#x5F0F;&#x663E;&#x793A;&#x51FA;&#x6765;&#x3002;</p>
+<h2 id="viewpropertyanimator"><a name="viewpropertyanimator" class="anchor-navigation-ex-anchor" href="#viewpropertyanimator"><i class="fa fa-link" aria-hidden="true"></i></a>3.1. ViewPropertyAnimator</h2>
+<p>&#x76F4;&#x63A5;&#x4F7F;&#x7528;View.animate() &#x83B7;&#x53D6; ViewPropertyAnimator &#x5BF9;&#x8C61;&#xFF0C;&#x53EA;&#x80FD;&#x4F7F;&#x7528;api&#x63D0;&#x4F9B;&#x7684;&#x52A8;&#x753B;</p>
+<p>&#x4F7F;&#x7528;&#x65B9;&#x5F0F;</p>
+<pre><code class="lang-java"><span class="hljs-comment">/**
+ * &#x5229;&#x7528;ViewPropertyAnimator&#x5B9E;&#x73B0;&#x5E73;&#x79FB;&#x52A8;&#x753B;
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">ranslation2</span><span class="hljs-params">()</span> </span>{
+    mImageView
+            .animate()
+            .translationX(<span class="hljs-number">500</span>)
+            .setDuration(<span class="hljs-number">1000</span>);<span class="hljs-comment">//&#x9ED8;&#x8BA4;&#x662F;300ms</span>
+}
+</code></pre>
+<p>&#x5177;&#x4F53;&#x53EF;&#x4EE5;&#x8DDF;&#x7684;&#x65B9;&#x6CD5;&#x4EE5;&#x53CA;&#x65B9;&#x6CD5;&#x6240;&#x5BF9;&#x5E94;&#x7684; <code>View</code> &#x4E2D;&#x7684;&#x5B9E;&#x9645;&#x64CD;&#x4F5C;&#x7684;&#x65B9;&#x6CD5;&#x5982;&#x56FE;&#x6240;&#x793A;</p>
+<p><img src="assets/29.jpg" alt="29"></p>
+<p>&#x4E0D;&#x52A0;By&#x7684;&#x64CD;&#x4F5C;&#x662F;&#x5C06;&#x503C;&#x6E10;&#x53D8;&#x4E3A;100&#xFF0C;&#x52A0;By&#x7684;&#x662F;&#x589E;&#x52A0;100&#x3002;</p>
+<h2 id="objectanimator"><a name="objectanimator" class="anchor-navigation-ex-anchor" href="#objectanimator"><i class="fa fa-link" aria-hidden="true"></i></a>3.2. ObjectAnimator</h2>
+<p>&#x4F7F;&#x7528;&#x65B9;&#x5F0F;&#xFF1A;</p>
+<ol>
+<li>&#x5982;&#x679C;&#x662F;&#x81EA;&#x5B9A;&#x4E49;&#x63A7;&#x4EF6;&#xFF0C;&#x9700;&#x8981;&#x6DFB;&#x52A0; <code>setter</code> / <code>getter</code> &#x65B9;&#x6CD5;&#xFF0C;&#x5E76;&#x8BB0;&#x5F97;&#x5728;setter&#x65B9;&#x6CD5;&#x4E2D;&#x8C03;&#x7528;invalidate&#x65B9;&#x6CD5;&#x8FDB;&#x884C;&#x91CD;&#x7ED8;</li>
+<li>&#x7528; <code>ObjectAnimator.ofXXX()</code> &#x521B;&#x5EFA; <code>ObjectAnimator</code> &#x5BF9;&#x8C61;</li>
+<li>&#x7528; <code>start()</code> &#x65B9;&#x6CD5;&#x6267;&#x884C;&#x52A8;&#x753B;</li>
+</ol>
+<pre><code class="lang-Java"><span class="hljs-comment">/**
+ * &#x5229;&#x7528;ObjectAnimator&#x5B9E;&#x73B0;&#x65CB;&#x8F6C;&#x52A8;&#x753B;
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">rotation</span><span class="hljs-params">()</span> </span>{
+    ObjectAnimator.ofFloat(mImageView, <span class="hljs-string">&quot;rotation&quot;</span>, <span class="hljs-number">0</span>, <span class="hljs-number">180</span>)
+            .setDuration(<span class="hljs-number">1000</span>)
+            .start();
+}
+
+<span class="hljs-comment">/**
+ * &#x5229;&#x7528;AnimatorSet&#x548C;ObjectAnimator&#x5B9E;&#x73B0;&#x5E73;&#x79FB;&#x52A8;&#x753B;
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">ranslation</span><span class="hljs-params">()</span> </span>{
+    AnimatorSet animatorSet = <span class="hljs-keyword">new</span> AnimatorSet();
+    animatorSet.playTogether(
+            ObjectAnimator.ofFloat(mImageView, <span class="hljs-string">&quot;translationX&quot;</span>, <span class="hljs-number">0</span>, <span class="hljs-number">500</span>)
+            , ObjectAnimator.ofFloat(mImageView, <span class="hljs-string">&quot;translationY&quot;</span>, <span class="hljs-number">0</span>, <span class="hljs-number">500</span>));
+    animatorSet.setDuration(<span class="hljs-number">3000</span>);
+    animatorSet.start();
+}
+
+<span class="hljs-comment">/**
+ * &#x5229;&#x7528;AnimatorSet&#x548C;ObjectAnimator&#x5B9E;&#x73B0;&#x7F29;&#x653E;&#x52A8;&#x753B;
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">scale</span><span class="hljs-params">()</span> </span>{
+    AnimatorSet animatorSet = <span class="hljs-keyword">new</span> AnimatorSet();
+    animatorSet.playTogether(
+            ObjectAnimator.ofFloat(mImageView, <span class="hljs-string">&quot;scaleX&quot;</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>)
+            , ObjectAnimator.ofFloat(mImageView, <span class="hljs-string">&quot;scaleY&quot;</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>));
+    animatorSet.setDuration(<span class="hljs-number">3000</span>);
+    animatorSet.start();
+}
+
+<span class="hljs-comment">/**
+ * &#x5229;&#x7528;ObjectAnimator&#x5B9E;&#x73B0;&#x900F;&#x660E;&#x5EA6;&#x52A8;&#x753B;
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">alpha</span><span class="hljs-params">()</span> </span>{
+    ObjectAnimator.ofFloat(mImageView, <span class="hljs-string">&quot;alpha&quot;</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>)
+            .setDuration(<span class="hljs-number">3000</span>)
+            .start();
+}
+</code></pre>
+<pre><code class="lang-java"><span class="hljs-keyword">final</span> Button button=findViewById(R.id.btn);
+ValueAnimator anim = ValueAnimator.ofInt(button.getLayoutParams().width , <span class="hljs-number">500</span>);
+anim.setDuration(<span class="hljs-number">2000</span>);
+anim.setRepeatCount(<span class="hljs-number">0</span>);
+anim.addUpdateListener(<span class="hljs-keyword">new</span> ValueAnimator.AnimatorUpdateListener() {
+            <span class="hljs-meta">@Override</span>
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onAnimationUpdate</span><span class="hljs-params">(ValueAnimator animation)</span> </span>{
+                <span class="hljs-keyword">int</span> currentValue = (Integer) animation.getAnimatedValue();
+                button.getLayoutParams().width = currentValue;
+                button.requestLayout();
+            }
+        });
+anim.start();
+</code></pre>
+<h2 id="&#x63D2;&#x503C;&#x5668;interpolator"><a name="&#x63D2;&#x503C;&#x5668;interpolator" class="anchor-navigation-ex-anchor" href="#&#x63D2;&#x503C;&#x5668;interpolator"><i class="fa fa-link" aria-hidden="true"></i></a>3.3. &#x63D2;&#x503C;&#x5668;Interpolator</h2>
+<h3 id="acceleratedecelerateinterpolator"><a name="acceleratedecelerateinterpolator" class="anchor-navigation-ex-anchor" href="#acceleratedecelerateinterpolator"><i class="fa fa-link" aria-hidden="true"></i></a>3.3.1. AccelerateDecelerateInterpolator</h3>
+<p>&#x5148;&#x52A0;&#x901F;&#x518D;&#x51CF;&#x901F;&#x3002;&#x8FD9;&#x662F;&#x9ED8;&#x8BA4;&#x7684; <code>Interpolator</code>&#x3002;</p>
+<p>&#x5B83;&#x7684;&#x52A8;&#x753B;&#x6548;&#x679C;<strong>&#x770B;&#x8D77;&#x6765;&#x5C31;&#x50CF;&#x662F;&#x7269;&#x4F53;&#x4ECE;&#x901F;&#x5EA6;&#x4E3A; 0 &#x5F00;&#x59CB;&#x9010;&#x6E10;&#x52A0;&#x901F;&#xFF0C;&#x7136;&#x540E;&#x518D;&#x9010;&#x6E10;&#x51CF;&#x901F;&#x76F4;&#x5230; 0 &#x7684;&#x8FD0;&#x52A8;</strong>&#x3002;&#x5B83;&#x7684;&#x901F;&#x5EA6; / &#x65F6;&#x95F4;&#x66F2;&#x7EBF;&#x4EE5;&#x53CA;&#x52A8;&#x753B;&#x5B8C;&#x6210;&#x5EA6; / &#x65F6;&#x95F4;&#x66F2;&#x7EBF;&#x90FD;&#x662F;&#x4E00;&#x6761;&#x6B63;&#x5F26; / &#x4F59;&#x5F26;&#x66F2;&#x7EBF;&#x3002;</p>
+<p>&#x5177;&#x4F53;&#x7684;&#x6548;&#x679C;&#x5982;&#x4E0B;&#xFF1A;</p>
+<p><img src="assets/30.gif" alt="img"></p>
+<p><strong>&#x7528;&#x9014;</strong>&#xFF1A;&#x5C31;&#x50CF;&#x4E0A;&#x9762;&#x8BF4;&#x7684;&#xFF0C;&#x5B83;&#x662F;&#x4E00;&#x79CD;&#x6700;&#x7B26;&#x5408;&#x7269;&#x7406;&#x4E16;&#x754C;&#x7684;&#x6A21;&#x578B;&#xFF0C;&#x6240;&#x4EE5;&#x5982;&#x679C;&#x4F60;&#x8981;&#x505A;&#x7684;&#x662F;&#x6700;&#x7B80;&#x5355;&#x7684;&#x72B6;&#x6001;&#x53D8;&#x5316;&#xFF08;&#x4F4D;&#x79FB;&#x3001;&#x653E;&#x7F29;&#x3001;&#x65CB;&#x8F6C;&#x7B49;&#x7B49;&#xFF09;&#xFF0C;&#x90A3;&#x4E48;&#x4E00;&#x822C;&#x4E0D;&#x7528;&#x8BBE;&#x7F6E; <code>Interpolator</code>&#xFF0C;&#x5C31;&#x7528;&#x8FD9;&#x4E2A;&#x9ED8;&#x8BA4;&#x7684;&#x6700;&#x597D;&#x3002;</p>
+<h3 id="linearinterpolator"><a name="linearinterpolator" class="anchor-navigation-ex-anchor" href="#linearinterpolator"><i class="fa fa-link" aria-hidden="true"></i></a>3.3.2. LinearInterpolator</h3>
+<p>&#x5300;&#x901F;&#x3002;</p>
+<p><img src="assets/31.gif" alt="img"></p>
+<h3 id="accelerateinterpolator"><a name="accelerateinterpolator" class="anchor-navigation-ex-anchor" href="#accelerateinterpolator"><i class="fa fa-link" aria-hidden="true"></i></a>3.3.3. AccelerateInterpolator</h3>
+<p>&#x6301;&#x7EED;&#x52A0;&#x901F;&#x3002;</p>
+<p>&#x5728;&#x6574;&#x4E2A;&#x52A8;&#x753B;&#x8FC7;&#x7A0B;&#x4E2D;&#xFF0C;&#x4E00;&#x76F4;&#x5728;&#x52A0;&#x901F;&#xFF0C;&#x76F4;&#x5230;&#x52A8;&#x753B;&#x7ED3;&#x675F;&#x7684;&#x4E00;&#x77AC;&#x95F4;&#xFF0C;&#x76F4;&#x63A5;&#x505C;&#x6B62;&#x3002;</p>
+<p><img src="assets/32.gif" alt="img"></p>
+<p>&#x4E3B;&#x8981;&#x7528;&#x5728;&#x79BB;&#x573A;&#x6548;&#x679C;&#x4E2D;&#xFF0C;&#x6BD4;&#x5982;&#x67D0;&#x4E2A;&#x7269;&#x4F53;&#x4ECE;&#x754C;&#x9762;&#x4E2D;&#x98DE;&#x79BB;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x7528;&#x8FD9;&#x79CD;&#x6548;&#x679C;&#x3002;&#x5B83;&#x7ED9;&#x4EBA;&#x7684;&#x611F;&#x89C9;&#x5C31;&#x4F1A;&#x662F;&#x300C;&#x8FD9;&#x8D27;&#x4ECE;&#x96F6;&#x8D77;&#x6B65;&#xFF0C;&#x52A0;&#x901F;&#x98DE;&#x8D70;&#x4E86;&#x300D;&#x3002;&#x5230;&#x4E86;&#x6700;&#x540E;&#x52A8;&#x753B;&#x9AA4;&#x505C;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x7269;&#x4F53;&#x5DF2;&#x7ECF;&#x98DE;&#x51FA;&#x7528;&#x6237;&#x89C6;&#x91CE;&#xFF0C;&#x770B;&#x4E0D;&#x5230;&#x4E86;&#xFF0C;&#x6240;&#x4EE5;&#x4ED6;&#x4EEC;&#x662F;&#x5E76;&#x4E0D;&#x4F1A;&#x5BDF;&#x89C9;&#x5230;&#x8FD9;&#x4E2A;&#x9AA4;&#x505C;&#x7684;&#x3002;</p>
+<h3 id="decelerateinterpolator"><a name="decelerateinterpolator" class="anchor-navigation-ex-anchor" href="#decelerateinterpolator"><i class="fa fa-link" aria-hidden="true"></i></a>3.3.4. DecelerateInterpolator</h3>
+<p>&#x6301;&#x7EED;&#x51CF;&#x901F;&#x76F4;&#x5230; 0&#x3002;</p>
+<p>&#x52A8;&#x753B;&#x5F00;&#x59CB;&#x7684;&#x65F6;&#x5019;&#x662F;&#x6700;&#x9AD8;&#x901F;&#x5EA6;&#xFF0C;&#x7136;&#x540E;&#x5728;&#x52A8;&#x753B;&#x8FC7;&#x7A0B;&#x4E2D;&#x9010;&#x6E10;&#x51CF;&#x901F;&#xFF0C;&#x76F4;&#x5230;&#x52A8;&#x753B;&#x7ED3;&#x675F;&#x7684;&#x65F6;&#x5019;&#x6070;&#x597D;&#x51CF;&#x901F;&#x5230; 0&#x3002;</p>
+<p><img src="assets/33.gif" alt="img"></p>
+<p>&#x5B83;&#x7684;&#x6548;&#x679C;&#x548C;&#x4E0A;&#x9762;&#x8FD9;&#x4E2A; <code>AccelerateInterpolator</code> &#x76F8;&#x53CD;&#xFF0C;&#x9002;&#x7528;&#x573A;&#x666F;&#x4E5F;&#x548C;&#x5B83;&#x76F8;&#x53CD;&#xFF1A;&#x5B83;&#x4E3B;&#x8981;&#x7528;&#x4E8E;&#x5165;&#x573A;&#x6548;&#x679C;&#xFF0C;&#x6BD4;&#x5982;&#x67D0;&#x4E2A;&#x7269;&#x4F53;&#x4ECE;&#x754C;&#x9762;&#x7684;&#x5916;&#x90E8;&#x98DE;&#x5165;&#x754C;&#x9762;&#x540E;&#x505C;&#x5728;&#x67D0;&#x5904;&#x3002;</p>
+<h3 id="anticipateinterpolator"><a name="anticipateinterpolator" class="anchor-navigation-ex-anchor" href="#anticipateinterpolator"><i class="fa fa-link" aria-hidden="true"></i></a>3.3.5. AnticipateInterpolator</h3>
+<p>&#x5148;&#x56DE;&#x62C9;&#x4E00;&#x4E0B;&#x518D;&#x8FDB;&#x884C;&#x6B63;&#x5E38;&#x52A8;&#x753B;&#x8F68;&#x8FF9;&#x3002;&#x6548;&#x679C;&#x770B;&#x8D77;&#x6765;&#x6709;&#x70B9;&#x50CF;&#x6295;&#x63B7;&#x7269;&#x4F53;&#x6216;&#x8DF3;&#x8DC3;&#x7B49;&#x52A8;&#x4F5C;&#x524D;&#x7684;&#x84C4;&#x529B;&#x3002;</p>
+<p><img src="assets/34.gif" alt="img"></p>
+<p>&#x5982;&#x679C;&#x662F;&#x56FE;&#x4E2D;&#x8FD9;&#x6837;&#x7684;&#x5E73;&#x79FB;&#x52A8;&#x753B;&#xFF0C;&#x90A3;&#x4E48;&#x5C31;&#x662F;&#x4F4D;&#x7F6E;&#x4E0A;&#x7684;&#x56DE;&#x62C9;&#xFF1B;&#x5982;&#x679C;&#x662F;&#x653E;&#x5927;&#x52A8;&#x753B;&#xFF0C;&#x90A3;&#x4E48;&#x5C31;&#x662F;&#x5148;&#x7F29;&#x5C0F;&#x4E00;&#x4E0B;&#x518D;&#x653E;&#x5927;&#xFF1B;&#x5176;&#x4ED6;&#x7C7B;&#x578B;&#x7684;&#x52A8;&#x753B;&#x540C;&#x7406;&#x3002;</p>
+<h3 id="overshootinterpolator"><a name="overshootinterpolator" class="anchor-navigation-ex-anchor" href="#overshootinterpolator"><i class="fa fa-link" aria-hidden="true"></i></a>3.3.6. OvershootInterpolator</h3>
+<p>&#x52A8;&#x753B;&#x4F1A;&#x8D85;&#x8FC7;&#x76EE;&#x6807;&#x503C;&#x4E00;&#x4E9B;&#xFF0C;&#x7136;&#x540E;&#x518D;&#x5F39;&#x56DE;&#x6765;&#x3002;&#x6548;&#x679C;&#x770B;&#x8D77;&#x6765;&#x6709;&#x70B9;&#x50CF;&#x4F60;&#x4E00;&#x5C41;&#x80A1;&#x5750;&#x5728;&#x6C99;&#x53D1;&#x4E0A;&#x540E;&#x53C8;&#x88AB;&#x5F39;&#x8D77;&#x6765;&#x4E00;&#x70B9;&#x7684;&#x611F;&#x89C9;&#x3002;</p>
+<p><img src="assets/35.gif" alt="img"></p>
+<h3 id="anticipateovershootinterpolator"><a name="anticipateovershootinterpolator" class="anchor-navigation-ex-anchor" href="#anticipateovershootinterpolator"><i class="fa fa-link" aria-hidden="true"></i></a>3.3.7. AnticipateOvershootInterpolator</h3>
+<p>&#x4E0A;&#x9762;&#x8FD9;&#x4E24;&#x4E2A;&#x7684;&#x7ED3;&#x5408;&#x7248;&#xFF1A;&#x5F00;&#x59CB;&#x524D;&#x56DE;&#x62C9;&#xFF0C;&#x6700;&#x540E;&#x8D85;&#x8FC7;&#x4E00;&#x4E9B;&#x7136;&#x540E;&#x56DE;&#x5F39;&#x3002;</p>
+<p><img src="assets/36.gif" alt="img"></p>
+<h3 id="bounceinterpolator"><a name="bounceinterpolator" class="anchor-navigation-ex-anchor" href="#bounceinterpolator"><i class="fa fa-link" aria-hidden="true"></i></a>3.3.8. BounceInterpolator</h3>
+<p>&#x5728;&#x76EE;&#x6807;&#x503C;&#x5904;&#x5F39;&#x8DF3;&#x3002;&#x6709;&#x70B9;&#x50CF;&#x73BB;&#x7483;&#x7403;&#x6389;&#x5728;&#x5730;&#x677F;&#x4E0A;&#x7684;&#x6548;&#x679C;&#x3002;</p>
+<p><img src="assets/37.gif" alt="img"></p>
+<h3 id="cycleinterpolator"><a name="cycleinterpolator" class="anchor-navigation-ex-anchor" href="#cycleinterpolator"><i class="fa fa-link" aria-hidden="true"></i></a>3.3.9. CycleInterpolator</h3>
+<p>&#x8FD9;&#x4E2A;&#x4E5F;&#x662F;&#x4E00;&#x4E2A;&#x6B63;&#x5F26; / &#x4F59;&#x5F26;&#x66F2;&#x7EBF;&#xFF0C;&#x4E0D;&#x8FC7;&#x5B83;&#x548C; <code>AccelerateDecelerateInterpolator</code> &#x7684;&#x533A;&#x522B;&#x662F;&#xFF0C;&#x5B83;&#x53EF;&#x4EE5;&#x81EA;&#x5B9A;&#x4E49;&#x66F2;&#x7EBF;&#x7684;&#x5468;&#x671F;&#xFF0C;&#x6240;&#x4EE5;&#x52A8;&#x753B;&#x53EF;&#x4EE5;&#x4E0D;&#x5230;&#x7EC8;&#x70B9;&#x5C31;&#x7ED3;&#x675F;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x5230;&#x8FBE;&#x7EC8;&#x70B9;&#x540E;&#x56DE;&#x5F39;&#xFF0C;&#x56DE;&#x5F39;&#x7684;&#x6B21;&#x6570;&#x7531;&#x66F2;&#x7EBF;&#x7684;&#x5468;&#x671F;&#x51B3;&#x5B9A;&#xFF0C;&#x66F2;&#x7EBF;&#x7684;&#x5468;&#x671F;&#x7531; <code>CycleInterpolator()</code> &#x6784;&#x9020;&#x65B9;&#x6CD5;&#x7684;&#x53C2;&#x6570;&#x51B3;&#x5B9A;&#x3002;</p>
+<blockquote>
+<p>&#x53C2;&#x6570;&#x4E3A; 0.5f&#xFF1A;</p>
+</blockquote>
+<p><img src="assets/38.gif" alt="img"></p>
+<blockquote>
+<p>&#x53C2;&#x6570;&#x4E3A; 2f&#xFF1A;</p>
+</blockquote>
+<p><img src="assets/39.gif" alt="img"></p>
+<h3 id="pathinterpolator"><a name="pathinterpolator" class="anchor-navigation-ex-anchor" href="#pathinterpolator"><i class="fa fa-link" aria-hidden="true"></i></a>3.3.10. PathInterpolator</h3>
+<p>&#x81EA;&#x5B9A;&#x4E49;&#x52A8;&#x753B;&#x5B8C;&#x6210;&#x5EA6; / &#x65F6;&#x95F4;&#x5B8C;&#x6210;&#x5EA6;&#x66F2;&#x7EBF;&#x3002;</p>
+<p>&#x7528;&#x8FD9;&#x4E2A; <code>Interpolator</code> &#x4F60;&#x53EF;&#x4EE5;&#x5B9A;&#x5236;&#x51FA;&#x4EFB;&#x4F55;&#x4F60;&#x60F3;&#x8981;&#x7684;&#x901F;&#x5EA6;&#x6A21;&#x578B;&#x3002;&#x5B9A;&#x5236;&#x7684;&#x65B9;&#x5F0F;&#x662F;&#x4F7F;&#x7528;&#x4E00;&#x4E2A; <code>Path</code> &#x5BF9;&#x8C61;&#x6765;&#x7ED8;&#x5236;&#x51FA;&#x4F60;&#x8981;&#x7684;&#x52A8;&#x753B;&#x5B8C;&#x6210;&#x5EA6; / &#x65F6;&#x95F4;&#x5B8C;&#x6210;&#x5EA6;&#x66F2;&#x7EBF;&#x3002;&#x4F8B;&#x5982;&#xFF1A;</p>
+<pre><code class="lang-java">Path interpolatorPath = <span class="hljs-keyword">new</span> Path();
+
+...
+
+<span class="hljs-comment">// &#x5300;&#x901F;</span>
+interpolatorPath.lineTo(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>);
+</code></pre>
+<p><img src="assets/177.jpg" alt="img"></p>
+<p><img src="assets/42.gif" alt="img"></p>
+<pre><code class="lang-java">Path interpolatorPath = <span class="hljs-keyword">new</span> Path();
+
+...
+
+<span class="hljs-comment">// &#x5148;&#x4EE5;&#x300C;&#x52A8;&#x753B;&#x5B8C;&#x6210;&#x5EA6; : &#x65F6;&#x95F4;&#x5B8C;&#x6210;&#x5EA6; = 1 : 1&#x300D;&#x7684;&#x901F;&#x5EA6;&#x5300;&#x901F;&#x8FD0;&#x884C; 25%</span>
+interpolatorPath.lineTo(<span class="hljs-number">0.25f</span>, <span class="hljs-number">0.25f</span>);  
+<span class="hljs-comment">// &#x7136;&#x540E;&#x77AC;&#x95F4;&#x8DF3;&#x8DC3;&#x5230; 150% &#x7684;&#x52A8;&#x753B;&#x5B8C;&#x6210;&#x5EA6;</span>
+interpolatorPath.moveTo(<span class="hljs-number">0.25f</span>, <span class="hljs-number">1.5f</span>);  
+<span class="hljs-comment">// &#x518D;&#x5300;&#x901F;&#x5012;&#x8F66;&#xFF0C;&#x8FD4;&#x56DE;&#x5230;&#x76EE;&#x6807;&#x70B9;</span>
+interpolatorPath.lineTo(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>);
+</code></pre>
+<p><img src="assets/178.jpg" alt="img"></p>
+<p><img src="assets/179.gif" alt="img"></p>
+<p>&#x8FD9;&#x6761; <code>Path</code> &#x63CF;&#x8FF0;&#x7684;&#x5176;&#x5B9E;&#x662F;&#x4E00;&#x4E2A; <code>y = f(x) (0 &#x2264; x &#x2264; 1)</code> &#xFF08;y &#x4E3A;&#x52A8;&#x753B;&#x5B8C;&#x6210;&#x5EA6;&#xFF0C;x &#x4E3A;&#x65F6;&#x95F4;&#x5B8C;&#x6210;&#x5EA6;&#xFF09;&#x7684;&#x66F2;&#x7EBF;&#xFF0C;&#x6240;&#x4EE5;&#x540C;&#x4E00;&#x6BB5;&#x65F6;&#x95F4;&#x5B8C;&#x6210;&#x5EA6;&#x4E0A;&#x4E0D;&#x80FD;&#x6709;&#x4E24;&#x6BB5;&#x4E0D;&#x540C;&#x7684;&#x52A8;&#x753B;&#x5B8C;&#x6210;&#x5EA6;&#xFF0C;&#x800C;&#x4E14;&#x6BCF;&#x4E00;&#x4E2A;&#x65F6;&#x95F4;&#x5B8C;&#x6210;&#x5EA6;&#x7684;&#x70B9;&#x4E0A;&#x90FD;&#x5FC5;&#x987B;&#x8981;&#x6709;&#x5BF9;&#x5E94;&#x7684;&#x52A8;&#x753B;&#x5B8C;&#x6210;&#x5EA6;&#xFF08;&#x56E0;&#x4E3A;&#x5185;&#x5BB9;&#x4E0D;&#x80FD;&#x5728;&#x67D0;&#x6BB5;&#x65F6;&#x95F4;&#x6BB5;&#x5185;&#x6D88;&#x5931;&#x5440;&#xFF09;&#x3002;&#x6240;&#x4EE5;&#xFF0C;&#x4E0B;&#x9762;&#x8FD9;&#x6837;&#x7684; <code>Path</code> &#x662F;&#x975E;&#x6CD5;&#x7684;&#xFF0C;&#x4F1A;&#x5BFC;&#x81F4;&#x7A0B;&#x5E8F; FC&#xFF1A;</p>
+<p><img src="assets/180.jpg" alt="img"></p>
+<p><img src="assets/181.jpg" alt="img"></p>
+<p>&#x9664;&#x4E86;&#x4E0A;&#x9762;&#x7684;&#x8FD9;&#x4E9B;&#xFF0C;Android 5.0 &#xFF08;API 21&#xFF09;&#x5F15;&#x5165;&#x4E86;&#x4E09;&#x4E2A;&#x65B0;&#x7684; <code>Interpolator</code> &#x6A21;&#x578B;&#xFF0C;&#x5E76;&#x628A;&#x5B83;&#x4EEC;&#x52A0;&#x5165;&#x4E86; support v4 &#x5305;&#x4E2D;&#x3002;&#x8FD9;&#x4E09;&#x4E2A;&#x65B0;&#x7684; <code>Interpolator</code> &#x6BCF;&#x4E2A;&#x90FD;&#x548C;&#x4E4B;&#x524D;&#x7684;&#x67D0;&#x4E2A;&#x5DF2;&#x6709;&#x7684; <code>Interpolator</code> &#x89C4;&#x5219;&#x76F8;&#x4F3C;&#xFF0C;&#x53EA;&#x6709;&#x7565;&#x5FAE;&#x7684;&#x533A;&#x522B;&#x3002;</p>
+<h3 id="fastoutlinearininterpolator"><a name="fastoutlinearininterpolator" class="anchor-navigation-ex-anchor" href="#fastoutlinearininterpolator"><i class="fa fa-link" aria-hidden="true"></i></a>3.3.11. FastOutLinearInInterpolator</h3>
+<p>&#x52A0;&#x901F;&#x8FD0;&#x52A8;&#x3002;</p>
+<p>&#x8FD9;&#x4E2A; <code>Interpolator</code> &#x7684;&#x4F5C;&#x7528;&#x4F60;&#x4E0D;&#x80FD;&#x770B;&#x5B83;&#x7684;&#x540D;&#x5B57;&#xFF0C;&#x4E00;&#x4F1A;&#x513F; fast &#x4E00;&#x4F1A;&#x513F; linear &#x7684;&#xFF0C;&#x5B8C;&#x5168;&#x770B;&#x4E0D;&#x61C2;&#x3002;&#x5176;&#x5B9E;&#x5B83;&#x548C; <code>AccelerateInterpolator</code> &#x4E00;&#x6837;&#xFF0C;&#x90FD;&#x662F;&#x4E00;&#x4E2A;&#x6301;&#x7EED;&#x52A0;&#x901F;&#x7684;&#x8FD0;&#x52A8;&#x8DEF;&#x7EBF;&#x3002;&#x53EA;&#x4E0D;&#x8FC7; <code>FastOutLinearInInterpolator</code> &#x7684;&#x66F2;&#x7EBF;&#x516C;&#x5F0F;&#x662F;&#x7528;&#x7684;&#x8D1D;&#x585E;&#x5C14;&#x66F2;&#x7EBF;&#xFF0C;&#x800C; <code>AccelerateInterpolator</code> &#x7528;&#x7684;&#x662F;&#x6307;&#x6570;&#x66F2;&#x7EBF;&#x3002;&#x5177;&#x4F53;&#x6765;&#x8BF4;&#xFF0C;&#x5B83;&#x4FE9;&#x6700;&#x4E3B;&#x8981;&#x7684;&#x533A;&#x522B;&#x662F; <code>FastOutLinearInInterpolator</code> &#x7684;&#x521D;&#x59CB;&#x9636;&#x6BB5;&#x52A0;&#x901F;&#x5EA6;&#x6BD4; <code>AccelerateInterpolator</code> &#x8981;&#x5FEB;&#x4E00;&#x4E9B;&#x3002;</p>
+<p><code>FastOutLinearInInterpolator</code>&#xFF1A;</p>
+<p><img src="assets/182.jpg" alt="img"></p>
+<p><img src="assets/183.gif" alt="img"></p>
+<p><code>AccelerateInterpolator</code>&#xFF1A;</p>
+<p><img src="assets/184.jpg" alt="img"></p>
+<p><img src="assets/185.gif" alt="img"></p>
+<p>&#x8FD9;&#x4FE9;&#x7684;&#x901F;&#x5EA6;&#x6A21;&#x578B;&#x51E0;&#x4E4E;&#x5C31;&#x662F;&#x4E00;&#x6837;&#x7684;</p>
+<p>&#x5B9E;&#x9645;&#x4E0A;&#xFF0C;&#x8FD9;&#x70B9;&#x533A;&#x522B;&#xFF0C;&#x5728;&#x5B9E;&#x9645;&#x5E94;&#x7528;&#x4E2D;&#x7528;&#x6237;&#x6839;&#x672C;&#x5BDF;&#x89C9;&#x4E0D;&#x51FA;&#x6765;&#x3002;&#x800C;&#x4E14;&#xFF0C;<code>AccelerateInterpolator</code> &#x8FD8;&#x53EF;&#x4EE5;&#x5728;&#x6784;&#x9020;&#x65B9;&#x6CD5;&#x4E2D;&#x8C03;&#x8282;&#x53D8;&#x901F;&#x7CFB;&#x6570;&#xFF0C;&#x53EF;&#x4EE5;&#x8C03;&#x8282;&#x5230;&#x548C; <code>FastOutLinearInInterpolator</code> &#xFF08;&#x51E0;&#x4E4E;&#xFF09;&#x4E00;&#x6A21;&#x4E00;&#x6837;&#x3002;&#x6240;&#x4EE5;&#x5728;&#x4F7F;&#x7528;&#x52A0;&#x901F;&#x6A21;&#x578B;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x8FD9;&#x4E24;&#x4E2A;&#x9009;&#x54EA;&#x4E2A;&#x90FD;&#x4E00;&#x6837;&#xFF0C;&#x6CA1;&#x533A;&#x522B;&#x7684;&#x3002;</p>
+<h3 id="fastoutslowininterpolator"><a name="fastoutslowininterpolator" class="anchor-navigation-ex-anchor" href="#fastoutslowininterpolator"><i class="fa fa-link" aria-hidden="true"></i></a>3.3.12. FastOutSlowInInterpolator</h3>
+<p>&#x5148;&#x52A0;&#x901F;&#x518D;&#x51CF;&#x901F;&#x3002;</p>
+<p>&#x540C;&#x6837;&#x4E5F;&#x662F;&#x5148;&#x52A0;&#x901F;&#x518D;&#x51CF;&#x901F;&#x7684;&#x8FD8;&#x6709;&#x524D;&#x9762;&#x8BF4;&#x8FC7;&#x7684; <code>AccelerateDecelerateInterpolator</code>&#xFF0C;&#x4E0D;&#x8FC7;&#x5B83;&#x4EEC;&#x7684;&#x6548;&#x679C;&#x662F;&#x660E;&#x663E;&#x4E0D;&#x4E00;&#x6837;&#x7684;&#x3002;<code>FastOutSlowInInterpolator</code> &#x7528;&#x7684;&#x662F;&#x8D1D;&#x585E;&#x5C14;&#x66F2;&#x7EBF;&#xFF0C;<code>AccelerateDecelerateInterpolator</code>&#x7528;&#x7684;&#x662F;&#x6B63;&#x5F26; / &#x4F59;&#x5F26;&#x66F2;&#x7EBF;&#x3002;&#x5177;&#x4F53;&#x6765;&#x8BB2;&#xFF0C; <code>FastOutSlowInInterpolator</code> &#x7684;&#x524D;&#x671F;&#x52A0;&#x901F;&#x5EA6;&#x8981;<strong>&#x5FEB;&#x5F97;&#x591A;</strong>&#x3002;</p>
+<p><code>FastOutSlowInInterpolator</code>&#xFF1A;</p>
+<p><img src="assets/186.jpg" alt="img"></p>
+<p><img src="assets/187.gif" alt="img"></p>
+<p><code>AccelerateDecelerateInterpolator</code>&#xFF1A;</p>
+<p><img src="assets/188.jpg" alt="img"></p>
+<p><img src="assets/189.gif" alt="img"></p>
+<p>&#x4E0D;&#x8BBA;&#x662F;&#x4ECE;&#x52A8;&#x56FE;&#x8FD8;&#x662F;&#x4ECE;&#x66F2;&#x7EBF;&#x90FD;&#x53EF;&#x4EE5;&#x770B;&#x51FA;&#xFF0C;&#x8FD9;&#x4E8C;&#x8005;&#x6BD4;&#x8D77;&#x6765;&#xFF0C;<code>FastOutSlowInInterpolator</code> &#x7684;&#x524D;&#x671F;&#x52A0;&#x901F;&#x66F4;&#x731B;&#x4E00;&#x4E9B;&#xFF0C;&#x540E;&#x671F;&#x7684;&#x51CF;&#x901F;&#x8FC7;&#x7A0B;&#x7684;&#x4E5F;&#x51CF;&#x5F97;&#x66F4;&#x8FC5;&#x901F;&#x3002;&#x7528;&#x66F4;&#x76F4;&#x89C2;&#x4E00;&#x70B9;&#x7684;&#x8868;&#x8FBE;&#x5C31;&#x662F;&#xFF0C;<code>AccelerateDecelerateInterpolator</code>&#x50CF;&#x662F;&#x7269;&#x4F53;&#x7684;&#x81EA;&#x6211;&#x79FB;&#x52A8;&#xFF0C;&#x800C; <code>FastOutSlowInInterpolator</code> &#x5219;&#x770B;&#x8D77;&#x6765;&#x50CF;&#x6709;&#x4E00;&#x80A1;&#x5F3A;&#x5927;&#x7684;&#x5916;&#x529B;&#x300C;&#x63A8;&#x300D;&#x7740;&#x5B83;&#x52A0;&#x901F;&#xFF0C;&#x5728;&#x63A5;&#x8FD1;&#x76EE;&#x6807;&#x503C;&#x4E4B;&#x540E;&#x53C8;&#x300C;&#x62FD;&#x300D;&#x7740;&#x5B83;&#x51CF;&#x901F;&#x3002;&#x603B;&#x4E4B;&#xFF0C;<code>FastOutSlowInterpolator</code> &#x770B;&#x8D77;&#x6765;&#x6709;&#x4E00;&#x70B9;&#x300C;&#x7740;&#x6025;&#x300D;&#x7684;&#x611F;&#x89C9;&#x3002;</p>
+<h3 id="linearoutslowininterpolator"><a name="linearoutslowininterpolator" class="anchor-navigation-ex-anchor" href="#linearoutslowininterpolator"><i class="fa fa-link" aria-hidden="true"></i></a>3.3.13. LinearOutSlowInInterpolator</h3>
+<p>&#x6301;&#x7EED;&#x51CF;&#x901F;&#x3002;</p>
+<p>&#x5B83;&#x548C; <code>DecelerateInterpolator</code> &#x6BD4;&#x8D77;&#x6765;&#xFF0C;&#x540C;&#x4E3A;&#x51CF;&#x901F;&#x66F2;&#x7EBF;&#xFF0C;&#x4E3B;&#x8981;&#x533A;&#x522B;&#x5728;&#x4E8E; <code>LinearOutSlowInInterpolator</code>&#x7684;&#x521D;&#x59CB;&#x901F;&#x5EA6;&#x66F4;&#x9AD8;&#x3002;&#x5BF9;&#x4E8E;&#x4EBA;&#x773C;&#x7684;&#x5B9E;&#x9645;&#x611F;&#x89C9;&#xFF0C;&#x533A;&#x522B;&#x5176;&#x5B9E;&#x4E5F;&#x4E0D;&#x5927;&#xFF0C;&#x4E0D;&#x8FC7;&#x8FD8;&#x662F;&#x80FD;&#x770B;&#x51FA;&#x6765;&#x4E00;&#x4E9B;&#x7684;&#x3002;</p>
+<h2 id="&#x8BBE;&#x7F6E;&#x76D1;&#x542C;&#x5668;"><a name="&#x8BBE;&#x7F6E;&#x76D1;&#x542C;&#x5668;" class="anchor-navigation-ex-anchor" href="#&#x8BBE;&#x7F6E;&#x76D1;&#x542C;&#x5668;"><i class="fa fa-link" aria-hidden="true"></i></a>3.4. &#x8BBE;&#x7F6E;&#x76D1;&#x542C;&#x5668;</h2>
+<p>&#x8BBE;&#x7F6E;&#x76D1;&#x542C;&#x5668;&#x7684;&#x65B9;&#x6CD5;&#xFF0C; <code>ViewPropertyAnimator</code> &#x548C; <code>ObjectAnimator</code> &#x7565;&#x5FAE;&#x4E0D;&#x4E00;&#x6837;&#xFF1A; <code>ViewPropertyAnimator</code> &#x7528;&#x7684;&#x662F; <code>setListener()</code> &#x548C; <code>setUpdateListener()</code> &#x65B9;&#x6CD5;&#xFF0C;&#x53EF;&#x4EE5;&#x8BBE;&#x7F6E;&#x4E00;&#x4E2A;&#x76D1;&#x542C;&#x5668;&#xFF0C;&#x8981;&#x79FB;&#x9664;&#x76D1;&#x542C;&#x5668;&#x65F6;&#x901A;&#x8FC7; <code>set[Update]Listener(null)</code> &#x586B; null &#x503C;&#x6765;&#x79FB;&#x9664;</p>
+<p> <code>ObjectAnimator</code> &#x5219;&#x662F;&#x7528; <code>addListener()</code> &#x548C; <code>addUpdateListener()</code> &#x6765;&#x6DFB;&#x52A0;&#x4E00;&#x4E2A;&#x6216;&#x591A;&#x4E2A;&#x76D1;&#x542C;&#x5668;&#xFF0C;&#x79FB;&#x9664;&#x76D1;&#x542C;&#x5668;&#x5219;&#x662F;&#x901A;&#x8FC7; <code>remove[Update]Listener()</code> &#x6765;&#x6307;&#x5B9A;&#x79FB;&#x9664;&#x5BF9;&#x8C61;&#x3002;</p>
+<p>&#x53E6;&#x5916;&#xFF0C;&#x7531;&#x4E8E; <code>ObjectAnimator</code> &#x652F;&#x6301;&#x4F7F;&#x7528; <code>pause()</code> &#x65B9;&#x6CD5;&#x6682;&#x505C;&#xFF0C;&#x6240;&#x4EE5;&#x5B83;&#x8FD8;&#x591A;&#x4E86;&#x4E00;&#x4E2A; <code>addPauseListener()</code> / <code>removePauseListener()</code> &#x7684;&#x652F;&#x6301;&#xFF1B;</p>
+<p> <code>ViewPropertyAnimator</code> &#x5219;&#x72EC;&#x6709; <code>withStartAction()</code> &#x548C; <code>withEndAction()</code> &#x65B9;&#x6CD5;&#xFF0C;&#x53EF;&#x4EE5;&#x8BBE;&#x7F6E;&#x4E00;&#x6B21;&#x6027;&#x7684;&#x52A8;&#x753B;&#x5F00;&#x59CB;&#x6216;&#x7ED3;&#x675F;&#x7684;&#x76D1;&#x542C;&#x3002;</p>
+<h3 id="viewpropertyanimatorsetlistener--objectanimatoraddlistener"><a name="viewpropertyanimatorsetlistener--objectanimatoraddlistener" class="anchor-navigation-ex-anchor" href="#viewpropertyanimatorsetlistener--objectanimatoraddlistener"><i class="fa fa-link" aria-hidden="true"></i></a>3.4.1. ViewPropertyAnimator.setListener() / ObjectAnimator.addListener()</h3>
+<p>&#x8FD9;&#x4E24;&#x4E2A;&#x65B9;&#x6CD5;&#x7684;&#x540D;&#x79F0;&#x4E0D;&#x4E00;&#x6837;&#xFF0C;&#x53EF;&#x4EE5;&#x8BBE;&#x7F6E;&#x7684;&#x76D1;&#x542C;&#x5668;&#x6570;&#x91CF;&#x4E5F;&#x4E0D;&#x4E00;&#x6837;&#xFF0C;&#x4F46;&#x5B83;&#x4EEC;&#x7684;&#x53C2;&#x6570;&#x7C7B;&#x578B;&#x90FD;&#x662F; <code>AnimatorListener</code>&#xFF0C;&#x6240;&#x4EE5;&#x672C;&#x8D28;&#x4E0A;&#x5176;&#x5B9E;&#x90FD;&#x662F;&#x4E00;&#x6837;&#x7684;&#x3002; <code>AnimatorListener</code> &#x5171;&#x6709; 4 &#x4E2A;&#x56DE;&#x8C03;&#x65B9;&#x6CD5;&#xFF1A;</p>
+<h4 id="onanimationstartanimator-animation"><a name="onanimationstartanimator-animation" class="anchor-navigation-ex-anchor" href="#onanimationstartanimator-animation"><i class="fa fa-link" aria-hidden="true"></i></a><a name="onanimationstartanimator-animation" class="plugin-anchor" href="#onanimationstartanimator-animation"><i class="fa fa-link" aria-hidden="true"></i></a>onAnimationStart(Animator animation)</h4>
+<p>&#x5F53;&#x52A8;&#x753B;&#x5F00;&#x59CB;&#x6267;&#x884C;&#x65F6;&#xFF0C;&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x88AB;&#x8C03;&#x7528;&#x3002;</p>
+<h4 id="onanimationendanimator-animation"><a name="onanimationendanimator-animation" class="anchor-navigation-ex-anchor" href="#onanimationendanimator-animation"><i class="fa fa-link" aria-hidden="true"></i></a><a name="onanimationendanimator-animation" class="plugin-anchor" href="#onanimationendanimator-animation"><i class="fa fa-link" aria-hidden="true"></i></a>onAnimationEnd(Animator animation)</h4>
+<p>&#x5F53;&#x52A8;&#x753B;&#x7ED3;&#x675F;&#x65F6;&#xFF0C;&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x88AB;&#x8C03;&#x7528;&#x3002;</p>
+<h4 id="onanimationcancelanimator-animation"><a name="onanimationcancelanimator-animation" class="anchor-navigation-ex-anchor" href="#onanimationcancelanimator-animation"><i class="fa fa-link" aria-hidden="true"></i></a><a name="onanimationcancelanimator-animation" class="plugin-anchor" href="#onanimationcancelanimator-animation"><i class="fa fa-link" aria-hidden="true"></i></a>onAnimationCancel(Animator animation)</h4>
+<p>&#x5F53;&#x52A8;&#x753B;&#x88AB;&#x901A;&#x8FC7; <code>cancel()</code> &#x65B9;&#x6CD5;&#x53D6;&#x6D88;&#x65F6;&#xFF0C;&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x88AB;&#x8C03;&#x7528;&#x3002;</p>
+<p>&#x53E6;&#x5916;&#x5C31;&#x7B97;&#x52A8;&#x753B;&#x88AB;&#x53D6;&#x6D88;&#xFF0C;<code>onAnimationEnd()</code> &#x4E5F;&#x4F1A;&#x88AB;&#x8C03;&#x7528;&#x3002;&#x6240;&#x4EE5;&#x5F53;&#x52A8;&#x753B;&#x88AB;&#x53D6;&#x6D88;&#x65F6;&#xFF0C;&#x5982;&#x679C;&#x8BBE;&#x7F6E;&#x4E86; <code>AnimatorListener</code>&#xFF0C;&#x90A3;&#x4E48; <code>onAnimationCancel()</code> &#x548C; <code>onAnimationEnd()</code> &#x90FD;&#x4F1A;&#x88AB;&#x8C03;&#x7528;&#x3002;<code>onAnimationCancel()</code> &#x4F1A;&#x5148;&#x4E8E; <code>onAnimationEnd()</code> &#x88AB;&#x8C03;&#x7528;&#x3002;</p>
+<h4 id="onanimationrepeatanimator-animation"><a name="onanimationrepeatanimator-animation" class="anchor-navigation-ex-anchor" href="#onanimationrepeatanimator-animation"><i class="fa fa-link" aria-hidden="true"></i></a><a name="onanimationrepeatanimator-animation" class="plugin-anchor" href="#onanimationrepeatanimator-animation"><i class="fa fa-link" aria-hidden="true"></i></a>onAnimationRepeat(Animator animation)</h4>
+<p>&#x5F53;&#x52A8;&#x753B;&#x901A;&#x8FC7; <code>setRepeatMode()</code> / <code>setRepeatCount()</code> &#x6216; <code>repeat()</code> &#x65B9;&#x6CD5;&#x91CD;&#x590D;&#x6267;&#x884C;&#x65F6;&#xFF0C;&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x88AB;&#x8C03;&#x7528;&#x3002;</p>
+<p>&#x7531;&#x4E8E; <code>ViewPropertyAnimator</code> &#x4E0D;&#x652F;&#x6301;&#x91CD;&#x590D;&#xFF0C;&#x6240;&#x4EE5;&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x5BF9; <code>ViewPropertyAnimator</code> &#x76F8;&#x5F53;&#x4E8E;&#x65E0;&#x6548;&#x3002;</p>
+<h3 id="viewpropertyanimatorsetupdatelistener--objectanimatoraddupdatelistener"><a name="viewpropertyanimatorsetupdatelistener--objectanimatoraddupdatelistener" class="anchor-navigation-ex-anchor" href="#viewpropertyanimatorsetupdatelistener--objectanimatoraddupdatelistener"><i class="fa fa-link" aria-hidden="true"></i></a>3.4.2. ViewPropertyAnimator.setUpdateListener() / ObjectAnimator.addUpdateListener()</h3>
+<p>&#x548C;&#x4E0A;&#x9762;&#x7684;&#x4E24;&#x4E2A;&#x65B9;&#x6CD5;&#x4E00;&#x6837;&#xFF0C;&#x8FD9;&#x4E24;&#x4E2A;&#x65B9;&#x6CD5;&#x867D;&#x7136;&#x540D;&#x79F0;&#x548C;&#x53EF;&#x8BBE;&#x7F6E;&#x7684;&#x76D1;&#x542C;&#x5668;&#x6570;&#x91CF;&#x4E0D;&#x4E00;&#x6837;&#xFF0C;&#x4F46;&#x672C;&#x8D28;&#x5176;&#x5B9E;&#x90FD;&#x4E00;&#x6837;&#x7684;&#xFF0C;&#x5B83;&#x4EEC;&#x7684;&#x53C2;&#x6570;&#x90FD;&#x662F; <code>AnimatorUpdateListener</code>&#x3002;&#x5B83;&#x53EA;&#x6709;&#x4E00;&#x4E2A;&#x56DE;&#x8C03;&#x65B9;&#x6CD5;&#xFF1A;<code>onAnimationUpdate(ValueAnimator animation)</code>&#x3002;</p>
+<h4 id="onanimationupdatevalueanimator-animation"><a name="onanimationupdatevalueanimator-animation" class="anchor-navigation-ex-anchor" href="#onanimationupdatevalueanimator-animation"><i class="fa fa-link" aria-hidden="true"></i></a><a name="onanimationupdatevalueanimator-animation" class="plugin-anchor" href="#onanimationupdatevalueanimator-animation"><i class="fa fa-link" aria-hidden="true"></i></a>onAnimationUpdate(ValueAnimator animation)</h4>
+<p>&#x5F53;&#x52A8;&#x753B;&#x7684;&#x5C5E;&#x6027;&#x66F4;&#x65B0;&#x65F6;&#xFF08;&#x4E0D;&#x4E25;&#x8C28;&#x7684;&#x8BF4;&#xFF0C;&#x5373;&#x6BCF;&#x8FC7; 10 &#x6BEB;&#x79D2;&#xFF0C;&#x52A8;&#x753B;&#x7684;&#x5B8C;&#x6210;&#x5EA6;&#x66F4;&#x65B0;&#x65F6;&#xFF09;&#xFF0C;&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x88AB;&#x8C03;&#x7528;&#x3002;</p>
+<p>&#x65B9;&#x6CD5;&#x7684;&#x53C2;&#x6570;&#x662F;&#x4E00;&#x4E2A; <code>ValueAnimator</code>&#xFF0C;<code>ValueAnimator</code> &#x662F; <code>ObjectAnimator</code> &#x7684;&#x7236;&#x7C7B;&#xFF0C;&#x4E5F;&#x662F; <code>ViewPropertyAnimator</code> &#x7684;&#x5185;&#x90E8;&#x5B9E;&#x73B0;&#xFF0C;&#x6240;&#x4EE5;&#x8FD9;&#x4E2A;&#x53C2;&#x6570;&#x5176;&#x5B9E;&#x5C31;&#x662F; <code>ViewPropertyAnimator</code> &#x5185;&#x90E8;&#x7684;&#x90A3;&#x4E2A; <code>ValueAnimator</code>&#xFF0C;&#x6216;&#x8005;&#x5BF9;&#x4E8E; <code>ObjectAnimator</code> &#x6765;&#x8BF4;&#x5C31;&#x662F;&#x5B83;&#x81EA;&#x5DF1;&#x672C;&#x8EAB;&#x3002;</p>
+<p><code>ValueAnimator</code> &#x6709;&#x5F88;&#x591A;&#x65B9;&#x6CD5;&#x53EF;&#x4EE5;&#x7528;&#xFF0C;&#x5B83;&#x53EF;&#x4EE5;&#x67E5;&#x770B;&#x5F53;&#x524D;&#x7684;&#x52A8;&#x753B;&#x5B8C;&#x6210;&#x5EA6;&#x3001;&#x5F53;&#x524D;&#x7684;&#x5C5E;&#x6027;&#x503C;&#x7B49;&#x7B49;&#x3002;&#x4E0D;&#x8FC7; <code>ValueAnimator</code> &#x662F;&#x4E0B;&#x4E00;&#x671F;&#x624D;&#x8BB2;&#x7684;&#x5185;&#x5BB9;&#xFF0C;&#x6240;&#x4EE5;&#x8FD9;&#x671F;&#x5C31;&#x4E0D;&#x591A;&#x8BF4;&#x4E86;&#x3002;</p>
+<h3 id="objectanimatoraddpauselistener"><a name="objectanimatoraddpauselistener" class="anchor-navigation-ex-anchor" href="#objectanimatoraddpauselistener"><i class="fa fa-link" aria-hidden="true"></i></a>3.4.3. ObjectAnimator.addPauseListener()</h3>
+<h3 id="viewpropertyanimatorwithstartactionendaction"><a name="viewpropertyanimatorwithstartactionendaction" class="anchor-navigation-ex-anchor" href="#viewpropertyanimatorwithstartactionendaction"><i class="fa fa-link" aria-hidden="true"></i></a>3.4.4. ViewPropertyAnimator.withStartAction/EndAction()</h3>
+<p>&#x8FD9;&#x4E24;&#x4E2A;&#x65B9;&#x6CD5;&#x662F; <code>ViewPropertyAnimator</code> &#x7684;&#x72EC;&#x6709;&#x65B9;&#x6CD5;&#x3002;&#x5B83;&#x4EEC;&#x548C; <code>set/addListener()</code> &#x4E2D;&#x56DE;&#x8C03;&#x7684; <code>onAnimationStart()</code> / <code>onAnimationEnd()</code> &#x76F8;&#x6BD4;&#x8D77;&#x6765;&#x7684;&#x4E0D;&#x540C;&#x4E3B;&#x8981;&#x6709;&#x4E24;&#x70B9;&#xFF1A;</p>
+<ol>
+<li><code>withStartAction()</code> / <code>withEndAction()</code> &#x662F;&#x4E00;&#x6B21;&#x6027;&#x7684;&#xFF0C;&#x5728;&#x52A8;&#x753B;&#x6267;&#x884C;&#x7ED3;&#x675F;&#x540E;&#x5C31;&#x81EA;&#x52A8;&#x5F03;&#x6389;&#x4E86;&#xFF0C;&#x5C31;&#x7B97;&#x4E4B;&#x540E;&#x518D;&#x91CD;&#x7528; <code>ViewPropertyAnimator</code> &#x6765;&#x505A;&#x522B;&#x7684;&#x52A8;&#x753B;&#xFF0C;&#x7528;&#x5B83;&#x4EEC;&#x8BBE;&#x7F6E;&#x7684;&#x56DE;&#x8C03;&#x4E5F;&#x4E0D;&#x4F1A;&#x518D;&#x88AB;&#x8C03;&#x7528;&#x3002;&#x800C; <code>set/addListener()</code> &#x6240;&#x8BBE;&#x7F6E;&#x7684; <code>AnimatorListener</code> &#x662F;&#x6301;&#x7EED;&#x6709;&#x6548;&#x7684;&#xFF0C;&#x5F53;&#x52A8;&#x753B;&#x91CD;&#x590D;&#x6267;&#x884C;&#x65F6;&#xFF0C;&#x56DE;&#x8C03;&#x603B;&#x4F1A;&#x88AB;&#x8C03;&#x7528;&#x3002;</li>
+<li><code>withEndAction()</code> &#x8BBE;&#x7F6E;&#x7684;&#x56DE;&#x8C03;&#x53EA;&#x6709;&#x5728;&#x52A8;&#x753B;&#x6B63;&#x5E38;&#x7ED3;&#x675F;&#x65F6;&#x624D;&#x4F1A;&#x88AB;&#x8C03;&#x7528;&#xFF0C;&#x800C;&#x5728;&#x52A8;&#x753B;&#x88AB;&#x53D6;&#x6D88;&#x65F6;&#x4E0D;&#x4F1A;&#x88AB;&#x6267;&#x884C;&#x3002;&#x8FD9;&#x70B9;&#x548C; <code>AnimatorListener.onAnimationEnd()</code> &#x7684;&#x884C;&#x4E3A;&#x662F;&#x4E0D;&#x4E00;&#x81F4;&#x7684;&#x3002;</li>
+</ol>
+<h2 id="&#x65E0;&#x6CD5;&#x4F7F;&#x7528;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x6216;&#x8005;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x4E0D;&#x8D77;&#x4F5C;&#x7528;&#x7684;&#x60C5;&#x51B5;&#x548C;&#x89E3;&#x51B3;&#x65B9;&#x6CD5;"><a name="&#x65E0;&#x6CD5;&#x4F7F;&#x7528;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x6216;&#x8005;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x4E0D;&#x8D77;&#x4F5C;&#x7528;&#x7684;&#x60C5;&#x51B5;&#x548C;&#x89E3;&#x51B3;&#x65B9;&#x6CD5;" class="anchor-navigation-ex-anchor" href="#&#x65E0;&#x6CD5;&#x4F7F;&#x7528;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x6216;&#x8005;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x4E0D;&#x8D77;&#x4F5C;&#x7528;&#x7684;&#x60C5;&#x51B5;&#x548C;&#x89E3;&#x51B3;&#x65B9;&#x6CD5;"><i class="fa fa-link" aria-hidden="true"></i></a>3.5. &#x65E0;&#x6CD5;&#x4F7F;&#x7528;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x6216;&#x8005;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x4E0D;&#x8D77;&#x4F5C;&#x7528;&#x7684;&#x60C5;&#x51B5;&#x548C;&#x89E3;&#x51B3;&#x65B9;&#x6CD5;</h2>
+<p>&#x65E0;&#x6CD5;&#x4F7F;&#x7528;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x6216;&#x8005;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x4E0D;&#x8D77;&#x4F5C;&#x7528;&#x7684;&#x60C5;&#x51B5;&#x5982;&#x4E0B;&#xFF1A;
+ 1 &#x8BE5;&#x5B57;&#x6BB5;&#x6CA1;&#x6709;&#x6CA1;&#x6709;set&#x548C;get&#x65B9;&#x6CD5;
+ 2 &#x8BE5;&#x5C5E;&#x6027;&#x7684;set&#x65B9;&#x6CD5;&#x4EC5;&#x4EC5;&#x6539;&#x53D8;&#x4E86;&#x5BF9;&#x8C61;&#x7684;&#x5C5E;&#x6027;&#x503C;&#xFF0C;&#x4F46;&#x662F;&#x6CA1;&#x6709;&#x5C06;&#x8FD9;&#x79CD;&#x6539;&#x53D8;&#x7528;&#x52A8;&#x753B;&#x7684;&#x5F62;&#x5F0F;&#x8868;&#x73B0;&#x51FA;&#x6765;
+ &#x89E3;&#x51B3;&#x65B9;&#x6CD5;&#x5982;&#x4E0B;&#xFF1A;
+ 1 &#x5982;&#x679C;&#x4F60;&#x53C8;&#x6743;&#x9650;&#x7684;&#x8BDD;&#xFF0C;&#x7ED9;&#x8FD9;&#x4E2A;&#x5B57;&#x6BB5;&#x6DFB;&#x52A0;get&#x548C;set&#x65B9;&#x6CD5;&#xFF0C;&#x6BD4;&#x5982;&#x5728;&#x81EA;&#x5B9A;&#x4E49;View&#x4E2D;&#x3002;
+ 2 &#x4F7F;&#x7528;&#x4E00;&#x4E2A;&#x5305;&#x88C5;&#x7C7B;&#x6765;&#x5C01;&#x88C5;&#x8BE5;&#x5B57;&#x6BB5;&#x5BF9;&#x5E94;&#x7684;&#x7C7B;&#xFF0C;&#x95F4;&#x63A5;&#x4E3A;&#x8BE5;&#x5B57;&#x6BB5;&#x63D0;&#x4F9B;get&#x548C;set&#x65B9;&#x6CD5;&#x3002;</p>
+<p>&#x4F8B;&#x5982;&#x4F7F;ImageView&#x4ECE;&#x5F53;&#x524D;&#x9AD8;&#x5EA6;&#x53D8;&#x5316;&#x5230;600</p>
+<pre><code class="lang-java">ViewWrapper viewWrapper = <span class="hljs-keyword">new</span> ViewWrapper(mImageView);
+ObjectAnimator.ofInt(viewWrapper, <span class="hljs-string">&quot;height&quot;</span>, <span class="hljs-number">600</span>).setDuration(<span class="hljs-number">5000</span>).start();
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ViewWrapper</span> </span>{
+
+    <span class="hljs-keyword">private</span> View view;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ViewWrapper</span><span class="hljs-params">(View view)</span> </span>{
+        <span class="hljs-keyword">this</span>.view = view;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getHeight</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">return</span> view.getLayoutParams().height;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setHeight</span><span class="hljs-params">(<span class="hljs-keyword">int</span> height)</span></span>{
+        view.getLayoutParams().height = height;
+        view.requestLayout();
+    }
+}
+</code></pre>
+<h2 id="&#x5E38;&#x7528;&#x7684;&#x573A;&#x666F;"><a name="&#x5E38;&#x7528;&#x7684;&#x573A;&#x666F;" class="anchor-navigation-ex-anchor" href="#&#x5E38;&#x7528;&#x7684;&#x573A;&#x666F;"><i class="fa fa-link" aria-hidden="true"></i></a>3.6. &#x5E38;&#x7528;&#x7684;&#x573A;&#x666F;</h2>
+<p><strong>&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x53EF;&#x4EE5;&#x4E3A;ViewGroup&#x7684;&#x5B50;View&#x7684;&#x663E;&#x793A;&#x548C;&#x9690;&#x85CF;&#x8BBE;&#x7F6E;&#x8FC7;&#x6E21;&#x52A8;&#x753B;</strong></p>
+<p>Android&#x7CFB;&#x7EDF;&#x4E2D;&#x5DF2;&#x7ECF;&#x63D0;&#x4F9B;&#x4E86;&#x9ED8;&#x8BA4;&#x8FC7;&#x6E21;&#x52A8;&#x753B;&#xFF08;&#x5728;layout&#x6587;&#x4EF6;&#x4E2D;&#x5C06;ViewGroup&#x7684;<strong>animateLayoutChanges</strong>&#x5C5E;&#x6027;&#x6253;&#x5F00;&#x5C31;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x7CFB;&#x7EDF;&#x63D0;&#x4F9B;&#x7684;&#x9ED8;&#x8BA4;&#x8FC7;&#x6E21;&#x52A8;&#x753B;&#xFF09;&#x3002;</p>
+<p>Android&#x7CFB;&#x7EDF;&#x4E2D;&#x4E00;&#x5171;&#x63D0;&#x4F9B;&#x4E86;&#x5982;&#x4E0B;&#x6240;&#x793A;&#x7684;4&#x79CD;&#x7C7B;&#x578B;&#x7684;&#x8FC7;&#x6E21;&#x52A8;&#x753B;&#xFF1A;</p>
+<ol>
+<li>APPEARING 
+&#x5F53;&#x901A;&#x8FC7;&#x8BBE;&#x7F6E;&#x5B50;View&#x7684;&#x53EF;&#x89C1;&#x6027;&#x4E3A;VISIBLE&#x6216;&#x8005;&#x901A;&#x8FC7;addView&#x65B9;&#x6CD5;&#x6DFB;&#x52A0;&#x5B50;View&#x6765;&#x663E;&#x793A;&#x5B50;View&#x65F6;&#xFF0C;&#x5B50;View&#x5C31;&#x4F1A;&#x6267;&#x884C;&#x8BE5;&#x7C7B;&#x578B;&#x7684;&#x52A8;&#x753B;&#x3002;
+&#x8BE5;&#x7C7B;&#x578B;&#x52A8;&#x753B;&#x7684;&#x5468;&#x671F;&#x4E3A;300&#x6BEB;&#x79D2;&#xFF0C;&#x9ED8;&#x8BA4;&#x5EF6;&#x8FDF;&#x4E3A;300&#x6BEB;&#x79D2;&#x3002;</li>
+<li>DISAPPEARING
+&#x5F53;&#x901A;&#x8FC7;&#x8BBE;&#x7F6E;&#x5B50;View&#x7684;&#x53EF;&#x89C1;&#x6027;&#x4E3A;GONE&#x6216;&#x8005;&#x901A;&#x8FC7;removeView&#x65B9;&#x6CD5;&#x79FB;&#x9664;&#x5B50;View&#x6765;&#x9690;&#x85CF;&#x5B50;View&#x65F6;&#xFF0C;&#x5B50;View&#x5C31;&#x4F1A;&#x6267;&#x884C;&#x8BE5;&#x7C7B;&#x578B;&#x7684;&#x52A8;&#x753B;&#x3002;
+&#x8BE5;&#x7C7B;&#x578B;&#x52A8;&#x753B;&#x7684;&#x5468;&#x671F;&#x4E3A;300&#x6BEB;&#x79D2;&#xFF0C;&#x9ED8;&#x8BA4;&#x5EF6;&#x8FDF;&#x4E3A;0&#x6BEB;&#x79D2;&#x3002;</li>
+<li>CHANGE_APPEARING
+&#x5F53;&#x663E;&#x793A;&#x5B50;View&#x65F6;&#xFF0C;&#x6240;&#x6709;&#x7684;&#x5144;&#x5F1F;View&#x5C31;&#x4F1A;&#x7ACB;&#x5373;&#x4F9D;&#x6B21;&#x6267;&#x884C;&#x8BE5;&#x7C7B;&#x578B;&#x52A8;&#x753B;&#x5E76;&#x4E14;&#x5144;&#x5F1F;View&#x4E4B;&#x95F4;&#x6267;&#x884C;&#x52A8;&#x753B;&#x7684;&#x95F4;&#x9699;&#x9ED8;&#x8BA4;&#x4E3A;0&#x6BEB;&#x79D2;&#xFF0C;&#x7136;&#x540E;&#x624D;&#x4F1A;&#x6267;&#x884C;&#x663E;&#x793A;&#x5B50;View&#x7684;&#x52A8;&#x753B;&#x3002;
+&#x8BE5;&#x7C7B;&#x578B;&#x52A8;&#x753B;&#x7684;&#x5468;&#x671F;&#x4E3A;300&#x6BEB;&#x79D2;&#xFF0C;&#x9ED8;&#x8BA4;&#x5EF6;&#x8FDF;&#x4E3A;0&#x6BEB;&#x79D2;&#x3002;</li>
+<li>CHANGE_DISAPPEARING
+&#x5F53;&#x9690;&#x85CF;&#x5B50;View&#x7684;&#x52A8;&#x753B;&#x6267;&#x884C;&#x5B8C;&#x6BD5;&#x540E;&#xFF0C;&#x6240;&#x6709;&#x7684;&#x5144;&#x5F1F;View&#x5C31;&#x4F1A;&#x4F9D;&#x6B21;&#x6267;&#x884C;&#x8BE5;&#x7C7B;&#x578B;&#x52A8;&#x753B;&#x5E76;&#x4E14;&#x5144;&#x5F1F;View&#x4E4B;&#x95F4;&#x6267;&#x884C;&#x52A8;&#x753B;&#x7684;&#x95F4;&#x9699;&#x9ED8;&#x8BA4;&#x4E3A;0&#x6BEB;&#x79D2;&#x3002;
+&#x8BE5;&#x7C7B;&#x578B;&#x52A8;&#x753B;&#x7684;&#x5468;&#x671F;&#x4E3A;300&#x6BEB;&#x79D2;&#xFF0C;&#x9ED8;&#x8BA4;&#x5EF6;&#x8FDF;&#x4E3A;300&#x6BEB;&#x79D2;&#x3002;</li>
+</ol>
+<p><strong>&#x81EA;&#x5B9A;&#x4E49;&#x8FC7;&#x6E21;&#x52A8;&#x753B;</strong></p>
+<pre><code class="lang-java">llImageView = (LinearLayout) root.findViewById(R.id.ll_image);
+
+LayoutTransition transition = <span class="hljs-keyword">new</span> LayoutTransition();
+
+transition.setStagger(LayoutTransition.CHANGE_APPEARING, <span class="hljs-number">30</span>);
+transition.setDuration(LayoutTransition.CHANGE_APPEARING, transition.getDuration(LayoutTransition.CHANGE_APPEARING));
+transition.setStartDelay(LayoutTransition.CHANGE_APPEARING, <span class="hljs-number">0</span>);
+
+ObjectAnimator appearingAnimator = ObjectAnimator
+        .ofPropertyValuesHolder(
+                (Object) <span class="hljs-keyword">null</span>,
+                PropertyValuesHolder.ofFloat(<span class="hljs-string">&quot;scaleX&quot;</span>, <span class="hljs-number">0.0f</span>, <span class="hljs-number">1.0f</span>),
+                PropertyValuesHolder.ofFloat(<span class="hljs-string">&quot;scaleY&quot;</span>, <span class="hljs-number">0.0f</span>, <span class="hljs-number">1.0f</span>),
+                PropertyValuesHolder.ofFloat(<span class="hljs-string">&quot;alpha&quot;</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1.0f</span>));
+transition.setAnimator(LayoutTransition.APPEARING, appearingAnimator);
+transition.setDuration(LayoutTransition.APPEARING, transition.getDuration(LayoutTransition.APPEARING));
+transition.setStartDelay(LayoutTransition.APPEARING, transition.getDuration(LayoutTransition.CHANGE_APPEARING));
+
+ObjectAnimator disappearingAnimator = ObjectAnimator
+        .ofPropertyValuesHolder(
+                (Object) <span class="hljs-keyword">null</span>,
+                PropertyValuesHolder.ofFloat(<span class="hljs-string">&quot;scaleX&quot;</span>, <span class="hljs-number">1.0f</span>, <span class="hljs-number">0.0f</span>),
+                PropertyValuesHolder.ofFloat(<span class="hljs-string">&quot;scaleY&quot;</span>, <span class="hljs-number">1.0f</span>, <span class="hljs-number">0.0f</span>),
+                PropertyValuesHolder.ofFloat(<span class="hljs-string">&quot;alpha&quot;</span>, <span class="hljs-number">1.0f</span>, <span class="hljs-number">0</span>));
+transition.setAnimator(LayoutTransition.DISAPPEARING, disappearingAnimator);
+transition.setDuration(LayoutTransition.DISAPPEARING, transition.getDuration(LayoutTransition.DISAPPEARING));
+transition.setStartDelay(LayoutTransition.DISAPPEARING, <span class="hljs-number">0</span>);
+
+transition.setStagger(LayoutTransition.CHANGE_DISAPPEARING, <span class="hljs-number">30</span>);
+transition.setDuration(LayoutTransition.CHANGE_DISAPPEARING, transition.getDuration(LayoutTransition.CHANGE_DISAPPEARING));
+transition.setStartDelay(LayoutTransition.CHANGE_DISAPPEARING, transition.getDuration(LayoutTransition.DISAPPEARING));
+
+llImageView.setLayoutTransition(transition);
+</code></pre>
+<p>&#x4E0A;&#x9762;&#x4EE3;&#x7801;&#x4F9D;&#x6B21;&#x5BF9;CHANGE_APPEARING&#x3001;APPEARING&#x3001;DISAPPEARING&#x548C;CHANGE_DISAPPEARING&#x7C7B;&#x578B;&#x7684;&#x8FC7;&#x6E21;&#x52A8;&#x753B;&#x8FDB;&#x884C;&#x4E86;&#x8BBE;&#x7F6E;&#xFF0C;&#x4E0B;&#x9762;&#x5C31;&#x6765;&#x5206;&#x6790;&#x5E38;&#x7528;&#x7684;&#x8BBE;&#x7F6E;&#x65B9;&#x6CD5;&#xFF1A;</p>
+<ul>
+<li>setStagger&#x65B9;&#x6CD5;
+&#x5F53;&#x591A;&#x4E2A;&#x5B50;View&#x8981;&#x6267;&#x884C;&#x540C;&#x4E00;&#x4E2A;&#x7C7B;&#x578B;&#x7684;&#x52A8;&#x753B;&#x65F6;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x8BE5;&#x65B9;&#x6CD5;&#x6765;&#x8BBE;&#x7F6E;&#x5B50;View&#x4E4B;&#x95F4;&#x6267;&#x884C;&#x52A8;&#x753B;&#x7684;&#x95F4;&#x9699;&#xFF0C;&#x9ED8;&#x8BA4;&#x4E3A;0&#x6BEB;&#x79D2;&#x3002;</li>
+<li>setAnimator&#x65B9;&#x6CD5;
+&#x4E3A;&#x6307;&#x5B9A;&#x7C7B;&#x578B;&#x7684;&#x8FC7;&#x6E21;&#x52A8;&#x753B;&#x8BBE;&#x7F6E;&#x81EA;&#x5B9A;&#x4E49;&#x7684;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x3002;</li>
+<li>setDuration&#x65B9;&#x6CD5;
+&#x4E3A;&#x6307;&#x5B9A;&#x7C7B;&#x578B;&#x7684;&#x8FC7;&#x6E21;&#x52A8;&#x753B;&#x8BBE;&#x7F6E;&#x6267;&#x884C;&#x52A8;&#x753B;&#x7684;&#x5468;&#x671F;&#xFF0C;&#x9ED8;&#x8BA4;&#x4E3A;300&#x6BEB;&#x79D2;&#x3002;</li>
+<li>setStartDelay&#x65B9;&#x6CD5;
+&#x4E3A;&#x6307;&#x5B9A;&#x7C7B;&#x578B;&#x7684;&#x8FC7;&#x6E21;&#x52A8;&#x753B;&#x8BBE;&#x7F6E;&#x5EF6;&#x8FDF;&#x6267;&#x884C;&#x7684;&#x65F6;&#x95F4;&#xFF0C;&#x9ED8;&#x8BA4;&#x4E0E;&#x8FC7;&#x6E21;&#x52A8;&#x753B;&#x7684;&#x7C7B;&#x578B;&#x76F8;&#x5173;&#xFF0C;&#x4E0A;&#x9762;&#x5DF2;&#x7ECF;&#x8BF4;&#x8FC7;&#x3002;</li>
+<li>setLayoutTransition&#x65B9;&#x6CD5;
+&#x4E3A;ViewGroup&#x8BBE;&#x7F6E;&#x8FC7;&#x6E21;&#x52A8;&#x753B;&#x3002;</li>
+</ul>
+<p>&#x7ECF;&#x8FC7;&#x4E0A;&#x9762;&#x4EE3;&#x7801;&#x7684;&#x8BBE;&#x7F6E;&#x540E;&#xFF0C;LinearLayout&#x663E;&#x793A;&#x6216;&#x8005;&#x9690;&#x85CF;&#x5B50;View&#x65F6;&#x5C31;&#x4F1A;&#x6267;&#x884C;&#x76F8;&#x5173;&#x7684;&#x8FC7;&#x6E21;&#x52A8;&#x753B;&#xFF0C;&#x663E;&#x793A;&#x6216;&#x8005;&#x9690;&#x85CF;&#x5B50;View&#x7684;&#x4EE3;&#x7801;&#x5982;&#x4E0B;&#x6240;&#x793A;&#xFF1A;</p>
+<h3 id="demo_1"><a name="demo_1" class="anchor-navigation-ex-anchor" href="#demo_1"><i class="fa fa-link" aria-hidden="true"></i></a>3.6.1. demo</h3>
+<p><strong>&#x81EA;&#x5B9A;&#x4E49;View</strong></p>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LoadingAnimation</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">View</span> </span>{
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> mProcess = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">private</span> Paint mPaint;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">float</span> mRadius = <span class="hljs-number">100</span>;
+    <span class="hljs-keyword">private</span> RectF mArcRectF;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">LoadingAnimation</span><span class="hljs-params">(Context context)</span> </span>{
+        <span class="hljs-keyword">super</span>(context);
+        init();
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">LoadingAnimation</span><span class="hljs-params">(Context context, AttributeSet attrs)</span> </span>{
+        <span class="hljs-keyword">super</span>(context, attrs);
+        init();
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">init</span><span class="hljs-params">()</span> </span>{
+        mPaint = <span class="hljs-keyword">new</span> Paint(Paint.ANTI_ALIAS_FLAG);
+        mArcRectF = <span class="hljs-keyword">new</span> RectF();
+    }
+
+    <span class="hljs-meta">@SuppressWarnings</span>(<span class="hljs-string">&quot;IntegerDivisionInFloatingPointContext&quot;</span>)
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onDraw</span><span class="hljs-params">(Canvas canvas)</span> </span>{
+        <span class="hljs-keyword">super</span>.onDraw(canvas);
+
+        <span class="hljs-keyword">float</span> centerX = getWidth() / <span class="hljs-number">2</span>;
+        <span class="hljs-keyword">float</span> centerY = getHeight() / <span class="hljs-number">2</span>;
+
+        <span class="hljs-comment">//&#x7ED8;&#x5236;&#x5706;&#x5F27;</span>
+        mPaint.setColor(Color.parseColor(<span class="hljs-string">&quot;#E91E63&quot;</span>));
+        mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setStrokeCap(Paint.Cap.ROUND);
+        mPaint.setStrokeWidth(<span class="hljs-number">20</span>);
+        mArcRectF.set((<span class="hljs-keyword">int</span>) (centerX - mRadius), (<span class="hljs-keyword">int</span>) (centerY - mRadius)
+                , (<span class="hljs-keyword">int</span>) (centerX + mRadius), (<span class="hljs-keyword">int</span>) (centerY + mRadius));
+        canvas.drawArc(mArcRectF, <span class="hljs-number">135</span>, mProcess * <span class="hljs-number">2.7f</span>, <span class="hljs-keyword">false</span>, mPaint);
+
+        <span class="hljs-comment">//&#x7ED8;&#x5236;&#x6570;&#x5B57;</span>
+        mPaint.setTextSize(<span class="hljs-number">40</span>);
+        mPaint.setTextAlign(Paint.Align.CENTER);
+        mPaint.setColor(Color.WHITE);
+        mPaint.setStyle(Paint.Style.FILL);
+        canvas.drawText(mProcess + <span class="hljs-string">&quot;%&quot;</span>,
+                centerX, centerY - (mPaint.ascent() + mPaint.descent()) / <span class="hljs-number">2</span>, mPaint);
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getProcess</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> mProcess;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setProcess</span><span class="hljs-params">(<span class="hljs-keyword">int</span> process)</span> </span>{
+        mProcess = process;
+        invalidate();
+    }
+}
+</code></pre>
+<p><strong>&#x5E03;&#x5C40;&#x6587;&#x4EF6;</strong></p>
+<pre><code class="lang-xml"><span class="php"><span class="hljs-meta">&lt;?</span>xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;utf-8&quot;</span><span class="hljs-meta">?&gt;</span></span>
+<span class="hljs-tag">&lt;<span class="hljs-name">LinearLayout</span> <span class="hljs-attr">xmlns:android</span>=<span class="hljs-string">&quot;http://schemas.android.com/apk/res/android&quot;</span>
+    <span class="hljs-attr">xmlns:tools</span>=<span class="hljs-string">&quot;http://schemas.android.com/tools&quot;</span>
+    <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">&quot;match_parent&quot;</span>
+    <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">&quot;match_parent&quot;</span>
+    <span class="hljs-attr">android:orientation</span>=<span class="hljs-string">&quot;vertical&quot;</span>
+    <span class="hljs-attr">tools:context</span>=<span class="hljs-string">&quot;.demo23.D23Activity&quot;</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">com.mezzsy.myapplication.demo23.LoadingAnimation</span>
+        <span class="hljs-attr">android:id</span>=<span class="hljs-string">&quot;@+id/anim&quot;</span>
+        <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">&quot;100dp&quot;</span>
+        <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">&quot;100dp&quot;</span>
+        <span class="hljs-attr">android:background</span>=<span class="hljs-string">&quot;#000000&quot;</span> /&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span>
+        <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">&quot;wrap_content&quot;</span>
+        <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">&quot;wrap_content&quot;</span>
+        <span class="hljs-attr">android:text</span>=<span class="hljs-string">&quot;&#x5F00;&#x59CB;&quot;</span>
+        <span class="hljs-attr">android:onClick</span>=<span class="hljs-string">&quot;start&quot;</span>/&gt;</span>
+
+<span class="hljs-tag">&lt;/<span class="hljs-name">LinearLayout</span>&gt;</span>
+</code></pre>
+<p><strong>Activity</strong></p>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">D23Activity</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AppCompatActivity</span> </span>{
+    <span class="hljs-keyword">private</span> LoadingAnimation mLoadingAnimation;
+    <span class="hljs-keyword">private</span> ObjectAnimator mObjectAnimator;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onCreate</span><span class="hljs-params">(Bundle savedInstanceState)</span> </span>{
+        <span class="hljs-keyword">super</span>.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_d23);
+        mLoadingAnimation = findViewById(R.id.anim);
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onResume</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">super</span>.onResume();
+        mObjectAnimator = ObjectAnimator
+                .ofInt(mLoadingAnimation, <span class="hljs-string">&quot;process&quot;</span>, <span class="hljs-number">0</span>, <span class="hljs-number">100</span>)
+                .setDuration(<span class="hljs-number">4000</span>);
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">start</span><span class="hljs-params">(View view)</span> </span>{
+        mObjectAnimator.start();
+    }
+}
+</code></pre>
+<p><strong>&#x6548;&#x679C;</strong></p>
+<p><img src="assets/190.gif" alt="42"></p>
+<h2 id="typeevaluator"><a name="typeevaluator" class="anchor-navigation-ex-anchor" href="#typeevaluator"><i class="fa fa-link" aria-hidden="true"></i></a>3.7. TypeEvaluator</h2>
+<p>&#x5173;&#x4E8E; ObjectAnimator&#xFF0C;&#x53EF;&#x4EE5;&#x7528; <code>ofInt()</code> &#x6765;&#x505A;&#x6574;&#x6570;&#x7684;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x548C;&#x7528; <code>ofFloat()</code> &#x6765;&#x505A;&#x5C0F;&#x6570;&#x7684;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x3002;&#x8FD9;&#x4E24;&#x79CD;&#x5C5E;&#x6027;&#x7C7B;&#x578B;&#x662F;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x6700;&#x5E38;&#x7528;&#x7684;&#x4E24;&#x79CD;&#xFF0C;&#x4E0D;&#x8FC7;&#x5728;&#x5B9E;&#x9645;&#x7684;&#x5F00;&#x53D1;&#x4E2D;&#xFF0C;&#x53EF;&#x4EE5;&#x505A;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x7684;&#x7C7B;&#x578B;&#x8FD8;&#x662F;&#x6709;&#x5176;&#x4ED6;&#x7684;&#x4E00;&#x4E9B;&#x7C7B;&#x578B;&#x3002;&#x5F53;&#x9700;&#x8981;&#x5BF9;&#x5176;&#x4ED6;&#x7C7B;&#x578B;&#x6765;&#x505A;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x5C31;&#x9700;&#x8981;&#x7528;&#x5230; <code>TypeEvaluator</code> &#x4E86;&#x3002;</p>
+<p>&#x5B83;&#x7684;&#x4F5C;&#x7528;&#x662F;&#x8BA9;&#x4F60;&#x53EF;&#x4EE5;&#x5BF9;&#x540C;&#x6837;&#x7684;&#x5C5E;&#x6027;&#x6709;&#x4E0D;&#x540C;&#x7684;&#x89E3;&#x6790;&#x65B9;&#x5F0F;&#xFF0C;&#x5BF9;&#x672C;&#x6765;&#x65E0;&#x6CD5;&#x89E3;&#x6790;&#x7684;&#x5C5E;&#x6027;&#x4E5F;&#x53EF;&#x4EE5;&#x6253;&#x9020;&#x51FA;&#x4F60;&#x9700;&#x8981;&#x7684;&#x89E3;&#x6790;&#x65B9;&#x5F0F;&#x3002;&#x6709;&#x4E86; <code>TypeEvaluator</code>&#xFF0C;&#x4F60;&#x7684;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x5C31;&#x6709;&#x4E86;&#x66F4;&#x5927;&#x7684;&#x7075;&#x6D3B;&#x6027;&#xFF0C;&#x4ECE;&#x800C;&#x6709;&#x4E86;&#x65E0;&#x9650;&#x7684;&#x53EF;&#x80FD;&#x3002;</p>
+<h3 id="argbevaluator"><a name="argbevaluator" class="anchor-navigation-ex-anchor" href="#argbevaluator"><i class="fa fa-link" aria-hidden="true"></i></a>3.7.1. ArgbEvaluator</h3>
+<p>&#x5982;&#x89C6;&#x9891;&#x4E2D;&#x7684;&#x4F8B;&#x5B50;&#xFF0C;<code>TypeEvaluator</code> &#x6700;&#x7ECF;&#x5178;&#x7684;&#x7528;&#x6CD5;&#x662F;&#x4F7F;&#x7528; <code>ArgbEvaluator</code> &#x6765;&#x505A;&#x989C;&#x8272;&#x6E10;&#x53D8;&#x7684;&#x52A8;&#x753B;&#x3002;</p>
+<pre><code class="lang-java">ObjectAnimator animator = ObjectAnimator.ofInt(view, <span class="hljs-string">&quot;color&quot;</span>, <span class="hljs-number">0xffff0000</span>, <span class="hljs-number">0xff00ff00</span>);  
+animator.setEvaluator(<span class="hljs-keyword">new</span> ArgbEvaluator());  
+animator.start();
+</code></pre>
+<p><img src="assets/191.gif" alt="42"></p>
+<p>&#x53E6;&#x5916;&#xFF0C;&#x5728; Android 5.0 &#xFF08;API 21&#xFF09; &#x52A0;&#x5165;&#x4E86;&#x65B0;&#x7684;&#x65B9;&#x6CD5; <code>ofArgb()</code>&#xFF0C;&#x6240;&#x4EE5; <code>minSdk</code> &#x5927;&#x4E8E;&#x6216;&#x8005;&#x7B49;&#x4E8E; 21&#xFF0C;&#x4F60;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x7528;&#x4E0B;&#x9762;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#xFF1A;</p>
+<pre><code class="lang-java">ObjectAnimator animator = ObjectAnimator.ofArgb(view, <span class="hljs-string">&quot;color&quot;</span>, <span class="hljs-number">0xffff0000</span>, <span class="hljs-number">0xff00ff00</span>);  
+animator.start();
+</code></pre>
+<h3 id="&#x81EA;&#x5B9A;&#x4E49;-evaluator"><a name="&#x81EA;&#x5B9A;&#x4E49;-evaluator" class="anchor-navigation-ex-anchor" href="#&#x81EA;&#x5B9A;&#x4E49;-evaluator"><i class="fa fa-link" aria-hidden="true"></i></a>3.7.2. &#x81EA;&#x5B9A;&#x4E49; Evaluator</h3>
+<pre><code class="lang-java"><span class="hljs-comment">// &#x81EA;&#x5B9A;&#x4E49; HslEvaluator</span>
+<span class="hljs-keyword">private</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HsvEvaluator</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">TypeEvaluator</span>&lt;<span class="hljs-title">Integer</span>&gt; </span>{  
+   <span class="hljs-keyword">float</span>[] startHsv = <span class="hljs-keyword">new</span> <span class="hljs-keyword">float</span>[<span class="hljs-number">3</span>];
+   <span class="hljs-keyword">float</span>[] endHsv = <span class="hljs-keyword">new</span> <span class="hljs-keyword">float</span>[<span class="hljs-number">3</span>];
+   <span class="hljs-keyword">float</span>[] outHsv = <span class="hljs-keyword">new</span> <span class="hljs-keyword">float</span>[<span class="hljs-number">3</span>];
+
+   <span class="hljs-meta">@Override</span>
+   <span class="hljs-function"><span class="hljs-keyword">public</span> Integer <span class="hljs-title">evaluate</span><span class="hljs-params">(<span class="hljs-keyword">float</span> fraction, Integer startValue, Integer endValue)</span> </span>{
+       <span class="hljs-comment">// &#x628A; ARGB &#x8F6C;&#x6362;&#x6210; HSV</span>
+       Color.colorToHSV(startValue, startHsv);
+       Color.colorToHSV(endValue, endHsv);
+
+       <span class="hljs-comment">// &#x8BA1;&#x7B97;&#x5F53;&#x524D;&#x52A8;&#x753B;&#x5B8C;&#x6210;&#x5EA6;&#xFF08;fraction&#xFF09;&#x6240;&#x5BF9;&#x5E94;&#x7684;&#x989C;&#x8272;&#x503C;</span>
+       <span class="hljs-keyword">if</span> (endHsv[<span class="hljs-number">0</span>] - startHsv[<span class="hljs-number">0</span>] &gt; <span class="hljs-number">180</span>) {
+           endHsv[<span class="hljs-number">0</span>] -= <span class="hljs-number">360</span>;
+       } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (endHsv[<span class="hljs-number">0</span>] - startHsv[<span class="hljs-number">0</span>] &lt; -<span class="hljs-number">180</span>) {
+           endHsv[<span class="hljs-number">0</span>] += <span class="hljs-number">360</span>;
+       }
+       outHsv[<span class="hljs-number">0</span>] = startHsv[<span class="hljs-number">0</span>] + (endHsv[<span class="hljs-number">0</span>] - startHsv[<span class="hljs-number">0</span>]) * fraction;
+       <span class="hljs-keyword">if</span> (outHsv[<span class="hljs-number">0</span>] &gt; <span class="hljs-number">360</span>) {
+           outHsv[<span class="hljs-number">0</span>] -= <span class="hljs-number">360</span>;
+       } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (outHsv[<span class="hljs-number">0</span>] &lt; <span class="hljs-number">0</span>) {
+           outHsv[<span class="hljs-number">0</span>] += <span class="hljs-number">360</span>;
+       }
+       outHsv[<span class="hljs-number">1</span>] = startHsv[<span class="hljs-number">1</span>] + (endHsv[<span class="hljs-number">1</span>] - startHsv[<span class="hljs-number">1</span>]) * fraction;
+       outHsv[<span class="hljs-number">2</span>] = startHsv[<span class="hljs-number">2</span>] + (endHsv[<span class="hljs-number">2</span>] - startHsv[<span class="hljs-number">2</span>]) * fraction;
+
+       <span class="hljs-comment">// &#x8BA1;&#x7B97;&#x5F53;&#x524D;&#x52A8;&#x753B;&#x5B8C;&#x6210;&#x5EA6;&#xFF08;fraction&#xFF09;&#x6240;&#x5BF9;&#x5E94;&#x7684;&#x900F;&#x660E;&#x5EA6;</span>
+       <span class="hljs-keyword">int</span> alpha = startValue &gt;&gt; <span class="hljs-number">24</span> + (<span class="hljs-keyword">int</span>) ((endValue &gt;&gt; <span class="hljs-number">24</span> - startValue &gt;&gt; <span class="hljs-number">24</span>) * fraction);
+
+       <span class="hljs-comment">// &#x628A; HSV &#x8F6C;&#x6362;&#x56DE; ARGB &#x8FD4;&#x56DE;</span>
+       <span class="hljs-keyword">return</span> Color.HSVToColor(alpha, outHsv);
+   }
+}
+
+
+
+ObjectAnimator animator = ObjectAnimator.ofInt(view, <span class="hljs-string">&quot;color&quot;</span>, <span class="hljs-number">0xff00ff00</span>);  
+<span class="hljs-comment">// &#x4F7F;&#x7528;&#x81EA;&#x5B9A;&#x4E49;&#x7684; HslEvaluator</span>
+animator.setEvaluator(<span class="hljs-keyword">new</span> HsvEvaluator());  
+animator.start();
+</code></pre>
+<p><img src="assets/192.gif" alt="42"></p>
+<h3 id="ofobject"><a name="ofobject" class="anchor-navigation-ex-anchor" href="#ofobject"><i class="fa fa-link" aria-hidden="true"></i></a>3.7.3. ofObject()</h3>
+<p>&#x501F;&#x52A9;&#x4E8E; <code>TypeEvaluator</code>&#xFF0C;&#x5C5E;&#x6027;&#x52A8;&#x753B;&#x5C31;&#x53EF;&#x4EE5;&#x901A;&#x8FC7; <code>ofObject()</code> &#x6765;&#x5BF9;&#x4E0D;&#x9650;&#x5B9A;&#x7C7B;&#x578B;&#x7684;&#x5C5E;&#x6027;&#x505A;&#x52A8;&#x753B;&#x4E86;&#x3002;&#x65B9;&#x5F0F;&#x5F88;&#x7B80;&#x5355;&#xFF1A;</p>
+<ol>
+<li>&#x4E3A;&#x76EE;&#x6807;&#x5C5E;&#x6027;&#x5199;&#x4E00;&#x4E2A;&#x81EA;&#x5B9A;&#x4E49;&#x7684; <code>TypeEvaluator</code></li>
+<li>&#x4F7F;&#x7528; <code>ofObject()</code> &#x6765;&#x521B;&#x5EFA; <code>Animator</code>&#xFF0C;&#x5E76;&#x628A;&#x81EA;&#x5B9A;&#x4E49;&#x7684; <code>TypeEvaluator</code> &#x4F5C;&#x4E3A;&#x53C2;&#x6570;&#x586B;&#x5165;</li>
+</ol>
+<pre><code class="lang-java"><span class="hljs-keyword">private</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PointFEvaluator</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">TypeEvaluator</span>&lt;<span class="hljs-title">PointF</span>&gt; </span>{  
+   PointF newPoint = <span class="hljs-keyword">new</span> PointF();
+
+   <span class="hljs-meta">@Override</span>
+   <span class="hljs-function"><span class="hljs-keyword">public</span> PointF <span class="hljs-title">evaluate</span><span class="hljs-params">(<span class="hljs-keyword">float</span> fraction, PointF startValue, PointF endValue)</span> </span>{
+       <span class="hljs-keyword">float</span> x = startValue.x + (fraction * (endValue.x - startValue.x));
+       <span class="hljs-keyword">float</span> y = startValue.y + (fraction * (endValue.y - startValue.y));
+
+       newPoint.set(x, y);
+
+       <span class="hljs-keyword">return</span> newPoint;
+   }
+}
+
+ObjectAnimator animator = ObjectAnimator.ofObject(view, <span class="hljs-string">&quot;position&quot;</span>,  
+        <span class="hljs-keyword">new</span> PointFEvaluator(), <span class="hljs-keyword">new</span> PointF(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>), <span class="hljs-keyword">new</span> PointF(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>));
+animator.start();
+</code></pre>
+<p><img src="assets/194.gif" alt="42"></p>
+<p>&#x53E6;&#x5916;&#x5728; API 21 &#x4E2D;&#xFF0C;&#x5DF2;&#x7ECF;&#x81EA;&#x5E26;&#x4E86; <code>PointFEvaluator</code> &#x8FD9;&#x4E2A;&#x7C7B;&#xFF0C;&#x6240;&#x4EE5;&#x5982;&#x679C;&#x4F60;&#x7684; <code>minSdk</code> &#x5927;&#x4E8E;&#x6216;&#x8005;&#x7B49;&#x4E8E; 21&#xFF0C;&#x4E0A;&#x9762;&#x8FD9;&#x4E2A;&#x7C7B;&#x4F60;&#x5C31;&#x4E0D;&#x7528;&#x5199;&#x4E86;&#xFF0C;&#x76F4;&#x63A5;&#x7528;&#x5C31;&#x884C;&#x4E86;&#x3002;</p>
+<h2 id="propertyvaluesholder-&#x540C;&#x4E00;&#x4E2A;&#x52A8;&#x753B;&#x4E2D;&#x6539;&#x53D8;&#x591A;&#x4E2A;&#x5C5E;&#x6027;"><a name="propertyvaluesholder-&#x540C;&#x4E00;&#x4E2A;&#x52A8;&#x753B;&#x4E2D;&#x6539;&#x53D8;&#x591A;&#x4E2A;&#x5C5E;&#x6027;" class="anchor-navigation-ex-anchor" href="#propertyvaluesholder-&#x540C;&#x4E00;&#x4E2A;&#x52A8;&#x753B;&#x4E2D;&#x6539;&#x53D8;&#x591A;&#x4E2A;&#x5C5E;&#x6027;"><i class="fa fa-link" aria-hidden="true"></i></a>3.8. PropertyValuesHolder &#x540C;&#x4E00;&#x4E2A;&#x52A8;&#x753B;&#x4E2D;&#x6539;&#x53D8;&#x591A;&#x4E2A;&#x5C5E;&#x6027;</h2>
+<p>&#x5F88;&#x591A;&#x65F6;&#x5019;&#xFF0C;&#x4F60;&#x5728;&#x540C;&#x4E00;&#x4E2A;&#x52A8;&#x753B;&#x4E2D;&#x4F1A;&#x9700;&#x8981;&#x6539;&#x53D8;&#x591A;&#x4E2A;&#x5C5E;&#x6027;&#xFF0C;&#x4F8B;&#x5982;&#x5728;&#x6539;&#x53D8;&#x900F;&#x660E;&#x5EA6;&#x7684;&#x540C;&#x65F6;&#x6539;&#x53D8;&#x5C3A;&#x5BF8;&#x3002;&#x5982;&#x679C;&#x4F7F;&#x7528; <code>ViewPropertyAnimator</code>&#xFF0C;&#x4F60;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x7528;&#x8FDE;&#x5199;&#x7684;&#x65B9;&#x5F0F;&#x6765;&#x5728;&#x4E00;&#x4E2A;&#x52A8;&#x753B;&#x4E2D;&#x540C;&#x65F6;&#x6539;&#x53D8;&#x591A;&#x4E2A;&#x5C5E;&#x6027;&#xFF1A;</p>
+<pre><code class="lang-java">view.animate()  
+        .scaleX(<span class="hljs-number">1</span>)
+        .scaleY(<span class="hljs-number">1</span>)
+        .alpha(<span class="hljs-number">1</span>);
+</code></pre>
+<p><img src="assets/193.gif" alt="42"></p>
+<p>&#x800C;&#x5BF9;&#x4E8E; <code>ObjectAnimator</code>&#xFF0C;&#x662F;&#x4E0D;&#x80FD;&#x8FD9;&#x4E48;&#x7528;&#x7684;&#x3002;&#x4E0D;&#x8FC7;&#x4F60;&#x53EF;&#x4EE5;&#x4F7F;&#x7528; <code>PropertyValuesHolder</code> &#x6765;&#x540C;&#x65F6;&#x5728;&#x4E00;&#x4E2A;&#x52A8;&#x753B;&#x4E2D;&#x6539;&#x53D8;&#x591A;&#x4E2A;&#x5C5E;&#x6027;&#x3002;</p>
+<pre><code class="lang-java">PropertyValuesHolder holder1 = PropertyValuesHolder.ofFloat(<span class="hljs-string">&quot;scaleX&quot;</span>, <span class="hljs-number">1</span>);  
+PropertyValuesHolder holder2 = PropertyValuesHolder.ofFloat(<span class="hljs-string">&quot;scaleY&quot;</span>, <span class="hljs-number">1</span>);  
+PropertyValuesHolder holder3 = PropertyValuesHolder.ofFloat(<span class="hljs-string">&quot;alpha&quot;</span>, <span class="hljs-number">1</span>);
+
+ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(view, holder1, holder2, holder3)  
+animator.start();
+</code></pre>
+<p><code>PropertyValuesHolder</code> &#x662F;&#x4E00;&#x4E2A;&#x5C5E;&#x6027;&#x503C;&#x7684;&#x6279;&#x91CF;&#x5B58;&#x653E;&#x5730;&#x3002;&#x6240;&#x4EE5;&#x4F60;&#x5982;&#x679C;&#x6709;&#x591A;&#x4E2A;&#x5C5E;&#x6027;&#x9700;&#x8981;&#x4FEE;&#x6539;&#xFF0C;&#x53EF;&#x4EE5;&#x628A;&#x5B83;&#x4EEC;&#x653E;&#x5728;&#x4E0D;&#x540C;&#x7684; <code>PropertyValuesHolder</code> &#x4E2D;&#xFF0C;&#x7136;&#x540E;&#x4F7F;&#x7528; <code>ofPropertyValuesHolder()</code> &#x7EDF;&#x4E00;&#x653E;&#x8FDB; <code>Animator</code>&#x3002;&#x8FD9;&#x6837;&#x4F60;&#x5C31;&#x4E0D;&#x7528;&#x4E3A;&#x6BCF;&#x4E2A;&#x5C5E;&#x6027;&#x5355;&#x72EC;&#x521B;&#x5EFA;&#x4E00;&#x4E2A; <code>Animator</code> &#x5206;&#x522B;&#x6267;&#x884C;&#x4E86;&#x3002;</p>
+<h2 id="animatorset-&#x591A;&#x4E2A;&#x52A8;&#x753B;&#x914D;&#x5408;&#x6267;&#x884C;"><a name="animatorset-&#x591A;&#x4E2A;&#x52A8;&#x753B;&#x914D;&#x5408;&#x6267;&#x884C;" class="anchor-navigation-ex-anchor" href="#animatorset-&#x591A;&#x4E2A;&#x52A8;&#x753B;&#x914D;&#x5408;&#x6267;&#x884C;"><i class="fa fa-link" aria-hidden="true"></i></a>3.9. AnimatorSet &#x591A;&#x4E2A;&#x52A8;&#x753B;&#x914D;&#x5408;&#x6267;&#x884C;</h2>
+<p>&#x6709;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x4F60;&#x4E0D;&#x6B62;&#x9700;&#x8981;&#x5728;&#x4E00;&#x4E2A;&#x52A8;&#x753B;&#x4E2D;&#x6539;&#x53D8;&#x591A;&#x4E2A;&#x5C5E;&#x6027;&#xFF0C;&#x8FD8;&#x4F1A;&#x9700;&#x8981;&#x591A;&#x4E2A;&#x52A8;&#x753B;&#x914D;&#x5408;&#x5DE5;&#x4F5C;&#xFF0C;&#x6BD4;&#x5982;&#xFF0C;&#x5728;&#x5185;&#x5BB9;&#x7684;&#x5927;&#x5C0F;&#x4ECE; 0 &#x653E;&#x5927;&#x5230; 100% &#x5927;&#x5C0F;&#x540E;&#x5F00;&#x59CB;&#x79FB;&#x52A8;&#x3002;&#x8FD9;&#x79CD;&#x60C5;&#x51B5;&#x4F7F;&#x7528; <code>PropertyValuesHolder</code> &#x662F;&#x4E0D;&#x884C;&#x7684;&#xFF0C;&#x56E0;&#x4E3A;&#x8FD9;&#x4E9B;&#x5C5E;&#x6027;&#x5982;&#x679C;&#x653E;&#x5728;&#x540C;&#x4E00;&#x4E2A;&#x52A8;&#x753B;&#x4E2D;&#xFF0C;&#x9700;&#x8981;&#x5171;&#x4EAB;&#x52A8;&#x753B;&#x7684;&#x5F00;&#x59CB;&#x65F6;&#x95F4;&#x3001;&#x7ED3;&#x675F;&#x65F6;&#x95F4;&#x3001;Interpolator &#x7B49;&#x7B49;&#x4E00;&#x7CFB;&#x5217;&#x7684;&#x8BBE;&#x5B9A;&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x4E0D;&#x80FD;&#x6709;&#x5148;&#x540E;&#x6B21;&#x5E8F;&#x5730;&#x6267;&#x884C;&#x52A8;&#x753B;&#x4E86;&#x3002;</p>
+<p>&#x8FD9;&#x5C31;&#x9700;&#x8981;&#x7528;&#x5230; <code>AnimatorSet</code> &#x4E86;&#x3002;</p>
+<pre><code class="lang-java">ObjectAnimator animator1 = ObjectAnimator.ofFloat(...);  
+animator1.setInterpolator(<span class="hljs-keyword">new</span> LinearInterpolator());  
+ObjectAnimator animator2 = ObjectAnimator.ofInt(...);  
+animator2.setInterpolator(<span class="hljs-keyword">new</span> DecelerateInterpolator());
+
+AnimatorSet animatorSet = <span class="hljs-keyword">new</span> AnimatorSet();  
+<span class="hljs-comment">// &#x4E24;&#x4E2A;&#x52A8;&#x753B;&#x4F9D;&#x6B21;&#x6267;&#x884C;</span>
+animatorSet.playSequentially(animator1, animator2);  
+animatorSet.start();
+</code></pre>
+<p><img src="assets/195.gif" alt="42"></p>
+<p>&#x4F7F;&#x7528; <code>playSequentially()</code>&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x8BA9;&#x4E24;&#x4E2A;&#x52A8;&#x753B;&#x4F9D;&#x6B21;&#x64AD;&#x653E;&#xFF0C;&#x800C;&#x4E0D;&#x7528;&#x4E3A;&#x5B83;&#x4EEC;&#x8BBE;&#x7F6E;&#x76D1;&#x542C;&#x5668;&#x6765;&#x624B;&#x52A8;&#x4E3A;&#x4ED6;&#x4EEC;&#x76D1;&#x7BA1;&#x534F;&#x4F5C;&#x3002;</p>
+<p><code>AnimatorSet</code> &#x8FD8;&#x53EF;&#x4EE5;&#x8FD9;&#x4E48;&#x7528;&#xFF1A;</p>
+<pre><code class="lang-java"><span class="hljs-comment">// &#x4E24;&#x4E2A;&#x52A8;&#x753B;&#x540C;&#x65F6;&#x6267;&#x884C;</span>
+animatorSet.playTogether(animator1, animator2);  
+animatorSet.start();
+</code></pre>
+<p>&#x4EE5;&#x53CA;&#x8FD9;&#x4E48;&#x7528;&#xFF1A;</p>
+<pre><code class="lang-java"><span class="hljs-comment">// &#x4F7F;&#x7528; AnimatorSet.play(animatorA).with/before/after(animatorB)</span>
+<span class="hljs-comment">// &#x7684;&#x65B9;&#x5F0F;&#x6765;&#x7CBE;&#x786E;&#x914D;&#x7F6E;&#x5404;&#x4E2A; Animator &#x4E4B;&#x95F4;&#x7684;&#x5173;&#x7CFB;</span>
+animatorSet.play(animator1).with(animator2);  
+animatorSet.play(animator1).before(animator2);  
+animatorSet.play(animator1).after(animator2);  
+animatorSet.start();
+</code></pre>
+<p>&#x6709;&#x4E86; <code>AnimatorSet</code> &#xFF0C;&#x4F60;&#x5C31;&#x53EF;&#x4EE5;&#x5BF9;&#x591A;&#x4E2A; <code>Animator</code> &#x8FDB;&#x884C;&#x7EDF;&#x4E00;&#x89C4;&#x5212;&#x548C;&#x7BA1;&#x7406;&#xFF0C;&#x8BA9;&#x5B83;&#x4EEC;&#x6309;&#x7167;&#x8981;&#x6C42;&#x7684;&#x987A;&#x5E8F;&#x6765;&#x5DE5;&#x4F5C;&#x3002;</p>
+<h2 id="propertyvaluesholdersofkeyframe-&#x628A;&#x540C;&#x4E00;&#x4E2A;&#x5C5E;&#x6027;&#x62C6;&#x5206;"><a name="propertyvaluesholdersofkeyframe-&#x628A;&#x540C;&#x4E00;&#x4E2A;&#x5C5E;&#x6027;&#x62C6;&#x5206;" class="anchor-navigation-ex-anchor" href="#propertyvaluesholdersofkeyframe-&#x628A;&#x540C;&#x4E00;&#x4E2A;&#x5C5E;&#x6027;&#x62C6;&#x5206;"><i class="fa fa-link" aria-hidden="true"></i></a>3.10. PropertyValuesHolders.ofKeyframe() &#x628A;&#x540C;&#x4E00;&#x4E2A;&#x5C5E;&#x6027;&#x62C6;&#x5206;</h2>
+<p>&#x9664;&#x4E86;&#x5408;&#x5E76;&#x591A;&#x4E2A;&#x5C5E;&#x6027;&#x548C;&#x8C03;&#x914D;&#x591A;&#x4E2A;&#x52A8;&#x753B;&#xFF0C;&#x4F60;&#x8FD8;&#x53EF;&#x4EE5;&#x5728; <code>PropertyValuesHolder</code> &#x7684;&#x57FA;&#x7840;&#x4E0A;&#x66F4;&#x8FDB;&#x4E00;&#x6B65;&#xFF0C;&#x901A;&#x8FC7;&#x8BBE;&#x7F6E; <code>Keyframe</code> &#xFF08;&#x5173;&#x952E;&#x5E27;&#xFF09;&#xFF0C;&#x628A;&#x540C;&#x4E00;&#x4E2A;&#x52A8;&#x753B;&#x5C5E;&#x6027;&#x62C6;&#x5206;&#x6210;&#x591A;&#x4E2A;&#x9636;&#x6BB5;&#x3002;&#x4F8B;&#x5982;&#xFF0C;&#x4F60;&#x53EF;&#x4EE5;&#x8BA9;&#x4E00;&#x4E2A;&#x8FDB;&#x5EA6;&#x589E;&#x52A0;&#x5230; 100% &#x540E;&#x518D;&#x300C;&#x53CD;&#x5F39;&#x300D;&#x56DE;&#x6765;&#x3002;</p>
+<pre><code class="lang-java"><span class="hljs-comment">// &#x5728; 0% &#x5904;&#x5F00;&#x59CB;</span>
+Keyframe keyframe1 = Keyframe.ofFloat(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>);  
+<span class="hljs-comment">// &#x65F6;&#x95F4;&#x7ECF;&#x8FC7; 50% &#x7684;&#x65F6;&#x5019;&#xFF0C;&#x52A8;&#x753B;&#x5B8C;&#x6210;&#x5EA6; 100%</span>
+Keyframe keyframe2 = Keyframe.ofFloat(<span class="hljs-number">0.5f</span>, <span class="hljs-number">100</span>);  
+<span class="hljs-comment">// &#x65F6;&#x95F4;&#x89C1;&#x8FC7; 100% &#x7684;&#x65F6;&#x5019;&#xFF0C;&#x52A8;&#x753B;&#x5B8C;&#x6210;&#x5EA6;&#x5012;&#x9000;&#x5230; 80%&#xFF0C;&#x5373;&#x53CD;&#x5F39; 20%</span>
+Keyframe keyframe3 = Keyframe.ofFloat(<span class="hljs-number">1</span>, <span class="hljs-number">80</span>);  
+PropertyValuesHolder holder = PropertyValuesHolder.ofKeyframe(<span class="hljs-string">&quot;progress&quot;</span>, keyframe1, keyframe2, keyframe3);
+
+ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(view, holder);  
+animator.start();
+</code></pre>
+<p><img src="assets/196.gif" alt="42"></p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="./" class="navigation navigation-prev " aria-label="Previous page: 视图">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="Android布局.html" class="navigation navigation-next " aria-label="Next page: Android布局">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Android动画","level":"1.6.3.3.1","depth":4,"next":{"title":"Android布局","level":"1.6.3.3.2","depth":4,"path":"05 Android/03 Android应用手册/视图/Android布局.md","ref":"./05 Android/03 Android应用手册/视图/Android布局.md","articles":[]},"previous":{"title":"视图","level":"1.6.3.3","depth":3,"path":"05 Android/03 Android应用手册/视图/README.md","ref":"./05 Android/03 Android应用手册/视图/README.md","articles":[{"title":"Android动画","level":"1.6.3.3.1","depth":4,"path":"05 Android/03 Android应用手册/视图/Android动画.md","ref":"./05 Android/03 Android应用手册/视图/Android动画.md","articles":[]},{"title":"Android布局","level":"1.6.3.3.2","depth":4,"path":"05 Android/03 Android应用手册/视图/Android布局.md","ref":"./05 Android/03 Android应用手册/视图/Android布局.md","articles":[]},{"title":"Android控件","level":"1.6.3.3.3","depth":4,"path":"05 Android/03 Android应用手册/视图/Android控件.md","ref":"./05 Android/03 Android应用手册/视图/Android控件.md","articles":[]},{"title":"Drawable","level":"1.6.3.3.4","depth":4,"path":"05 Android/03 Android应用手册/视图/Drawable.md","ref":"./05 Android/03 Android应用手册/视图/Drawable.md","articles":[]},{"title":"View绘制","level":"1.6.3.3.5","depth":4,"path":"05 Android/03 Android应用手册/视图/View绘制.md","ref":"./05 Android/03 Android应用手册/视图/View绘制.md","articles":[]},{"title":"视图相关工具类","level":"1.6.3.3.6","depth":4,"path":"05 Android/03 Android应用手册/视图/视图相关工具类.md","ref":"./05 Android/03 Android应用手册/视图/视图相关工具类.md","articles":[]},{"title":"资源文件","level":"1.6.3.3.7","depth":4,"path":"05 Android/03 Android应用手册/视图/资源文件.md","ref":"./05 Android/03 Android应用手册/视图/资源文件.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["highlight","search","livereload","splitter","expandable-chapters-small","anchors","anchor-navigation-ex"],"styles":{"website":"./styles/website.css"},"pluginsConfig":{"livereload":{},"splitter":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"anchor-navigation-ex":{"associatedWithSummary":true,"float":{"floatIcon":"fa fa-navicon","level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"mode":"float","multipleH1":true,"pageTop":{"level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"printLog":false,"showGoTop":true,"showLevel":true},"expandable-chapters-small":{},"sharing":{"all":["facebook","google","twitter","weibo","instapaper"],"facebook":true,"google":false,"instapaper":false,"twitter":true,"vk":false,"weibo":false},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"theme":"default","author":"Mezzsy","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Mezzsy is here","language":"zh-hans","gitbook":"3.2.3"},"file":{"path":"05 Android/03 Android应用手册/视图/Android动画.md","mtime":"2019-09-15T12:39:35.166Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2024-09-17T13:19:34.226Z"},"basePath":"../../..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../../gitbook/gitbook.js"></script>
+    <script src="../../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-splitter/splitter.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-expandable-chapters-small/expandable-chapters-small.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
