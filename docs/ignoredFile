@@ -6,3 +6,4 @@ generateSummary.jar
 node_modules
 auto_pull.sh
 count.py
+docs
