@@ -1,0 +1,3194 @@
+
+<!DOCTYPE HTML>
+<html lang="zh-hans" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>10 JNI · Mezzsy is here</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        <meta name="author" content="Mezzsy">
+        
+        
+    
+    <link rel="stylesheet" href="../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-splitter/splitter.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-expandable-chapters-small/expandable-chapters-small.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-anchors/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-anchor-navigation-ex/style/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="13 ClassLoader.html" />
+    
+    
+    <link rel="prev" href="08 WMS.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="输入并搜索" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    00 介绍
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../../01 语言/">
+            
+                <a href="../../01 语言/">
+            
+                    
+                    01 语言
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../../01 语言/01 Cpp/">
+            
+                <a href="../../01 语言/01 Cpp/">
+            
+                    
+                    01 Cpp
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.1" data-path="../../01 语言/01 Cpp/原理总结/">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/">
+            
+                    
+                    原理总结
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.1.1" data-path="../../01 语言/01 Cpp/原理总结/其它.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/其它.html">
+            
+                    
+                    其它
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.2" data-path="../../01 语言/01 Cpp/原理总结/函数.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/函数.html">
+            
+                    
+                    函数
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.3" data-path="../../01 语言/01 Cpp/原理总结/对象.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/对象.html">
+            
+                    
+                    对象
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.4" data-path="../../01 语言/01 Cpp/原理总结/成员变量.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/成员变量.html">
+            
+                    
+                    成员变量
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.5" data-path="../../01 语言/01 Cpp/原理总结/执行期.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/执行期.html">
+            
+                    
+                    执行期
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.6" data-path="../../01 语言/01 Cpp/原理总结/构造函数.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/构造函数.html">
+            
+                    
+                    构造函数
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.7" data-path="../../01 语言/01 Cpp/原理总结/构造析构拷贝.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/构造析构拷贝.html">
+            
+                    
+                    构造析构拷贝
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2" data-path="../../01 语言/01 Cpp/知识点/">
+            
+                <a href="../../01 语言/01 Cpp/知识点/">
+            
+                    
+                    知识点
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.2.1" data-path="../../01 语言/01 Cpp/知识点/基础.html">
+            
+                <a href="../../01 语言/01 Cpp/知识点/基础.html">
+            
+                    
+                    基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.2" data-path="../../01 语言/01 Cpp/知识点/类.html">
+            
+                <a href="../../01 语言/01 Cpp/知识点/类.html">
+            
+                    
+                    类
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.3" data-path="../../01 语言/01 Cpp/知识点/线程.html">
+            
+                <a href="../../01 语言/01 Cpp/知识点/线程.html">
+            
+                    
+                    线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../../01 语言/02 Java/">
+            
+                <a href="../../01 语言/02 Java/">
+            
+                    
+                    02 Java
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.2.1" data-path="../../01 语言/02 Java/Java-IO.html">
+            
+                <a href="../../01 语言/02 Java/Java-IO.html">
+            
+                    
+                    Java-IO
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.2" data-path="../../01 语言/02 Java/Java反射机制和泛型.html">
+            
+                <a href="../../01 语言/02 Java/Java反射机制和泛型.html">
+            
+                    
+                    Java反射机制和泛型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.3" data-path="../../01 语言/02 Java/Java基础知识.html">
+            
+                <a href="../../01 语言/02 Java/Java基础知识.html">
+            
+                    
+                    Java基础知识
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.4" data-path="../../01 语言/02 Java/Java异常机制.html">
+            
+                <a href="../../01 语言/02 Java/Java异常机制.html">
+            
+                    
+                    Java异常机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.5" data-path="../../01 语言/02 Java/并发.html">
+            
+                <a href="../../01 语言/02 Java/并发.html">
+            
+                    
+                    并发
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.6" data-path="../../01 语言/02 Java/异常.html">
+            
+                <a href="../../01 语言/02 Java/异常.html">
+            
+                    
+                    异常
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.7" data-path="../../01 语言/02 Java/禁止在foreach循环里进行元素的remove-add操作.html">
+            
+                <a href="../../01 语言/02 Java/禁止在foreach循环里进行元素的remove-add操作.html">
+            
+                    
+                    禁止在foreach循环里进行元素的remove-add操作
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.8" data-path="../../01 语言/02 Java/类和接口.html">
+            
+                <a href="../../01 语言/02 Java/类和接口.html">
+            
+                    
+                    类和接口
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../../02 计算机系统/">
+            
+                <a href="../../02 计算机系统/">
+            
+                    
+                    02 计算机系统
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../../02 计算机系统/01-操作系统.html">
+            
+                <a href="../../02 计算机系统/01-操作系统.html">
+            
+                    
+                    01-操作系统
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../../02 计算机系统/02-内存.html">
+            
+                <a href="../../02 计算机系统/02-内存.html">
+            
+                    
+                    02-内存
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../../02 计算机系统/03-线程.html">
+            
+                <a href="../../02 计算机系统/03-线程.html">
+            
+                    
+                    03-线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../../02 计算机系统/04-编译链接.html">
+            
+                <a href="../../02 计算机系统/04-编译链接.html">
+            
+                    
+                    04-编译链接
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../../02 计算机系统/深入理解计算机系统/">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/">
+            
+                    
+                    深入理解计算机系统
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.5.1" data-path="../../02 计算机系统/深入理解计算机系统/01-计算机系统漫游.html">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/01-计算机系统漫游.html">
+            
+                    
+                    01-计算机系统漫游
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.2" data-path="../../02 计算机系统/深入理解计算机系统/02-信息的表示和处理.html">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/02-信息的表示和处理.html">
+            
+                    
+                    02-信息的表示和处理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.3" data-path="../../02 计算机系统/深入理解计算机系统/07-链接.html">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/07-链接.html">
+            
+                    
+                    07-链接
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.4" data-path="../../02 计算机系统/深入理解计算机系统/09-虚拟内存.html">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/09-虚拟内存.html">
+            
+                    
+                    09-虚拟内存
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../../03 Java/">
+            
+                <a href="../../03 Java/">
+            
+                    
+                    03 Java
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../../03 Java/01 Java知识点/">
+            
+                <a href="../../03 Java/01 Java知识点/">
+            
+                    
+                    01 Java知识点
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1.1" data-path="../../03 Java/01 Java知识点/Java基础知识.html">
+            
+                <a href="../../03 Java/01 Java知识点/Java基础知识.html">
+            
+                    
+                    Java基础知识
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.2" data-path="../../03 Java/01 Java知识点/Java问题.html">
+            
+                <a href="../../03 Java/01 Java知识点/Java问题.html">
+            
+                    
+                    Java问题
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.3" data-path="../../03 Java/01 Java知识点/泛型.html">
+            
+                <a href="../../03 Java/01 Java知识点/泛型.html">
+            
+                    
+                    泛型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.4" data-path="../../03 Java/01 Java知识点/注解.html">
+            
+                <a href="../../03 Java/01 Java知识点/注解.html">
+            
+                    
+                    注解
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../../03 Java/02 Java虚拟机/">
+            
+                <a href="../../03 Java/02 Java虚拟机/">
+            
+                    
+                    02 Java虚拟机
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.2.1" data-path="../../03 Java/02 Java虚拟机/01-Java介绍.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/01-Java介绍.html">
+            
+                    
+                    01-Java介绍
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.2" data-path="../../03 Java/02 Java虚拟机/02-内存区域.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/02-内存区域.html">
+            
+                    
+                    02-内存区域
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.3" data-path="../../03 Java/02 Java虚拟机/03-垃圾收集TODO.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/03-垃圾收集TODO.html">
+            
+                    
+                    03-垃圾收集TODO
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.4" data-path="../../03 Java/02 Java虚拟机/06-类文件结构.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/06-类文件结构.html">
+            
+                    
+                    06-类文件结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.5" data-path="../../03 Java/02 Java虚拟机/07-虚拟机类加载机制.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/07-虚拟机类加载机制.html">
+            
+                    
+                    07-虚拟机类加载机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.6" data-path="../../03 Java/02 Java虚拟机/08-虚拟机字节码执行引擎.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/08-虚拟机字节码执行引擎.html">
+            
+                    
+                    08-虚拟机字节码执行引擎
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.7" data-path="../../03 Java/02 Java虚拟机/12-Java内存模型与线程.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/12-Java内存模型与线程.html">
+            
+                    
+                    12-Java内存模型与线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.8" data-path="../../03 Java/02 Java虚拟机/13-线程安全与锁优化.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/13-线程安全与锁优化.html">
+            
+                    
+                    13-线程安全与锁优化
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../../03 Java/03 常用源码分析/">
+            
+                <a href="../../03 Java/03 常用源码分析/">
+            
+                    
+                    03 常用源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.3.1" data-path="../../03 Java/03 常用源码分析/ArrayList源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/ArrayList源码分析.html">
+            
+                    
+                    ArrayList源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.2" data-path="../../03 Java/03 常用源码分析/ConcurrentHashMap源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/ConcurrentHashMap源码分析.html">
+            
+                    
+                    ConcurrentHashMap源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.3" data-path="../../03 Java/03 常用源码分析/HashMap源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/HashMap源码分析.html">
+            
+                    
+                    HashMap源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.4" data-path="../../03 Java/03 常用源码分析/HashTable源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/HashTable源码分析.html">
+            
+                    
+                    HashTable源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.5" data-path="../../03 Java/03 常用源码分析/LinkedHashMap源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/LinkedHashMap源码分析.html">
+            
+                    
+                    LinkedHashMap源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.6" data-path="../../03 Java/03 常用源码分析/LinkedList源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/LinkedList源码分析.html">
+            
+                    
+                    LinkedList源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.7" data-path="../../03 Java/03 常用源码分析/ThreadLocal源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/ThreadLocal源码分析.html">
+            
+                    
+                    ThreadLocal源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.8" data-path="../../03 Java/03 常用源码分析/线程池源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/线程池源码分析.html">
+            
+                    
+                    线程池源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../../04 源码分析/">
+            
+                <a href="../../04 源码分析/">
+            
+                    
+                    04 源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../../04 源码分析/AddressSanitizer.html">
+            
+                <a href="../../04 源码分析/AddressSanitizer.html">
+            
+                    
+                    AddressSanitizer
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../../04 源码分析/ByteX.html">
+            
+                <a href="../../04 源码分析/ByteX.html">
+            
+                    
+                    ByteX
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="../../04 源码分析/PltHook.html">
+            
+                <a href="../../04 源码分析/PltHook.html">
+            
+                    
+                    PltHook
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="../../04 源码分析/Raphael分析.html">
+            
+                <a href="../../04 源码分析/Raphael分析.html">
+            
+                    
+                    Raphael分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.5" data-path="../../04 源码分析/基于fp的栈回朔.html">
+            
+                <a href="../../04 源码分析/基于fp的栈回朔.html">
+            
+                    
+                    基于fp的栈回朔
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    05 Android
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    01 Android源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1.1" data-path="01 系统启动过程.html">
+            
+                <a href="01 系统启动过程.html">
+            
+                    
+                    01 系统启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.2" data-path="02 应用进程启动过程.html">
+            
+                <a href="02 应用进程启动过程.html">
+            
+                    
+                    02 应用进程启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.3" data-path="03 Activity启动过程.html">
+            
+                <a href="03 Activity启动过程.html">
+            
+                    
+                    03 Activity启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.4" data-path="04 其它组件启动过程.html">
+            
+                <a href="04 其它组件启动过程.html">
+            
+                    
+                    04 其它组件启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.5" data-path="05 Context总结.html">
+            
+                <a href="05 Context总结.html">
+            
+                    
+                    05 Context总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.6" data-path="06 AMS.html">
+            
+                <a href="06 AMS.html">
+            
+                    
+                    06 AMS
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.7" data-path="07 WM.html">
+            
+                <a href="07 WM.html">
+            
+                    
+                    07 WM
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.8" data-path="08 WMS.html">
+            
+                <a href="08 WMS.html">
+            
+                    
+                    08 WMS
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.6.1.9" data-path="10 JNI.html">
+            
+                <a href="10 JNI.html">
+            
+                    
+                    10 JNI
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.10" data-path="13 ClassLoader.html">
+            
+                <a href="13 ClassLoader.html">
+            
+                    
+                    13 ClassLoader
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.11" data-path="14 热修复.html">
+            
+                <a href="14 热修复.html">
+            
+                    
+                    14 热修复
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.12" data-path="15 Hook.html">
+            
+                <a href="15 Hook.html">
+            
+                    
+                    15 Hook
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.13" data-path="16 插件化.html">
+            
+                <a href="16 插件化.html">
+            
+                    
+                    16 插件化
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.14" data-path="17 绘制流程-生产者.html">
+            
+                <a href="17 绘制流程-生产者.html">
+            
+                    
+                    17 绘制流程-生产者
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.15" data-path="18 绘制流程-消费者.html">
+            
+                <a href="18 绘制流程-消费者.html">
+            
+                    
+                    18 绘制流程-消费者
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.16" data-path="19 渲染总结.html">
+            
+                <a href="19 渲染总结.html">
+            
+                    
+                    19 渲染总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.17" data-path="20 硬件加速.html">
+            
+                <a href="20 硬件加速.html">
+            
+                    
+                    20 硬件加速
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.1.18" data-path="21 Android资源管理原理.html">
+            
+                <a href="21 Android资源管理原理.html">
+            
+                    
+                    21 Android资源管理原理
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="../02 Android应用和原理/">
+            
+                <a href="../02 Android应用和原理/">
+            
+                    
+                    02 Android应用和原理
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.2.1" data-path="../02 Android应用和原理/Android动画.html">
+            
+                <a href="../02 Android应用和原理/Android动画.html">
+            
+                    
+                    Android动画
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.2" data-path="../02 Android应用和原理/Android消息机制.html">
+            
+                <a href="../02 Android应用和原理/Android消息机制.html">
+            
+                    
+                    Android消息机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.3" data-path="../02 Android应用和原理/Android的跨进程通信.html">
+            
+                <a href="../02 Android应用和原理/Android的跨进程通信.html">
+            
+                    
+                    Android的跨进程通信
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.4" data-path="../02 Android应用和原理/Android类加载机制.html">
+            
+                <a href="../02 Android应用和原理/Android类加载机制.html">
+            
+                    
+                    Android类加载机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.5" data-path="../02 Android应用和原理/Android线程.html">
+            
+                <a href="../02 Android应用和原理/Android线程.html">
+            
+                    
+                    Android线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.6" data-path="../02 Android应用和原理/Drawable.html">
+            
+                <a href="../02 Android应用和原理/Drawable.html">
+            
+                    
+                    Drawable
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.7" data-path="../02 Android应用和原理/View手势事件.html">
+            
+                <a href="../02 Android应用和原理/View手势事件.html">
+            
+                    
+                    View手势事件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.8" data-path="../02 Android应用和原理/View绘制基础.html">
+            
+                <a href="../02 Android应用和原理/View绘制基础.html">
+            
+                    
+                    View绘制基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.9" data-path="../02 Android应用和原理/四大组件.html">
+            
+                <a href="../02 Android应用和原理/四大组件.html">
+            
+                    
+                    四大组件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.10" data-path="../02 Android应用和原理/性能优化.html">
+            
+                <a href="../02 Android应用和原理/性能优化.html">
+            
+                    
+                    性能优化
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.11" data-path="../02 Android应用和原理/虚拟机.html">
+            
+                <a href="../02 Android应用和原理/虚拟机.html">
+            
+                    
+                    虚拟机
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.12" data-path="../02 Android应用和原理/面试题.html">
+            
+                <a href="../02 Android应用和原理/面试题.html">
+            
+                    
+                    面试题
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3" data-path="../03 Android应用手册/">
+            
+                <a href="../03 Android应用手册/">
+            
+                    
+                    03 Android应用手册
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.3.1" data-path="../03 Android应用手册/四大组件/">
+            
+                <a href="../03 Android应用手册/四大组件/">
+            
+                    
+                    四大组件
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.3.1.1" data-path="../03 Android应用手册/四大组件/Android启动模式研究.html">
+            
+                <a href="../03 Android应用手册/四大组件/Android启动模式研究.html">
+            
+                    
+                    Android启动模式研究
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.1.2" data-path="../03 Android应用手册/四大组件/Android生命周期.html">
+            
+                <a href="../03 Android应用手册/四大组件/Android生命周期.html">
+            
+                    
+                    Android生命周期
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.1.3" data-path="../03 Android应用手册/四大组件/Broadcast.html">
+            
+                <a href="../03 Android应用手册/四大组件/Broadcast.html">
+            
+                    
+                    Broadcast
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.2" data-path="../03 Android应用手册/架构组件/">
+            
+                <a href="../03 Android应用手册/架构组件/">
+            
+                    
+                    架构组件
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.3.2.1" data-path="../03 Android应用手册/架构组件/LiveData.html">
+            
+                <a href="../03 Android应用手册/架构组件/LiveData.html">
+            
+                    
+                    LiveData
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.2.2" data-path="../03 Android应用手册/架构组件/Navigation.html">
+            
+                <a href="../03 Android应用手册/架构组件/Navigation.html">
+            
+                    
+                    Navigation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.2.3" data-path="../03 Android应用手册/架构组件/ViewModel.html">
+            
+                <a href="../03 Android应用手册/架构组件/ViewModel.html">
+            
+                    
+                    ViewModel
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3" data-path="../03 Android应用手册/视图/">
+            
+                <a href="../03 Android应用手册/视图/">
+            
+                    
+                    视图
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.3.3.1" data-path="../03 Android应用手册/视图/Android动画.html">
+            
+                <a href="../03 Android应用手册/视图/Android动画.html">
+            
+                    
+                    Android动画
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.2" data-path="../03 Android应用手册/视图/Android布局.html">
+            
+                <a href="../03 Android应用手册/视图/Android布局.html">
+            
+                    
+                    Android布局
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.3" data-path="../03 Android应用手册/视图/Android控件.html">
+            
+                <a href="../03 Android应用手册/视图/Android控件.html">
+            
+                    
+                    Android控件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.4" data-path="../03 Android应用手册/视图/Drawable.html">
+            
+                <a href="../03 Android应用手册/视图/Drawable.html">
+            
+                    
+                    Drawable
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.5" data-path="../03 Android应用手册/视图/View绘制.html">
+            
+                <a href="../03 Android应用手册/视图/View绘制.html">
+            
+                    
+                    View绘制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.6" data-path="../03 Android应用手册/视图/视图相关工具类.html">
+            
+                <a href="../03 Android应用手册/视图/视图相关工具类.html">
+            
+                    
+                    视图相关工具类
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.3.7" data-path="../03 Android应用手册/视图/资源文件.html">
+            
+                <a href="../03 Android应用手册/视图/资源文件.html">
+            
+                    
+                    资源文件
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.4" data-path="../03 Android应用手册/项目/">
+            
+                <a href="../03 Android应用手册/项目/">
+            
+                    
+                    项目
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.3.4.1" data-path="../03 Android应用手册/项目/命令行调试.html">
+            
+                <a href="../03 Android应用手册/项目/命令行调试.html">
+            
+                    
+                    命令行调试
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3.4.2" data-path="../03 Android应用手册/项目/打包.html">
+            
+                <a href="../03 Android应用手册/项目/打包.html">
+            
+                    
+                    打包
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4" data-path="../04 常用类源码分析/">
+            
+                <a href="../04 常用类源码分析/">
+            
+                    
+                    04 常用类源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.4.1" data-path="../04 常用类源码分析/AsyncTask源码分析.html">
+            
+                <a href="../04 常用类源码分析/AsyncTask源码分析.html">
+            
+                    
+                    AsyncTask源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.2" data-path="../04 常用类源码分析/EventBus源码分析.html">
+            
+                <a href="../04 常用类源码分析/EventBus源码分析.html">
+            
+                    
+                    EventBus源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.3" data-path="../04 常用类源码分析/Glide源码分析.html">
+            
+                <a href="../04 常用类源码分析/Glide源码分析.html">
+            
+                    
+                    Glide源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.4" data-path="../04 常用类源码分析/Handler源码分析.html">
+            
+                <a href="../04 常用类源码分析/Handler源码分析.html">
+            
+                    
+                    Handler源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.5" data-path="../04 常用类源码分析/LeakCanary.html">
+            
+                <a href="../04 常用类源码分析/LeakCanary.html">
+            
+                    
+                    LeakCanary
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.6" data-path="../04 常用类源码分析/LinearLayout源码分析.html">
+            
+                <a href="../04 常用类源码分析/LinearLayout源码分析.html">
+            
+                    
+                    LinearLayout源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.7" data-path="../04 常用类源码分析/ListView源码分析.html">
+            
+                <a href="../04 常用类源码分析/ListView源码分析.html">
+            
+                    
+                    ListView源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.8" data-path="../04 常用类源码分析/LruCache源码分析.html">
+            
+                <a href="../04 常用类源码分析/LruCache源码分析.html">
+            
+                    
+                    LruCache源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.9" data-path="../04 常用类源码分析/OkHttp3源码分析.html">
+            
+                <a href="../04 常用类源码分析/OkHttp3源码分析.html">
+            
+                    
+                    OkHttp3源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.10" data-path="../04 常用类源码分析/Retrofit2源码分析.html">
+            
+                <a href="../04 常用类源码分析/Retrofit2源码分析.html">
+            
+                    
+                    Retrofit2源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.11" data-path="../04 常用类源码分析/RxJava2源码分析.html">
+            
+                <a href="../04 常用类源码分析/RxJava2源码分析.html">
+            
+                    
+                    RxJava2源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4.12" data-path="../04 常用类源码分析/SparseArray源码分析.html">
+            
+                <a href="../04 常用类源码分析/SparseArray源码分析.html">
+            
+                    
+                    SparseArray源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.5" data-path="../05 性能优化工具/">
+            
+                <a href="../05 性能优化工具/">
+            
+                    
+                    05 性能优化工具
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.5.1" data-path="../05 性能优化工具/cpu工具.html">
+            
+                <a href="../05 性能优化工具/cpu工具.html">
+            
+                    
+                    cpu工具
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../../06 计算机网络/">
+            
+                <a href="../../06 计算机网络/">
+            
+                    
+                    06 计算机网络
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.1" data-path="../../06 计算机网络/计算机网络.html">
+            
+                <a href="../../06 计算机网络/计算机网络.html">
+            
+                    
+                    计算机网络
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../../07 设计模式/">
+            
+                <a href="../../07 设计模式/">
+            
+                    
+                    07 设计模式
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.8.1" data-path="../../07 设计模式/Builder模式.html">
+            
+                <a href="../../07 设计模式/Builder模式.html">
+            
+                    
+                    Builder模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.2" data-path="../../07 设计模式/代理模式.html">
+            
+                <a href="../../07 设计模式/代理模式.html">
+            
+                    
+                    代理模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3" data-path="../../07 设计模式/其它设计模式/">
+            
+                <a href="../../07 设计模式/其它设计模式/">
+            
+                    
+                    其它设计模式
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.8.3.1" data-path="../../07 设计模式/其它设计模式/中介者模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/中介者模式.html">
+            
+                    
+                    中介者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.2" data-path="../../07 设计模式/其它设计模式/享元模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/享元模式.html">
+            
+                    
+                    享元模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.3" data-path="../../07 设计模式/其它设计模式/原型模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/原型模式.html">
+            
+                    
+                    原型模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.4" data-path="../../07 设计模式/其它设计模式/命令模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/命令模式.html">
+            
+                    
+                    命令模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.5" data-path="../../07 设计模式/其它设计模式/备忘录模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/备忘录模式.html">
+            
+                    
+                    备忘录模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.6" data-path="../../07 设计模式/其它设计模式/外观模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/外观模式.html">
+            
+                    
+                    外观模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.7" data-path="../../07 设计模式/其它设计模式/工厂方法模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/工厂方法模式.html">
+            
+                    
+                    工厂方法模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.8" data-path="../../07 设计模式/其它设计模式/抽象工厂模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/抽象工厂模式.html">
+            
+                    
+                    抽象工厂模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.9" data-path="../../07 设计模式/其它设计模式/框架模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/框架模式.html">
+            
+                    
+                    框架模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.10" data-path="../../07 设计模式/其它设计模式/桥接模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/桥接模式.html">
+            
+                    
+                    桥接模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.11" data-path="../../07 设计模式/其它设计模式/模板方法模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/模板方法模式.html">
+            
+                    
+                    模板方法模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.12" data-path="../../07 设计模式/其它设计模式/状态模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/状态模式.html">
+            
+                    
+                    状态模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.13" data-path="../../07 设计模式/其它设计模式/策略模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/策略模式.html">
+            
+                    
+                    策略模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.14" data-path="../../07 设计模式/其它设计模式/组合模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/组合模式.html">
+            
+                    
+                    组合模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.15" data-path="../../07 设计模式/其它设计模式/装饰模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/装饰模式.html">
+            
+                    
+                    装饰模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.16" data-path="../../07 设计模式/其它设计模式/解释器模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/解释器模式.html">
+            
+                    
+                    解释器模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.17" data-path="../../07 设计模式/其它设计模式/访问者模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/访问者模式.html">
+            
+                    
+                    访问者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.18" data-path="../../07 设计模式/其它设计模式/责任链模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/责任链模式.html">
+            
+                    
+                    责任链模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.19" data-path="../../07 设计模式/其它设计模式/迭代器模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/迭代器模式.html">
+            
+                    
+                    迭代器模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.20" data-path="../../07 设计模式/其它设计模式/适配器模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/适配器模式.html">
+            
+                    
+                    适配器模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3.21" data-path="../../07 设计模式/其它设计模式/静态工厂方法模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/静态工厂方法模式.html">
+            
+                    
+                    静态工厂方法模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.4" data-path="../../07 设计模式/单例模式.html">
+            
+                <a href="../../07 设计模式/单例模式.html">
+            
+                    
+                    单例模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.5" data-path="../../07 设计模式/架构模式.html">
+            
+                <a href="../../07 设计模式/架构模式.html">
+            
+                    
+                    架构模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.6" data-path="../../07 设计模式/生产者消费者模式.html">
+            
+                <a href="../../07 设计模式/生产者消费者模式.html">
+            
+                    
+                    生产者消费者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.7" data-path="../../07 设计模式/观察者模式.html">
+            
+                <a href="../../07 设计模式/观察者模式.html">
+            
+                    
+                    观察者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="../../08 杂项/">
+            
+                <a href="../../08 杂项/">
+            
+                    
+                    08 杂项
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.9.1" data-path="../../08 杂项/git手册/">
+            
+                <a href="../../08 杂项/git手册/">
+            
+                    
+                    git手册
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.2" data-path="../../08 杂项/常用命令/">
+            
+                <a href="../../08 杂项/常用命令/">
+            
+                    
+                    常用命令
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3" data-path="../../08 杂项/环境搭建记录/">
+            
+                <a href="../../08 杂项/环境搭建记录/">
+            
+                    
+                    环境搭建记录
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.9.3.1" data-path="../../08 杂项/环境搭建记录/环境搭建.html">
+            
+                <a href="../../08 杂项/环境搭建记录/环境搭建.html">
+            
+                    
+                    环境搭建
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10" data-path="../../09 Gradle总结/">
+            
+                <a href="../../09 Gradle总结/">
+            
+                    
+                    09 Gradle总结
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.10.1" data-path="../../09 Gradle总结/Gradle总结.html">
+            
+                <a href="../../09 Gradle总结/Gradle总结.html">
+            
+                    
+                    Gradle总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11" data-path="../../11 知识点/">
+            
+                <a href="../../11 知识点/">
+            
+                    
+                    11 知识点
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.11.1" data-path="../../11 知识点/04-操作系统.html">
+            
+                <a href="../../11 知识点/04-操作系统.html">
+            
+                    
+                    04-操作系统
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11.2" data-path="../../11 知识点/06-数据结构.html">
+            
+                <a href="../../11 知识点/06-数据结构.html">
+            
+                    
+                    06-数据结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11.3" data-path="../../11 知识点/07-第三方库.html">
+            
+                <a href="../../11 知识点/07-第三方库.html">
+            
+                    
+                    07-第三方库
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11.4" data-path="../../11 知识点/08-设计模式.html">
+            
+                <a href="../../11 知识点/08-设计模式.html">
+            
+                    
+                    08-设计模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11.5" data-path="../../11 知识点/09-算法.html">
+            
+                <a href="../../11 知识点/09-算法.html">
+            
+                    
+                    09-算法
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11.6" data-path="../../11 知识点/10-计算机底层基础.html">
+            
+                <a href="../../11 知识点/10-计算机底层基础.html">
+            
+                    
+                    10-计算机底层基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            本书使用 GitBook 发布
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../.." >10 JNI</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <div id="anchor-navigation-ex-navbar"><i class="fa fa-navicon"></i><ul><li><span class="title-icon "></span><a href="#javavm&#x548C;jnienv"><b>1. </b>JavaVM&#x548C;JNIEnv</a></li><li><span class="title-icon "></span><a href="#&#x52A0;&#x8F7D;so&#x5E93;&#x539F;&#x7406;"><b>2. </b>&#x52A0;&#x8F7D;so&#x5E93;&#x539F;&#x7406;</a></li><ul><li><span class="title-icon "></span><a href="#system&#x7684;load&#x65B9;&#x6CD5;"><b>2.1. </b>System&#x7684;load&#x65B9;&#x6CD5;</a></li><li><span class="title-icon "></span><a href="#system&#x7684;loadlibrary&#x65B9;&#x6CD5;"><b>2.2. </b>System&#x7684;loadLibrary&#x65B9;&#x6CD5;</a></li><li><span class="title-icon "></span><a href="#nativeload&#x65B9;&#x6CD5;&#x5206;&#x6790;"><b>2.3. </b>nativeLoad&#x65B9;&#x6CD5;&#x5206;&#x6790;</a></li><li><span class="title-icon "></span><a href="#loadnativelibrary&#x5206;&#x6790;"><b>2.4. </b>LoadNativeLibrary&#x5206;&#x6790;</a></li><ul><li><span class="title-icon "></span><a href="#&#x5C0F;&#x7ED3;"><b>2.4.1. </b>&#x5C0F;&#x7ED3;</a></li></ul><li><span class="title-icon "></span><a href="#&#x52A0;&#x8F7D;so&#x5E93;&#x603B;&#x7ED3;"><b>2.5. </b>&#x52A0;&#x8F7D;so&#x5E93;&#x603B;&#x7ED3;</a></li></ul><li><span class="title-icon "></span><a href="#native&#x65B9;&#x6CD5;&#x8C03;&#x7528;"><b>3. </b>Native&#x65B9;&#x6CD5;&#x8C03;&#x7528;</a></li><li><span class="title-icon "></span><a href="#native&#x65B9;&#x6CD5;&#x6CE8;&#x518C;"><b>4. </b>Native&#x65B9;&#x6CD5;&#x6CE8;&#x518C;</a></li><ul><li><span class="title-icon "></span><a href="#&#x9759;&#x6001;&#x6CE8;&#x518C;"><b>4.1. </b>&#x9759;&#x6001;&#x6CE8;&#x518C;</a></li><li><span class="title-icon "></span><a href="#&#x52A8;&#x6001;&#x6CE8;&#x518C;"><b>4.2. </b>&#x52A8;&#x6001;&#x6CE8;&#x518C;</a></li></ul><li><span class="title-icon "></span><a href="#jni&#x5F15;&#x7528;"><b>5. </b>JNI&#x5F15;&#x7528;</a></li><ul><ul><li><span class="title-icon "></span><a href="#&#x5C40;&#x90E8;&#x5F15;&#x7528;"><b>5.1.1. </b>&#x5C40;&#x90E8;&#x5F15;&#x7528;</a></li><li><span class="title-icon "></span><a href="#&#x5168;&#x5C40;&#x5F15;&#x7528;"><b>5.1.2. </b>&#x5168;&#x5C40;&#x5F15;&#x7528;</a></li><li><span class="title-icon "></span><a href="#&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;"><b>5.1.3. </b>&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;</a></li><li><span class="title-icon "></span><a href="#&#x603B;&#x7ED3;"><b>5.1.4. </b>&#x603B;&#x7ED3;</a></li></ul></ul><li><span class="title-icon "></span><a href="#ndk&#x76F8;&#x5173;&#x9519;&#x8BEF;"><b>6. </b>NDK&#x76F8;&#x5173;&#x9519;&#x8BEF;</a></li><li><span class="title-icon "></span><a href="#ndk&#x5F00;&#x53D1;&#x5DE5;&#x5177;"><b>7. </b>NDK&#x5F00;&#x53D1;&#x5DE5;&#x5177;</a></li><ul><li><span class="title-icon "></span><a href="#addr2line"><b>7.1. </b>addr2line</a></li><li><span class="title-icon "></span><a href="#objdump"><b>7.2. </b>objdump</a></li></ul></ul></div><a href="#javavm&#x548C;jnienv" id="anchorNavigationExGoTop"><i class="fa fa-arrow-up"></i></a><ol>
+<li>&#x52A0;&#x8F7D;so&#x5E93;&#x539F;&#x7406;</li>
+<li>native&#x65B9;&#x6CD5;&#x8C03;&#x7528;&#x539F;&#x7406;</li>
+<li>JNI&#x4E2D;&#x7684;&#x5F15;&#x7528;</li>
+</ol>
+<h1 id="javavm&#x548C;jnienv"><a name="javavm&#x548C;jnienv" class="anchor-navigation-ex-anchor" href="#javavm&#x548C;jnienv"><i class="fa fa-link" aria-hidden="true"></i></a>1. JavaVM&#x548C;JNIEnv</h1>
+<ul>
+<li>JavaVM&#xFF1A;&#x5B83;&#x4EE3;&#x8868;Java&#x865A;&#x62DF;&#x673A;&#x3002;&#x6BCF;&#x4E00;&#x4E2A;Java&#x8FDB;&#x7A0B;&#x6709;&#x4E00;&#x4E2A;&#x5168;&#x5C40;&#x552F;&#x4E00;&#x7684;JavaVM&#x5BF9;&#x8C61;&#x3002;</li>
+<li>JNIEnv&#xFF1A;&#x5B83;&#x662F;JNI&#x8FD0;&#x884C;&#x73AF;&#x5883;&#x7684;&#x542B;&#x4E49;&#x3002;&#x6BCF;&#x4E00;&#x4E2A;Java&#x7EBF;&#x7A0B;&#x90FD;&#x6709;&#x4E00;&#x4E2A;JNIEnv&#x5BF9;&#x8C61;&#x3002;Java&#x7EBF;&#x7A0B;&#x5728;&#x6267;&#x884C;JNI&#x76F8;&#x5173;&#x64CD;&#x4F5C;&#x65F6;&#xFF0C;&#x90FD;&#x9700;&#x8981;&#x5229;&#x7528;&#x8BE5;&#x7EBF;&#x7A0B;&#x5BF9;&#x5E94;&#x7684;JNIEnv&#x5BF9;&#x8C61;&#x3002;</li>
+</ul>
+<p>JavaVM&#x548C;JNIEnv&#x662F;jni.h&#x91CC;&#x5B9A;&#x4E49;&#x7684;&#x6570;&#x636E;&#x7ED3;&#x6784;&#xFF0C;&#x91CC;&#x8FB9;&#x5305;&#x542B;&#x7684;&#x90FD;&#x662F;&#x51FD;&#x6570;&#x6307;&#x9488;&#x6210;&#x5458;&#x53D8;&#x91CF;&#x3002;&#x6240;&#x4EE5;&#xFF0C;&#x8FD9;&#x4E24;&#x4E2A;&#x6570;&#x636E;&#x7ED3;&#x6784;&#x6709;&#x4E9B;&#x7C7B;&#x4F3C;Java&#x4E2D;&#x7684;interface&#x3002;&#x4E0D;&#x540C;&#x865A;&#x62DF;&#x673A;&#x5B9E;&#x73B0;&#x90FD;&#x4F1A;&#x4ECE;&#x5B83;&#x4EEC;&#x6D3E;&#x751F;&#x51FA;&#x5B9E;&#x9645;&#x7684;&#x5B9E;&#x73B0;&#x7C7B;&#x3002;</p>
+<h1 id="&#x52A0;&#x8F7D;so&#x5E93;&#x539F;&#x7406;"><a name="&#x52A0;&#x8F7D;so&#x5E93;&#x539F;&#x7406;" class="anchor-navigation-ex-anchor" href="#&#x52A0;&#x8F7D;so&#x5E93;&#x539F;&#x7406;"><i class="fa fa-link" aria-hidden="true"></i></a>2. &#x52A0;&#x8F7D;so&#x5E93;&#x539F;&#x7406;</h1>
+<p>//TODO</p>
+<ol>
+<li>so&#x5E93;&#x662F;&#x5982;&#x4F55;&#x6253;&#x5230;apk&#x5305;&#x7684;&#xFF1F;</li>
+<li>&#x5B89;&#x88C5;apk&#x5305;&#x662F;&#x5982;&#x4F55;&#x653E;&#x7F6E;so&#x5E93;&#x7684;&#xFF1F;</li>
+<li>&#x6253;&#x5F00;App&#x662F;&#x5982;&#x4F55;&#x8BFB;&#x53D6;so&#x5E93;&#x7684;&#xFF1F;</li>
+</ol>
+<p>&#x52A0;&#x8F7D;so&#x4E3B;&#x8981;&#x7528;&#x5230;&#x4E86;System&#x7C7B;&#x7684;load&#x548C;loadLibarary&#x65B9;&#x6CD5;&#xFF0C;&#x5982;&#x4E0B;&#x6240;&#x793A;&#xFF1A;</p>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">System</span> </span>{
+    <span class="hljs-comment">//... </span>
+    <span class="hljs-meta">@CallerSensitive</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">load</span><span class="hljs-params">(String filename)</span> </span>{
+        Runtime.getRuntime().load0(VMStack.getStackClass1(), filename);
+    }
+
+    <span class="hljs-meta">@CallerSensitive</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">loadLibrary</span><span class="hljs-params">(String libname)</span> </span>{
+        Runtime.getRuntime().loadLibrary0(VMStack.getCallingClassLoader(), libname);
+    }
+    <span class="hljs-comment">//&#x3002;&#x3002;&#x3002;</span>
+}
+</code></pre>
+<blockquote>
+<p>  &#x4E0A;&#x9762;&#x7684;&#x4EE3;&#x7801;&#x5757;&#x4E2D;&#x83B7;&#x53D6;&#x8C03;&#x7528;Class&#x6216;&#x8005;ClassLoader&#xFF0C;&#x662F;&#x7528;VMStack.getStackClass1()&#x548C;VMStack.getCallingClassLoader()&#xFF0C;&#x5728;&#x5176;&#x5B83;&#x7248;&#x672C;&#x7528;&#x7684;&#x662F;Reflection.getCallerClass()&#x3002;</p>
+<p>  &#x5728;&#x81EA;&#x5DF1;&#x4F7F;&#x7528;Reflection.getCallerClass()&#x65B9;&#x6CD5;&#x65F6;&#x9047;&#x5230;&#x4E86;&#x4E00;&#x4E9B;&#x95EE;&#x9898;&#xFF0C;&#x7136;&#x540E;&#x67E5;&#x4E86;&#x8D44;&#x6599;&#xFF0C;&#x4EC5;&#x4F5C;&#x53C2;&#x8003;&#xFF1A;</p>
+<p>  <strong>&#x6743;&#x9650;</strong></p>
+<p>  Reflection.getCallerClass()&#x7684;&#x8C03;&#x7528;&#x8005;&#x5FC5;&#x987B;&#x6709;&#x6743;&#x9650;&#xFF0C;&#x9700;&#x8981;&#x4EC0;&#x4E48;&#x6837;&#x7684;&#x6743;&#x9650;&#x5462;&#xFF1F;</p>
+<ul>
+<li>&#x7531;bootstrap class loader&#x52A0;&#x8F7D;&#x7684;&#x7C7B;&#x53EF;&#x4EE5;&#x8C03;&#x7528;</li>
+<li>&#x7531;extension class loader&#x52A0;&#x8F7D;&#x7684;&#x7C7B;&#x53EF;&#x4EE5;&#x8C03;&#x7528;</li>
+<li><p>&#x90FD;&#x77E5;&#x9053;&#x7528;&#x6237;&#x8DEF;&#x5F84;&#x7684;&#x7C7B;&#x52A0;&#x8F7D;&#x90FD;&#x662F;&#x7531; application class loader&#x8FDB;&#x884C;&#x52A0;&#x8F7D;&#x7684;&#xFF0C;&#x6362;&#x53E5;&#x8BDD;&#x8BF4;&#x5C31;&#x662F;&#x7528;&#x6237;&#x81EA;&#x5B9A;&#x4E49;&#x7684;&#x4E00;&#x4E9B;&#x7C7B;&#x4E2D;&#x65E0;&#x6CD5;&#x8C03;&#x7528;&#x6B64;&#x65B9;&#x6CD5;</p>
+<p><strong>&#x4F5C;&#x7528;</strong></p>
+<p><code>Reflection.getCallerClass()</code>&#x65B9;&#x6CD5;&#x8C03;&#x7528;&#x6240;&#x5728;&#x7684;&#x65B9;&#x6CD5;&#x5FC5;&#x987B;&#x7528;@CallerSensitive&#x8FDB;&#x884C;&#x6CE8;&#x89E3;&#xFF0C;&#x901A;&#x8FC7;&#x6B64;&#x65B9;&#x6CD5;&#x83B7;&#x53D6;class&#x65F6;&#x4F1A;&#x8DF3;&#x8FC7;&#x94FE;&#x8DEF;&#x4E0A;&#x6240;&#x6709;&#x7684;&#x6709;@CallerSensitive&#x6CE8;&#x89E3;&#x7684;&#x65B9;&#x6CD5;&#x7684;&#x7C7B;&#xFF0C;&#x76F4;&#x5230;&#x9047;&#x5230;&#x7B2C;&#x4E00;&#x4E2A;&#x672A;&#x4F7F;&#x7528;&#x8BE5;&#x6CE8;&#x89E3;&#x7684;&#x7C7B;&#xFF0C;&#x907F;&#x514D;&#x4E86;&#x7528;<code>Reflection.getCallerClass(int n)</code> &#x8FD9;&#x4E2A;&#x8FC7;&#x65F6;&#x65B9;&#x6CD5;&#x6765;&#x81EA;&#x5DF1;&#x505A;&#x5224;&#x65AD;&#x3002;</p>
+<p>&#x5C0F;&#x7ED3;&#xFF1A;&#x603B;&#x800C;&#x8A00;&#x4E4B;&#xFF0C;Reflection.getCallerClass()&#x4E0D;&#x5EFA;&#x8BAE;&#x5728;&#x5F00;&#x53D1;&#x4E2D;&#x4F7F;&#x7528;&#x3002;</p>
+</li>
+</ul>
+</blockquote>
+<p>System&#x7684;load&#x65B9;&#x6CD5;&#x4F20;&#x5165;&#x7684;&#x53C2;&#x6570;&#x662F;so&#x5728;&#x78C1;&#x76D8;&#x7684;&#x5B8C;&#x6574;&#x8DEF;&#x5F84;&#xFF0C;&#x7528;&#x4E8E;&#x52A0;&#x8F7D;&#x6307;&#x5B9A;&#x8DEF;&#x5F84;&#x7684;so&#x3002;</p>
+<p>System&#x7684;loadLibrary&#x65B9;&#x6CD5;&#x4F20;&#x5165;&#x7684;&#x53C2;&#x6570;&#x662F;so&#x7684;&#x540D;&#x79F0;&#xFF0C;&#x7528;&#x4E8E;&#x52A0;&#x8F7D;App&#x5B89;&#x88C5;&#x540E;&#x81EA;&#x52A8;&#x4ECE;apk&#x5305;&#x4E2D;&#x590D;&#x5236;&#x5230;<code>/data/data/packagename/lib</code>&#x4E0B;&#x7684;so&#x3002;</p>
+<p>&#x76EE;&#x524D;so&#x7684;&#x4FEE;&#x590D;&#x90FD;&#x662F;&#x57FA;&#x4E8E;&#x8FD9;&#x4E24;&#x4E2A;&#x65B9;&#x6CD5;&#x3002;</p>
+<h2 id="system&#x7684;load&#x65B9;&#x6CD5;"><a name="system&#x7684;load&#x65B9;&#x6CD5;" class="anchor-navigation-ex-anchor" href="#system&#x7684;load&#x65B9;&#x6CD5;"><i class="fa fa-link" aria-hidden="true"></i></a>2.1. System&#x7684;load&#x65B9;&#x6CD5;</h2>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">System</span> </span>{
+    <span class="hljs-meta">@CallerSensitive</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">load</span><span class="hljs-params">(String filename)</span> </span>{
+        Runtime.getRuntime().load0(VMStack.getStackClass1(), filename);
+    }
+}
+</code></pre>
+<p>Runtime.getRuntime()&#x4F1A;&#x5F97;&#x5230;&#x5F53;&#x524D;Java&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x7684;&#x8FD0;&#x884C;&#x73AF;&#x5883;Runtime&#xFF0C;Runtime&#x7684;load()&#x65B9;&#x6CD5;&#x5982;&#x4E0B;&#x6240;&#x793A;&#xFF1A;</p>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">synchronized</span> <span class="hljs-keyword">void</span> <span class="hljs-title">load0</span><span class="hljs-params">(Class&lt;?&gt; fromClass, String filename)</span> </span>{
+     <span class="hljs-keyword">if</span> (!(<span class="hljs-keyword">new</span> File(filename).isAbsolute())) {
+          <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> UnsatisfiedLinkError(<span class="hljs-string">&quot;Expecting an absolute path of the library: &quot;</span> + filename);
+     }
+
+    <span class="hljs-keyword">if</span> (filename == <span class="hljs-keyword">null</span>) {
+          <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> NullPointerException(<span class="hljs-string">&quot;filename == null&quot;</span>);
+    }
+    String error = doLoad(filename, fromClass.getClassLoader());
+    <span class="hljs-keyword">if</span> (error != <span class="hljs-keyword">null</span>) {
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> UnsatisfiedLinkError(error);
+    }
+}
+</code></pre>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">private</span> String <span class="hljs-title">doLoad</span><span class="hljs-params">(String name, ClassLoader loader)</span> </span>{
+        String librarySearchPath = <span class="hljs-keyword">null</span>;
+        <span class="hljs-keyword">if</span> (loader != <span class="hljs-keyword">null</span> &amp;&amp; loader <span class="hljs-keyword">instanceof</span> BaseDexClassLoader) {
+                BaseDexClassLoader dexClassLoader = (BaseDexClassLoader) loader;
+                librarySearchPath = dexClassLoader.getLdLibraryPath();
+        }
+        <span class="hljs-keyword">synchronized</span> (<span class="hljs-keyword">this</span>) {
+                <span class="hljs-keyword">return</span> nativeLoad(name, loader, librarySearchPath);
+        }
+}
+</code></pre>
+<p>doLoad&#x65B9;&#x6CD5;&#x4F1A;&#x8C03;&#x7528;native&#x65B9;&#x6CD5;nativeLoad&#x3002;</p>
+<h2 id="system&#x7684;loadlibrary&#x65B9;&#x6CD5;"><a name="system&#x7684;loadlibrary&#x65B9;&#x6CD5;" class="anchor-navigation-ex-anchor" href="#system&#x7684;loadlibrary&#x65B9;&#x6CD5;"><i class="fa fa-link" aria-hidden="true"></i></a>2.2. System&#x7684;loadLibrary&#x65B9;&#x6CD5;</h2>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">System</span> </span>{
+      <span class="hljs-meta">@CallerSensitive</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">loadLibrary</span><span class="hljs-params">(String libname)</span> </span>{
+        Runtime.getRuntime().loadLibrary0(VMStack.getCallingClassLoader(), libname);
+    }
+}
+</code></pre>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">synchronized</span> <span class="hljs-keyword">void</span> <span class="hljs-title">loadLibrary0</span><span class="hljs-params">(ClassLoader loader, String libname)</span> </span>{
+    <span class="hljs-keyword">if</span> (libname.indexOf((<span class="hljs-keyword">int</span>)File.separatorChar) != -<span class="hljs-number">1</span>) {
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> UnsatisfiedLinkError(<span class="hljs-string">&quot;Directory separator should not appear in library name: &quot;</span> + libname);
+    }
+    String libraryName = libname;
+    <span class="hljs-keyword">if</span> (loader != <span class="hljs-keyword">null</span>) {
+        String filename = loader.findLibrary(libraryName);<span class="hljs-comment">//&#x6CE8;&#x91CA;1</span>
+        <span class="hljs-keyword">if</span> (filename == <span class="hljs-keyword">null</span>) {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> UnsatisfiedLinkError(loader + <span class="hljs-string">&quot; couldn&apos;t find \&quot;&quot;</span> + System.mapLibraryName(libraryName) + <span class="hljs-string">&quot;\&quot;&quot;</span>);
+        }
+        String error = doLoad(filename, loader);<span class="hljs-comment">//&#x6CE8;&#x91CA;2</span>
+        <span class="hljs-keyword">if</span> (error != <span class="hljs-keyword">null</span>) {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> UnsatisfiedLinkError(error);
+        }
+        <span class="hljs-keyword">return</span>;
+    }
+
+    String filename = System.mapLibraryName(libraryName);
+    List&lt;String&gt; candidates = <span class="hljs-keyword">new</span> ArrayList&lt;String&gt;();
+    String lastError = <span class="hljs-keyword">null</span>;
+    <span class="hljs-keyword">for</span> (String directory : getLibPaths()) {<span class="hljs-comment">//&#x6CE8;&#x91CA;3</span>
+        String candidate = directory + filename;<span class="hljs-comment">//&#x6CE8;&#x91CA;4</span>
+        candidates.add(candidate);
+
+        <span class="hljs-keyword">if</span> (IoUtils.canOpenReadOnly(candidate)) {
+            String error = doLoad(candidate, loader);<span class="hljs-comment">//&#x6CE8;&#x91CA;5</span>
+            <span class="hljs-keyword">if</span> (error == <span class="hljs-keyword">null</span>) {
+                <span class="hljs-keyword">return</span>; 
+            }
+            lastError = error;
+        }
+    }
+
+    <span class="hljs-keyword">if</span> (lastError != <span class="hljs-keyword">null</span>) {
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> UnsatisfiedLinkError(lastError);
+    }
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> UnsatisfiedLinkError(<span class="hljs-string">&quot;Library &quot;</span> + libraryName + <span class="hljs-string">&quot; not found; tried &quot;</span> + candidates);
+}
+</code></pre>
+<p>loadLibrary0&#x65B9;&#x6CD5;&#x5206;&#x4E3A;&#x4E24;&#x4E2A;&#x90E8;&#x5206;&#xFF0C;&#x4E00;&#x4E2A;&#x662F;&#x4F20;&#x5165;&#x7684;ClassLoader&#x4E0D;&#x4E3A;null&#x7684;&#x90E8;&#x5206;&#xFF0C;&#x53E6;&#x4E00;&#x4E2A;&#x662F;ClassLoader&#x4E3A;null&#x7684;&#x90E8;&#x5206;&#x3002;</p>
+<p>&#x5148;&#x6765;&#x770B;ClassLoader &#x4E3A;null &#x7684;&#x90E8;&#x5206;&#x3002; &#x5728;<strong>&#x6CE8;&#x91CA;3</strong>&#x5904;&#x904D;&#x5386;getLibPaths&#x65B9;&#x6CD5;&#xFF0C;&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x4F1A;&#x8FD4;&#x56DE;<code>java.library.path</code>&#x9009;&#x9879;&#x914D;&#x7F6E;&#x7684;&#x8DEF;&#x5F84;&#x6570;&#x7EC4;&#x3002; &#x5728;<strong>&#x6CE8;&#x91CA;4</strong>&#x5904;&#x62FC;&#x63A5;&#x51FA;so&#x8DEF;&#x5F84;&#x5E76;&#x4F20;&#x5165;<strong>&#x6CE8;&#x91CA;5</strong>&#x5904;&#x8C03;&#x7528;&#x7684;doLoad&#x65B9;&#x6CD5;&#x4E2D;&#x3002;&#xFF08;TODO &#x4E3A;&#x4EC0;&#x4E48;&#x4F1A;&#x6709;null&#x60C5;&#x51B5;&#xFF09;</p>
+<p>&#x5F53;ClassLoader&#x4E0D;&#x4E3A;null&#x65F6;&#x3002; &#x5728;<strong>&#x6CE8;&#x91CA;2</strong>&#x5904;&#x540C;&#x6837;&#x8C03;&#x7528;&#x4E86;doLoad&#x65B9;&#x6CD5;&#xFF0C;&#x5176;&#x4E2D;&#x7B2C;&#x4E00;&#x4E2A;&#x53C2;&#x6570;&#x662F;&#x901A;&#x8FC7;<strong>&#x6CE8;&#x91CA;1</strong>&#x5904;&#x7684;ClassLoader&#x7684;findLibrary&#x65B9;&#x6CD5;&#x6765;&#x5F97;&#x5230;&#x7684;&#x3002;&#xFF08;&#x5177;&#x4F53;&#x5206;&#x6790;&#x89C1;&#x70ED;&#x4FEE;&#x590D;&#x539F;&#x7406;&#xFF0C;findLibrary&#x65B9;&#x6CD5;&#x5185;&#x90E8;&#x53EF;&#x5B9E;&#x73B0;so&#x5E93;&#x7684;&#x66FF;&#x6362;&#xFF09;</p>
+<p>System&#x7684;load&#x65B9;&#x6CD5;&#x548C;loadLibrary&#x65B9;&#x6CD5;&#x5728;Java FrameWork&#x5C42;&#x6700;&#x7EC8;&#x8C03;&#x7528;&#x7684;&#x90FD;&#x662F;nativeLoad&#x65B9;&#x6CD5;&#x3002;</p>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">native</span> String <span class="hljs-title">nativeLoad</span><span class="hljs-params">(String filename, ClassLoader loader,
+                                        String librarySearchPath)</span></span>;
+</code></pre>
+<h2 id="nativeload&#x65B9;&#x6CD5;&#x5206;&#x6790;"><a name="nativeload&#x65B9;&#x6CD5;&#x5206;&#x6790;" class="anchor-navigation-ex-anchor" href="#nativeload&#x65B9;&#x6CD5;&#x5206;&#x6790;"><i class="fa fa-link" aria-hidden="true"></i></a>2.3. nativeLoad&#x65B9;&#x6CD5;&#x5206;&#x6790;</h2>
+<p><strong>Runtime.c#Runtime_nativeLoad</strong></p>
+<pre><code class="lang-c"><span class="hljs-function">JNIEXPORT jstring JNICALL
+<span class="hljs-title">Runtime_nativeLoad</span><span class="hljs-params">(JNIEnv* env, jclass ignored, jstring javaFilename,
+                   jobject javaLoader, jstring javaLibrarySearchPath)</span>
+</span>{
+    <span class="hljs-keyword">return</span> JVM_NativeLoad(env, javaFilename, javaLoader, javaLibrarySearchPath);
+}
+</code></pre>
+<p>&#x5728;Runtime_nativeLoad&#x51FD;&#x6570;&#x4E2D;&#x8C03;&#x7528;&#x4E86;JVM_NativeLoad&#x51FD;&#x6570;&#xFF1A;</p>
+<pre><code class="lang-c"><span class="hljs-function">JNIEXPORT jstring <span class="hljs-title">JVM_NativeLoad</span><span class="hljs-params">(JNIEnv* env,
+                                 jstring javaFilename,
+                                 jobject javaLoader,
+                                 jstring javaLibrarySearchPath)</span> </span>{
+  <span class="hljs-comment">//&#x5C06;so&#x7684;&#x6587;&#x4EF6;&#x540D;&#x8F6C;&#x6362;&#x4E3A;ScopeUtfChars</span>
+  <span class="hljs-function">ScopedUtfChars <span class="hljs-title">filename</span><span class="hljs-params">(env, javaFilename)</span></span>;
+  <span class="hljs-keyword">if</span> (filename.c_str() == <span class="hljs-literal">NULL</span>) {
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+  }
+
+  <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span> error_msg;
+  {
+    <span class="hljs-comment">//&#x83B7;&#x53D6;&#x5F53;&#x524D;&#x8FD0;&#x884C;&#x65F6;&#x7684;&#x865A;&#x62DF;&#x673A;&#xFF0C;JavaVMExt&#x7528;&#x4E8E;&#x4EE3;&#x8868;&#x4E00;&#x4E2A;&#x865A;&#x62DF;&#x673A;&#x5B9E;&#x4F8B;</span>
+    art::JavaVMExt* vm = art::Runtime::Current()-&gt;GetJavaVM();
+    <span class="hljs-comment">//&#x865A;&#x62DF;&#x673A;&#x52A0;&#x8F7D;so</span>
+    <span class="hljs-keyword">bool</span> success = vm-&gt;LoadNativeLibrary(env,
+                                         filename.c_str(),
+                                         javaLoader,
+                                         javaLibrarySearchPath,
+                                         &amp;error_msg);
+    <span class="hljs-keyword">if</span> (success) {
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">nullptr</span>;
+    }
+  }
+
+  <span class="hljs-comment">// Don&apos;t let a pending exception from JNI_OnLoad cause a CheckJNI issue with NewStringUTF.</span>
+  env-&gt;ExceptionClear();
+  <span class="hljs-keyword">return</span> env-&gt;NewStringUTF(error_msg.c_str());
+}
+</code></pre>
+<h2 id="loadnativelibrary&#x5206;&#x6790;"><a name="loadnativelibrary&#x5206;&#x6790;" class="anchor-navigation-ex-anchor" href="#loadnativelibrary&#x5206;&#x6790;"><i class="fa fa-link" aria-hidden="true"></i></a>2.4. LoadNativeLibrary&#x5206;&#x6790;</h2>
+<p>&#x52A0;&#x8F7D;&#x6210;&#x529F;&#x4F1A;&#x8FD4;&#x56DE;true&#xFF0C;&#x52A0;&#x8F7D;&#x5931;&#x8D25;&#x8FD4;&#x56DE;false&#xFF0C;&#x540C;&#x65F6;JNI&#x8FD4;&#x56DE;&#x9519;&#x8BEF;String&#x3002;</p>
+<p><strong>java_vm_ext.cc#LoadNativeLibrary</strong></p>
+<pre><code class="lang-c"><span class="hljs-keyword">bool</span> JavaVMExt::LoadNativeLibrary(JNIEnv* env,
+                                  <span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&amp; path,
+                                  jobject class_loader,
+                                  jstring library_path,
+                                  <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>* error_msg)
+</code></pre>
+<p>path&#xFF1A;&#x4EE3;&#x8868;&#x76EE;&#x6807;&#x52A8;&#x6001;&#x5E93;&#x7684;&#x6587;&#x4EF6;&#x540D;&#xFF0C;&#x4E0D;&#x5305;&#x542B;&#x8DEF;&#x5F84;&#x4FE1;&#x606F;&#x3002;Java&#x5C42;&#x901A;&#x8FC7;<code>System.loadLibrary</code>&#x52A0;&#x8F7D;&#x52A8;&#x6001;&#x5E93;&#x65F6;&#xFF0C;&#x53EA;&#x9700;&#x6307;&#x5B9A;&#x52A8;&#x6001;&#x5E93;&#x7684;&#x540D;&#x79F0;(&#x6BD4;&#x5982;libxxx)&#xFF0C;&#x4E0D;&#x5305;&#x542B;&#x8DEF;&#x5F84;&#x548C;&#x540E;&#x7F00;&#x540D;&#x3002;</p>
+<p>class_loader&#xFF1A;&#x6839;&#x636E;JNI&#x89C4;&#x8303;&#xFF0C;&#x76EE;&#x6807;&#x52A8;&#x6001;&#x5E93;&#x5FC5;&#x987B;&#x548C;&#x4E00;&#x4E2A;ClassLoader&#x5BF9;&#x8C61;&#x76F8;&#x5173;&#x8054;&#xFF0C;&#x540C;&#x4E00;&#x4E2A;&#x76EE;&#x6807;&#x52A8;&#x6001;&#x5E93;&#x4E0D;&#x80FD;&#x7531;&#x4E0D;&#x540C;&#x7684;ClassLoader&#x5BF9;&#x8C61;&#x52A0;&#x8F7D;&#x3002;</p>
+<p>library_path&#xFF1A;&#x52A8;&#x6001;&#x5E93;&#x6587;&#x4EF6;&#x641C;&#x7D22;&#x8DEF;&#x5F84;&#x3002;&#x5C06;&#x5728;&#x8FD9;&#x4E2A;&#x8DEF;&#x5F84;&#x4E0B;&#x641C;&#x7D22;path&#x5BF9;&#x5E94;&#x7684;&#x52A8;&#x6001;&#x5E93;&#x6587;&#x4EF6;&#x3002;</p>
+<p><strong>&#x7B2C;&#x4E00;&#x90E8;&#x5206;</strong></p>
+<pre><code class="lang-c"><span class="hljs-keyword">bool</span> JavaVMExt::LoadNativeLibrary(JNIEnv* env,
+                                  <span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&amp; path,
+                                  jobject class_loader,
+                                  jstring library_path,
+                                  <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>* error_msg) {
+  error_msg-&gt;clear();
+  SharedLibrary* library;
+  Thread* self = Thread::Current();
+  {
+    <span class="hljs-function">MutexLock <span class="hljs-title">mu</span><span class="hljs-params">(self, *Locks::jni_libraries_lock_)</span></span>;
+    library = libraries_-&gt;Get(path);<span class="hljs-comment">//&#x6839;&#x636E;so&#x7684;&#x540D;&#x79F0;&#x4ECE;libraries&#x4E2D;&#x83B7;&#x53D6;&#x5BF9;&#x5E94;&#x7684;SharedLibrary&#x7C7B;&#x578B;&#x6307;&#x9488;library</span>
+  }
+  <span class="hljs-comment">//...</span>
+  <span class="hljs-keyword">if</span> (library != <span class="hljs-literal">nullptr</span>) {<span class="hljs-comment">//&#x5982;&#x679C;&#x6EE1;&#x8DB3;&#x6B64;&#x5904;&#x7684;&#x6761;&#x4EF6;&#x5C31;&#x8BF4;&#x660E;&#x6B64;&#x524D;&#x52A0;&#x8F7D;&#x8FC7;&#x8BE5;so</span>
+
+    <span class="hljs-keyword">if</span> (library-&gt;GetClassLoaderAllocator() != class_loader_allocator) {<span class="hljs-comment">//&#x5982;&#x679C;&#x6B64;&#x524D;&#x52A0;&#x8F7D;&#x7528;&#x7684;ClassLoader&#x548C;&#x5F53;&#x524D;&#x4F20;&#x5165;&#x7684;ClassLoader&#x4E0D;&#x76F8;&#x540C;&#x7684;&#x8BDD;&#xFF0C;&#x5C31;&#x4F1A;&#x8FD4;&#x56DE;false</span>
+
+      StringAppendF(error_msg, <span class="hljs-string">&quot;Shared library \&quot;%s\&quot; already opened by ClassLoader %p; can&apos;t open in ClassLoader %p&quot;</span>, path.c_str(), library-&gt;GetClassLoader(), class_loader);
+      LOG(WARNING) &lt;&lt; error_msg;
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    }
+    <span class="hljs-comment">//&#x3002;&#x3002;&#x3002;</span>
+
+    <span class="hljs-keyword">if</span> (!library-&gt;CheckOnLoadResult()) {<span class="hljs-comment">//&#x5224;&#x65AD;&#x4E0A;&#x6B21;&#x52A0;&#x8F7D;so&#x7684;&#x7ED3;&#x679C;&#xFF0C;&#x5982;&#x679C;&#x6709;&#x5F02;&#x5E38;&#x4E5F;&#x4F1A;&#x8FD4;&#x56DE;false&#xFF0C;&#x4E2D;&#x65AD;so&#x52A0;&#x8F7D;&#x3002;</span>
+      StringAppendF(error_msg, <span class="hljs-string">&quot;JNI_OnLoad failed on a previous attempt to load \&quot;%s\&quot;&quot;</span>, path.c_str());
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    }
+
+    <span class="hljs-comment">//&#x4EE5;&#x4E0A;&#x6761;&#x4EF6;&#x6EE1;&#x8DB3;&#xFF0C;&#x5219;&#x4E0D;&#x518D;&#x91CD;&#x590D;&#x52A0;&#x8F7D;so&#x3002;</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+  }
+    <span class="hljs-comment">//...</span>
+}
+</code></pre>
+<p><strong>&#x7B2C;&#x4E8C;&#x90E8;&#x5206;</strong></p>
+<pre><code class="lang-c"><span class="hljs-keyword">bool</span> JavaVMExt::LoadNativeLibrary(JNIEnv* env,
+                                  <span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&amp; path,
+                                  jobject class_loader,
+                                  jstring library_path,
+                                  <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>* error_msg) {
+  <span class="hljs-comment">//&#x3002;&#x3002;&#x3002;</span>
+  Locks::mutator_lock_-&gt;AssertNotHeld(self);
+  <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* path_str = path.empty() ? <span class="hljs-literal">nullptr</span> : path.c_str();
+  <span class="hljs-keyword">bool</span> needs_native_bridge = <span class="hljs-literal">false</span>;
+
+  <span class="hljs-comment">//&#x52A0;&#x8F7D;&#x52A8;&#x6001;&#x5E93;&#xFF0C;&#x6253;&#x5F00;&#x8DEF;&#x5F84;path_str&#x7684;so&#x5E93;&#xFF0C;&#x5F97;&#x5230;so&#x53E5;&#x67C4;handle&#x3002;Linux&#x5E73;&#x53F0;&#x662F;&#x5229;&#x7528;dlopen&#xFF0C;&#x4F46;Android&#x7CFB;&#x7EDF;&#x8FDB;&#x884C;&#x4E86;&#x76F8;&#x5173;&#x5B9A;&#x5236;&#xFF0C;&#x4E3B;&#x8981;&#x662F;&#x51FA;&#x4E8E;&#x5B89;&#x5168;&#x8003;&#x8651;&#x3002;&#x5982;&#xFF1A;&#x4E00;&#x4E2A;&#x5E94;&#x7528;&#x4E0D;&#x80FD;&#x52A0;&#x8F7D;&#x53E6;&#x5916;&#x4E00;&#x4E2A;&#x5E94;&#x7528;&#x7684;&#x52A8;&#x6001;&#x5E93;&#x3002;</span>
+  <span class="hljs-keyword">void</span>* handle = android::OpenNativeLibrary(env,
+                                            runtime_-&gt;GetTargetSdkVersion(),
+                                            path_str,
+                                            class_loader,
+                                            library_path,
+                                            &amp;needs_native_bridge,
+                                            error_msg);
+    <span class="hljs-comment">//&#x3002;&#x3002;&#x3002;</span>
+  <span class="hljs-keyword">if</span> (handle == <span class="hljs-literal">nullptr</span>) {<span class="hljs-comment">//&#x5982;&#x679C;&#x83B7;&#x53D6;so&#x53E5;&#x67C4;&#x5931;&#x8D25;&#x5C31;&#x4F1A;&#x8FD4;&#x56DE;false&#xFF0C;&#x4E2D;&#x65AD;so&#x52A0;&#x8F7D;&#x3002;</span>
+    VLOG(jni) &lt;&lt; <span class="hljs-string">&quot;dlopen(\&quot;&quot;</span> &lt;&lt; path &lt;&lt; <span class="hljs-string">&quot;\&quot;, RTLD_NOW) failed: &quot;</span> &lt;&lt; *error_msg;
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+  }
+
+  <span class="hljs-keyword">if</span> (env-&gt;ExceptionCheck() == JNI_TRUE) {
+    LOG(ERROR) &lt;&lt; <span class="hljs-string">&quot;Unexpected exception:&quot;</span>;
+    env-&gt;ExceptionDescribe();
+    env-&gt;ExceptionClear();
+  }
+  <span class="hljs-keyword">bool</span> created_library = <span class="hljs-literal">false</span>;
+  {
+    <span class="hljs-comment">//&#x65B0;&#x521B;&#x5EFA;SharedLibrary, &#x5E76;&#x5C06;so&#x53E5;&#x67C4;&#x4F5C;&#x4E3A;&#x53C2;&#x6570;&#x4F20;&#x5165;&#x8FDB;&#x53BB;&#x3002;</span>
+    <span class="hljs-built_in">std</span>::<span class="hljs-built_in">unique_ptr</span>&lt;SharedLibrary&gt; new_library(
+        <span class="hljs-keyword">new</span> SharedLibrary(env,
+                          self,
+                          path,
+                          handle,
+                          needs_native_bridge,
+                          class_loader,
+                          class_loader_allocator));
+
+    <span class="hljs-function">MutexLock <span class="hljs-title">mu</span><span class="hljs-params">(self, *Locks::jni_libraries_lock_)</span></span>;
+    library = libraries_-&gt;Get(path);<span class="hljs-comment">//&#x83B7;&#x53D6;&#x4F20;&#x5165;path&#x5BF9;&#x5E94;&#x7684;library&#xFF0C;&#x5982;&#x679C;library&#x4E3A;&#x7A7A;&#x6307;&#x9488;&#xFF0C;&#x5C31;&#x5C06;&#x65B0;&#x521B;&#x5EFA;&#x7684;SharedLibrary&#x8D4B;&#x503C;&#x7ED9;library&#xFF0C;&#x5E76;&#x5C06;library&#x5B58;&#x50A8;&#x5230;libraries&#x4E2D;&#x3002;</span>
+
+    <span class="hljs-comment">//&#x3002;&#x3002;&#x3002;</span>
+}
+</code></pre>
+<p><strong>&#x7B2C;&#x4E09;&#x90E8;&#x5206;</strong></p>
+<pre><code class="lang-c"><span class="hljs-keyword">bool</span> JavaVMExt::LoadNativeLibrary(JNIEnv* env,
+                                  <span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&amp; path,
+                                  jobject class_loader,
+                                  jstring library_path,
+                                  <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>* error_msg) {
+  <span class="hljs-comment">//&#x3002;&#x3002;&#x3002;</span>
+
+  <span class="hljs-keyword">bool</span> was_successful = <span class="hljs-literal">false</span>;
+  <span class="hljs-keyword">void</span>* sym = library-&gt;FindSymbol(<span class="hljs-string">&quot;JNI_OnLoad&quot;</span>, <span class="hljs-literal">nullptr</span>);<span class="hljs-comment">//&#x67E5;&#x627E;JNI_OnLoad&#x51FD;&#x6570;&#x7684;&#x6307;&#x9488;&#x5E76;&#x8D4B;&#x503C;&#x7ED9;&#x7A7A;&#x6307;&#x9488;sym&#xFF0C;JNI_OnLoad&#x51FD;&#x6570;&#x7528;&#x4E8E;native&#x65B9;&#x6CD5;&#x7684;&#x52A8;&#x6001;&#x6CE8;&#x518C;&#x3002;</span>
+  <span class="hljs-keyword">if</span> (sym == <span class="hljs-literal">nullptr</span>) {<span class="hljs-comment">//&#x5982;&#x679C;&#x6CA1;&#x6709;&#x627E;&#x5230;JNI_OnLoad&#x51FD;&#x6570;&#x5C31;&#x5C06;was_successful&#x8D4B;&#x503C;&#x4E3A;true, &#x8BF4;&#x660E;&#x5DF2;&#x7ECF;&#x52A0;&#x8F7D;&#x6210;&#x529F;&#x3002;&#x6CA1;&#x6709;&#x627E;&#x5230;JNI_OnLoad&#x51FD;&#x6570;&#x4E5F;&#x7B97;&#x52A0;&#x8F7D;&#x6210;&#x529F;&#xFF0C;&#x8FD9;&#x662F;&#x56E0;&#x4E3A;&#x5E76;&#x4E0D;&#x662F;&#x6240;&#x6709;so&#x90FD;&#x5B9A;&#x4E49;&#x4E86;JNI_OnLoad&#x51FD;&#x6570;&#xFF0C;&#x56E0;&#x4E3A;native&#x65B9;&#x6CD5;&#x9664;&#x4E86;&#x52A8;&#x6001;&#x6CE8;&#x518C;&#xFF0C;&#x8FD8;&#x6709;&#x9759;&#x6001;&#x6CE8;&#x518C;&#x3002;</span>
+
+    VLOG(jni) &lt;&lt; <span class="hljs-string">&quot;[No JNI_OnLoad found in \&quot;&quot;</span> &lt;&lt; path &lt;&lt; <span class="hljs-string">&quot;\&quot;]&quot;</span>;
+    was_successful = <span class="hljs-literal">true</span>;
+  } <span class="hljs-keyword">else</span> {
+    ScopedLocalRef&lt;jobject&gt; old_class_loader(env, env-&gt;NewLocalRef(self-&gt;GetClassLoaderOverride()));
+    self-&gt;SetClassLoaderOverride(class_loader);
+    VLOG(jni) &lt;&lt; <span class="hljs-string">&quot;[Calling JNI_OnLoad in \&quot;&quot;</span> &lt;&lt; path &lt;&lt; <span class="hljs-string">&quot;\&quot;]&quot;</span>;
+    <span class="hljs-function"><span class="hljs-keyword">typedef</span> <span class="hljs-title">int</span> <span class="hljs-params">(*JNI_OnLoadFn)</span><span class="hljs-params">(JavaVM*, <span class="hljs-keyword">void</span>*)</span></span>;
+    JNI_OnLoadFn jni_on_load = <span class="hljs-keyword">reinterpret_cast</span>&lt;JNI_OnLoadFn&gt;(sym);
+    <span class="hljs-keyword">int</span> version = (*jni_on_load)(<span class="hljs-keyword">this</span>, <span class="hljs-literal">nullptr</span>);<span class="hljs-comment">//&#x5982;&#x679C;&#x627E;&#x5230;&#x4E86;JNI_OnLoad&#x51FD;&#x6570;&#xFF0C;&#x5C31;&#x5728;&#x6CE8;&#x91CA;3&#x5904;&#x6267;&#x884C;JNI_OnLoad&#x51FD;&#x6570;&#x5E76;&#x5C06;&#x7ED3;&#x679C;&#x8D4B;&#x503C;&#x7ED9;version&#x3002;</span>
+
+    <span class="hljs-comment">//&#x3002;&#x3002;&#x3002;</span>
+
+    <span class="hljs-keyword">if</span> (version == JNI_ERR) {<span class="hljs-comment">//&#x5982;&#x679C;version&#x4E3A;JNI_ERR&#x6216;&#x8005;Bad JNI version&#xFF0C;&#x8BF4;&#x660E;&#x6CA1;&#x6709;&#x6267;&#x884C;&#x6210;&#x529F;&#xFF0C;was_successful&#x7684;&#x503C;&#x4ECD;&#x65E7;&#x4E3A;&#x9ED8;&#x8BA4;&#x7684;false&#xFF0C;&#x5426;&#x5219;&#x5C31;&#x5C06;was_successful&#x8D4B;&#x503C;&#x4E3A;true&#xFF0C;&#x6700;&#x7EC8;&#x4F1A;&#x8FD4;&#x56DE;&#x8BE5;was_successful&#x3002;</span>
+
+      StringAppendF(error_msg, <span class="hljs-string">&quot;JNI_ERR returned from JNI_OnLoad in \&quot;%s\&quot;&quot;</span>, path.c_str());
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (JavaVMExt::IsBadJniVersion(version)) {
+      StringAppendF(error_msg, <span class="hljs-string">&quot;Bad JNI version returned from JNI_OnLoad in \&quot;%s\&quot;: %d&quot;</span>, path.c_str(), version);
+    } <span class="hljs-keyword">else</span> {
+      was_successful = <span class="hljs-literal">true</span>;
+    }
+    VLOG(jni) &lt;&lt; <span class="hljs-string">&quot;[Returned &quot;</span> &lt;&lt; (was_successful ? <span class="hljs-string">&quot;successfully&quot;</span> : <span class="hljs-string">&quot;failure&quot;</span>) &lt;&lt; <span class="hljs-string">&quot; from JNI_OnLoad in \&quot;&quot;</span> &lt;&lt; path &lt;&lt; <span class="hljs-string">&quot;\&quot;]&quot;</span>;
+  }
+
+  library-&gt;SetResult(was_successful);
+  <span class="hljs-keyword">return</span> was_successful;
+}
+</code></pre>
+<h3 id="&#x5C0F;&#x7ED3;"><a name="&#x5C0F;&#x7ED3;" class="anchor-navigation-ex-anchor" href="#&#x5C0F;&#x7ED3;"><i class="fa fa-link" aria-hidden="true"></i></a>2.4.1. &#x5C0F;&#x7ED3;</h3>
+<p>LoadNativeLibrary&#x51FD;&#x6570;&#x4E3B;&#x8981;&#x505A;&#x4E86;&#x5982;&#x4E0B;3&#x65B9;&#x9762;&#x5DE5;&#x4F5C;&#x3002;</p>
+<ol>
+<li>&#x5224;&#x65AD;so&#x662F;&#x5426;&#x88AB;&#x52A0;&#x8F7D;&#x8FC7;&#xFF0C;&#x4E24;&#x6B21;ClassLoader&#x662F;&#x5426;&#x662F;&#x540C;&#x4E00;&#x4E2A;&#xFF0C;&#x907F;&#x514D;so&#x91CD;&#x590D;&#x52A0;&#x8F7D;&#x3002;</li>
+<li>&#x6253;&#x5F00;so&#x5E76;&#x5F97;&#x5230;so&#x53E5;&#x67C4;&#xFF0C;&#x5982;&#x679C;so&#x53E5;&#x67C4;&#x83B7;&#x53D6;&#x5931;&#x8D25;&#xFF0C;&#x5C31;&#x8FD4;&#x56DE;false&#x3002;&#x521B;&#x5EFA;&#x65B0;&#x7684;SharedLibrary&#xFF0C;&#x5982;&#x679C;&#x4F20;&#x5165;path&#x5BF9;&#x5E94;&#x7684;library&#x4E3A;&#x7A7A;&#x6307;&#x9488;&#xFF0C;&#x5C31;&#x5C06;&#x65B0;&#x521B;&#x5EFA;&#x7684;SharedLibrary&#x8D4B;&#x503C;&#x7ED9;library&#xFF0C;&#x5E76;&#x5C06;library&#x5B58;&#x50A8;&#x5230;libraries&#x4E2D;&#x3002;</li>
+<li>&#x67E5;&#x627E;JNI_OnLoad&#x7684;&#x51FD;&#x6570;&#x6307;&#x9488;&#xFF0C;&#x6839;&#x636E;&#x4E0D;&#x540C;&#x60C5;&#x51B5;&#x8BBE;&#x7F6E;was_successful&#x7684;&#x503C;&#xFF0C;&#x6700;&#x7EC8;&#x8FD4;&#x56DE;&#x8BE5;was_successful&#x3002;</li>
+</ol>
+<h2 id="&#x52A0;&#x8F7D;so&#x5E93;&#x603B;&#x7ED3;"><a name="&#x52A0;&#x8F7D;so&#x5E93;&#x603B;&#x7ED3;" class="anchor-navigation-ex-anchor" href="#&#x52A0;&#x8F7D;so&#x5E93;&#x603B;&#x7ED3;"><i class="fa fa-link" aria-hidden="true"></i></a>2.5. &#x52A0;&#x8F7D;so&#x5E93;&#x603B;&#x7ED3;</h2>
+<ol>
+<li>Java&#x5C42;&#x8C03;&#x7528;System&#x7684;load&#x6216;&#x8005;loadLibrary&#x65B9;&#x6CD5;&#xFF0C;&#x5185;&#x90E8;&#x4F1A;&#x5BFB;&#x627E;so&#x6587;&#x4EF6;&#x7684;&#x8DEF;&#x5F84;&#x3002;</li>
+<li>&#x5C06;&#x641C;&#x7D22;&#x8DEF;&#x5F84;&#x4F20;&#x7ED9;JNI&#x51FD;&#x6570;&#xFF0C;&#x51FD;&#x6570;&#x5185;&#x90E8;&#x5224;&#x65AD;so&#x662F;&#x5426;&#x88AB;&#x52A0;&#x8F7D;&#x8FC7;&#xFF0C;&#x907F;&#x514D;so&#x91CD;&#x590D;&#x52A0;&#x8F7D;&#x3002;</li>
+<li>&#x6839;&#x636E;&#x641C;&#x7D22;&#x8DEF;&#x5F84;&#xFF0C;&#x521B;&#x5EFA;SharedLibrary&#xFF0C;&#x5E76;&#x5B58;&#x50A8;&#x3002;</li>
+<li>&#x67E5;&#x627E;JNI_OnLoad&#x7684;&#x51FD;&#x6570;&#x6307;&#x9488;&#xFF0C;&#x5982;&#x679C;&#x5B58;&#x5728;&#x5C31;&#x8C03;&#x7528;&#x3002;&#x6839;&#x636E;&#x4E0D;&#x540C;&#x60C5;&#x51B5;&#x8BBE;&#x7F6E;was_successful&#x7684;&#x503C;&#xFF0C;&#x6700;&#x7EC8;&#x8FD4;&#x56DE;&#x8BE5;was_successful&#x3002;</li>
+</ol>
+<h1 id="native&#x65B9;&#x6CD5;&#x8C03;&#x7528;"><a name="native&#x65B9;&#x6CD5;&#x8C03;&#x7528;" class="anchor-navigation-ex-anchor" href="#native&#x65B9;&#x6CD5;&#x8C03;&#x7528;"><i class="fa fa-link" aria-hidden="true"></i></a>3. Native&#x65B9;&#x6CD5;&#x8C03;&#x7528;</h1>
+<h1 id="native&#x65B9;&#x6CD5;&#x6CE8;&#x518C;"><a name="native&#x65B9;&#x6CD5;&#x6CE8;&#x518C;" class="anchor-navigation-ex-anchor" href="#native&#x65B9;&#x6CD5;&#x6CE8;&#x518C;"><i class="fa fa-link" aria-hidden="true"></i></a>4. Native&#x65B9;&#x6CD5;&#x6CE8;&#x518C;</h1>
+<h2 id="&#x9759;&#x6001;&#x6CE8;&#x518C;"><a name="&#x9759;&#x6001;&#x6CE8;&#x518C;" class="anchor-navigation-ex-anchor" href="#&#x9759;&#x6001;&#x6CE8;&#x518C;"><i class="fa fa-link" aria-hidden="true"></i></a>4.1. &#x9759;&#x6001;&#x6CE8;&#x518C;</h2>
+<p>&#x9759;&#x6001;&#x6CE8;&#x518C;&#x5C31;&#x662F;&#x5E38;&#x89C1;&#x7684;&#x5199;&#x6CD5;&#xFF0C;&#x6839;&#x636E;&#x5305;&#x540D;+&#x7C7B;&#x540D;+&#x65B9;&#x6CD5;&#x540D;&#x5BFB;&#x627E;&#x5BF9;&#x5E94;&#x7684;&#x51FD;&#x6570;&#xFF0C;&#x5982;&#x521B;&#x5EFA;&#x9879;&#x76EE;&#x521D;&#x59CB;&#x751F;&#x6210;&#x7684;&#x4EE3;&#x7801;&#xFF1A;</p>
+<pre><code class="lang-cpp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> MainActivity extends AppCompatActivity {
+    <span class="hljs-keyword">static</span> {
+        System.loadLibrary(<span class="hljs-string">&quot;native-lib&quot;</span>);
+    }
+    <span class="hljs-comment">//...</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> native String <span class="hljs-title">stringFromJNI</span><span class="hljs-params">()</span></span>;
+}
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;jni.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;string&gt;</span></span>
+
+<span class="hljs-keyword">extern</span> <span class="hljs-string">&quot;C&quot;</span> <span class="hljs-function">JNIEXPORT jstring JNICALL
+<span class="hljs-title">Java_com_mezzsy_myapplication_MainActivity_stringFromJNI</span><span class="hljs-params">(
+        JNIEnv* env,
+        jobject <span class="hljs-comment">/* this */</span>)</span> </span>{
+    <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span> hello = <span class="hljs-string">&quot;Hello from C++&quot;</span>;
+    <span class="hljs-keyword">return</span> env-&gt;NewStringUTF(hello.c_str());
+}
+</code></pre>
+<p>&#x9996;&#x5148;JNI&#x51FD;&#x6570;&#x540D;&#x7684;&#x683C;&#x5F0F;&#x662F;Java+&#x5305;&#x540D;+&#x7C7B;&#x540D;+&#x65B9;&#x6CD5;&#x540D;&#xFF0C;&#x5982;&#x679C;Java&#x7684;&#x65B9;&#x6CD5;&#x540D;&#x5B58;&#x5728;&quot;_&quot;&#x90A3;&#x4E48;&#x5BF9;&#x5E94;JNI&#x65B9;&#x6CD5;&#x540D;&#x4F1A;&#x591A;&#x4E00;&#x4E2A;1&#xFF0C;&#x53EF;&#x4EE5;&#x7406;&#x89E3;&#x4E3A;&#x8F6C;&#x4E49;&#x3002;</p>
+<p>&#x5728;Java&#x4E2D;&#x8C03;&#x7528;native&#x65B9;&#x6CD5;&#x65F6;&#xFF0C;&#x5C31;&#x4F1A;&#x4ECE;JNI&#x4E2D;&#x5BFB;&#x627E;&#x5BF9;&#x5E94;&#x51FD;&#x6570;&#xFF0C;&#x5982;&#x679C;&#x6CA1;&#x6709;&#x5C31;&#x4F1A;&#x62A5;&#x9519;&#xFF0C;&#x5982;&#x679C;&#x627E;&#x5230;&#x5C31;&#x4F1A;&#x5EFA;&#x7ACB;&#x5173;&#x8054;&#xFF0C;&#x5176;&#x5B9E;&#x662F;&#x4FDD;&#x5B58;JNI&#x7684;&#x51FD;&#x6570;&#x6307;&#x9488;&#xFF0C;&#x8FD9;&#x6837;&#x518D;&#x6B21;&#x8C03;&#x7528;native&#x65B9;&#x6CD5;&#x65F6;&#x76F4;&#x63A5;&#x4F7F;&#x7528;&#x8FD9;&#x4E2A;&#x51FD;&#x6570;&#x6307;&#x9488;&#x5C31;&#x53EF;&#x4EE5;&#x4E86;&#x3002;&#x9759;&#x6001;&#x6CE8;&#x518C;&#x5C31;&#x662F;&#x6839;&#x636E;&#x65B9;&#x6CD5;&#x540D;&#xFF0C;&#x5C06;Java&#x65B9;&#x6CD5;&#x548C;JNI&#x51FD;&#x6570;&#x5EFA;&#x7ACB;&#x5173;&#x8054;&#xFF0C;&#x4F46;&#x662F;&#x5B83;&#x6709;&#x4E00;&#x4E9B;&#x7F3A;&#x70B9;&#xFF1A;</p>
+<ul>
+<li>JNI&#x5C42;&#x7684;&#x51FD;&#x6570;&#x540D;&#x79F0;&#x8FC7;&#x957F;&#x3002;</li>
+<li>&#x58F0;&#x660E;Native&#x65B9;&#x6CD5;&#x7684;&#x7C7B;&#x9700;&#x8981;&#x7528;javah&#x751F;&#x6210;&#x5934;&#x6587;&#x4EF6;&#x3002;</li>
+<li>&#x521D;&#x6B21;&#x8C03;&#x7528;Native&#x65B9;&#x6CD5;&#x65F6;&#x9700;&#x8981;&#x5EFA;&#x7ACB;&#x5173;&#x8054;&#xFF0C;&#x5F71;&#x54CD;&#x6548;&#x7387;&#x3002;</li>
+</ul>
+<h2 id="&#x52A8;&#x6001;&#x6CE8;&#x518C;"><a name="&#x52A8;&#x6001;&#x6CE8;&#x518C;" class="anchor-navigation-ex-anchor" href="#&#x52A8;&#x6001;&#x6CE8;&#x518C;"><i class="fa fa-link" aria-hidden="true"></i></a>4.2. &#x52A8;&#x6001;&#x6CE8;&#x518C;</h2>
+<pre><code>jint JNI_OnLoad(JavaVM *vm, void *) {
+    LOGI(&quot;JNI_OnLoad&quot;);
+    return JNI_VERSION_1_6;
+}
+</code></pre><p>&#x5F53;Java&#x5C42;&#x901A;&#x8FC7;System.loadLibrary&#x52A0;&#x8F7D;&#x5B8C;JNI&#x52A8;&#x6001;&#x5E93;&#x540E;&#xFF0C;&#x7D27;&#x63A5;&#x7740;&#x4F1A;&#x67E5;&#x627E;&#x8BE5;&#x5E93;&#x4E2D;&#x4E00;&#x4E2A;&#x53EB;JNI_OnLoad&#x7684;&#x51FD;&#x6570;&#x3002;&#x5982;&#x679C;&#x6709;&#xFF0C;&#x5C31;&#x8C03;&#x7528;&#x5B83;&#xFF0C;&#x800C;&#x52A8;&#x6001;&#x6CE8;&#x518C;&#x7684;&#x5DE5;&#x4F5C;&#x5C31;&#x662F;&#x5728;&#x8FD9;&#x91CC;&#x5B8C;&#x6210;&#x7684;&#x3002;</p>
+<p>&#x52A8;&#x6001;&#x6CE8;&#x518C;&#x7684;&#x4E3B;&#x8981;&#x539F;&#x7406;&#x5C31;&#x662F;&#x5229;&#x7528;JNIEnv&#x7684;RegisterNatives&#x51FD;&#x6570;&#x3002;</p>
+<h1 id="jni&#x5F15;&#x7528;"><a name="jni&#x5F15;&#x7528;" class="anchor-navigation-ex-anchor" href="#jni&#x5F15;&#x7528;"><i class="fa fa-link" aria-hidden="true"></i></a>5. JNI&#x5F15;&#x7528;</h1>
+<p>&#x7532;&#x9AA8;&#x6587;&#x7684;&#x6587;&#x6863;&#xFF1A;<a href="https://docs.oracle.com/javase/8/docs/technotes/guides/jni/spec/design.html#implementing_local_references" target="_blank">https://docs.oracle.com/javase/8/docs/technotes/guides/jni/spec/design.html#implementing_local_references</a></p>
+<p>JNI&#x89C4;&#x8303;&#x4E2D;&#x5B9A;&#x4E49;&#x4E86;&#x4E09;&#x79CD;&#x5F15;&#x7528;&#xFF1A;</p>
+<ol>
+<li>&#x5168;&#x5C40;&#x5F15;&#x7528;&#xFF08;Global reference&#xFF09;
+&#x751F;&#x5B58;&#x671F;&#x4E3A;&#x521B;&#x5EFA;&#x4E4B;&#x540E;&#xFF0C;&#x76F4;&#x5230;&#x663E;&#x5F0F;&#x7684;&#x91CA;&#x653E;&#x3002;</li>
+<li>&#x5C40;&#x90E8;&#x5F15;&#x7528;&#xFF08;Local reference&#xFF09;
+&#x751F;&#x5B58;&#x671F;&#x4E3A;&#x521B;&#x5EFA;&#x540E;&#xFF0C;&#x76F4;&#x5230;&#x663E;&#x5F0F;&#x7684;&#x91CA;&#x653E;&#xFF0C;&#x6216;&#x5728;&#x5F53;&#x524D;&#x4E0A;&#x4E0B;&#x6587;&#xFF08;&#x53EF;&#x4EE5;&#x7406;&#x89E3;&#x6210;Java&#x7A0B;&#x5E8F;&#x8C03;&#x7528;Native&#x4EE3;&#x7801;&#x7684;&#x8FC7;&#x7A0B;&#xFF09;&#x7ED3;&#x675F;&#x4E4B;&#x540E;&#x6CA1;&#x6709;&#x88AB;JVM&#x53D1;&#x73B0;&#x6709;JAVA&#x5C42;&#x5F15;&#x7528;&#x800C;&#x88AB;JVM&#x56DE;&#x6536;&#x5E76;&#x91CA;&#x653E;&#x3002;</li>
+<li>&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;&#xFF08;Weak global reference&#xFF09;
+&#x751F;&#x5B58;&#x671F;&#x4E3A;&#x521B;&#x5EFA;&#x4E4B;&#x540E;&#xFF0C;&#x5230;&#x663E;&#x5F0F;&#x7684;&#x91CA;&#x653E;&#xFF0C;&#x6216;JVM&#x8BA4;&#x4E3A;&#x5E94;&#x8BE5;&#x56DE;&#x6536;&#x5B83;&#x7684;&#x65F6;&#x5019;&#xFF08;&#x6BD4;&#x5982;&#x5185;&#x5B58;&#x7D27;&#x5F20;&#x7684;&#x65F6;&#x5019;&#xFF09;&#x8FDB;&#x884C;&#x56DE;&#x6536;&#x800C;&#x88AB;&#x91CA;&#x653E;&#x3002;</li>
+</ol>
+<h3 id="&#x5C40;&#x90E8;&#x5F15;&#x7528;"><a name="&#x5C40;&#x90E8;&#x5F15;&#x7528;" class="anchor-navigation-ex-anchor" href="#&#x5C40;&#x90E8;&#x5F15;&#x7528;"><i class="fa fa-link" aria-hidden="true"></i></a>5.1.1. &#x5C40;&#x90E8;&#x5F15;&#x7528;</h3>
+<p>Java&#x5BF9;&#x8C61;&#x4F20;&#x5165;JNI&#x51FD;&#x6570;&#x65F6;&#xFF0C;&#x4F1A;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x5F15;&#x7528;&#x8FD9;&#x4E2A;&#x5BF9;&#x8C61;&#xFF0C;&#x6240;&#x4EE5;&#x8FD9;&#x4E2A;&#x5BF9;&#x8C61;&#x6682;&#x65F6;&#x4E0D;&#x4F1A;&#x88AB;&#x56DE;&#x6536;&#x3002;</p>
+<p>&#x5728;JNI&#x51FD;&#x6570;&#x8FD4;&#x56DE;&#x65F6;&#xFF0C;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x4F1A;&#x88AB;&#x56DE;&#x6536;&#x3002;&#xFF08;&#x6765;&#x81EA;&#x5B98;&#x65B9;&#x6587;&#x6863;&#xFF09;</p>
+<blockquote>
+<p>  &#x5982;&#x679C;JNI&#x51FD;&#x6570;&#x8FD4;&#x56DE;&#x4E86;&#x4E00;&#x4E2A;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#xFF0C;&#x8BE5;&#x5F15;&#x7528;&#x662F;&#x600E;&#x6837;&#x88AB;&#x56DE;&#x6536;&#x7684;&#xFF1F;</p>
+<p>  zzsy&#xFF1A;&#x8BE5;&#x95EE;&#x9898;&#x76EE;&#x524D;&#x4E2A;&#x4EBA;&#x7406;&#x89E3;&#x662F;&#x8FD9;&#x6837;&#x7684;&#xFF1A;</p>
+<pre><code class="lang-cpp">  <span class="hljs-keyword">extern</span> <span class="hljs-string">&quot;C&quot;</span>
+  <span class="hljs-function">JNIEXPORT jobject JNICALL
+  <span class="hljs-title">Java_com_mezzsy_myapplication_MainActivity_getNativeObj</span><span class="hljs-params">(JNIEnv *env, jobject thiz)</span> </span>{
+     <span class="hljs-keyword">return</span> thiz;
+  }
+</code></pre>
+<p>  &#x4E0A;&#x9762;&#x8FD9;&#x6BB5;&#x4EE3;&#x7801;&#xFF0C;&#x591A;&#x6B21;&#x8C03;&#x7528;&#xFF0C;Java&#x5C42;&#x62FF;&#x5230;&#x7684;&#x90FD;&#x662F;&#x540C;&#x4E00;&#x4E2A;&#x5BF9;&#x8C61;&#xFF0C;&#x800C;&#x6253;&#x5370;jobject&#x7684;&#x5730;&#x5740;&#xFF08;&#x5F3A;&#x8F6C;&#x4E3A;long long&#xFF09;&#x662F;&#x4E0D;&#x540C;&#x7684;&#x3002;&#x8FD9;&#x8BF4;&#x660E;&#x540C;&#x4E00;&#x4E2A;jobj&#x867D;&#x7136;&#x662F;&#x6307;&#x9488;&#xFF0C;&#x4F46;&#x662F;&#x5B83;&#x5E76;&#x6CA1;&#x6709;&#x6307;&#x5411;&#x5BF9;&#x5E94;&#x7684;&#x5BF9;&#x8C61;&#xFF0C;jobj&#x5F15;&#x7528;&#x6307;&#x5411;&#x7684;&#x662F;&#x53E5;&#x67C4;&#xFF0C;&#x800C;&#x53E5;&#x67C4;&#x624D;&#x6307;&#x5411;&#x5177;&#x4F53;&#x7684;&#x5BF9;&#x8C61;&#x3002;</p>
+<p>  &#x6240;&#x4EE5;&#x5F53;JNI&#x51FD;&#x6570;&#x8FD4;&#x56DE;&#x65F6;&#xFF0C;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x4E5F;&#x4F1A;&#x88AB;&#x56DE;&#x6536;&#xFF0C;Java&#x5C42;&#x62FF;&#x5230;&#x7684;&#x662F;&#x5177;&#x4F53;&#x5BF9;&#x8C61;&#xFF0C;&#x6B64;&#x65F6;&#x5DF2;&#x7ECF;&#x65E0;&#x5173;JNI&#x5C42;&#x7684;&#x5F15;&#x7528;&#x4E86;&#x3002;</p>
+</blockquote>
+<p>&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x5728;Native&#x4EE3;&#x7801;&#x663E;&#x5F0F;&#x91CA;&#x653E;&#x975E;&#x5E38;&#x91CD;&#x8981;&#x3002;&#x65E2;&#x7136;Java&#x865A;&#x62DF;&#x673A;&#x4F1A;&#x81EA;&#x52A8;&#x91CA;&#x653E;&#x5C40;&#x90E8;&#x53D8;&#x91CF;&#x4E3A;&#x4EC0;&#x4E48;&#x8FD8;&#x9700;&#x8981;&#x5728;Native&#x4EE3;&#x7801;&#x4E2D;&#x663E;&#x793A;&#x91CA;&#x653E;&#x5462;&#xFF1F;&#x539F;&#x56E0;&#x6709;&#x4EE5;&#x4E0B;&#x51E0;&#x70B9;&#xFF1A;</p>
+<ol>
+<li>Java&#x865A;&#x62DF;&#x673A;&#x9ED8;&#x8BA4;&#x4E3A;Native&#x5F15;&#x7528;&#x5206;&#x914D;&#x7684;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x6570;&#x91CF;&#x662F;&#x6709;&#x9650;&#x7684;&#xFF0C;&#x5927;&#x90E8;&#x5206;&#x7684;Java&#x865A;&#x62DF;&#x673A;&#x5B9E;&#x73B0;&#x9ED8;&#x8BA4;&#x5206;&#x914D;16&#x4E2A;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x3002;&#x5F53;&#x7136;Java&#x865A;&#x62DF;&#x673A;&#x4E5F;&#x63D0;&#x4F9B;API&#xFF08;<a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#push_local_frame" target="_blank">PushLocalFrame</a>&#xFF0C;<a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#ensure_local_capacity" target="_blank">EnsureLocalCapacity</a>&#xFF09;&#x8BA9;&#x4F60;&#x7533;&#x8BF7;&#x66F4;&#x591A;&#x7684;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x6570;&#x91CF;&#xFF08;Java&#x865A;&#x62DF;&#x673A;&#x4E0D;&#x4FDD;&#x8BC1;&#x4F60;&#x4E00;&#x5B9A;&#x80FD;&#x7533;&#x8BF7;&#x5230;&#xFF09;&#x3002;JNI&#x7F16;&#x7A0B;&#x4E2D;&#xFF0C;&#x5B9E;&#x73B0;Native&#x4EE3;&#x7801;&#x65F6;&#x5F3A;&#x70C8;&#x5EFA;&#x8BAE;&#x8C03;&#x7528; <a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#push_local_frame" target="_blank">PushLocalFrame</a> &#xFF0C; <a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#ensure_local_capacity" target="_blank">EnsureLocalCapacity</a> &#x6765;&#x786E;&#x4FDD;Java&#x865A;&#x62DF;&#x673A;&#x4E3A;&#x4F60;&#x51C6;&#x5907;&#x597D;&#x4E86;&#x5C40;&#x90E8;&#x53D8;&#x91CF;&#x7A7A;&#x95F4;&#x3002; </li>
+<li>&#x5982;&#x679C;&#x4F60;&#x5B9E;&#x73B0;&#x7684;Native&#x51FD;&#x6570;&#x662F;&#x5DE5;&#x5177;&#x51FD;&#x6570;&#xFF0C;&#x4F1A;&#x88AB;&#x9891;&#x7E41;&#x7684;&#x8C03;&#x7528;&#x3002;&#x5982;&#x679C;&#x4F60;&#x5728;Native&#x51FD;&#x6570;&#x4E2D;&#x6CA1;&#x6709;&#x663E;&#x793A;&#x5220;&#x9664;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#xFF0C;&#x90A3;&#x4E48;&#x6BCF;&#x6B21;&#x8C03;&#x7528;&#x8BE5;&#x51FD;&#x6570;Java&#x865A;&#x62DF;&#x673A;&#x90FD;&#x4F1A;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x65B0;&#x7684;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#xFF0C;&#x9020;&#x6210;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x8FC7;&#x591A;&#x3002;&#x5C24;&#x5176;&#x662F;&#x8BE5;&#x51FD;&#x6570;&#x5728;Native&#x4EE3;&#x7801;&#x4E2D;&#x88AB;&#x9891;&#x7E41;&#x8C03;&#x7528;&#xFF0C;&#x4EE3;&#x7801;&#x7684;&#x63A7;&#x5236;&#x6743;&#x6CA1;&#x6709;&#x4EA4;&#x8FD8;&#x7ED9;Java&#x865A;&#x62DF;&#x673A;&#xFF0C;&#x6240;&#x4EE5;Java&#x865A;&#x62DF;&#x673A;&#x6839;&#x672C;&#x6CA1;&#x6709;&#x673A;&#x4F1A;&#x91CA;&#x653E;&#x8FD9;&#x4E9B;&#x5C40;&#x90E8;&#x53D8;&#x91CF;&#x3002;&#x9000;&#x4E00;&#x6B65;&#x8BB2;&#xFF0C;&#x5C31;&#x7B97;&#x8BE5;&#x51FD;&#x6570;&#x76F4;&#x63A5;&#x8FD4;&#x56DE;&#x7ED9;Java&#x865A;&#x62DF;&#x673A;&#xFF0C;&#x4E5F;&#x4E0D;&#x80FD;&#x4FDD;&#x8BC1;&#x6CA1;&#x6709;&#x95EE;&#x9898;&#xFF0C;&#x6211;&#x4EEC;&#x4E0D;&#x80FD;&#x5047;&#x8BBE;Native&#x51FD;&#x6570;&#x8FD4;&#x56DE;Java&#x865A;&#x62DF;&#x673A;&#x4E4B;&#x540E;&#xFF0C;Java&#x865A;&#x62DF;&#x673A;&#x9A6C;&#x4E0A;&#x5C31;&#x4F1A;&#x56DE;&#x6536;Native&#x51FD;&#x6570;&#x4E2D;&#x521B;&#x5EFA;&#x7684;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#xFF0C;&#x4F9D;&#x8D56;&#x4E8E;Java&#x865A;&#x62DF;&#x673A;&#x5B9E;&#x73B0;&#x3002;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x5728;&#x5B9E;&#x73B0;Native&#x51FD;&#x6570;&#x65F6;&#x4E00;&#x5B9A;&#x8981;&#x8BB0;&#x7740;&#x5220;&#x9664;&#x4E0D;&#x5FC5;&#x8981;&#x7684;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#xFF0C;&#x5426;&#x5219;&#x4F60;&#x7684;&#x7A0B;&#x5E8F;&#x5C31;&#x6709;&#x6F5C;&#x5728;&#x7684;&#x98CE;&#x9669;&#xFF0C;&#x4E0D;&#x77E5;&#x9053;&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x5C31;&#x4F1A;&#x7206;&#x53D1;&#x3002; </li>
+<li>&#x5982;&#x679C;&#x4F60;Native&#x51FD;&#x6570;&#x6839;&#x672C;&#x5C31;&#x4E0D;&#x8FD4;&#x56DE;&#x3002;&#x6BD4;&#x5982;&#x6D88;&#x606F;&#x5FAA;&#x73AF;&#x51FD;&#x6570;&#x2014;&#x2014;&#x6B7B;&#x5FAA;&#x73AF;&#x7B49;&#x5F85;&#x6D88;&#x606F;&#xFF0C;&#x5904;&#x7406;&#x6D88;&#x606F;&#x3002;&#x5982;&#x679C;&#x4F60;&#x4E0D;&#x663E;&#x793A;&#x5220;&#x9664;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#xFF0C;&#x5F88;&#x5FEB;&#x5C06;&#x4F1A;&#x9020;&#x6210;Java&#x865A;&#x62DF;&#x673A;&#x7684;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x5185;&#x5B58;&#x6EA2;&#x51FA;&#x3002;</li>
+</ol>
+<blockquote>
+<p>  &#x5728;JNI&#x4E2D;&#x663E;&#x793A;&#x91CA;&#x653E;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x7684;&#x51FD;&#x6570;&#x4E3A; <a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#DeleteLocalRef" target="_blank">DeleteLocalRef</a>&#xFF0C;&#x53EF;&#x4EE5;&#x67E5;&#x770B;&#x624B;&#x518C;&#x6765;&#x4E86;&#x89E3;&#x8C03;&#x7528;&#x65B9;&#x6CD5;&#x3002;</p>
+<p>  &#x5728; JDK1.2 &#x4E2D;&#x4E3A;&#x4E86;&#x65B9;&#x4FBF;&#x7BA1;&#x7406;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#xFF0C;&#x5F15;&#x5165;&#x4E86;&#x4E09;&#x4E2A;&#x51FD;&#x6570;&#x2014;&#x2014; <a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#ensure_local_capacity" target="_blank">EnsureLocalCapacity</a> &#x3001; <a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#push_local_frame" target="_blank">PushLocalFrame</a> &#x3001; <a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#pop_local_frame" target="_blank">PopLocalFrame</a> &#x3002;&#x8FD9;&#x91CC;&#x4ECB;&#x7ECD;&#x4E00;&#x4E0B; PushLocalFrame &#x548C; PopLocalFrame &#x51FD;&#x6570;&#x3002;&#x8FD9;&#x4E24;&#x4E2A;&#x51FD;&#x6570;&#x662F;&#x6210;&#x5BF9;&#x4F7F;&#x7528;&#x7684;&#xFF0C;&#x5148;&#x8C03;&#x7528; PushLocalFrame &#xFF0C;&#x7136;&#x540E;&#x521B;&#x5EFA;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#xFF0C;&#x5E76;&#x5BF9;&#x5176;&#x8FDB;&#x884C;&#x5904;&#x7406;&#xFF0C;&#x6700;&#x540E;&#x8C03;&#x7528; PushLocalFrame &#x91CA;&#x653E;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#xFF0C;&#x8FD9;&#x65F6;Java&#x865A;&#x62DF;&#x673A;&#x4E5F;&#x53EF;&#x4EE5;&#x5BF9;&#x5176;&#x6307;&#x5411;&#x7684;&#x5BF9;&#x8C61;&#x8FDB;&#x884C;&#x5783;&#x573E;&#x56DE;&#x6536;&#x3002; &#x53EF;&#x4EE5;&#x7528;C&#x8BED;&#x8A00;&#x7684;&#x6808;&#x6765;&#x7406;&#x89E3;&#x8FD9;&#x5BF9;JNI API&#xFF0C;&#x8C03;&#x7528; PushLocalFrame &#x4E4B;&#x540E;Native&#x4EE3;&#x7801;&#x521B;&#x5EFA;&#x7684;&#x6240;&#x6709;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x5168;&#x90E8;&#x5165;&#x6808;&#xFF0C;&#x5F53;&#x8C03;&#x7528; PopLocalFrame &#x4E4B;&#x540E;&#xFF0C;&#x5165;&#x6808;&#x7684;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x9664;&#x4E86;&#x9700;&#x8981;&#x8FD4;&#x56DE;&#x7684;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#xFF08;PushLocalFrame &#x548C; PopLocalFrame &#x8FD9;&#x5BF9;&#x51FD;&#x6570;&#x53EF;&#x4EE5;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x7ED9;&#x5916;&#x90E8;&#xFF09;&#x4E4B;&#x5916;&#xFF0C;&#x5168;&#x90E8;&#x51FA;&#x6808;&#xFF0C;Java&#x865A;&#x62DF;&#x673A;&#x8FD9;&#x65F6;&#x53EF;&#x4EE5;&#x91CA;&#x653E;&#x4ED6;&#x4EEC;&#x6307;&#x5411;&#x7684;&#x5BF9;&#x8C61; &#x3002;&#x5177;&#x4F53;&#x7684;&#x7528;&#x6CD5;&#x53EF;&#x4EE5;&#x53C2;&#x8003;&#x624B;&#x518C;&#x3002;&#x8FD9;&#x4E24;&#x4E2A;&#x51FD;&#x6570;&#x4F7F;JNI&#x7684;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x7531;&#x4E8E;&#x548C;C&#x8BED;&#x8A00;&#x7684;&#x5C40;&#x90E8;&#x53D8;&#x91CF;&#x7528;&#x6CD5;&#x7C7B;&#x4F3C;&#xFF0C;&#x6240;&#x4EE5;&#x5F3A;&#x70C8;&#x63A8;&#x8350;&#x4F7F;&#x7528;&#x3002;</p>
+</blockquote>
+<p>&#x5F53;&#x521B;&#x5EFA;&#x5C40;&#x90E8;&#x53D8;&#x91CF;&#x4E4B;&#x540E;&#xFF0C;Java&#x865A;&#x62DF;&#x673A;&#x76F4;&#x5230;Native&#x4EE3;&#x7801;&#x663E;&#x793A;&#x8C03;&#x7528;&#x4E86; DeleteLocalRef &#x5220;&#x9664;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x6216;&#x4ECE;Native&#x8FD4;&#x56DE;&#x4E14;&#x6CA1;&#x6709;&#x53E6;&#x5916;&#x7684;&#x5F15;&#x7528;&#x624D;&#x80FD;&#x5BF9;&#x8BE5;&#x5BF9;&#x8C61;&#x8FDB;&#x884C;&#x56DE;&#x6536;&#x3002;Native&#x4EE3;&#x7801;&#x8C03;&#x7528; DeleteLocalRef &#x663E;&#x793A;&#x5220;&#x9664;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x4E4B;&#x540E;&#xFF0C;Java&#x865A;&#x62DF;&#x673A;&#x5C31;&#x53EF;&#x4EE5;&#x5BF9;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x6307;&#x5411;&#x7684;&#x5BF9;&#x8C61;&#x5783;&#x573E;&#x56DE;&#x6536;&#x4E86;&#x3002;&#x5F53;Native&#x4EE3;&#x7801;&#x521B;&#x5EFA;&#x4E86;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#xFF0C;&#x4F46;&#x672A;&#x663E;&#x793A;&#x8C03;&#x7528;DeleteLocalRef&#x5220;&#x9664;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#xFF0C;&#x5E76;&#x8FD4;&#x56DE;Java&#x865A;&#x62DF;&#x673A;&#x7684;&#x8BDD;&#xFF0C;&#x90A3;&#x4E48;&#x7531;&#x865A;&#x62DF;&#x673A;&#x6765;&#x51B3;&#x5B9A;&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x5220;&#x9664;&#x8BE5;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#xFF0C;&#x7136;&#x540E;&#x5BF9;&#x5176;&#x6307;&#x5411;&#x7684;&#x5BF9;&#x8C61;&#x5783;&#x573E;&#x56DE;&#x6536;&#x3002;&#x7A0B;&#x5E8F;&#x5458;&#x4E0D;&#x80FD;&#x5BF9;java&#x865A;&#x62DF;&#x673A;&#x5220;&#x9664;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x7684;&#x65F6;&#x673A;&#x8FDB;&#x884C;&#x5047;&#x8BBE;&#x3002;</p>
+<p>&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x4EC5;&#x4EC5;&#x5BF9;&#x4E8E;java&#x865A;&#x62DF;&#x673A;&#x5F53;&#x524D;&#x8C03;&#x7528;&#x4E0A;&#x4E0B;&#x6587;&#x6709;&#x6548;&#xFF0C;&#x4E0D;&#x80FD;&#x591F;&#x5728;&#x591A;&#x6B21;&#x8C03;&#x7528;&#x4E0A;&#x4E0B;&#x6587;&#x4E2D;&#x5171;&#x4EAB;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x3002;&#x8FD9;&#x53E5;&#x8BDD;&#x4E5F;&#x53EF;&#x4EE5;&#x8FD9;&#x6837;&#x7406;&#x89E3;&#xFF1A; &#x5C40;&#x90E8;&#x5F15;&#x7528;&#x53EA;&#x5BF9;&#x5F53;&#x524D;&#x7EBF;&#x7A0B;&#x6709;&#x6548;&#xFF0C;&#x591A;&#x4E2A;&#x7EBF;&#x7A0B;&#x4E4B;&#x95F4;&#x4E0D;&#x80FD;&#x5171;&#x4EAB;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x3002;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x4E0D;&#x80FD;&#x7528;C&#x8BED;&#x8A00;&#x7684;&#x9759;&#x6001;&#x53D8;&#x91CF;&#x6216;&#x8005;&#x5168;&#x5C40;&#x53D8;&#x91CF;&#x6765;&#x4FDD;&#x5B58;&#xFF0C;&#x5426;&#x5219;&#x7B2C;&#x4E8C;&#x6B21;&#x8C03;&#x7528;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x5C06;&#x4F1A;&#x4EA7;&#x751F;&#x5D29;&#x6E83; &#x3002;</p>
+<p>&#x6D4B;&#x8BD5;&#xFF08;&#x4F2A;&#x4EE3;&#x7801;&#xFF09;&#xFF1A;</p>
+<pre><code class="lang-cpp"><span class="hljs-keyword">static</span> jobject save_thiz = <span class="hljs-literal">NULL</span>;
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">XXXX</span><span class="hljs-params">(JNIEnv *env, jobject thiz)</span>
+</span>{
+        <span class="hljs-comment">//...</span>
+      save_thiz = thiz;<span class="hljs-comment">//&#x8FD9;&#x79CD;&#x8D4B;&#x503C;&#x4E0D;&#x4F1A;&#x589E;&#x52A0;jobject&#x7684;&#x5F15;&#x7528;&#x8BA1;&#x6570;</span>
+      <span class="hljs-comment">//...</span>
+      <span class="hljs-keyword">return</span>;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">use</span><span class="hljs-params">(JNIEnv *env, jobject thiz)</span>
+</span>{
+    jstring str = <span class="hljs-keyword">static_cast</span>&lt;jstring&gt;(env-&gt;GetObjectField(save_thiz, strFieldId));
+}
+</code></pre>
+<p>&#x7A0B;&#x5E8F;&#x51FA;&#x73B0;&#x5954;&#x6E83;&#x3002;</p>
+<h3 id="&#x5168;&#x5C40;&#x5F15;&#x7528;"><a name="&#x5168;&#x5C40;&#x5F15;&#x7528;" class="anchor-navigation-ex-anchor" href="#&#x5168;&#x5C40;&#x5F15;&#x7528;"><i class="fa fa-link" aria-hidden="true"></i></a>5.1.2. &#x5168;&#x5C40;&#x5F15;&#x7528;</h3>
+<p>&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x5927;&#x90E8;&#x5206;&#x662F;&#x901A;&#x8FC7;JNI API&#x8FD4;&#x56DE;&#x800C;&#x521B;&#x5EFA;&#x7684;&#xFF0C;&#x800C;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x5FC5;&#x987B;&#x8981;&#x5728;Native&#x4EE3;&#x7801;&#x4E2D;&#x663E;&#x793A;&#x7684;&#x8C03;&#x7528;JNI API <a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#NewGlobalRef" target="_blank">NewGlobalRef</a>&#x6765;&#x521B;&#x5EFA;&#xFF0C;&#x521B;&#x5EFA;&#x4E4B;&#x540E;&#x5C06;&#x4E00;&#x76F4;&#x6709;&#x6548;&#xFF0C;&#x76F4;&#x5230;&#x663E;&#x793A;&#x7684;&#x8C03;&#x7528; <a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#DeleteGlobalRef" target="_blank">DeleteGlobalRef</a>&#x6765;&#x5220;&#x9664;&#x8FD9;&#x4E2A;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x3002;&#x8BF7;&#x6CE8;&#x610F; <a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#NewGlobalRef" target="_blank">NewGlobalRef</a>&#x7684;&#x7B2C;&#x4E8C;&#x4E2A;&#x53C2;&#x6570;&#xFF0C;&#x65E2;&#x53EF;&#x4EE5;&#x7528;&#x4E00;&#x4E2A;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x7528;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x751F;&#x6210;&#x4E00;&#x4E2A;&#x5168;&#x5C40;&#x5F15;&#x7528;&#xFF0C;&#x5F53;&#x7136;&#x4E5F;&#x53EF;&#x4EE5;&#x7528;&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x751F;&#x6210;&#x4E00;&#x4E2A;&#x5168;&#x5C40;&#x5F15;&#x7528;&#xFF0C;&#x4F46;&#x662F;&#x8FD9;&#x4E2D;&#x60C5;&#x51B5;&#x6709;&#x7279;&#x6B8A;&#x7684;&#x7528;&#x9014;&#xFF0C;&#x540E;&#x6587;&#x4F1A;&#x4ECB;&#x7ECD;&#x3002;</p>
+<p>&#x5168;&#x5C40;&#x5F15;&#x7528; &#x548C; &#x5C40;&#x90E8;&#x5F15;&#x7528; &#x4E00;&#x6837;&#xFF0C;&#x53EF;&#x4EE5;&#x9632;&#x6B62;&#x5176;&#x6307;&#x5411;&#x7684;&#x5BF9;&#x8C61;&#x88AB;Java&#x865A;&#x62DF;&#x673A;&#x5783;&#x573E;&#x56DE;&#x6536;&#x3002;&#x4E0E; &#x5C40;&#x90E8;&#x5F15;&#x7528; &#x53EA;&#x5728;&#x5F53;&#x524D;&#x7EBF;&#x7A0B;&#x6709;&#x6548;&#x4E0D;&#x540C;&#x7684;&#x662F; &#x5168;&#x5C40;&#x5F15;&#x7528; &#x53EF;&#x4EE5;&#x5728;&#x591A;&#x7EBF;&#x7A0B;&#x4E4B;&#x95F4;&#x5171;&#x4EAB;&#xFF08;&#x5982;&#x679C;&#x662F;&#x591A;&#x7EBF;&#x7A0B;&#x7F16;&#x7A0B;&#x9700;&#x8981;&#x6CE8;&#x610F;&#x540C;&#x6B65;&#x95EE;&#x9898; &#xFF09;&#x3002;</p>
+<h3 id="&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;"><a name="&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;" class="anchor-navigation-ex-anchor" href="#&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;"><i class="fa fa-link" aria-hidden="true"></i></a>5.1.3. &#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;</h3>
+<p>&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528; &#x548C; &#x5168;&#x5C40;&#x5F15;&#x7528; &#x4E00;&#x6837;&#xFF0C;&#x53EF;&#x4EE5;&#x5728;&#x591A;&#x4E2A;&#x7EBF;&#x7A0B;&#x4E4B;&#x95F4;&#x5171;&#x4EAB;&#xFF0C;&#x4F46;&#x662F;&#x5E76;&#x4E0D;&#x5F3A;&#x5236;&#x8FDB;&#x884C;&#x663E;&#x5F0F;&#x7684;&#x9500;&#x6BC1;&#x3002;&#x867D;&#x7136;&#x5728;&#x6211;&#x4EEC;&#x786E;&#x5B9A;&#x4E0D;&#x518D;&#x9700;&#x8981; &#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528; &#x7684;&#x65F6;&#x5019;&#xFF0C;&#x5EFA;&#x8BAE;&#x8FDB;&#x884C;&#x663E;&#x5F0F;&#x7684;&#x9500;&#x6BC1;&#xFF08; &#x8C03;&#x7528; <a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#DeleteWeakGlobalRef" target="_blank">DeleteWeakGlobalRef</a> &#xFF09;&#x3002;&#x4F46;&#x662F;&#x5373;&#x4F7F;&#x6211;&#x4EEC;&#x4E0D;&#x663E;&#x5F0F;&#x7684;&#x9500;&#x6BC1; &#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528; &#xFF0C;JAVA&#x865A;&#x62DF;&#x673A;&#x4E5F;&#x80FD;&#x5728;&#x5B83;&#x8BA4;&#x4E3A;&#x5FC5;&#x8981;&#x7684;&#x65F6;&#x5019;&#x81EA;&#x52A8;&#x56DE;&#x6536;&#x5E76;&#x9500;&#x6BC1; &#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528; &#x3002;&#x521B;&#x5EFA; &#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528; &#x8BF7;&#x4F7F;&#x7528;<a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#NewWeakGlobalRef" target="_blank">NewWeakGlobalRef</a> &#xFF0C;&#x663E;&#x5F0F;&#x9500;&#x6BC1; &#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528; &#x8BF7;&#x4F7F;&#x7528; <a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#DeleteWeakGlobalRef" target="_blank">DeleteWeakGlobalRef</a> &#x3002;</p>
+<p>&#x4E0E; &#x5168;&#x5C40;&#x5F15;&#x7528; &#x548C; &#x5C40;&#x90E8;&#x5F15;&#x7528; &#x80FD;&#x591F;&#x963B;&#x6B62;Java&#x865A;&#x62DF;&#x673A;&#x5783;&#x573E;&#x56DE;&#x6536;&#x5176;&#x6307;&#x5411;&#x7684;&#x5BF9;&#x8C61;&#x4E0D;&#x540C;&#xFF0C;&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x6307;&#x5411;&#x7684;&#x5BF9;&#x8C61;&#x968F;&#x65F6;&#x90FD;&#x53EF;&#x4EE5;&#x88AB;Java&#x865A;&#x62DF;&#x673A;&#x5783;&#x573E;&#x56DE;&#x6536;&#xFF0C;&#x6240;&#x4EE5;&#x4F7F;&#x7528;&#x5F31;&#x5168;&#x5C40;&#x53D8;&#x91CF;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x8981;&#x65F6;&#x523B;&#x8BB0;&#x7740;&#xFF1A;&#x5B83;&#x6240;&#x6307;&#x5411;&#x7684;&#x5BF9;&#x8C61;&#x53EF;&#x80FD;&#x5DF2;&#x7ECF;&#x88AB;&#x5783;&#x573E;&#x56DE;&#x6536;&#x4E86;&#x3002; JNI API &#x63D0;&#x4F9B;&#x4E86;&#x5F15;&#x7528;&#x6BD4;&#x8F83;&#x51FD;&#x6570; <a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#wp16514" target="_blank">IsSameObject</a> &#xFF0C;&#x7528; &#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528; &#x548C; NULL &#x8FDB;&#x884C;&#x6BD4;&#x8F83;&#xFF0C;&#x5982;&#x679C;&#x8FD4;&#x56DE; JNI_TRUE &#xFF0C;&#x5219;&#x8BF4;&#x660E;&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x6307;&#x5411;&#x7684;&#x5BF9;&#x8C61;&#x5DF2;&#x7ECF;&#x88AB;&#x91CA;&#x653E;&#x3002;&#x9700;&#x8981;&#x91CD;&#x65B0;&#x521D;&#x59CB;&#x5316;&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x3002;</p>
+<p>&#x6839;&#x636E;&#x4E0A;&#x9762;&#x7684;&#x4ECB;&#x7ECD;&#x4F60;&#x53EF;&#x80FD;&#x4F1A;&#x5199;&#x51FA;&#x5982;&#x4E0B;&#x7684;&#x4EE3;&#x7801;&#xFF1A;</p>
+<pre><code class="lang-cpp"><span class="hljs-keyword">static</span> jobject weak_global_ref = <span class="hljs-literal">NULL</span>;
+<span class="hljs-keyword">if</span> ((*env)-&gt;IsSameObject(env, weak_global_ref, <span class="hljs-literal">NULL</span>) == JNI_TRUE)
+{
+  <span class="hljs-comment">/* Init week global referrence again */</span>
+  weak_global_ref = NewWeakGlobalRef(...);
+}
+<span class="hljs-comment">/* Process weak_global_ref */</span>
+</code></pre>
+<p>&#x4E0A;&#x9762;&#x8FD9;&#x6BB5;&#x4EE3;&#x7801;&#x8868;&#x9762;&#x4E0A;&#x6CA1;&#x6709;&#x4EC0;&#x4E48;&#x9519;&#x8BEF;&#xFF0C;&#x4F46;&#x662F;&#x6211;&#x4EEC;&#x5FD8;&#x4E86;&#x4E00;&#x70B9;&#x513F;&#xFF0C;Java&#x865A;&#x62DF;&#x673A;&#x7684;&#x5783;&#x573E;&#x56DE;&#x6536;&#x968F;&#x65F6;&#x90FD;&#x53EF;&#x80FD;&#x53D1;&#x751F;&#x3002;&#x5047;&#x8BBE;&#x5982;&#x4E0B;&#x60C5;&#x5F62;&#xFF1A;</p>
+<ol>
+<li>&#x901A;&#x8FC7;&#x5F15;&#x7528;&#x6BD4;&#x8F83;&#x51FD;&#x6570;IsSameObject&#x5224;&#x65AD;&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x662F;&#x5426;&#x6709;&#x6548;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x8FD4;&#x56DE;JNI_FALSE&#xFF0C;&#x8BC1;&#x660E;&#x5176;&#x6307;&#x5411;&#x5BF9;&#x8C61;&#x6709;&#x6548;&#x3002;</li>
+<li>&#x8FD9;&#x65F6;Java&#x865A;&#x62DF;&#x673A;&#x8FDB;&#x884C;&#x4E86;&#x5783;&#x573E;&#x56DE;&#x6536;&#xFF0C;&#x56DE;&#x6536;&#x4E86;&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x6307;&#x5411;&#x7684;&#x5BF9;&#x8C61;&#x3002;</li>
+<li>&#x8FD9;&#x6837;&#x5982;&#x679C;&#x6211;&#x4EEC;&#x540E;&#x9762;&#x8BBF;&#x95EE;&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x6307;&#x5411;&#x7684;&#x5BF9;&#x8C61;&#xFF0C;&#x5C06;&#x4F1A;&#x5F15;&#x53D1;&#x7A0B;&#x5E8F;&#x5D29;&#x6E83;&#xFF0C;&#x56E0;&#x4E3A;&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x6307;&#x5411;&#x5BF9;&#x8C61;&#x5DF2;&#x7ECF;&#x88AB;Java&#x865A;&#x62DF;&#x673A;&#x56DE;&#x6536;&#x4E86;&#x3002;</li>
+</ol>
+<p>&#x6839;&#x636E;JNI&#x6807;&#x51C6;&#x624B;&#x518C;&#x300A; <a href="http://docs.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#weak" target="_blank">Weak Global References</a> &#x300B;&#x4E2D;&#x7684;&#x4ECB;&#x7ECD;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x6709;&#x8FD9;&#x6837;&#x4E00;&#x4E2A;&#x4F7F;&#x7528;&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x7684;&#x65B9;&#x6848;&#x3002;&#x5728;&#x4F7F;&#x7528;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x4E4B;&#x524D;&#xFF0C;&#x6211;&#x4EEC;&#x5148;&#x901A;&#x8FC7; <a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#new_local_ref" target="_blank">NewLocalRef</a> &#x51FD;&#x6570;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#xFF0C;&#x7136;&#x540E;&#x4F7F;&#x7528;&#x8FD9;&#x4E2A;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x6765;&#x8BBF;&#x95EE;&#x8BE5;&#x5BF9;&#x8C61;&#x8FDB;&#x884C;&#x5904;&#x7406;&#xFF0C;&#x5F53;&#x5B8C;&#x6210;&#x5904;&#x7406;&#x4E4B;&#x540E;&#xFF0C;&#x5220;&#x9664;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x3002;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x53EF;&#x4EE5;&#x963B;&#x6B62;Java&#x865A;&#x62DF;&#x673A;&#x56DE;&#x6536;&#x5176;&#x6307;&#x5411;&#x7684;&#x5BF9;&#x8C61;&#xFF0C;&#x8FD9;&#x6837;&#x53EF;&#x4EE5;&#x4FDD;&#x8BC1;&#x5728;&#x5904;&#x7406;&#x671F;&#x95F4;&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x548C;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x6307;&#x5411;&#x7684;&#x5BF9;&#x8C61;&#x4E0D;&#x4F1A;&#x88AB;Java&#x865A;&#x62DF;&#x673A;&#x56DE;&#x6536;&#x3002;&#x5047;&#x5982;&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x6307;&#x5411;&#x5BF9;&#x8C61;&#x5DF2;&#x7ECF;&#x88AB;Java&#x865A;&#x62DF;&#x673A;&#x56DE;&#x6536;&#xFF0C;&#x5219; <a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#new_local_ref" target="_blank">NewLocalRef</a> &#x51FD;&#x6570;&#x5C06;&#x4F1A;&#x8FD4;&#x56DE; NULL &#xFF0C;&#x5219;&#x521B;&#x5EFA;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x5931;&#x8D25;&#xFF0C;&#x8FD9;&#x4E2A;&#x8FD4;&#x56DE;&#x503C;&#x6709;&#x52A9;&#x4E8E;&#x6211;&#x4EEC;&#x5224;&#x65AD;&#x662F;&#x5426;&#x9700;&#x8981;&#x91CD;&#x65B0;&#x521D;&#x59CB;&#x5316;&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x3002;</p>
+<p>&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x662F;&#x53EF;&#x4EE5;&#x7528;&#x6765;&#x7F13;&#x5B58;jclass&#x5BF9;&#x8C61;&#xFF0C;&#x4F46;&#x662F;&#x7528;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x6765;&#x7F13;&#x5B58;jclass&#x5BF9;&#x8C61;&#x5C06;&#x975E;&#x5E38;&#x7684;&#x5371;&#x9669;&#x3002;&#x8FD9;&#x91CC;&#x9700;&#x8981;&#x7B80;&#x5355;&#x4ECB;&#x7ECD;&#x4E00;&#x4E0B;Native&#x7684;&#x5171;&#x4EAB;&#x5E93;&#x7684;&#x5378;&#x8F7D;&#x3002;&#x5F53;ClassLoader&#x91CA;&#x653E;&#x5B8C;&#x6240;&#x6709;&#x7684;class&#x540E;&#xFF0C;&#x7136;&#x540E;ClassLoader&#x4F1A;&#x5378;&#x8F7D;Native&#x7684;&#x5171;&#x4EAB;&#x5E93;&#x3002;&#x5982;&#x679C;&#x6211;&#x4EEC;&#x7528;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x6765;&#x7F13;&#x5B58;jclass&#x5BF9;&#x8C61;&#x7684;&#x8BDD;&#xFF0C;&#x6839;&#x636E;&#x524D;&#x9762;&#x5BF9;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x5BF9;Java&#x865A;&#x62DF;&#x673A;&#x5783;&#x573E;&#x56DE;&#x6536;&#x673A;&#x5236;&#x7684;&#x5F71;&#x54CD;&#xFF0C;&#x5C06;&#x4F1A;&#x963B;&#x6B62;Java&#x865A;&#x62DF;&#x673A;&#x56DE;&#x6536;&#x8BE5;&#x5BF9;&#x8C61;&#x3002;&#x5982;&#x679C;&#x6211;&#x4EEC;&#x4E0D;&#x663E;&#x5F0F;&#x7684;&#x91CA;&#x653E;&#x5168;&#x5C40;&#x5F15;&#x7528;&#xFF08;&#x901A;&#x8FC7; <a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#DeleteGlobalRef" target="_blank">DeleteGlobalRef</a> &#xFF09;&#xFF0C;&#x5219;Class Loader&#x4E5F;&#x5C06;&#x4E0D;&#x80FD;&#x91CA;&#x653E;&#x8FD9;&#x4E2A;jclass&#x5BF9;&#x8C61;&#xFF0C;&#x8FDB;&#x800C;&#x9020;&#x6210; ClassLoader &#x4E0D;&#x80FD;&#x5378;&#x8F7D;Native&#x7684;&#x5171;&#x4EAB;&#x5E93;&#xFF08;&#x6C38;&#x8FDC;&#x65E0;&#x6CD5;&#x91CA;&#x653E;&#xFF09;&#x3002;&#x5982;&#x679C;&#x7528;&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x6765;&#x7F13;&#x5B58;&#x5C06;&#x4E0D;&#x4F1A;&#x6709;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;Java&#x865A;&#x62DF;&#x673A;&#x968F;&#x65F6;&#x90FD;&#x53EF;&#x4EE5;&#x91CA;&#x653E;&#x5B83;&#x6307;&#x5411;&#x7684;&#x5BF9;&#x8C61;&#x3002;</p>
+<h3 id="&#x603B;&#x7ED3;"><a name="&#x603B;&#x7ED3;" class="anchor-navigation-ex-anchor" href="#&#x603B;&#x7ED3;"><i class="fa fa-link" aria-hidden="true"></i></a>5.1.4. &#x603B;&#x7ED3;</h3>
+<ol>
+<li>&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x662F;Native&#x4EE3;&#x7801;&#x4E2D;&#x6700;&#x5E38;&#x7528;&#x7684;&#x5F15;&#x7528;&#x3002;&#x5927;&#x90E8;&#x5206;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x90FD;&#x662F;&#x901A;&#x8FC7;JNI API&#x8FD4;&#x56DE;&#x6765;&#x521B;&#x5EFA;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x8C03;&#x7528;<a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#new_local_ref" target="_blank">NewLocalRef</a> &#x6765;&#x521B;&#x5EFA;&#x3002;&#x53E6;&#x5916;&#x5F3A;&#x70C8;&#x5EFA;&#x8BAE;Native&#x51FD;&#x6570;&#x8FD4;&#x56DE;&#x503C;&#x4E3A;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x3002;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x53EA;&#x5728;&#x5F53;&#x524D;&#x8C03;&#x7528;&#x4E0A;&#x4E0B;&#x6587;&#x4E2D;&#x6709;&#x6548;&#xFF0C;&#x6240;&#x4EE5;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x4E0D;&#x80FD;&#x7528;Native&#x4EE3;&#x7801;&#x4E2D;&#x7684;&#x9759;&#x6001;&#x53D8;&#x91CF;&#x548C;&#x5168;&#x5C40;&#x53D8;&#x91CF;&#x6765;&#x4FDD;&#x5B58;&#x3002;&#x53E6;&#x5916;&#x65F6;&#x523B;&#x8981;&#x8BB0;&#x7740;Java&#x865A;&#x62DF;&#x673A;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x7684;&#x4E2A;&#x6570;&#x662F;&#x6709;&#x9650;&#x7684;&#xFF0C;&#x7F16;&#x7A0B;&#x7684;&#x65F6;&#x5019;&#x5F3A;&#x70C8;&#x5EFA;&#x8BAE;&#x8C03;&#x7528; <a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#ensure_local_capacity" target="_blank">EnsureLocalCapacity</a> &#xFF0C; <a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#push_local_frame" target="_blank">PushLocalFrame</a> &#x548C; <a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#pop_local_frame" target="_blank">PopLocalFrame</a> &#x6765;&#x786E;&#x4FDD;Native&#x4EE3;&#x7801;&#x80FD;&#x591F;&#x83B7;&#x5F97;&#x8DB3;&#x591F;&#x7684;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x6570;&#x91CF;&#x3002;</li>
+<li>&#x5168;&#x5C40;&#x53D8;&#x91CF;&#x5FC5;&#x987B;&#x8981;&#x901A;&#x8FC7; <a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#NewGlobalRef" target="_blank">NewGlobalRef</a> &#x521B;&#x5EFA;&#xFF0C;&#x901A;&#x8FC7; <a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#DeleteGlobalRef" target="_blank">DeleteGlobalRef</a> &#x5220;&#x9664;&#x3002;&#x4E3B;&#x8981;&#x7528;&#x6765;&#x7F13;&#x5B58;Field ID&#x548C;Method ID&#x3002;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x53EF;&#x4EE5;&#x5728;&#x591A;&#x7EBF;&#x7A0B;&#x4E4B;&#x95F4;&#x5171;&#x4EAB;&#x5176;&#x6307;&#x5411;&#x7684;&#x5BF9;&#x8C61;&#x3002;&#x5728;C&#x8BED;&#x8A00;&#x4E2D;&#x4EE5;&#x9759;&#x6001;&#x53D8;&#x91CF;&#x548C;&#x5168;&#x5C40;&#x53D8;&#x91CF;&#x6765;&#x4FDD;&#x5B58;&#x3002;</li>
+<li>&#x5168;&#x5C40;&#x5F15;&#x7528;&#x548C;&#x5C40;&#x90E8;&#x5F15;&#x7528;&#x53EF;&#x4EE5;&#x963B;&#x6B62;Java&#x865A;&#x62DF;&#x673A;&#x56DE;&#x6536;&#x5176;&#x6307;&#x5411;&#x7684;&#x5BF9;&#x8C61;&#x3002;</li>
+<li>&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x5FC5;&#x987B;&#x8981;&#x901A;&#x8FC7;<a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#NewWeakGlobalRef" target="_blank">NewWeakGlobalRef</a>&#x521B;&#x5EFA;&#xFF0C;&#x901A;&#x8FC7;<a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#DeleteWeakGlobalRef" target="_blank">DeleteWeakGlobalRef</a>&#x9500;&#x6BC1;&#x3002;&#x53EF;&#x4EE5;&#x5728;&#x591A;&#x7EBF;&#x7A0B;&#x4E4B;&#x95F4;&#x5171;&#x4EAB;&#x5176;&#x6307;&#x5411;&#x7684;&#x5BF9;&#x8C61;&#x3002;&#x5728;C&#x8BED;&#x8A00;&#x4E2D;&#x901A;&#x8FC7;&#x9759;&#x6001;&#x53D8;&#x91CF;&#x548C;&#x5168;&#x5C40;&#x53D8;&#x91CF;&#x6765;&#x4FDD;&#x6301;&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x3002;&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x6307;&#x5411;&#x7684;&#x5BF9;&#x8C61;&#x968F;&#x65F6;&#x90FD;&#x53EF;&#x80FD;&#x4F1A;&#x88AB;Java&#x865A;&#x62DF;&#x673A;&#x56DE;&#x6536;&#xFF0C;&#x6240;&#x4EE5;&#x4F7F;&#x7528;&#x7684;&#x65F6;&#x5019;&#x9700;&#x8981;&#x65F6;&#x523B;&#x6CE8;&#x610F;&#x68C0;&#x67E5;&#x5176;&#x6709;&#x6548;&#x6027;&#x3002;&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x7ECF;&#x5E38;&#x7528;&#x6765;&#x7F13;&#x5B58; jclass &#x5BF9;&#x8C61;&#x3002;</li>
+<li>&#x5168;&#x5C40;&#x5F15;&#x7528;&#x548C;&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x53EF;&#x4EE5;&#x5728;&#x591A;&#x7EBF;&#x7A0B;&#x4E2D;&#x5171;&#x4EAB;&#x5176;&#x6307;&#x5411;&#x5BF9;&#x8C61;&#xFF0C;&#x4F46;&#x662F;&#x5728;&#x591A;&#x7EBF;&#x7A0B;&#x7F16;&#x7A0B;&#x4E2D;&#x9700;&#x8981;&#x6CE8;&#x610F;&#x591A;&#x7EBF;&#x7A0B;&#x540C;&#x6B65;&#x3002;&#x5F3A;&#x70C8;&#x5EFA;&#x8BAE;&#x5728;<a href="http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/invocation.html#JNI_OnLoad" target="_blank">JNI_OnLoad</a>&#x521D;&#x59CB;&#x5316; &#x5168;&#x5C40;&#x5F15;&#x7528; &#x548C; &#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528; &#xFF0C;&#x7136;&#x540E;&#x5728;&#x591A;&#x7EBF;&#x7A0B;&#x4E2D;&#x8FDB;&#x884C;&#x8BFB;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x548C;&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;&#xFF0C;&#x8FD9;&#x6837;&#x4E0D;&#x9700;&#x8981;&#x5BF9;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x548C;&#x5F31;&#x5168;&#x5C40;&#x5F15;&#x7528;&#x540C;&#x6B65;&#xFF08;&#x53EA;&#x6709;&#x8BFB;&#x64CD;&#x4F5C;&#x4E0D;&#x4F1A;&#x51FA;&#x73B0;&#x4E0D;&#x4E00;&#x81F4;&#x60C5;&#x51B5;&#xFF09;&#x3002;</li>
+</ol>
+<h1 id="ndk&#x76F8;&#x5173;&#x9519;&#x8BEF;"><a name="ndk&#x76F8;&#x5173;&#x9519;&#x8BEF;" class="anchor-navigation-ex-anchor" href="#ndk&#x76F8;&#x5173;&#x9519;&#x8BEF;"><i class="fa fa-link" aria-hidden="true"></i></a>6. NDK&#x76F8;&#x5173;&#x9519;&#x8BEF;</h1>
+<p>&#x7F16;&#x8BD1;C++&#x6587;&#x4EF6;&#x65F6;&#x4F1A;&#x9047;&#x5230;&#x4E00;&#x4E2A;&#x9519;&#x8BEF;&#xFF1A;</p>
+<pre><code>undefined symbol: XXX
+</code></pre><p>&#x53EF;&#x80FD;&#x7684;&#x539F;&#x56E0;&#x5982;&#x4E0B;&#xFF1A;</p>
+<ol>
+<li><p>&#x6CA1;&#x6709;&#x5B9E;&#x73B0;cpp</p>
+</li>
+<li><p>&#x6CA1;&#x6709;&#x5BFC;&#x5165;&#x5934;&#x6587;&#x4EF6;&#x5BF9;&#x5E94;&#x7684;so&#x6587;&#x4EF6;&#x3002;</p>
+</li>
+<li><p>&#x5BFC;&#x5165;&#x7684;so&#x6587;&#x4EF6;&#x5728;cmake&#x7F16;&#x8BD1;&#x65F6;&#x52A0;&#x5165;&#x4E86;flag&#xFF1A;-fvisibility=hidden&#xFF0C;&#x5BFC;&#x81F4;&#x51FD;&#x6570;&#x4E0D;&#x53EF;&#x89C1;&#xFF0C;&#x5728;&#x9700;&#x8981;&#x7684;&#x51FD;&#x6570;&#x5934;&#x4E0A;&#x52A0;&#x4E0A;<code>__attribute__((visibility(&quot;default&quot;)))</code>&#xFF0C;&#x5982;&#xFF1A;</p>
+<pre><code class="lang-cpp">__attribute__((visibility(<span class="hljs-string">&quot;default&quot;</span>))) <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">app_main</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span>
+</span></code></pre>
+</li>
+</ol>
+<h1 id="ndk&#x5F00;&#x53D1;&#x5DE5;&#x5177;"><a name="ndk&#x5F00;&#x53D1;&#x5DE5;&#x5177;" class="anchor-navigation-ex-anchor" href="#ndk&#x5F00;&#x53D1;&#x5DE5;&#x5177;"><i class="fa fa-link" aria-hidden="true"></i></a>7. NDK&#x5F00;&#x53D1;&#x5DE5;&#x5177;</h1>
+<h2 id="addr2line"><a name="addr2line" class="anchor-navigation-ex-anchor" href="#addr2line"><i class="fa fa-link" aria-hidden="true"></i></a>7.1. addr2line</h2>
+<p>&#x5728;&#x8FD0;&#x884C;&#x65F6;&#x9047;&#x5230;&#x95EE;&#x9898;&#xFF0C;native&#x7684;&#x5954;&#x6E83;&#x6808;&#x548C;Java&#x7684;&#x4E0D;&#x540C;&#xFF0C;&#x53EA;&#x63D0;&#x4F9B;&#x4E86;&#x5730;&#x5740;&#xFF0C;&#x9700;&#x8981;&#x6839;&#x636E;&#x5730;&#x5740;&#x8FDB;&#x884C;&#x53CD;&#x89E3;&#x3002;</p>
+<p><code>addr2line</code>&#x80FD;&#x591F;&#x5C06;&#x5730;&#x5740;&#x8F6C;&#x6362;&#x4E3A;&#x6587;&#x4EF6;&#x540D;&#x548C;&#x884C;&#x53F7;&#x3002;&#x7ED9;&#x5B9A;&#x4E00;&#x4E2A;&#x53EF;&#x6267;&#x884C;&#x6587;&#x4EF6;&#x7684;&#x5730;&#x5740;&#x6216;&#x8005;&#x4E00;&#x4E2A;&#x53EF;&#x91CD;&#x5B9A;&#x4F4D;&#x76EE;&#x6807;&#x7684;&#x76EE;&#x6807;&#x504F;&#x79FB;&#xFF0C;addr2line &#x5C31;&#x4F1A;&#x5229;&#x7528; debug &#x4FE1;&#x606F;&#x6765;&#x8BA1;&#x7B97;&#x51FA;&#x4E0E;&#x8BE5;&#x5730;&#x5740;&#x5173;&#x8054;&#x7684;&#x6587;&#x4EF6;&#x540D;&#x548C;&#x884C;&#x53F7;&#x3002;</p>
+<pre><code>addr2line -f -e xxx.so 123 456 789
+</code></pre><ul>
+<li>-f&#x8868;&#x793A;&#x663E;&#x793A;&#x51FD;&#x6570;&#x540D;&#x79F0;</li>
+<li>-e&#x8868;&#x793A;&#x8F93;&#x5165;&#x6587;&#x4EF6;&#x540D;&#x79F0;</li>
+<li>xxx.so&#x8868;&#x793A;&#x76F8;&#x5E94;&#x7684;so&#x6587;&#x4EF6;</li>
+<li>123 456 789&#x8868;&#x793A;&#x5730;&#x5740;&#xFF0C;&#x53EF;&#x4EE5;&#x6709;&#x591A;&#x4E2A;</li>
+</ul>
+<p>&#x5177;&#x4F53;&#x53EF;&#x89C1;-h&#x3002;</p>
+<p>&#x4F4D;&#x7F6E;&#x5728;<code>sdk/ndk/20.0.5594570/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/bin/arm-linux-androideabi-addr2line</code></p>
+<h2 id="objdump"><a name="objdump" class="anchor-navigation-ex-anchor" href="#objdump"><i class="fa fa-link" aria-hidden="true"></i></a>7.2. objdump</h2>
+<p>objdump &#x662F; gcc &#x5DE5;&#x5177;&#xFF0C;&#x7528;&#x6765;&#x67E5;&#x770B;&#x7F16;&#x8BD1;&#x540E;&#x76EE;&#x6807;&#x6587;&#x4EF6;&#x7684;&#x7EC4;&#x6210;&#x3002;</p>
+<p>&#x4F4D;&#x7F6E;&#xFF1A;</p>
+<ul>
+<li>32&#x4F4D;&#xFF1A;toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin/arm-linux-androideabi-objdump</li>
+<li>64&#x4F4D;&#xFF1A;toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin/aarch64-linux-android-objdump</li>
+</ul>
+<p>&#x4E00;&#x822C;&#x4F7F;&#x7528;&#xFF1A;</p>
+<pre><code>arm-linux-androideabi-objdump -d &#x5E93;&#x6587;&#x4EF6; &gt; &#x8F93;&#x51FA;&#x6587;&#x4EF6;
+</code></pre>
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="08 WMS.html" class="navigation navigation-prev " aria-label="Previous page: 08 WMS">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="13 ClassLoader.html" class="navigation navigation-next " aria-label="Next page: 13 ClassLoader">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"10 JNI","level":"1.6.1.9","depth":3,"next":{"title":"13 ClassLoader","level":"1.6.1.10","depth":3,"path":"05 Android/01 Android源码分析/13 ClassLoader.md","ref":"./05 Android/01 Android源码分析/13 ClassLoader.md","articles":[]},"previous":{"title":"08 WMS","level":"1.6.1.8","depth":3,"path":"05 Android/01 Android源码分析/08 WMS.md","ref":"./05 Android/01 Android源码分析/08 WMS.md","articles":[]},"dir":"ltr"},"config":{"plugins":["highlight","search","livereload","splitter","expandable-chapters-small","anchors","anchor-navigation-ex"],"styles":{"website":"./styles/website.css"},"pluginsConfig":{"livereload":{},"splitter":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"anchor-navigation-ex":{"associatedWithSummary":true,"float":{"floatIcon":"fa fa-navicon","level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"mode":"float","multipleH1":true,"pageTop":{"level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"printLog":false,"showGoTop":true,"showLevel":true},"expandable-chapters-small":{},"sharing":{"all":["facebook","google","twitter","weibo","instapaper"],"facebook":true,"google":false,"instapaper":false,"twitter":true,"vk":false,"weibo":false},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"theme":"default","author":"Mezzsy","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Mezzsy is here","language":"zh-hans","gitbook":"3.2.3"},"file":{"path":"05 Android/01 Android源码分析/10 JNI.md","mtime":"2022-03-03T15:52:52.739Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2024-11-24T11:55:09.181Z"},"basePath":"../..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../gitbook/gitbook.js"></script>
+    <script src="../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-splitter/splitter.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-expandable-chapters-small/expandable-chapters-small.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
