@@ -1,49 +1,299 @@
-> 学习目标：理解 Codex 这类通用软件工程 agent 如何接收任务、获取上下文、调用工具、修改代码、验证结果，并在权限边界内工作。
+学习目标：理解 Codex 这类通用软件工程 agent 如何接收任务、获取上下文、调用工具、修改代码、验证结果，并在权限边界内工作。
 
-# 资料来源
+> 资料来源
+>
+> 本文根据以下网络资料翻译和整理，访问时间：2026-07-07。
+>
+> - OpenAI Codex 官方文档：https://developers.openai.com/codex
+> - OpenAI Codex 开源仓库：https://github.com/openai/codex
+> - Codex 官方手册：https://developers.openai.com/codex/codex-manual.md
+> - AGENTS.md 说明：https://agents.md
+>
+> 说明：下面不是逐字全文翻译，而是面向全栈工程师学习的中文整理版。重点保留 Codex 的工作模型、上下文、线程、工具调用、验证、安全和可复用工作流。
+>
 
-本文根据以下网络资料翻译和整理，访问时间：2026-07-07。
-
-- OpenAI Codex 官方文档：https://developers.openai.com/codex
-- OpenAI Codex 开源仓库：https://github.com/openai/codex
-- Codex 官方手册：https://developers.openai.com/codex/codex-manual.md
-- AGENTS.md 说明：https://agents.md
-
-说明：下面不是逐字全文翻译，而是面向全栈工程师学习的中文整理版。重点保留 Codex 的工作模型、上下文、线程、工具调用、验证、安全和可复用工作流。
-
-# 1. Codex 是什么
+# Codex 是什么
 
 Codex 是 OpenAI 面向软件开发的 coding agent。它不只是聊天助手，而是能在一个真实工作区里读文件、理解代码、修改代码、运行命令、执行测试、调试错误、review diff，并根据你的反馈继续迭代。
 
-从使用者角度看，Codex 可以承担这些工作：
+# 🌟Codex 的基本工作循环：Agent Loop
 
-- 写代码：根据需求生成或修改代码，并尽量遵守现有项目结构和风格。
-- 理解代码库：阅读陌生或复杂代码，解释模块职责、调用关系、数据流和风险点。
-- Review 代码：检查潜在 bug、逻辑错误、边界条件、测试缺口和回归风险。
-- Debug 和修复问题：根据错误日志、复现步骤、失败测试定位原因并提出补丁。
-- 自动化开发任务：执行重构、测试、迁移、环境设置、文档更新等重复工作。
+> **资料来源**
+>
+> 本文根据以下 OpenAI 官方资料整理，访问时间：2026-07-12。
+>
+> - [OpenAI：Unrolling the Codex agent loop](https://openai.com/index/unrolling-the-codex-agent-loop/)
+> - [OpenAI：Codex CLI](https://developers.openai.com/codex/cli)
+> - [OpenAI：Codex Configuration Reference](https://developers.openai.com/codex/config-reference)
+> - [OpenAI：Subagents](https://developers.openai.com/codex/concepts/multi-agents)
+> - [OpenAI API：Responses API](https://developers.openai.com/api/docs/guides/responses-vs-chat-completions)
+>
+> 说明：OpenAI 官方把这一机制称为 Agent Loop，而不是 ReAct 模式。本文会用 ReAct 帮助理解“推理、行动、观察交替”的思想，但不会把两者视为完全相同的产品名称或实现。
 
-对全栈工程师来说，最重要的理解是：Codex 的价值不只是“生成代码”，而是帮助你把一次开发任务跑成一个闭环。
+Codex 收到 prompt 后，会进入一个 agent loop。
+
+## Agent Loop 是什么
+
+普通聊天模型的典型工作方式是：接收一段输入，然后生成一段文本。Codex 不仅能生成文本，还能搜索代码、读取文件、运行命令、修改工作区、调用外部工具，并根据真实执行结果继续工作。
+
+把这些能力串起来的控制过程就是 Agent Loop。可以先把它简化成下面的循环：
 
 ```text
-需求 -> 理解上下文 -> 制定计划 -> 修改代码 -> 运行验证 -> Review -> 继续迭代
+接收目标和约束
+      ↓
+理解当前状态并决定下一步
+      ↓
+直接回答，或者请求一次工具调用
+      ↓
+执行工具并获得结果
+      ↓
+把结果加入当前上下文
+      ↓
+根据新状态继续判断
+      ↓
+达到完成条件后返回最终结果
 ```
 
-# 2. Codex 的基本工作循环
+这里最重要的不是“模型一次想出了完整答案”，而是模型可以通过工具不断接触外部事实，并利用新事实修正后续行动。
 
-Codex 收到 prompt 后，会进入一个 agent loop：
+例如，用户要求“修复登录接口偶发的 500 错误”。Codex 一开始通常不知道根因，只能先搜索入口、阅读日志和运行测试。第一次测试结果会影响下一步：如果发现数据库超时，就继续追踪连接池；如果发现空指针，就转向输入边界；如果无法复现，就需要构造更接近生产环境的条件。
 
-1. 理解你的目标和约束。
-2. 收集上下文，比如读取文件、搜索代码、查看测试、分析错误日志。
-3. 决定下一步行动。
-4. 调用工具，比如 shell、文件读取、文件编辑、apply patch、浏览器、MCP 工具。
-5. 观察工具结果，比如命令输出、测试失败、文件内容、网页状态。
-6. 根据结果继续推理和行动。
-7. 在任务完成或你取消任务时停止。
+## 一次循环包含什么
 
-你可以把它理解成一个“能行动的开发搭档”。普通聊天模型主要输出文字，Codex 型 agent 会把文字推理转化成实际操作。
+从概念上看，一次 Agent Loop 迭代包含四个部分。
 
-# 3. Prompt 决定任务边界
+### 当前状态
+
+当前状态是模型此刻能够使用的信息，包括：
+
+- 用户目标、约束和完成标准。
+- 当前任务中的历史消息。
+- 已经读取的代码和文档。
+- 已执行命令的输出。
+- 测试、构建、日志和浏览器结果。
+- `AGENTS.md`、Skill 等持久或可复用指导。
+- 当前可用的工具及其参数说明。
+- Sandbox、Approval 等权限限制。
+
+模型并不是直接“看见整台电脑”。只有进入上下文的信息和工具暴露出来的能力，才属于它的当前状态。
+
+### 决策
+
+模型根据当前状态判断下一步应该做什么。例如：
+
+- 先搜索某个符号。
+- 阅读一个配置文件。
+- 运行最小相关测试。
+- 修改一个函数。
+- 请求联网或更高权限。
+- 询问一个无法从项目中发现的关键需求。
+- 在证据充分时结束任务。
+
+这里的“决策”不等于向用户展示完整的私有思维链。对用户真正有用的是可检查的信息，例如当前假设、准备采取的动作、工具结果、关键依据和验证结论。
+
+### 行动
+
+如果模型需要接触环境，它会输出结构化的工具调用，而不是假装已经执行了操作。常见行动包括：
+
+- 使用文件搜索工具定位代码。
+- 读取文件或 Git diff。
+- 调用 shell 运行测试、构建或静态检查。
+- 使用补丁工具编辑文件。
+- 使用浏览器验证页面行为。
+- 通过 MCP 或插件访问 GitHub、文档库等外部系统。
+
+工具调用通常包含工具名称和参数。Codex Harness 负责检查调用、执行工具，并把结果返回给模型。
+
+### 观察
+
+观察是工具执行后返回的真实结果，例如：
+
+- 搜索到了哪些文件和符号。
+- 文件的实际内容。
+- 命令的退出码和标准输出。
+- 测试通过或失败的详情。
+- 编译器和类型检查器给出的错误。
+- 浏览器中的 DOM、截图、控制台和网络状态。
+- 工具调用被 Sandbox 拒绝或等待用户批准。
+
+观察会改变下一轮的当前状态。模型应根据观察调整路线，而不是忽略结果继续执行原来的猜测。
+
+## Codex Agent Loop 的运行原理
+
+OpenAI 官方对 Codex Agent Loop 的描述可以抽象为以下伪代码：
+
+```text
+context = build_initial_context(user_prompt, instructions, tools, workspace_state)
+
+while true:
+    output = call_model(context)
+
+    if output contains tool_call:
+        result = execute_tool_under_policy(output.tool_call)
+        context.append(output.tool_call)
+        context.append(result)
+        continue
+
+    final_response = output
+    break
+```
+
+真实实现还需要处理并行工具、流式输出、审批、超时、错误恢复、上下文压缩和任务中断等问题，但核心结构仍然是“模型输出工具请求，Harness 执行，再把结果反馈给模型”。
+
+### Harness 与模型的分工
+
+Codex 不只是一个模型名称，也包含承载模型运行的软件系统。理解 Agent Loop 时，可以把它分成两层：
+
+- 模型负责理解任务、选择工具、生成参数、根据结果调整行动并判断何时结束。
+- Harness 负责构造上下文、提供工具、真正执行调用、实施权限控制、记录结果并驱动下一次模型推理。
+
+模型本身不会直接运行 shell，也不会直接写入磁盘。真正改变环境的是 Harness 所执行的工具调用。
+
+### 初始上下文如何构造
+
+任务开始时，Codex 会把多类信息组织成模型输入，主要包括：
+
+- Instructions：系统和开发者级指导、项目约定以及当前权限说明。
+- Tools：模型当前可以调用的工具定义。
+- Input：用户消息、附件、图片、文件内容和任务历史。
+
+在本地 Codex 中，项目的 `AGENTS.md`、配置、Sandbox 和 Approval 规则也会影响模型看到的指令或实际可执行边界。
+
+这意味着 Agent Loop 的表现不仅取决于模型能力，还取决于上下文是否准确、工具是否合适、权限是否足够以及完成标准是否明确。
+
+### 工具调用如何形成闭环
+
+假设模型决定运行测试，它不会只输出自然语言“我要运行测试”，而是生成类似下面的结构化请求：
+
+```json
+{
+  "tool": "shell",
+  "arguments": {
+    "command": "npm test -- login"
+  }
+}
+```
+
+Harness 执行后可能返回：
+
+```text
+exit_code: 1
+LoginService.test.ts: expected 401, received 500
+TypeError: Cannot read properties of undefined
+```
+
+这个结果被追加到上下文中。下一次推理时，模型不再只知道“登录有错误”，而是获得了具体失败位置、期望值和异常类型，于是可以读取对应测试及实现代码。
+
+工具结果是 Agent Loop 中连接“语言推理”和“真实环境”的桥梁。
+
+
+
+## Agent Loop 为什么有效
+
+### 用外部事实降低猜测
+
+模型的已有知识不能替代当前仓库、当前依赖和当前运行状态。Agent Loop 允许模型通过搜索、测试和日志获取实时事实，从而减少只凭记忆回答造成的错误。
+
+### 把大问题转化成小反馈
+
+复杂任务通常无法一步完成。Agent Loop 可以把任务拆成多个可验证动作：
+
+```text
+定位入口
+→ 建立假设
+→ 运行最小实验
+→ 修改代码
+→ 运行相关测试
+→ 检查完整 diff
+```
+
+每一步都能产生反馈，使错误更早暴露。
+
+### 允许根据结果改变计划
+
+静态计划容易建立在错误假设上。Agent Loop 可以在执行中更新认识。例如，原计划修改前端状态管理，但测试证明后端没有持久化数据，后续行动就应该转向后端，而不是机械完成原计划。
+
+### 让“完成”可以被验证
+
+软件工程任务的主要产出通常不是最终文字，而是代码、配置、测试和运行状态。Agent Loop 能在结束前执行验证，将“我认为已经完成”转化为“相关测试、类型检查和复现步骤已经通过”。
+
+## Agent Loop 与 ReAct 的关系
+
+ReAct 通常表示 Reasoning and Acting，即推理与行动交替进行：
+
+```text
+Reason → Act → Observe → Reason → Act → Observe
+```
+
+Codex Agent Loop 与这个思想非常接近，因为它也会在模型推理、工具行动和环境观察之间循环。因此，可以说 Codex 默认运行的是一种 ReAct 风格的工具驱动 Agent。
+
+但要注意三个区别：
+
+1. Codex 官方产品中没有名为 `/react` 的命令，也没有 `react = true` 配置项。
+2. OpenAI 官方使用的名称是 Agent Loop，不保证它严格复现某篇 ReAct 论文的提示格式或内部轨迹。
+3. 用户不需要、也不应要求输出完整私有思维链；应关注可验证的行动、结果和关键依据。
+
+因此，更准确的表达是：
+
+> Codex 默认是工具驱动的迭代式 Agent，其行为可以用 ReAct 思想理解，但 ReAct 不是 Codex 中需要开启的正式模式。
+
+## Agent Loop 与 Plan-and-Execute 的关系
+
+Agent Loop 解决的是“如何持续行动和反馈”，Plan-and-Execute 解决的是“如何组织一个较长任务”。二者不是互斥关系。
+
+### Default 模式
+
+在 Default 模式下，Codex 可以直接探索、修改和验证。它可能在执行过程中维护任务清单，但主要目标是完成任务，而不只是输出计划。
+
+### Plan 模式
+
+在 Codex CLI 中可以使用 `/plan` 进入 Plan 模式。这个阶段适合：
+
+- 阅读代码和收集事实。
+- 澄清需求。
+- 分析影响范围和依赖关系。
+- 制定实施步骤、验证方式和回滚方案。
+
+计划确认后，再回到执行阶段完成修改。
+
+### 两者如何组合
+
+一个完整的 Plan-and-Execute 工作流可以表示为：
+
+```text
+Plan 阶段
+  Agent Loop：读取 → 搜索 → 提问 → 更新计划
+        ↓
+计划确认
+        ↓
+Execute 阶段
+  Agent Loop：修改 → 测试 → 观察 → 修正 → 验证
+```
+
+即使先制定了计划，执行阶段仍然需要 Agent Loop。计划提供全局方向，循环负责处理执行中出现的新事实。
+
+
+
+## Agent Loop 与多 Agent 的关系
+
+多 Agent 是在单个 Agent Loop 之上增加并行编排。主 Agent 可以把相互独立的任务交给多个子 Agent，每个子 Agent 都运行自己的循环，最后由主 Agent 收集结果。
+
+```text
+主 Agent Loop
+    ├── 子 Agent A：搜索安全问题
+    ├── 子 Agent B：检查测试缺口
+    └── 子 Agent C：分析性能风险
+                 ↓
+主 Agent 汇总、去重、核验并输出结论
+```
+
+它适合代码库探索、PR 多维审查、日志分片分析等可并行工作。多个 Agent 同时修改同一文件则容易产生冲突，因此并行 Agent 更适合读多写少、责任边界清晰的子任务。
+
+多 Agent 没有替代 Agent Loop。它只是让多个 Loop 并行运行，并增加了任务分解、消息传递、等待和结果合并等编排工作。
+
+
+
+# Prompt 决定任务边界
 
 Codex 官方建议，一个好的任务说明最好包含四部分：
 
@@ -82,7 +332,7 @@ Done when:
 - `Constraints` 防止过度重构或破坏架构。
 - `Done when` 给 agent 一个可验证的停止条件。
 
-# 4. Codex 如何使用上下文
+# 🌟Codex 如何使用上下文
 
 Codex 的上下文来自几个来源：
 
@@ -104,7 +354,7 @@ Codex 的上下文来自几个来源：
 - 不要只说“写测试”，要指出测试范围和边界场景。
 - 如果项目大，要告诉它先读哪些目录或文件。
 
-# 5. Thread：一次任务的工作现场
+# Thread：一次任务的工作现场
 
 Codex 的 thread 可以理解成一次连续工作会话。一个 thread 里可以有多个 prompt，也会包含模型输出、工具调用、文件修改、命令结果和你的后续反馈。
 
@@ -124,7 +374,7 @@ Codex 支持多个 thread 并行工作，但要注意：不要让两个 thread �
 - 本地 thread：运行在你的机器上，可以直接读写本地工作区、运行本地命令，适合即时开发和调试。
 - 云端 thread：运行在隔离环境中，适合并行委派任务、从其他设备启动任务、处理 GitHub 上的分支或 PR。
 
-# 6. Plan mode：复杂任务先计划
+# Plan mode：复杂任务先计划
 
 对于复杂、模糊、高风险任务，Codex 官方建议先计划再实现。
 
@@ -151,7 +401,7 @@ Codex 支持多个 thread 并行工作，但要注意：不要让两个 thread �
 
 计划阶段的价值不是形式主义，而是让 agent 在动手前先对齐任务边界。
 
-# 7. Codex 不是只写代码，还要验证
+# Codex 不是只写代码，还要验证
 
 Codex 的可靠性很大程度来自“能验证”。官方文档强调，不要只让 Codex 做修改，还要让它运行相关检查。
 
@@ -179,7 +429,7 @@ Done when:
 - 最后 review diff，列出风险和未覆盖点。
 ```
 
-# 8. Codex 的权限模型：Sandbox 和 Approval
+# Codex 的权限模型：Sandbox 和 Approval
 
 Codex 型 agent 的一个核心特点是：它可以行动，所以必须有权限边界。
 
@@ -204,7 +454,7 @@ Codex 型 agent 的一个核心特点是：它可以行动，所以必须有权�
 - 涉及生产数据、密钥、部署、数据库删除、权限变更时，必须让 agent 先解释计划再执行。
 - 对来自网页、issue、外部文档的内容保持警惕，因为 prompt injection 可能让 agent 接收到恶意指令。
 
-# 9. AGENTS.md：让上下文长期生效
+# AGENTS.md：让上下文长期生效
 
 `AGENTS.md` 是给 agent 看的项目说明书。它会在 Codex 开始工作前加载，帮助 agent 理解项目约定。
 
@@ -258,7 +508,7 @@ Codex 型 agent 的一个核心特点是：它可以行动，所以必须有权�
 - 项目根目录写通用规则，子目录写局部规则。
 - 把它当成团队协作协议，而不是长篇说明书。
 
-# 10. Skills、MCP 和 Subagents 在工作方式中的位置
+# Skills、MCP 和 Subagents 在工作方式中的位置
 
 这一步不需要深入实现，但要先知道它们解决什么问题。
 
@@ -305,7 +555,7 @@ Subagents 是把不同任务委派给不同角色的 agent。比如一个 agent 
 
 初学阶段不急着用 subagents。先把单个 Codex thread 用好，再考虑多 agent。
 
-# 11. Codex 型 Agent 的典型全栈工作流
+# Codex 型 Agent 的典型全栈工作流
 
 ## 读懂一个模块
 
@@ -370,7 +620,7 @@ Focus on correctness, regressions, missing tests, frontend/backend API mismatch,
 Report findings first, ordered by severity, with file and line references.
 ```
 
-# 12. 你应该形成的心智模型
+# 你应该形成的心智模型
 
 Codex 型通用 agent 不是一个“更强的自动补全”，而是一个受上下文、工具、权限和验证约束的开发执行系统。
 
@@ -398,7 +648,7 @@ Codex 型通用 agent 不是一个“更强的自动补全”，而是一个受�
 
 学习 Codex 型 agent，本质上是在学习如何设计这几个层之间的关系。
 
-# 13. 第一阶段练习清单
+# 第一阶段练习清单
 
 建议你用真实项目完成这些练习：
 
@@ -416,7 +666,7 @@ Codex 型通用 agent 不是一个“更强的自动补全”，而是一个受�
 - 哪些完成标准不够清楚？
 - 哪些规则应该沉淀到 `AGENTS.md`？
 
-# 14. 本阶段最低掌握标准
+# 本阶段最低掌握标准
 
 学完这一步，你应该能做到：
 
