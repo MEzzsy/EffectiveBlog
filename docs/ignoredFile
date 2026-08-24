@@ -7,3 +7,4 @@ node_modules
 auto_pull.sh
 count.py
 docs
+AGENTS.md

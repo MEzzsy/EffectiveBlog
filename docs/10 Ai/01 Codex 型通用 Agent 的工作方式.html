@@ -1,0 +1,3528 @@
+
+<!DOCTYPE HTML>
+<html lang="zh-hans" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>01 Codex 型通用 Agent 的工作方式 · Mezzsy is here</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        <meta name="author" content="Mezzsy">
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-splitter/splitter.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-expandable-chapters-small/expandable-chapters-small.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-anchors/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-anchor-navigation-ex/style/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="02 上下文工程和 AGENTS.html" />
+    
+    
+    <link rel="prev" href="00 Ai基础概念.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="输入并搜索" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    00 介绍
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../01 语言/">
+            
+                <a href="../01 语言/">
+            
+                    
+                    01 语言
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../01 语言/01 Cpp/">
+            
+                <a href="../01 语言/01 Cpp/">
+            
+                    
+                    01 Cpp
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.1" data-path="../01 语言/01 Cpp/原理总结/">
+            
+                <a href="../01 语言/01 Cpp/原理总结/">
+            
+                    
+                    原理总结
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.1.1" data-path="../01 语言/01 Cpp/原理总结/其它.html">
+            
+                <a href="../01 语言/01 Cpp/原理总结/其它.html">
+            
+                    
+                    其它
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.2" data-path="../01 语言/01 Cpp/原理总结/函数.html">
+            
+                <a href="../01 语言/01 Cpp/原理总结/函数.html">
+            
+                    
+                    函数
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.3" data-path="../01 语言/01 Cpp/原理总结/对象.html">
+            
+                <a href="../01 语言/01 Cpp/原理总结/对象.html">
+            
+                    
+                    对象
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.4" data-path="../01 语言/01 Cpp/原理总结/成员变量.html">
+            
+                <a href="../01 语言/01 Cpp/原理总结/成员变量.html">
+            
+                    
+                    成员变量
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.5" data-path="../01 语言/01 Cpp/原理总结/执行期.html">
+            
+                <a href="../01 语言/01 Cpp/原理总结/执行期.html">
+            
+                    
+                    执行期
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.6" data-path="../01 语言/01 Cpp/原理总结/构造函数.html">
+            
+                <a href="../01 语言/01 Cpp/原理总结/构造函数.html">
+            
+                    
+                    构造函数
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.7" data-path="../01 语言/01 Cpp/原理总结/构造析构拷贝.html">
+            
+                <a href="../01 语言/01 Cpp/原理总结/构造析构拷贝.html">
+            
+                    
+                    构造析构拷贝
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2" data-path="../01 语言/01 Cpp/知识点/">
+            
+                <a href="../01 语言/01 Cpp/知识点/">
+            
+                    
+                    知识点
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.2.1" data-path="../01 语言/01 Cpp/知识点/01 基础.html">
+            
+                <a href="../01 语言/01 Cpp/知识点/01 基础.html">
+            
+                    
+                    01 基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.2" data-path="../01 语言/01 Cpp/知识点/类.html">
+            
+                <a href="../01 语言/01 Cpp/知识点/类.html">
+            
+                    
+                    类
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.3" data-path="../01 语言/01 Cpp/知识点/线程.html">
+            
+                <a href="../01 语言/01 Cpp/知识点/线程.html">
+            
+                    
+                    线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../01 语言/02 Java/">
+            
+                <a href="../01 语言/02 Java/">
+            
+                    
+                    02 Java
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.2.1" data-path="../01 语言/02 Java/Java-IO.html">
+            
+                <a href="../01 语言/02 Java/Java-IO.html">
+            
+                    
+                    Java-IO
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.2" data-path="../01 语言/02 Java/Java反射机制和泛型.html">
+            
+                <a href="../01 语言/02 Java/Java反射机制和泛型.html">
+            
+                    
+                    Java反射机制和泛型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.3" data-path="../01 语言/02 Java/Java基础知识.html">
+            
+                <a href="../01 语言/02 Java/Java基础知识.html">
+            
+                    
+                    Java基础知识
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.4" data-path="../01 语言/02 Java/Java异常机制.html">
+            
+                <a href="../01 语言/02 Java/Java异常机制.html">
+            
+                    
+                    Java异常机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.5" data-path="../01 语言/02 Java/并发.html">
+            
+                <a href="../01 语言/02 Java/并发.html">
+            
+                    
+                    并发
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.6" data-path="../01 语言/02 Java/异常.html">
+            
+                <a href="../01 语言/02 Java/异常.html">
+            
+                    
+                    异常
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.7" data-path="../01 语言/02 Java/禁止在foreach循环里进行元素的remove-add操作.html">
+            
+                <a href="../01 语言/02 Java/禁止在foreach循环里进行元素的remove-add操作.html">
+            
+                    
+                    禁止在foreach循环里进行元素的remove-add操作
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.8" data-path="../01 语言/02 Java/类和接口.html">
+            
+                <a href="../01 语言/02 Java/类和接口.html">
+            
+                    
+                    类和接口
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../02 计算机系统/">
+            
+                <a href="../02 计算机系统/">
+            
+                    
+                    02 计算机系统
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../02 计算机系统/01-操作系统.html">
+            
+                <a href="../02 计算机系统/01-操作系统.html">
+            
+                    
+                    01-操作系统
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../02 计算机系统/02-内存.html">
+            
+                <a href="../02 计算机系统/02-内存.html">
+            
+                    
+                    02-内存
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../02 计算机系统/03-线程.html">
+            
+                <a href="../02 计算机系统/03-线程.html">
+            
+                    
+                    03-线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../02 计算机系统/04-编译链接.html">
+            
+                <a href="../02 计算机系统/04-编译链接.html">
+            
+                    
+                    04-编译链接
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../02 计算机系统/深入理解计算机系统/">
+            
+                <a href="../02 计算机系统/深入理解计算机系统/">
+            
+                    
+                    深入理解计算机系统
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.5.1" data-path="../02 计算机系统/深入理解计算机系统/01-计算机系统漫游.html">
+            
+                <a href="../02 计算机系统/深入理解计算机系统/01-计算机系统漫游.html">
+            
+                    
+                    01-计算机系统漫游
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.2" data-path="../02 计算机系统/深入理解计算机系统/02-信息的表示和处理.html">
+            
+                <a href="../02 计算机系统/深入理解计算机系统/02-信息的表示和处理.html">
+            
+                    
+                    02-信息的表示和处理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.3" data-path="../02 计算机系统/深入理解计算机系统/07-链接.html">
+            
+                <a href="../02 计算机系统/深入理解计算机系统/07-链接.html">
+            
+                    
+                    07-链接
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.4" data-path="../02 计算机系统/深入理解计算机系统/09-虚拟内存.html">
+            
+                <a href="../02 计算机系统/深入理解计算机系统/09-虚拟内存.html">
+            
+                    
+                    09-虚拟内存
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../03 Java/">
+            
+                <a href="../03 Java/">
+            
+                    
+                    03 Java
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../03 Java/01 Java知识点/">
+            
+                <a href="../03 Java/01 Java知识点/">
+            
+                    
+                    01 Java知识点
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1.1" data-path="../03 Java/01 Java知识点/Java基础知识.html">
+            
+                <a href="../03 Java/01 Java知识点/Java基础知识.html">
+            
+                    
+                    Java基础知识
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.2" data-path="../03 Java/01 Java知识点/Java问题.html">
+            
+                <a href="../03 Java/01 Java知识点/Java问题.html">
+            
+                    
+                    Java问题
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.3" data-path="../03 Java/01 Java知识点/泛型.html">
+            
+                <a href="../03 Java/01 Java知识点/泛型.html">
+            
+                    
+                    泛型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.4" data-path="../03 Java/01 Java知识点/注解.html">
+            
+                <a href="../03 Java/01 Java知识点/注解.html">
+            
+                    
+                    注解
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../03 Java/02 Java虚拟机/">
+            
+                <a href="../03 Java/02 Java虚拟机/">
+            
+                    
+                    02 Java虚拟机
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.2.1" data-path="../03 Java/02 Java虚拟机/01-Java介绍.html">
+            
+                <a href="../03 Java/02 Java虚拟机/01-Java介绍.html">
+            
+                    
+                    01-Java介绍
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.2" data-path="../03 Java/02 Java虚拟机/02-内存区域.html">
+            
+                <a href="../03 Java/02 Java虚拟机/02-内存区域.html">
+            
+                    
+                    02-内存区域
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.3" data-path="../03 Java/02 Java虚拟机/03-垃圾收集TODO.html">
+            
+                <a href="../03 Java/02 Java虚拟机/03-垃圾收集TODO.html">
+            
+                    
+                    03-垃圾收集TODO
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.4" data-path="../03 Java/02 Java虚拟机/06-类文件结构.html">
+            
+                <a href="../03 Java/02 Java虚拟机/06-类文件结构.html">
+            
+                    
+                    06-类文件结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.5" data-path="../03 Java/02 Java虚拟机/07-虚拟机类加载机制.html">
+            
+                <a href="../03 Java/02 Java虚拟机/07-虚拟机类加载机制.html">
+            
+                    
+                    07-虚拟机类加载机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.6" data-path="../03 Java/02 Java虚拟机/08-虚拟机字节码执行引擎.html">
+            
+                <a href="../03 Java/02 Java虚拟机/08-虚拟机字节码执行引擎.html">
+            
+                    
+                    08-虚拟机字节码执行引擎
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.7" data-path="../03 Java/02 Java虚拟机/12-Java内存模型与线程.html">
+            
+                <a href="../03 Java/02 Java虚拟机/12-Java内存模型与线程.html">
+            
+                    
+                    12-Java内存模型与线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.8" data-path="../03 Java/02 Java虚拟机/13-线程安全与锁优化.html">
+            
+                <a href="../03 Java/02 Java虚拟机/13-线程安全与锁优化.html">
+            
+                    
+                    13-线程安全与锁优化
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../03 Java/03 常用源码分析/">
+            
+                <a href="../03 Java/03 常用源码分析/">
+            
+                    
+                    03 常用源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.3.1" data-path="../03 Java/03 常用源码分析/ArrayList源码分析.html">
+            
+                <a href="../03 Java/03 常用源码分析/ArrayList源码分析.html">
+            
+                    
+                    ArrayList源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.2" data-path="../03 Java/03 常用源码分析/ConcurrentHashMap源码分析.html">
+            
+                <a href="../03 Java/03 常用源码分析/ConcurrentHashMap源码分析.html">
+            
+                    
+                    ConcurrentHashMap源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.3" data-path="../03 Java/03 常用源码分析/HashMap源码分析.html">
+            
+                <a href="../03 Java/03 常用源码分析/HashMap源码分析.html">
+            
+                    
+                    HashMap源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.4" data-path="../03 Java/03 常用源码分析/HashTable源码分析.html">
+            
+                <a href="../03 Java/03 常用源码分析/HashTable源码分析.html">
+            
+                    
+                    HashTable源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.5" data-path="../03 Java/03 常用源码分析/LinkedHashMap源码分析.html">
+            
+                <a href="../03 Java/03 常用源码分析/LinkedHashMap源码分析.html">
+            
+                    
+                    LinkedHashMap源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.6" data-path="../03 Java/03 常用源码分析/LinkedList源码分析.html">
+            
+                <a href="../03 Java/03 常用源码分析/LinkedList源码分析.html">
+            
+                    
+                    LinkedList源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.7" data-path="../03 Java/03 常用源码分析/ThreadLocal源码分析.html">
+            
+                <a href="../03 Java/03 常用源码分析/ThreadLocal源码分析.html">
+            
+                    
+                    ThreadLocal源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.8" data-path="../03 Java/03 常用源码分析/线程池源码分析.html">
+            
+                <a href="../03 Java/03 常用源码分析/线程池源码分析.html">
+            
+                    
+                    线程池源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../03 Kotlin/">
+            
+                <a href="../03 Kotlin/">
+            
+                    
+                    03 Kotlin
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../03 Kotlin/KMP/">
+            
+                <a href="../03 Kotlin/KMP/">
+            
+                    
+                    KMP
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1.1" data-path="../03 Kotlin/KMP/KMP基础概念与工程结构.html">
+            
+                <a href="../03 Kotlin/KMP/KMP基础概念与工程结构.html">
+            
+                    
+                    KMP基础概念与工程结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../03 Kotlin/KMP学习路径.html">
+            
+                <a href="../03 Kotlin/KMP学习路径.html">
+            
+                    
+                    KMP学习路径
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="../03 Kotlin/协程与异步编程.html">
+            
+                <a href="../03 Kotlin/协程与异步编程.html">
+            
+                    
+                    协程与异步编程
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../04 源码分析/">
+            
+                <a href="../04 源码分析/">
+            
+                    
+                    04 源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../04 源码分析/AddressSanitizer.html">
+            
+                <a href="../04 源码分析/AddressSanitizer.html">
+            
+                    
+                    AddressSanitizer
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="../04 源码分析/ByteX.html">
+            
+                <a href="../04 源码分析/ByteX.html">
+            
+                    
+                    ByteX
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3" data-path="../04 源码分析/PltHook.html">
+            
+                <a href="../04 源码分析/PltHook.html">
+            
+                    
+                    PltHook
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4" data-path="../04 源码分析/Raphael分析.html">
+            
+                <a href="../04 源码分析/Raphael分析.html">
+            
+                    
+                    Raphael分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.5" data-path="../04 源码分析/基于fp的栈回朔.html">
+            
+                <a href="../04 源码分析/基于fp的栈回朔.html">
+            
+                    
+                    基于fp的栈回朔
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../05 Android/">
+            
+                <a href="../05 Android/">
+            
+                    
+                    05 Android
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.1" data-path="../05 Android/01 Android源码分析/">
+            
+                <a href="../05 Android/01 Android源码分析/">
+            
+                    
+                    01 Android源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.1.1" data-path="../05 Android/01 Android源码分析/01 系统启动过程.html">
+            
+                <a href="../05 Android/01 Android源码分析/01 系统启动过程.html">
+            
+                    
+                    01 系统启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.2" data-path="../05 Android/01 Android源码分析/02 应用进程启动过程.html">
+            
+                <a href="../05 Android/01 Android源码分析/02 应用进程启动过程.html">
+            
+                    
+                    02 应用进程启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.3" data-path="../05 Android/01 Android源码分析/03 Activity启动过程.html">
+            
+                <a href="../05 Android/01 Android源码分析/03 Activity启动过程.html">
+            
+                    
+                    03 Activity启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.4" data-path="../05 Android/01 Android源码分析/04 其它组件启动过程.html">
+            
+                <a href="../05 Android/01 Android源码分析/04 其它组件启动过程.html">
+            
+                    
+                    04 其它组件启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.5" data-path="../05 Android/01 Android源码分析/05 Context总结.html">
+            
+                <a href="../05 Android/01 Android源码分析/05 Context总结.html">
+            
+                    
+                    05 Context总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.6" data-path="../05 Android/01 Android源码分析/06 AMS.html">
+            
+                <a href="../05 Android/01 Android源码分析/06 AMS.html">
+            
+                    
+                    06 AMS
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.7" data-path="../05 Android/01 Android源码分析/07 WM.html">
+            
+                <a href="../05 Android/01 Android源码分析/07 WM.html">
+            
+                    
+                    07 WM
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.8" data-path="../05 Android/01 Android源码分析/08 WMS.html">
+            
+                <a href="../05 Android/01 Android源码分析/08 WMS.html">
+            
+                    
+                    08 WMS
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.9" data-path="../05 Android/01 Android源码分析/10 JNI.html">
+            
+                <a href="../05 Android/01 Android源码分析/10 JNI.html">
+            
+                    
+                    10 JNI
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.10" data-path="../05 Android/01 Android源码分析/13 ClassLoader.html">
+            
+                <a href="../05 Android/01 Android源码分析/13 ClassLoader.html">
+            
+                    
+                    13 ClassLoader
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.11" data-path="../05 Android/01 Android源码分析/14 热修复.html">
+            
+                <a href="../05 Android/01 Android源码分析/14 热修复.html">
+            
+                    
+                    14 热修复
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.12" data-path="../05 Android/01 Android源码分析/15 Hook.html">
+            
+                <a href="../05 Android/01 Android源码分析/15 Hook.html">
+            
+                    
+                    15 Hook
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.13" data-path="../05 Android/01 Android源码分析/16 插件化.html">
+            
+                <a href="../05 Android/01 Android源码分析/16 插件化.html">
+            
+                    
+                    16 插件化
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.14" data-path="../05 Android/01 Android源码分析/17 绘制流程-生产者.html">
+            
+                <a href="../05 Android/01 Android源码分析/17 绘制流程-生产者.html">
+            
+                    
+                    17 绘制流程-生产者
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.15" data-path="../05 Android/01 Android源码分析/18 绘制流程-消费者.html">
+            
+                <a href="../05 Android/01 Android源码分析/18 绘制流程-消费者.html">
+            
+                    
+                    18 绘制流程-消费者
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.16" data-path="../05 Android/01 Android源码分析/19 渲染总结.html">
+            
+                <a href="../05 Android/01 Android源码分析/19 渲染总结.html">
+            
+                    
+                    19 渲染总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.17" data-path="../05 Android/01 Android源码分析/20 硬件加速.html">
+            
+                <a href="../05 Android/01 Android源码分析/20 硬件加速.html">
+            
+                    
+                    20 硬件加速
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.18" data-path="../05 Android/01 Android源码分析/21 Android资源管理原理.html">
+            
+                <a href="../05 Android/01 Android源码分析/21 Android资源管理原理.html">
+            
+                    
+                    21 Android资源管理原理
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2" data-path="../05 Android/02 Android应用和原理/">
+            
+                <a href="../05 Android/02 Android应用和原理/">
+            
+                    
+                    02 Android应用和原理
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.2.1" data-path="../05 Android/02 Android应用和原理/Android动画.html">
+            
+                <a href="../05 Android/02 Android应用和原理/Android动画.html">
+            
+                    
+                    Android动画
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2.2" data-path="../05 Android/02 Android应用和原理/Android消息机制.html">
+            
+                <a href="../05 Android/02 Android应用和原理/Android消息机制.html">
+            
+                    
+                    Android消息机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2.3" data-path="../05 Android/02 Android应用和原理/Android的跨进程通信.html">
+            
+                <a href="../05 Android/02 Android应用和原理/Android的跨进程通信.html">
+            
+                    
+                    Android的跨进程通信
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2.4" data-path="../05 Android/02 Android应用和原理/Android类加载机制.html">
+            
+                <a href="../05 Android/02 Android应用和原理/Android类加载机制.html">
+            
+                    
+                    Android类加载机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2.5" data-path="../05 Android/02 Android应用和原理/Android线程.html">
+            
+                <a href="../05 Android/02 Android应用和原理/Android线程.html">
+            
+                    
+                    Android线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2.6" data-path="../05 Android/02 Android应用和原理/Drawable.html">
+            
+                <a href="../05 Android/02 Android应用和原理/Drawable.html">
+            
+                    
+                    Drawable
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2.7" data-path="../05 Android/02 Android应用和原理/View手势事件.html">
+            
+                <a href="../05 Android/02 Android应用和原理/View手势事件.html">
+            
+                    
+                    View手势事件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2.8" data-path="../05 Android/02 Android应用和原理/View绘制基础.html">
+            
+                <a href="../05 Android/02 Android应用和原理/View绘制基础.html">
+            
+                    
+                    View绘制基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2.9" data-path="../05 Android/02 Android应用和原理/四大组件.html">
+            
+                <a href="../05 Android/02 Android应用和原理/四大组件.html">
+            
+                    
+                    四大组件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2.10" data-path="../05 Android/02 Android应用和原理/性能优化.html">
+            
+                <a href="../05 Android/02 Android应用和原理/性能优化.html">
+            
+                    
+                    性能优化
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2.11" data-path="../05 Android/02 Android应用和原理/虚拟机.html">
+            
+                <a href="../05 Android/02 Android应用和原理/虚拟机.html">
+            
+                    
+                    虚拟机
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2.12" data-path="../05 Android/02 Android应用和原理/面试题.html">
+            
+                <a href="../05 Android/02 Android应用和原理/面试题.html">
+            
+                    
+                    面试题
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3" data-path="../05 Android/03 Android应用手册/">
+            
+                <a href="../05 Android/03 Android应用手册/">
+            
+                    
+                    03 Android应用手册
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.3.1" data-path="../05 Android/03 Android应用手册/四大组件/">
+            
+                <a href="../05 Android/03 Android应用手册/四大组件/">
+            
+                    
+                    四大组件
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.3.1.1" data-path="../05 Android/03 Android应用手册/四大组件/Android启动模式研究.html">
+            
+                <a href="../05 Android/03 Android应用手册/四大组件/Android启动模式研究.html">
+            
+                    
+                    Android启动模式研究
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.1.2" data-path="../05 Android/03 Android应用手册/四大组件/Android生命周期.html">
+            
+                <a href="../05 Android/03 Android应用手册/四大组件/Android生命周期.html">
+            
+                    
+                    Android生命周期
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.1.3" data-path="../05 Android/03 Android应用手册/四大组件/Broadcast.html">
+            
+                <a href="../05 Android/03 Android应用手册/四大组件/Broadcast.html">
+            
+                    
+                    Broadcast
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.2" data-path="../05 Android/03 Android应用手册/架构组件/">
+            
+                <a href="../05 Android/03 Android应用手册/架构组件/">
+            
+                    
+                    架构组件
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.3.2.1" data-path="../05 Android/03 Android应用手册/架构组件/LiveData.html">
+            
+                <a href="../05 Android/03 Android应用手册/架构组件/LiveData.html">
+            
+                    
+                    LiveData
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.2.2" data-path="../05 Android/03 Android应用手册/架构组件/Navigation.html">
+            
+                <a href="../05 Android/03 Android应用手册/架构组件/Navigation.html">
+            
+                    
+                    Navigation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.2.3" data-path="../05 Android/03 Android应用手册/架构组件/ViewModel.html">
+            
+                <a href="../05 Android/03 Android应用手册/架构组件/ViewModel.html">
+            
+                    
+                    ViewModel
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.3" data-path="../05 Android/03 Android应用手册/视图/">
+            
+                <a href="../05 Android/03 Android应用手册/视图/">
+            
+                    
+                    视图
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.3.3.1" data-path="../05 Android/03 Android应用手册/视图/Android动画.html">
+            
+                <a href="../05 Android/03 Android应用手册/视图/Android动画.html">
+            
+                    
+                    Android动画
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.3.2" data-path="../05 Android/03 Android应用手册/视图/Android布局.html">
+            
+                <a href="../05 Android/03 Android应用手册/视图/Android布局.html">
+            
+                    
+                    Android布局
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.3.3" data-path="../05 Android/03 Android应用手册/视图/Android控件.html">
+            
+                <a href="../05 Android/03 Android应用手册/视图/Android控件.html">
+            
+                    
+                    Android控件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.3.4" data-path="../05 Android/03 Android应用手册/视图/Drawable.html">
+            
+                <a href="../05 Android/03 Android应用手册/视图/Drawable.html">
+            
+                    
+                    Drawable
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.3.5" data-path="../05 Android/03 Android应用手册/视图/View绘制.html">
+            
+                <a href="../05 Android/03 Android应用手册/视图/View绘制.html">
+            
+                    
+                    View绘制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.3.6" data-path="../05 Android/03 Android应用手册/视图/视图相关工具类.html">
+            
+                <a href="../05 Android/03 Android应用手册/视图/视图相关工具类.html">
+            
+                    
+                    视图相关工具类
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.3.7" data-path="../05 Android/03 Android应用手册/视图/资源文件.html">
+            
+                <a href="../05 Android/03 Android应用手册/视图/资源文件.html">
+            
+                    
+                    资源文件
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.4" data-path="../05 Android/03 Android应用手册/项目/">
+            
+                <a href="../05 Android/03 Android应用手册/项目/">
+            
+                    
+                    项目
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.3.4.1" data-path="../05 Android/03 Android应用手册/项目/命令行调试.html">
+            
+                <a href="../05 Android/03 Android应用手册/项目/命令行调试.html">
+            
+                    
+                    命令行调试
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.4.2" data-path="../05 Android/03 Android应用手册/项目/打包.html">
+            
+                <a href="../05 Android/03 Android应用手册/项目/打包.html">
+            
+                    
+                    打包
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.4" data-path="../05 Android/04 常用类源码分析/">
+            
+                <a href="../05 Android/04 常用类源码分析/">
+            
+                    
+                    04 常用类源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.4.1" data-path="../05 Android/04 常用类源码分析/AsyncTask源码分析.html">
+            
+                <a href="../05 Android/04 常用类源码分析/AsyncTask源码分析.html">
+            
+                    
+                    AsyncTask源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.4.2" data-path="../05 Android/04 常用类源码分析/EventBus源码分析.html">
+            
+                <a href="../05 Android/04 常用类源码分析/EventBus源码分析.html">
+            
+                    
+                    EventBus源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.4.3" data-path="../05 Android/04 常用类源码分析/Glide源码分析.html">
+            
+                <a href="../05 Android/04 常用类源码分析/Glide源码分析.html">
+            
+                    
+                    Glide源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.4.4" data-path="../05 Android/04 常用类源码分析/Handler源码分析.html">
+            
+                <a href="../05 Android/04 常用类源码分析/Handler源码分析.html">
+            
+                    
+                    Handler源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.4.5" data-path="../05 Android/04 常用类源码分析/LeakCanary.html">
+            
+                <a href="../05 Android/04 常用类源码分析/LeakCanary.html">
+            
+                    
+                    LeakCanary
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.4.6" data-path="../05 Android/04 常用类源码分析/LinearLayout源码分析.html">
+            
+                <a href="../05 Android/04 常用类源码分析/LinearLayout源码分析.html">
+            
+                    
+                    LinearLayout源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.4.7" data-path="../05 Android/04 常用类源码分析/ListView源码分析.html">
+            
+                <a href="../05 Android/04 常用类源码分析/ListView源码分析.html">
+            
+                    
+                    ListView源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.4.8" data-path="../05 Android/04 常用类源码分析/LruCache源码分析.html">
+            
+                <a href="../05 Android/04 常用类源码分析/LruCache源码分析.html">
+            
+                    
+                    LruCache源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.4.9" data-path="../05 Android/04 常用类源码分析/OkHttp3源码分析.html">
+            
+                <a href="../05 Android/04 常用类源码分析/OkHttp3源码分析.html">
+            
+                    
+                    OkHttp3源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.4.10" data-path="../05 Android/04 常用类源码分析/Retrofit2源码分析.html">
+            
+                <a href="../05 Android/04 常用类源码分析/Retrofit2源码分析.html">
+            
+                    
+                    Retrofit2源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.4.11" data-path="../05 Android/04 常用类源码分析/RxJava2源码分析.html">
+            
+                <a href="../05 Android/04 常用类源码分析/RxJava2源码分析.html">
+            
+                    
+                    RxJava2源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.4.12" data-path="../05 Android/04 常用类源码分析/SparseArray源码分析.html">
+            
+                <a href="../05 Android/04 常用类源码分析/SparseArray源码分析.html">
+            
+                    
+                    SparseArray源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.5" data-path="../05 Android/05 性能优化工具/">
+            
+                <a href="../05 Android/05 性能优化工具/">
+            
+                    
+                    05 性能优化工具
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.5.1" data-path="../05 Android/05 性能优化工具/cpu工具.html">
+            
+                <a href="../05 Android/05 性能优化工具/cpu工具.html">
+            
+                    
+                    cpu工具
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../06 计算机网络/">
+            
+                <a href="../06 计算机网络/">
+            
+                    
+                    06 计算机网络
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.8.1" data-path="../06 计算机网络/计算机网络.html">
+            
+                <a href="../06 计算机网络/计算机网络.html">
+            
+                    
+                    计算机网络
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="../07 设计模式/">
+            
+                <a href="../07 设计模式/">
+            
+                    
+                    07 设计模式
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.9.1" data-path="../07 设计模式/Builder模式.html">
+            
+                <a href="../07 设计模式/Builder模式.html">
+            
+                    
+                    Builder模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.2" data-path="../07 设计模式/代理模式.html">
+            
+                <a href="../07 设计模式/代理模式.html">
+            
+                    
+                    代理模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3" data-path="../07 设计模式/其它设计模式/">
+            
+                <a href="../07 设计模式/其它设计模式/">
+            
+                    
+                    其它设计模式
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.9.3.1" data-path="../07 设计模式/其它设计模式/中介者模式.html">
+            
+                <a href="../07 设计模式/其它设计模式/中介者模式.html">
+            
+                    
+                    中介者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.2" data-path="../07 设计模式/其它设计模式/享元模式.html">
+            
+                <a href="../07 设计模式/其它设计模式/享元模式.html">
+            
+                    
+                    享元模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.3" data-path="../07 设计模式/其它设计模式/原型模式.html">
+            
+                <a href="../07 设计模式/其它设计模式/原型模式.html">
+            
+                    
+                    原型模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.4" data-path="../07 设计模式/其它设计模式/命令模式.html">
+            
+                <a href="../07 设计模式/其它设计模式/命令模式.html">
+            
+                    
+                    命令模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.5" data-path="../07 设计模式/其它设计模式/备忘录模式.html">
+            
+                <a href="../07 设计模式/其它设计模式/备忘录模式.html">
+            
+                    
+                    备忘录模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.6" data-path="../07 设计模式/其它设计模式/外观模式.html">
+            
+                <a href="../07 设计模式/其它设计模式/外观模式.html">
+            
+                    
+                    外观模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.7" data-path="../07 设计模式/其它设计模式/工厂方法模式.html">
+            
+                <a href="../07 设计模式/其它设计模式/工厂方法模式.html">
+            
+                    
+                    工厂方法模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.8" data-path="../07 设计模式/其它设计模式/抽象工厂模式.html">
+            
+                <a href="../07 设计模式/其它设计模式/抽象工厂模式.html">
+            
+                    
+                    抽象工厂模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.9" data-path="../07 设计模式/其它设计模式/框架模式.html">
+            
+                <a href="../07 设计模式/其它设计模式/框架模式.html">
+            
+                    
+                    框架模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.10" data-path="../07 设计模式/其它设计模式/桥接模式.html">
+            
+                <a href="../07 设计模式/其它设计模式/桥接模式.html">
+            
+                    
+                    桥接模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.11" data-path="../07 设计模式/其它设计模式/模板方法模式.html">
+            
+                <a href="../07 设计模式/其它设计模式/模板方法模式.html">
+            
+                    
+                    模板方法模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.12" data-path="../07 设计模式/其它设计模式/状态模式.html">
+            
+                <a href="../07 设计模式/其它设计模式/状态模式.html">
+            
+                    
+                    状态模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.13" data-path="../07 设计模式/其它设计模式/策略模式.html">
+            
+                <a href="../07 设计模式/其它设计模式/策略模式.html">
+            
+                    
+                    策略模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.14" data-path="../07 设计模式/其它设计模式/组合模式.html">
+            
+                <a href="../07 设计模式/其它设计模式/组合模式.html">
+            
+                    
+                    组合模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.15" data-path="../07 设计模式/其它设计模式/装饰模式.html">
+            
+                <a href="../07 设计模式/其它设计模式/装饰模式.html">
+            
+                    
+                    装饰模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.16" data-path="../07 设计模式/其它设计模式/解释器模式.html">
+            
+                <a href="../07 设计模式/其它设计模式/解释器模式.html">
+            
+                    
+                    解释器模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.17" data-path="../07 设计模式/其它设计模式/访问者模式.html">
+            
+                <a href="../07 设计模式/其它设计模式/访问者模式.html">
+            
+                    
+                    访问者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.18" data-path="../07 设计模式/其它设计模式/责任链模式.html">
+            
+                <a href="../07 设计模式/其它设计模式/责任链模式.html">
+            
+                    
+                    责任链模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.19" data-path="../07 设计模式/其它设计模式/迭代器模式.html">
+            
+                <a href="../07 设计模式/其它设计模式/迭代器模式.html">
+            
+                    
+                    迭代器模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.20" data-path="../07 设计模式/其它设计模式/适配器模式.html">
+            
+                <a href="../07 设计模式/其它设计模式/适配器模式.html">
+            
+                    
+                    适配器模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.21" data-path="../07 设计模式/其它设计模式/静态工厂方法模式.html">
+            
+                <a href="../07 设计模式/其它设计模式/静态工厂方法模式.html">
+            
+                    
+                    静态工厂方法模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.4" data-path="../07 设计模式/单例模式.html">
+            
+                <a href="../07 设计模式/单例模式.html">
+            
+                    
+                    单例模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.5" data-path="../07 设计模式/架构模式.html">
+            
+                <a href="../07 设计模式/架构模式.html">
+            
+                    
+                    架构模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.6" data-path="../07 设计模式/生产者消费者模式.html">
+            
+                <a href="../07 设计模式/生产者消费者模式.html">
+            
+                    
+                    生产者消费者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.7" data-path="../07 设计模式/观察者模式.html">
+            
+                <a href="../07 设计模式/观察者模式.html">
+            
+                    
+                    观察者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10" data-path="../08 杂项/">
+            
+                <a href="../08 杂项/">
+            
+                    
+                    08 杂项
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.10.1" data-path="../08 杂项/git手册/">
+            
+                <a href="../08 杂项/git手册/">
+            
+                    
+                    git手册
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10.2" data-path="../08 杂项/常用命令/">
+            
+                <a href="../08 杂项/常用命令/">
+            
+                    
+                    常用命令
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10.3" data-path="../08 杂项/环境搭建记录/">
+            
+                <a href="../08 杂项/环境搭建记录/">
+            
+                    
+                    环境搭建记录
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.10.3.1" data-path="../08 杂项/环境搭建记录/环境搭建.html">
+            
+                <a href="../08 杂项/环境搭建记录/环境搭建.html">
+            
+                    
+                    环境搭建
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11" data-path="../09 Gradle总结/">
+            
+                <a href="../09 Gradle总结/">
+            
+                    
+                    09 Gradle总结
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.11.1" data-path="../09 Gradle总结/Gradle总结.html">
+            
+                <a href="../09 Gradle总结/Gradle总结.html">
+            
+                    
+                    Gradle总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    10 Ai
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.12.1" data-path="00 Ai基础概念.html">
+            
+                <a href="00 Ai基础概念.html">
+            
+                    
+                    00 Ai基础概念
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.12.2" data-path="01 Codex 型通用 Agent 的工作方式.html">
+            
+                <a href="01 Codex 型通用 Agent 的工作方式.html">
+            
+                    
+                    01 Codex 型通用 Agent 的工作方式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.3" data-path="02 上下文工程和 AGENTS.html">
+            
+                <a href="02 上下文工程和 AGENTS.html">
+            
+                    
+                    02 上下文工程和 AGENTS
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.4" data-path="03 OpenClaw.html">
+            
+                <a href="03 OpenClaw.html">
+            
+                    
+                    03 OpenClaw
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.5" data-path="AI Native Agent 学习资料.html">
+            
+                <a href="AI Native Agent 学习资料.html">
+            
+                    
+                    AI Native Agent 学习资料
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.6" data-path="知识点/">
+            
+                <a href="知识点/">
+            
+                    
+                    知识点
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.12.6.1" data-path="知识点/00 知识点总览.html">
+            
+                <a href="知识点/00 知识点总览.html">
+            
+                    
+                    00 知识点总览
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.6.2" data-path="知识点/01 大模型基础.html">
+            
+                <a href="知识点/01 大模型基础.html">
+            
+                    
+                    01 大模型基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.6.3" data-path="知识点/02 Agent.html">
+            
+                <a href="知识点/02 Agent.html">
+            
+                    
+                    02 Agent
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.6.4" data-path="知识点/结构化输出.html">
+            
+                <a href="知识点/结构化输出.html">
+            
+                    
+                    结构化输出
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13" data-path="../11 服务端/">
+            
+                <a href="../11 服务端/">
+            
+                    
+                    11 服务端
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.13.1" data-path="../11 服务端/01 RPC调用.html">
+            
+                <a href="../11 服务端/01 RPC调用.html">
+            
+                    
+                    01 RPC调用
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13.2" data-path="../11 服务端/02 服务端缓存.html">
+            
+                <a href="../11 服务端/02 服务端缓存.html">
+            
+                    
+                    02 服务端缓存
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13.3" data-path="../11 服务端/03 分布式服务.html">
+            
+                <a href="../11 服务端/03 分布式服务.html">
+            
+                    
+                    03 分布式服务
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.14" data-path="../12 知识点/">
+            
+                <a href="../12 知识点/">
+            
+                    
+                    12 知识点
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.14.1" data-path="../12 知识点/04-操作系统.html">
+            
+                <a href="../12 知识点/04-操作系统.html">
+            
+                    
+                    04-操作系统
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.14.2" data-path="../12 知识点/06-数据结构.html">
+            
+                <a href="../12 知识点/06-数据结构.html">
+            
+                    
+                    06-数据结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.14.3" data-path="../12 知识点/07-第三方库.html">
+            
+                <a href="../12 知识点/07-第三方库.html">
+            
+                    
+                    07-第三方库
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.14.4" data-path="../12 知识点/08-设计模式.html">
+            
+                <a href="../12 知识点/08-设计模式.html">
+            
+                    
+                    08-设计模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.14.5" data-path="../12 知识点/09-算法.html">
+            
+                <a href="../12 知识点/09-算法.html">
+            
+                    
+                    09-算法
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.14.6" data-path="../12 知识点/10-计算机底层基础.html">
+            
+                <a href="../12 知识点/10-计算机底层基础.html">
+            
+                    
+                    10-计算机底层基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            本书使用 GitBook 发布
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >01 Codex 型通用 Agent 的工作方式</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <div id="anchor-navigation-ex-navbar"><i class="fa fa-navicon"></i><ul><li><span class="title-icon "></span><a href="#codex-&#x662F;&#x4EC0;&#x4E48;"><b>1. </b>Codex &#x662F;&#x4EC0;&#x4E48;</a></li><li><span class="title-icon "></span><a href="#&#x1F31F;codex-&#x7684;&#x57FA;&#x672C;&#x5DE5;&#x4F5C;&#x5FAA;&#x73AF;&#xFF1A;agent-loop"><b>2. </b>&#x1F31F;Codex &#x7684;&#x57FA;&#x672C;&#x5DE5;&#x4F5C;&#x5FAA;&#x73AF;&#xFF1A;Agent Loop</a></li><ul><li><span class="title-icon "></span><a href="#agent-loop-&#x662F;&#x4EC0;&#x4E48;"><b>2.1. </b>Agent Loop &#x662F;&#x4EC0;&#x4E48;</a></li><li><span class="title-icon "></span><a href="#&#x4E00;&#x6B21;&#x5FAA;&#x73AF;&#x5305;&#x542B;&#x4EC0;&#x4E48;"><b>2.2. </b>&#x4E00;&#x6B21;&#x5FAA;&#x73AF;&#x5305;&#x542B;&#x4EC0;&#x4E48;</a></li><ul><li><span class="title-icon "></span><a href="#&#x5F53;&#x524D;&#x72B6;&#x6001;"><b>2.2.1. </b>&#x5F53;&#x524D;&#x72B6;&#x6001;</a></li><li><span class="title-icon "></span><a href="#&#x51B3;&#x7B56;"><b>2.2.2. </b>&#x51B3;&#x7B56;</a></li><li><span class="title-icon "></span><a href="#&#x884C;&#x52A8;"><b>2.2.3. </b>&#x884C;&#x52A8;</a></li><li><span class="title-icon "></span><a href="#&#x89C2;&#x5BDF;"><b>2.2.4. </b>&#x89C2;&#x5BDF;</a></li></ul><li><span class="title-icon "></span><a href="#codex-agent-loop-&#x7684;&#x8FD0;&#x884C;&#x539F;&#x7406;"><b>2.3. </b>Codex Agent Loop &#x7684;&#x8FD0;&#x884C;&#x539F;&#x7406;</a></li><ul><li><span class="title-icon "></span><a href="#harness-&#x4E0E;&#x6A21;&#x578B;&#x7684;&#x5206;&#x5DE5;"><b>2.3.1. </b>Harness &#x4E0E;&#x6A21;&#x578B;&#x7684;&#x5206;&#x5DE5;</a></li><li><span class="title-icon "></span><a href="#&#x521D;&#x59CB;&#x4E0A;&#x4E0B;&#x6587;&#x5982;&#x4F55;&#x6784;&#x9020;"><b>2.3.2. </b>&#x521D;&#x59CB;&#x4E0A;&#x4E0B;&#x6587;&#x5982;&#x4F55;&#x6784;&#x9020;</a></li><li><span class="title-icon "></span><a href="#&#x5DE5;&#x5177;&#x8C03;&#x7528;&#x5982;&#x4F55;&#x5F62;&#x6210;&#x95ED;&#x73AF;"><b>2.3.3. </b>&#x5DE5;&#x5177;&#x8C03;&#x7528;&#x5982;&#x4F55;&#x5F62;&#x6210;&#x95ED;&#x73AF;</a></li></ul><li><span class="title-icon "></span><a href="#agent-loop-&#x4E3A;&#x4EC0;&#x4E48;&#x6709;&#x6548;"><b>2.4. </b>Agent Loop &#x4E3A;&#x4EC0;&#x4E48;&#x6709;&#x6548;</a></li><ul><li><span class="title-icon "></span><a href="#&#x7528;&#x5916;&#x90E8;&#x4E8B;&#x5B9E;&#x964D;&#x4F4E;&#x731C;&#x6D4B;"><b>2.4.1. </b>&#x7528;&#x5916;&#x90E8;&#x4E8B;&#x5B9E;&#x964D;&#x4F4E;&#x731C;&#x6D4B;</a></li><li><span class="title-icon "></span><a href="#&#x628A;&#x5927;&#x95EE;&#x9898;&#x8F6C;&#x5316;&#x6210;&#x5C0F;&#x53CD;&#x9988;"><b>2.4.2. </b>&#x628A;&#x5927;&#x95EE;&#x9898;&#x8F6C;&#x5316;&#x6210;&#x5C0F;&#x53CD;&#x9988;</a></li><li><span class="title-icon "></span><a href="#&#x5141;&#x8BB8;&#x6839;&#x636E;&#x7ED3;&#x679C;&#x6539;&#x53D8;&#x8BA1;&#x5212;"><b>2.4.3. </b>&#x5141;&#x8BB8;&#x6839;&#x636E;&#x7ED3;&#x679C;&#x6539;&#x53D8;&#x8BA1;&#x5212;</a></li><li><span class="title-icon "></span><a href="#&#x8BA9;&#x5B8C;&#x6210;&#x53EF;&#x4EE5;&#x88AB;&#x9A8C;&#x8BC1;"><b>2.4.4. </b>&#x8BA9;&#x201C;&#x5B8C;&#x6210;&#x201D;&#x53EF;&#x4EE5;&#x88AB;&#x9A8C;&#x8BC1;</a></li></ul><li><span class="title-icon "></span><a href="#agent-loop-&#x4E0E;-react-&#x7684;&#x5173;&#x7CFB;"><b>2.5. </b>Agent Loop &#x4E0E; ReAct &#x7684;&#x5173;&#x7CFB;</a></li><li><span class="title-icon "></span><a href="#agent-loop-&#x4E0E;-plan-and-execute-&#x7684;&#x5173;&#x7CFB;"><b>2.6. </b>Agent Loop &#x4E0E; Plan-and-Execute &#x7684;&#x5173;&#x7CFB;</a></li><ul><li><span class="title-icon "></span><a href="#default-&#x6A21;&#x5F0F;"><b>2.6.1. </b>Default &#x6A21;&#x5F0F;</a></li><li><span class="title-icon "></span><a href="#plan-&#x6A21;&#x5F0F;"><b>2.6.2. </b>Plan &#x6A21;&#x5F0F;</a></li><li><span class="title-icon "></span><a href="#&#x4E24;&#x8005;&#x5982;&#x4F55;&#x7EC4;&#x5408;"><b>2.6.3. </b>&#x4E24;&#x8005;&#x5982;&#x4F55;&#x7EC4;&#x5408;</a></li></ul><li><span class="title-icon "></span><a href="#agent-loop-&#x4E0E;&#x591A;-agent-&#x7684;&#x5173;&#x7CFB;"><b>2.7. </b>Agent Loop &#x4E0E;&#x591A; Agent &#x7684;&#x5173;&#x7CFB;</a></li></ul><li><span class="title-icon "></span><a href="#prompt-&#x51B3;&#x5B9A;&#x4EFB;&#x52A1;&#x8FB9;&#x754C;"><b>3. </b>Prompt &#x51B3;&#x5B9A;&#x4EFB;&#x52A1;&#x8FB9;&#x754C;</a></li><li><span class="title-icon "></span><a href="#&#x1F31F;codex-&#x5982;&#x4F55;&#x4F7F;&#x7528;&#x4E0A;&#x4E0B;&#x6587;"><b>4. </b>&#x1F31F;Codex &#x5982;&#x4F55;&#x4F7F;&#x7528;&#x4E0A;&#x4E0B;&#x6587;</a></li><li><span class="title-icon "></span><a href="#thread&#xFF1A;&#x4E00;&#x6B21;&#x4EFB;&#x52A1;&#x7684;&#x5DE5;&#x4F5C;&#x73B0;&#x573A;"><b>5. </b>Thread&#xFF1A;&#x4E00;&#x6B21;&#x4EFB;&#x52A1;&#x7684;&#x5DE5;&#x4F5C;&#x73B0;&#x573A;</a></li><li><span class="title-icon "></span><a href="#plan-mode&#xFF1A;&#x590D;&#x6742;&#x4EFB;&#x52A1;&#x5148;&#x8BA1;&#x5212;"><b>6. </b>Plan mode&#xFF1A;&#x590D;&#x6742;&#x4EFB;&#x52A1;&#x5148;&#x8BA1;&#x5212;</a></li><li><span class="title-icon "></span><a href="#codex-&#x4E0D;&#x662F;&#x53EA;&#x5199;&#x4EE3;&#x7801;&#xFF0C;&#x8FD8;&#x8981;&#x9A8C;&#x8BC1;"><b>7. </b>Codex &#x4E0D;&#x662F;&#x53EA;&#x5199;&#x4EE3;&#x7801;&#xFF0C;&#x8FD8;&#x8981;&#x9A8C;&#x8BC1;</a></li><li><span class="title-icon "></span><a href="#codex-&#x7684;&#x6743;&#x9650;&#x6A21;&#x578B;&#xFF1A;sandbox-&#x548C;-approval"><b>8. </b>Codex &#x7684;&#x6743;&#x9650;&#x6A21;&#x578B;&#xFF1A;Sandbox &#x548C; Approval</a></li><li><span class="title-icon "></span><a href="#agentsmd&#xFF1A;&#x8BA9;&#x4E0A;&#x4E0B;&#x6587;&#x957F;&#x671F;&#x751F;&#x6548;"><b>9. </b>AGENTS.md&#xFF1A;&#x8BA9;&#x4E0A;&#x4E0B;&#x6587;&#x957F;&#x671F;&#x751F;&#x6548;</a></li><li><span class="title-icon "></span><a href="#skills&#x3001;mcp-&#x548C;-subagents-&#x5728;&#x5DE5;&#x4F5C;&#x65B9;&#x5F0F;&#x4E2D;&#x7684;&#x4F4D;&#x7F6E;"><b>10. </b>Skills&#x3001;MCP &#x548C; Subagents &#x5728;&#x5DE5;&#x4F5C;&#x65B9;&#x5F0F;&#x4E2D;&#x7684;&#x4F4D;&#x7F6E;</a></li><ul><li><span class="title-icon "></span><a href="#skills"><b>10.1. </b>Skills</a></li><li><span class="title-icon "></span><a href="#mcp"><b>10.2. </b>MCP</a></li><li><span class="title-icon "></span><a href="#subagents"><b>10.3. </b>Subagents</a></li></ul><li><span class="title-icon "></span><a href="#codex-&#x578B;-agent-&#x7684;&#x5178;&#x578B;&#x5168;&#x6808;&#x5DE5;&#x4F5C;&#x6D41;"><b>11. </b>Codex &#x578B; Agent &#x7684;&#x5178;&#x578B;&#x5168;&#x6808;&#x5DE5;&#x4F5C;&#x6D41;</a></li><ul><li><span class="title-icon "></span><a href="#&#x8BFB;&#x61C2;&#x4E00;&#x4E2A;&#x6A21;&#x5757;"><b>11.1. </b>&#x8BFB;&#x61C2;&#x4E00;&#x4E2A;&#x6A21;&#x5757;</a></li><li><span class="title-icon "></span><a href="#&#x4FEE;&#x590D;&#x4E00;&#x4E2A;-bug"><b>11.2. </b>&#x4FEE;&#x590D;&#x4E00;&#x4E2A; bug</a></li><li><span class="title-icon "></span><a href="#&#x5B9E;&#x73B0;&#x4E00;&#x4E2A;&#x524D;&#x540E;&#x7AEF;&#x529F;&#x80FD;"><b>11.3. </b>&#x5B9E;&#x73B0;&#x4E00;&#x4E2A;&#x524D;&#x540E;&#x7AEF;&#x529F;&#x80FD;</a></li><li><span class="title-icon "></span><a href="#review-&#x5F53;&#x524D;&#x6539;&#x52A8;"><b>11.4. </b>Review &#x5F53;&#x524D;&#x6539;&#x52A8;</a></li></ul><li><span class="title-icon "></span><a href="#&#x4F60;&#x5E94;&#x8BE5;&#x5F62;&#x6210;&#x7684;&#x5FC3;&#x667A;&#x6A21;&#x578B;"><b>12. </b>&#x4F60;&#x5E94;&#x8BE5;&#x5F62;&#x6210;&#x7684;&#x5FC3;&#x667A;&#x6A21;&#x578B;</a></li><li><span class="title-icon "></span><a href="#&#x7B2C;&#x4E00;&#x9636;&#x6BB5;&#x7EC3;&#x4E60;&#x6E05;&#x5355;"><b>13. </b>&#x7B2C;&#x4E00;&#x9636;&#x6BB5;&#x7EC3;&#x4E60;&#x6E05;&#x5355;</a></li><li><span class="title-icon "></span><a href="#&#x672C;&#x9636;&#x6BB5;&#x6700;&#x4F4E;&#x638C;&#x63E1;&#x6807;&#x51C6;"><b>14. </b>&#x672C;&#x9636;&#x6BB5;&#x6700;&#x4F4E;&#x638C;&#x63E1;&#x6807;&#x51C6;</a></li></ul></div><a href="#codex-&#x662F;&#x4EC0;&#x4E48;" id="anchorNavigationExGoTop"><i class="fa fa-arrow-up"></i></a><p>&#x5B66;&#x4E60;&#x76EE;&#x6807;&#xFF1A;&#x7406;&#x89E3; Codex &#x8FD9;&#x7C7B;&#x901A;&#x7528;&#x8F6F;&#x4EF6;&#x5DE5;&#x7A0B; agent &#x5982;&#x4F55;&#x63A5;&#x6536;&#x4EFB;&#x52A1;&#x3001;&#x83B7;&#x53D6;&#x4E0A;&#x4E0B;&#x6587;&#x3001;&#x8C03;&#x7528;&#x5DE5;&#x5177;&#x3001;&#x4FEE;&#x6539;&#x4EE3;&#x7801;&#x3001;&#x9A8C;&#x8BC1;&#x7ED3;&#x679C;&#xFF0C;&#x5E76;&#x5728;&#x6743;&#x9650;&#x8FB9;&#x754C;&#x5185;&#x5DE5;&#x4F5C;&#x3002;</p>
+<blockquote>
+<p>&#x8D44;&#x6599;&#x6765;&#x6E90;</p>
+<p>&#x672C;&#x6587;&#x6839;&#x636E;&#x4EE5;&#x4E0B;&#x7F51;&#x7EDC;&#x8D44;&#x6599;&#x7FFB;&#x8BD1;&#x548C;&#x6574;&#x7406;&#xFF0C;&#x8BBF;&#x95EE;&#x65F6;&#x95F4;&#xFF1A;2026-07-07&#x3002;</p>
+<ul>
+<li>OpenAI Codex &#x5B98;&#x65B9;&#x6587;&#x6863;&#xFF1A;<a href="https://developers.openai.com/codex" target="_blank">https://developers.openai.com/codex</a></li>
+<li>OpenAI Codex &#x5F00;&#x6E90;&#x4ED3;&#x5E93;&#xFF1A;<a href="https://github.com/openai/codex" target="_blank">https://github.com/openai/codex</a></li>
+<li>Codex &#x5B98;&#x65B9;&#x624B;&#x518C;&#xFF1A;<a href="https://developers.openai.com/codex/codex-manual.md" target="_blank">https://developers.openai.com/codex/codex-manual.md</a></li>
+<li>AGENTS.md &#x8BF4;&#x660E;&#xFF1A;<a href="https://agents.md" target="_blank">https://agents.md</a></li>
+</ul>
+<p>&#x8BF4;&#x660E;&#xFF1A;&#x4E0B;&#x9762;&#x4E0D;&#x662F;&#x9010;&#x5B57;&#x5168;&#x6587;&#x7FFB;&#x8BD1;&#xFF0C;&#x800C;&#x662F;&#x9762;&#x5411;&#x5168;&#x6808;&#x5DE5;&#x7A0B;&#x5E08;&#x5B66;&#x4E60;&#x7684;&#x4E2D;&#x6587;&#x6574;&#x7406;&#x7248;&#x3002;&#x91CD;&#x70B9;&#x4FDD;&#x7559; Codex &#x7684;&#x5DE5;&#x4F5C;&#x6A21;&#x578B;&#x3001;&#x4E0A;&#x4E0B;&#x6587;&#x3001;&#x7EBF;&#x7A0B;&#x3001;&#x5DE5;&#x5177;&#x8C03;&#x7528;&#x3001;&#x9A8C;&#x8BC1;&#x3001;&#x5B89;&#x5168;&#x548C;&#x53EF;&#x590D;&#x7528;&#x5DE5;&#x4F5C;&#x6D41;&#x3002;</p>
+</blockquote>
+<h1 id="codex-&#x662F;&#x4EC0;&#x4E48;"><a name="codex-&#x662F;&#x4EC0;&#x4E48;" class="anchor-navigation-ex-anchor" href="#codex-&#x662F;&#x4EC0;&#x4E48;"><i class="fa fa-link" aria-hidden="true"></i></a>1. Codex &#x662F;&#x4EC0;&#x4E48;</h1>
+<p>Codex &#x662F; OpenAI &#x9762;&#x5411;&#x8F6F;&#x4EF6;&#x5F00;&#x53D1;&#x7684; coding agent&#x3002;&#x5B83;&#x4E0D;&#x53EA;&#x662F;&#x804A;&#x5929;&#x52A9;&#x624B;&#xFF0C;&#x800C;&#x662F;&#x80FD;&#x5728;&#x4E00;&#x4E2A;&#x771F;&#x5B9E;&#x5DE5;&#x4F5C;&#x533A;&#x91CC;&#x8BFB;&#x6587;&#x4EF6;&#x3001;&#x7406;&#x89E3;&#x4EE3;&#x7801;&#x3001;&#x4FEE;&#x6539;&#x4EE3;&#x7801;&#x3001;&#x8FD0;&#x884C;&#x547D;&#x4EE4;&#x3001;&#x6267;&#x884C;&#x6D4B;&#x8BD5;&#x3001;&#x8C03;&#x8BD5;&#x9519;&#x8BEF;&#x3001;review diff&#xFF0C;&#x5E76;&#x6839;&#x636E;&#x4F60;&#x7684;&#x53CD;&#x9988;&#x7EE7;&#x7EED;&#x8FED;&#x4EE3;&#x3002;</p>
+<h1 id="&#x1F31F;codex-&#x7684;&#x57FA;&#x672C;&#x5DE5;&#x4F5C;&#x5FAA;&#x73AF;&#xFF1A;agent-loop"><a name="&#x1F31F;codex-&#x7684;&#x57FA;&#x672C;&#x5DE5;&#x4F5C;&#x5FAA;&#x73AF;&#xFF1A;agent-loop" class="anchor-navigation-ex-anchor" href="#&#x1F31F;codex-&#x7684;&#x57FA;&#x672C;&#x5DE5;&#x4F5C;&#x5FAA;&#x73AF;&#xFF1A;agent-loop"><i class="fa fa-link" aria-hidden="true"></i></a>2. &#x1F31F;Codex &#x7684;&#x57FA;&#x672C;&#x5DE5;&#x4F5C;&#x5FAA;&#x73AF;&#xFF1A;Agent Loop</h1>
+<blockquote>
+<p><strong>&#x8D44;&#x6599;&#x6765;&#x6E90;</strong></p>
+<p>&#x672C;&#x6587;&#x6839;&#x636E;&#x4EE5;&#x4E0B; OpenAI &#x5B98;&#x65B9;&#x8D44;&#x6599;&#x6574;&#x7406;&#xFF0C;&#x8BBF;&#x95EE;&#x65F6;&#x95F4;&#xFF1A;2026-07-12&#x3002;</p>
+<ul>
+<li><a href="https://openai.com/index/unrolling-the-codex-agent-loop/" target="_blank">OpenAI&#xFF1A;Unrolling the Codex agent loop</a></li>
+<li><a href="https://developers.openai.com/codex/cli" target="_blank">OpenAI&#xFF1A;Codex CLI</a></li>
+<li><a href="https://developers.openai.com/codex/config-reference" target="_blank">OpenAI&#xFF1A;Codex Configuration Reference</a></li>
+<li><a href="https://developers.openai.com/codex/concepts/multi-agents" target="_blank">OpenAI&#xFF1A;Subagents</a></li>
+<li><a href="https://developers.openai.com/api/docs/guides/responses-vs-chat-completions" target="_blank">OpenAI API&#xFF1A;Responses API</a></li>
+</ul>
+<p>&#x8BF4;&#x660E;&#xFF1A;OpenAI &#x5B98;&#x65B9;&#x628A;&#x8FD9;&#x4E00;&#x673A;&#x5236;&#x79F0;&#x4E3A; Agent Loop&#xFF0C;&#x800C;&#x4E0D;&#x662F; ReAct &#x6A21;&#x5F0F;&#x3002;&#x672C;&#x6587;&#x4F1A;&#x7528; ReAct &#x5E2E;&#x52A9;&#x7406;&#x89E3;&#x201C;&#x63A8;&#x7406;&#x3001;&#x884C;&#x52A8;&#x3001;&#x89C2;&#x5BDF;&#x4EA4;&#x66FF;&#x201D;&#x7684;&#x601D;&#x60F3;&#xFF0C;&#x4F46;&#x4E0D;&#x4F1A;&#x628A;&#x4E24;&#x8005;&#x89C6;&#x4E3A;&#x5B8C;&#x5168;&#x76F8;&#x540C;&#x7684;&#x4EA7;&#x54C1;&#x540D;&#x79F0;&#x6216;&#x5B9E;&#x73B0;&#x3002;</p>
+</blockquote>
+<p>Codex &#x6536;&#x5230; prompt &#x540E;&#xFF0C;&#x4F1A;&#x8FDB;&#x5165;&#x4E00;&#x4E2A; agent loop&#x3002;</p>
+<h2 id="agent-loop-&#x662F;&#x4EC0;&#x4E48;"><a name="agent-loop-&#x662F;&#x4EC0;&#x4E48;" class="anchor-navigation-ex-anchor" href="#agent-loop-&#x662F;&#x4EC0;&#x4E48;"><i class="fa fa-link" aria-hidden="true"></i></a>2.1. Agent Loop &#x662F;&#x4EC0;&#x4E48;</h2>
+<p>&#x666E;&#x901A;&#x804A;&#x5929;&#x6A21;&#x578B;&#x7684;&#x5178;&#x578B;&#x5DE5;&#x4F5C;&#x65B9;&#x5F0F;&#x662F;&#xFF1A;&#x63A5;&#x6536;&#x4E00;&#x6BB5;&#x8F93;&#x5165;&#xFF0C;&#x7136;&#x540E;&#x751F;&#x6210;&#x4E00;&#x6BB5;&#x6587;&#x672C;&#x3002;Codex &#x4E0D;&#x4EC5;&#x80FD;&#x751F;&#x6210;&#x6587;&#x672C;&#xFF0C;&#x8FD8;&#x80FD;&#x641C;&#x7D22;&#x4EE3;&#x7801;&#x3001;&#x8BFB;&#x53D6;&#x6587;&#x4EF6;&#x3001;&#x8FD0;&#x884C;&#x547D;&#x4EE4;&#x3001;&#x4FEE;&#x6539;&#x5DE5;&#x4F5C;&#x533A;&#x3001;&#x8C03;&#x7528;&#x5916;&#x90E8;&#x5DE5;&#x5177;&#xFF0C;&#x5E76;&#x6839;&#x636E;&#x771F;&#x5B9E;&#x6267;&#x884C;&#x7ED3;&#x679C;&#x7EE7;&#x7EED;&#x5DE5;&#x4F5C;&#x3002;</p>
+<p>&#x628A;&#x8FD9;&#x4E9B;&#x80FD;&#x529B;&#x4E32;&#x8D77;&#x6765;&#x7684;&#x63A7;&#x5236;&#x8FC7;&#x7A0B;&#x5C31;&#x662F; Agent Loop&#x3002;&#x53EF;&#x4EE5;&#x5148;&#x628A;&#x5B83;&#x7B80;&#x5316;&#x6210;&#x4E0B;&#x9762;&#x7684;&#x5FAA;&#x73AF;&#xFF1A;</p>
+<pre><code class="lang-text">&#x63A5;&#x6536;&#x76EE;&#x6807;&#x548C;&#x7EA6;&#x675F;
+      &#x2193;
+&#x7406;&#x89E3;&#x5F53;&#x524D;&#x72B6;&#x6001;&#x5E76;&#x51B3;&#x5B9A;&#x4E0B;&#x4E00;&#x6B65;
+      &#x2193;
+&#x76F4;&#x63A5;&#x56DE;&#x7B54;&#xFF0C;&#x6216;&#x8005;&#x8BF7;&#x6C42;&#x4E00;&#x6B21;&#x5DE5;&#x5177;&#x8C03;&#x7528;
+      &#x2193;
+&#x6267;&#x884C;&#x5DE5;&#x5177;&#x5E76;&#x83B7;&#x5F97;&#x7ED3;&#x679C;
+      &#x2193;
+&#x628A;&#x7ED3;&#x679C;&#x52A0;&#x5165;&#x5F53;&#x524D;&#x4E0A;&#x4E0B;&#x6587;
+      &#x2193;
+&#x6839;&#x636E;&#x65B0;&#x72B6;&#x6001;&#x7EE7;&#x7EED;&#x5224;&#x65AD;
+      &#x2193;
+&#x8FBE;&#x5230;&#x5B8C;&#x6210;&#x6761;&#x4EF6;&#x540E;&#x8FD4;&#x56DE;&#x6700;&#x7EC8;&#x7ED3;&#x679C;
+</code></pre>
+<p>&#x8FD9;&#x91CC;&#x6700;&#x91CD;&#x8981;&#x7684;&#x4E0D;&#x662F;&#x201C;&#x6A21;&#x578B;&#x4E00;&#x6B21;&#x60F3;&#x51FA;&#x4E86;&#x5B8C;&#x6574;&#x7B54;&#x6848;&#x201D;&#xFF0C;&#x800C;&#x662F;&#x6A21;&#x578B;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x5DE5;&#x5177;&#x4E0D;&#x65AD;&#x63A5;&#x89E6;&#x5916;&#x90E8;&#x4E8B;&#x5B9E;&#xFF0C;&#x5E76;&#x5229;&#x7528;&#x65B0;&#x4E8B;&#x5B9E;&#x4FEE;&#x6B63;&#x540E;&#x7EED;&#x884C;&#x52A8;&#x3002;</p>
+<p>&#x4F8B;&#x5982;&#xFF0C;&#x7528;&#x6237;&#x8981;&#x6C42;&#x201C;&#x4FEE;&#x590D;&#x767B;&#x5F55;&#x63A5;&#x53E3;&#x5076;&#x53D1;&#x7684; 500 &#x9519;&#x8BEF;&#x201D;&#x3002;Codex &#x4E00;&#x5F00;&#x59CB;&#x901A;&#x5E38;&#x4E0D;&#x77E5;&#x9053;&#x6839;&#x56E0;&#xFF0C;&#x53EA;&#x80FD;&#x5148;&#x641C;&#x7D22;&#x5165;&#x53E3;&#x3001;&#x9605;&#x8BFB;&#x65E5;&#x5FD7;&#x548C;&#x8FD0;&#x884C;&#x6D4B;&#x8BD5;&#x3002;&#x7B2C;&#x4E00;&#x6B21;&#x6D4B;&#x8BD5;&#x7ED3;&#x679C;&#x4F1A;&#x5F71;&#x54CD;&#x4E0B;&#x4E00;&#x6B65;&#xFF1A;&#x5982;&#x679C;&#x53D1;&#x73B0;&#x6570;&#x636E;&#x5E93;&#x8D85;&#x65F6;&#xFF0C;&#x5C31;&#x7EE7;&#x7EED;&#x8FFD;&#x8E2A;&#x8FDE;&#x63A5;&#x6C60;&#xFF1B;&#x5982;&#x679C;&#x53D1;&#x73B0;&#x7A7A;&#x6307;&#x9488;&#xFF0C;&#x5C31;&#x8F6C;&#x5411;&#x8F93;&#x5165;&#x8FB9;&#x754C;&#xFF1B;&#x5982;&#x679C;&#x65E0;&#x6CD5;&#x590D;&#x73B0;&#xFF0C;&#x5C31;&#x9700;&#x8981;&#x6784;&#x9020;&#x66F4;&#x63A5;&#x8FD1;&#x751F;&#x4EA7;&#x73AF;&#x5883;&#x7684;&#x6761;&#x4EF6;&#x3002;</p>
+<h2 id="&#x4E00;&#x6B21;&#x5FAA;&#x73AF;&#x5305;&#x542B;&#x4EC0;&#x4E48;"><a name="&#x4E00;&#x6B21;&#x5FAA;&#x73AF;&#x5305;&#x542B;&#x4EC0;&#x4E48;" class="anchor-navigation-ex-anchor" href="#&#x4E00;&#x6B21;&#x5FAA;&#x73AF;&#x5305;&#x542B;&#x4EC0;&#x4E48;"><i class="fa fa-link" aria-hidden="true"></i></a>2.2. &#x4E00;&#x6B21;&#x5FAA;&#x73AF;&#x5305;&#x542B;&#x4EC0;&#x4E48;</h2>
+<p>&#x4ECE;&#x6982;&#x5FF5;&#x4E0A;&#x770B;&#xFF0C;&#x4E00;&#x6B21; Agent Loop &#x8FED;&#x4EE3;&#x5305;&#x542B;&#x56DB;&#x4E2A;&#x90E8;&#x5206;&#x3002;</p>
+<h3 id="&#x5F53;&#x524D;&#x72B6;&#x6001;"><a name="&#x5F53;&#x524D;&#x72B6;&#x6001;" class="anchor-navigation-ex-anchor" href="#&#x5F53;&#x524D;&#x72B6;&#x6001;"><i class="fa fa-link" aria-hidden="true"></i></a>2.2.1. &#x5F53;&#x524D;&#x72B6;&#x6001;</h3>
+<p>&#x5F53;&#x524D;&#x72B6;&#x6001;&#x662F;&#x6A21;&#x578B;&#x6B64;&#x523B;&#x80FD;&#x591F;&#x4F7F;&#x7528;&#x7684;&#x4FE1;&#x606F;&#xFF0C;&#x5305;&#x62EC;&#xFF1A;</p>
+<ul>
+<li>&#x7528;&#x6237;&#x76EE;&#x6807;&#x3001;&#x7EA6;&#x675F;&#x548C;&#x5B8C;&#x6210;&#x6807;&#x51C6;&#x3002;</li>
+<li>&#x5F53;&#x524D;&#x4EFB;&#x52A1;&#x4E2D;&#x7684;&#x5386;&#x53F2;&#x6D88;&#x606F;&#x3002;</li>
+<li>&#x5DF2;&#x7ECF;&#x8BFB;&#x53D6;&#x7684;&#x4EE3;&#x7801;&#x548C;&#x6587;&#x6863;&#x3002;</li>
+<li>&#x5DF2;&#x6267;&#x884C;&#x547D;&#x4EE4;&#x7684;&#x8F93;&#x51FA;&#x3002;</li>
+<li>&#x6D4B;&#x8BD5;&#x3001;&#x6784;&#x5EFA;&#x3001;&#x65E5;&#x5FD7;&#x548C;&#x6D4F;&#x89C8;&#x5668;&#x7ED3;&#x679C;&#x3002;</li>
+<li><code>AGENTS.md</code>&#x3001;Skill &#x7B49;&#x6301;&#x4E45;&#x6216;&#x53EF;&#x590D;&#x7528;&#x6307;&#x5BFC;&#x3002;</li>
+<li>&#x5F53;&#x524D;&#x53EF;&#x7528;&#x7684;&#x5DE5;&#x5177;&#x53CA;&#x5176;&#x53C2;&#x6570;&#x8BF4;&#x660E;&#x3002;</li>
+<li>Sandbox&#x3001;Approval &#x7B49;&#x6743;&#x9650;&#x9650;&#x5236;&#x3002;</li>
+</ul>
+<p>&#x6A21;&#x578B;&#x5E76;&#x4E0D;&#x662F;&#x76F4;&#x63A5;&#x201C;&#x770B;&#x89C1;&#x6574;&#x53F0;&#x7535;&#x8111;&#x201D;&#x3002;&#x53EA;&#x6709;&#x8FDB;&#x5165;&#x4E0A;&#x4E0B;&#x6587;&#x7684;&#x4FE1;&#x606F;&#x548C;&#x5DE5;&#x5177;&#x66B4;&#x9732;&#x51FA;&#x6765;&#x7684;&#x80FD;&#x529B;&#xFF0C;&#x624D;&#x5C5E;&#x4E8E;&#x5B83;&#x7684;&#x5F53;&#x524D;&#x72B6;&#x6001;&#x3002;</p>
+<h3 id="&#x51B3;&#x7B56;"><a name="&#x51B3;&#x7B56;" class="anchor-navigation-ex-anchor" href="#&#x51B3;&#x7B56;"><i class="fa fa-link" aria-hidden="true"></i></a>2.2.2. &#x51B3;&#x7B56;</h3>
+<p>&#x6A21;&#x578B;&#x6839;&#x636E;&#x5F53;&#x524D;&#x72B6;&#x6001;&#x5224;&#x65AD;&#x4E0B;&#x4E00;&#x6B65;&#x5E94;&#x8BE5;&#x505A;&#x4EC0;&#x4E48;&#x3002;&#x4F8B;&#x5982;&#xFF1A;</p>
+<ul>
+<li>&#x5148;&#x641C;&#x7D22;&#x67D0;&#x4E2A;&#x7B26;&#x53F7;&#x3002;</li>
+<li>&#x9605;&#x8BFB;&#x4E00;&#x4E2A;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x3002;</li>
+<li>&#x8FD0;&#x884C;&#x6700;&#x5C0F;&#x76F8;&#x5173;&#x6D4B;&#x8BD5;&#x3002;</li>
+<li>&#x4FEE;&#x6539;&#x4E00;&#x4E2A;&#x51FD;&#x6570;&#x3002;</li>
+<li>&#x8BF7;&#x6C42;&#x8054;&#x7F51;&#x6216;&#x66F4;&#x9AD8;&#x6743;&#x9650;&#x3002;</li>
+<li>&#x8BE2;&#x95EE;&#x4E00;&#x4E2A;&#x65E0;&#x6CD5;&#x4ECE;&#x9879;&#x76EE;&#x4E2D;&#x53D1;&#x73B0;&#x7684;&#x5173;&#x952E;&#x9700;&#x6C42;&#x3002;</li>
+<li>&#x5728;&#x8BC1;&#x636E;&#x5145;&#x5206;&#x65F6;&#x7ED3;&#x675F;&#x4EFB;&#x52A1;&#x3002;</li>
+</ul>
+<p>&#x8FD9;&#x91CC;&#x7684;&#x201C;&#x51B3;&#x7B56;&#x201D;&#x4E0D;&#x7B49;&#x4E8E;&#x5411;&#x7528;&#x6237;&#x5C55;&#x793A;&#x5B8C;&#x6574;&#x7684;&#x79C1;&#x6709;&#x601D;&#x7EF4;&#x94FE;&#x3002;&#x5BF9;&#x7528;&#x6237;&#x771F;&#x6B63;&#x6709;&#x7528;&#x7684;&#x662F;&#x53EF;&#x68C0;&#x67E5;&#x7684;&#x4FE1;&#x606F;&#xFF0C;&#x4F8B;&#x5982;&#x5F53;&#x524D;&#x5047;&#x8BBE;&#x3001;&#x51C6;&#x5907;&#x91C7;&#x53D6;&#x7684;&#x52A8;&#x4F5C;&#x3001;&#x5DE5;&#x5177;&#x7ED3;&#x679C;&#x3001;&#x5173;&#x952E;&#x4F9D;&#x636E;&#x548C;&#x9A8C;&#x8BC1;&#x7ED3;&#x8BBA;&#x3002;</p>
+<h3 id="&#x884C;&#x52A8;"><a name="&#x884C;&#x52A8;" class="anchor-navigation-ex-anchor" href="#&#x884C;&#x52A8;"><i class="fa fa-link" aria-hidden="true"></i></a>2.2.3. &#x884C;&#x52A8;</h3>
+<p>&#x5982;&#x679C;&#x6A21;&#x578B;&#x9700;&#x8981;&#x63A5;&#x89E6;&#x73AF;&#x5883;&#xFF0C;&#x5B83;&#x4F1A;&#x8F93;&#x51FA;&#x7ED3;&#x6784;&#x5316;&#x7684;&#x5DE5;&#x5177;&#x8C03;&#x7528;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x5047;&#x88C5;&#x5DF2;&#x7ECF;&#x6267;&#x884C;&#x4E86;&#x64CD;&#x4F5C;&#x3002;&#x5E38;&#x89C1;&#x884C;&#x52A8;&#x5305;&#x62EC;&#xFF1A;</p>
+<ul>
+<li>&#x4F7F;&#x7528;&#x6587;&#x4EF6;&#x641C;&#x7D22;&#x5DE5;&#x5177;&#x5B9A;&#x4F4D;&#x4EE3;&#x7801;&#x3002;</li>
+<li>&#x8BFB;&#x53D6;&#x6587;&#x4EF6;&#x6216; Git diff&#x3002;</li>
+<li>&#x8C03;&#x7528; shell &#x8FD0;&#x884C;&#x6D4B;&#x8BD5;&#x3001;&#x6784;&#x5EFA;&#x6216;&#x9759;&#x6001;&#x68C0;&#x67E5;&#x3002;</li>
+<li>&#x4F7F;&#x7528;&#x8865;&#x4E01;&#x5DE5;&#x5177;&#x7F16;&#x8F91;&#x6587;&#x4EF6;&#x3002;</li>
+<li>&#x4F7F;&#x7528;&#x6D4F;&#x89C8;&#x5668;&#x9A8C;&#x8BC1;&#x9875;&#x9762;&#x884C;&#x4E3A;&#x3002;</li>
+<li>&#x901A;&#x8FC7; MCP &#x6216;&#x63D2;&#x4EF6;&#x8BBF;&#x95EE; GitHub&#x3001;&#x6587;&#x6863;&#x5E93;&#x7B49;&#x5916;&#x90E8;&#x7CFB;&#x7EDF;&#x3002;</li>
+</ul>
+<p>&#x5DE5;&#x5177;&#x8C03;&#x7528;&#x901A;&#x5E38;&#x5305;&#x542B;&#x5DE5;&#x5177;&#x540D;&#x79F0;&#x548C;&#x53C2;&#x6570;&#x3002;Codex Harness &#x8D1F;&#x8D23;&#x68C0;&#x67E5;&#x8C03;&#x7528;&#x3001;&#x6267;&#x884C;&#x5DE5;&#x5177;&#xFF0C;&#x5E76;&#x628A;&#x7ED3;&#x679C;&#x8FD4;&#x56DE;&#x7ED9;&#x6A21;&#x578B;&#x3002;</p>
+<h3 id="&#x89C2;&#x5BDF;"><a name="&#x89C2;&#x5BDF;" class="anchor-navigation-ex-anchor" href="#&#x89C2;&#x5BDF;"><i class="fa fa-link" aria-hidden="true"></i></a>2.2.4. &#x89C2;&#x5BDF;</h3>
+<p>&#x89C2;&#x5BDF;&#x662F;&#x5DE5;&#x5177;&#x6267;&#x884C;&#x540E;&#x8FD4;&#x56DE;&#x7684;&#x771F;&#x5B9E;&#x7ED3;&#x679C;&#xFF0C;&#x4F8B;&#x5982;&#xFF1A;</p>
+<ul>
+<li>&#x641C;&#x7D22;&#x5230;&#x4E86;&#x54EA;&#x4E9B;&#x6587;&#x4EF6;&#x548C;&#x7B26;&#x53F7;&#x3002;</li>
+<li>&#x6587;&#x4EF6;&#x7684;&#x5B9E;&#x9645;&#x5185;&#x5BB9;&#x3002;</li>
+<li>&#x547D;&#x4EE4;&#x7684;&#x9000;&#x51FA;&#x7801;&#x548C;&#x6807;&#x51C6;&#x8F93;&#x51FA;&#x3002;</li>
+<li>&#x6D4B;&#x8BD5;&#x901A;&#x8FC7;&#x6216;&#x5931;&#x8D25;&#x7684;&#x8BE6;&#x60C5;&#x3002;</li>
+<li>&#x7F16;&#x8BD1;&#x5668;&#x548C;&#x7C7B;&#x578B;&#x68C0;&#x67E5;&#x5668;&#x7ED9;&#x51FA;&#x7684;&#x9519;&#x8BEF;&#x3002;</li>
+<li>&#x6D4F;&#x89C8;&#x5668;&#x4E2D;&#x7684; DOM&#x3001;&#x622A;&#x56FE;&#x3001;&#x63A7;&#x5236;&#x53F0;&#x548C;&#x7F51;&#x7EDC;&#x72B6;&#x6001;&#x3002;</li>
+<li>&#x5DE5;&#x5177;&#x8C03;&#x7528;&#x88AB; Sandbox &#x62D2;&#x7EDD;&#x6216;&#x7B49;&#x5F85;&#x7528;&#x6237;&#x6279;&#x51C6;&#x3002;</li>
+</ul>
+<p>&#x89C2;&#x5BDF;&#x4F1A;&#x6539;&#x53D8;&#x4E0B;&#x4E00;&#x8F6E;&#x7684;&#x5F53;&#x524D;&#x72B6;&#x6001;&#x3002;&#x6A21;&#x578B;&#x5E94;&#x6839;&#x636E;&#x89C2;&#x5BDF;&#x8C03;&#x6574;&#x8DEF;&#x7EBF;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x5FFD;&#x7565;&#x7ED3;&#x679C;&#x7EE7;&#x7EED;&#x6267;&#x884C;&#x539F;&#x6765;&#x7684;&#x731C;&#x6D4B;&#x3002;</p>
+<h2 id="codex-agent-loop-&#x7684;&#x8FD0;&#x884C;&#x539F;&#x7406;"><a name="codex-agent-loop-&#x7684;&#x8FD0;&#x884C;&#x539F;&#x7406;" class="anchor-navigation-ex-anchor" href="#codex-agent-loop-&#x7684;&#x8FD0;&#x884C;&#x539F;&#x7406;"><i class="fa fa-link" aria-hidden="true"></i></a>2.3. Codex Agent Loop &#x7684;&#x8FD0;&#x884C;&#x539F;&#x7406;</h2>
+<p>OpenAI &#x5B98;&#x65B9;&#x5BF9; Codex Agent Loop &#x7684;&#x63CF;&#x8FF0;&#x53EF;&#x4EE5;&#x62BD;&#x8C61;&#x4E3A;&#x4EE5;&#x4E0B;&#x4F2A;&#x4EE3;&#x7801;&#xFF1A;</p>
+<pre><code class="lang-text">context = build_initial_context(user_prompt, instructions, tools, workspace_state)
+
+while true:
+    output = call_model(context)
+
+    if output contains tool_call:
+        result = execute_tool_under_policy(output.tool_call)
+        context.append(output.tool_call)
+        context.append(result)
+        continue
+
+    final_response = output
+    break
+</code></pre>
+<p>&#x771F;&#x5B9E;&#x5B9E;&#x73B0;&#x8FD8;&#x9700;&#x8981;&#x5904;&#x7406;&#x5E76;&#x884C;&#x5DE5;&#x5177;&#x3001;&#x6D41;&#x5F0F;&#x8F93;&#x51FA;&#x3001;&#x5BA1;&#x6279;&#x3001;&#x8D85;&#x65F6;&#x3001;&#x9519;&#x8BEF;&#x6062;&#x590D;&#x3001;&#x4E0A;&#x4E0B;&#x6587;&#x538B;&#x7F29;&#x548C;&#x4EFB;&#x52A1;&#x4E2D;&#x65AD;&#x7B49;&#x95EE;&#x9898;&#xFF0C;&#x4F46;&#x6838;&#x5FC3;&#x7ED3;&#x6784;&#x4ECD;&#x7136;&#x662F;&#x201C;&#x6A21;&#x578B;&#x8F93;&#x51FA;&#x5DE5;&#x5177;&#x8BF7;&#x6C42;&#xFF0C;Harness &#x6267;&#x884C;&#xFF0C;&#x518D;&#x628A;&#x7ED3;&#x679C;&#x53CD;&#x9988;&#x7ED9;&#x6A21;&#x578B;&#x201D;&#x3002;</p>
+<h3 id="harness-&#x4E0E;&#x6A21;&#x578B;&#x7684;&#x5206;&#x5DE5;"><a name="harness-&#x4E0E;&#x6A21;&#x578B;&#x7684;&#x5206;&#x5DE5;" class="anchor-navigation-ex-anchor" href="#harness-&#x4E0E;&#x6A21;&#x578B;&#x7684;&#x5206;&#x5DE5;"><i class="fa fa-link" aria-hidden="true"></i></a>2.3.1. Harness &#x4E0E;&#x6A21;&#x578B;&#x7684;&#x5206;&#x5DE5;</h3>
+<p>Codex &#x4E0D;&#x53EA;&#x662F;&#x4E00;&#x4E2A;&#x6A21;&#x578B;&#x540D;&#x79F0;&#xFF0C;&#x4E5F;&#x5305;&#x542B;&#x627F;&#x8F7D;&#x6A21;&#x578B;&#x8FD0;&#x884C;&#x7684;&#x8F6F;&#x4EF6;&#x7CFB;&#x7EDF;&#x3002;&#x7406;&#x89E3; Agent Loop &#x65F6;&#xFF0C;&#x53EF;&#x4EE5;&#x628A;&#x5B83;&#x5206;&#x6210;&#x4E24;&#x5C42;&#xFF1A;</p>
+<ul>
+<li>&#x6A21;&#x578B;&#x8D1F;&#x8D23;&#x7406;&#x89E3;&#x4EFB;&#x52A1;&#x3001;&#x9009;&#x62E9;&#x5DE5;&#x5177;&#x3001;&#x751F;&#x6210;&#x53C2;&#x6570;&#x3001;&#x6839;&#x636E;&#x7ED3;&#x679C;&#x8C03;&#x6574;&#x884C;&#x52A8;&#x5E76;&#x5224;&#x65AD;&#x4F55;&#x65F6;&#x7ED3;&#x675F;&#x3002;</li>
+<li>Harness &#x8D1F;&#x8D23;&#x6784;&#x9020;&#x4E0A;&#x4E0B;&#x6587;&#x3001;&#x63D0;&#x4F9B;&#x5DE5;&#x5177;&#x3001;&#x771F;&#x6B63;&#x6267;&#x884C;&#x8C03;&#x7528;&#x3001;&#x5B9E;&#x65BD;&#x6743;&#x9650;&#x63A7;&#x5236;&#x3001;&#x8BB0;&#x5F55;&#x7ED3;&#x679C;&#x5E76;&#x9A71;&#x52A8;&#x4E0B;&#x4E00;&#x6B21;&#x6A21;&#x578B;&#x63A8;&#x7406;&#x3002;</li>
+</ul>
+<p>&#x6A21;&#x578B;&#x672C;&#x8EAB;&#x4E0D;&#x4F1A;&#x76F4;&#x63A5;&#x8FD0;&#x884C; shell&#xFF0C;&#x4E5F;&#x4E0D;&#x4F1A;&#x76F4;&#x63A5;&#x5199;&#x5165;&#x78C1;&#x76D8;&#x3002;&#x771F;&#x6B63;&#x6539;&#x53D8;&#x73AF;&#x5883;&#x7684;&#x662F; Harness &#x6240;&#x6267;&#x884C;&#x7684;&#x5DE5;&#x5177;&#x8C03;&#x7528;&#x3002;</p>
+<h3 id="&#x521D;&#x59CB;&#x4E0A;&#x4E0B;&#x6587;&#x5982;&#x4F55;&#x6784;&#x9020;"><a name="&#x521D;&#x59CB;&#x4E0A;&#x4E0B;&#x6587;&#x5982;&#x4F55;&#x6784;&#x9020;" class="anchor-navigation-ex-anchor" href="#&#x521D;&#x59CB;&#x4E0A;&#x4E0B;&#x6587;&#x5982;&#x4F55;&#x6784;&#x9020;"><i class="fa fa-link" aria-hidden="true"></i></a>2.3.2. &#x521D;&#x59CB;&#x4E0A;&#x4E0B;&#x6587;&#x5982;&#x4F55;&#x6784;&#x9020;</h3>
+<p>&#x4EFB;&#x52A1;&#x5F00;&#x59CB;&#x65F6;&#xFF0C;Codex &#x4F1A;&#x628A;&#x591A;&#x7C7B;&#x4FE1;&#x606F;&#x7EC4;&#x7EC7;&#x6210;&#x6A21;&#x578B;&#x8F93;&#x5165;&#xFF0C;&#x4E3B;&#x8981;&#x5305;&#x62EC;&#xFF1A;</p>
+<ul>
+<li>Instructions&#xFF1A;&#x7CFB;&#x7EDF;&#x548C;&#x5F00;&#x53D1;&#x8005;&#x7EA7;&#x6307;&#x5BFC;&#x3001;&#x9879;&#x76EE;&#x7EA6;&#x5B9A;&#x4EE5;&#x53CA;&#x5F53;&#x524D;&#x6743;&#x9650;&#x8BF4;&#x660E;&#x3002;</li>
+<li>Tools&#xFF1A;&#x6A21;&#x578B;&#x5F53;&#x524D;&#x53EF;&#x4EE5;&#x8C03;&#x7528;&#x7684;&#x5DE5;&#x5177;&#x5B9A;&#x4E49;&#x3002;</li>
+<li>Input&#xFF1A;&#x7528;&#x6237;&#x6D88;&#x606F;&#x3001;&#x9644;&#x4EF6;&#x3001;&#x56FE;&#x7247;&#x3001;&#x6587;&#x4EF6;&#x5185;&#x5BB9;&#x548C;&#x4EFB;&#x52A1;&#x5386;&#x53F2;&#x3002;</li>
+</ul>
+<p>&#x5728;&#x672C;&#x5730; Codex &#x4E2D;&#xFF0C;&#x9879;&#x76EE;&#x7684; <code>AGENTS.md</code>&#x3001;&#x914D;&#x7F6E;&#x3001;Sandbox &#x548C; Approval &#x89C4;&#x5219;&#x4E5F;&#x4F1A;&#x5F71;&#x54CD;&#x6A21;&#x578B;&#x770B;&#x5230;&#x7684;&#x6307;&#x4EE4;&#x6216;&#x5B9E;&#x9645;&#x53EF;&#x6267;&#x884C;&#x8FB9;&#x754C;&#x3002;</p>
+<p>&#x8FD9;&#x610F;&#x5473;&#x7740; Agent Loop &#x7684;&#x8868;&#x73B0;&#x4E0D;&#x4EC5;&#x53D6;&#x51B3;&#x4E8E;&#x6A21;&#x578B;&#x80FD;&#x529B;&#xFF0C;&#x8FD8;&#x53D6;&#x51B3;&#x4E8E;&#x4E0A;&#x4E0B;&#x6587;&#x662F;&#x5426;&#x51C6;&#x786E;&#x3001;&#x5DE5;&#x5177;&#x662F;&#x5426;&#x5408;&#x9002;&#x3001;&#x6743;&#x9650;&#x662F;&#x5426;&#x8DB3;&#x591F;&#x4EE5;&#x53CA;&#x5B8C;&#x6210;&#x6807;&#x51C6;&#x662F;&#x5426;&#x660E;&#x786E;&#x3002;</p>
+<h3 id="&#x5DE5;&#x5177;&#x8C03;&#x7528;&#x5982;&#x4F55;&#x5F62;&#x6210;&#x95ED;&#x73AF;"><a name="&#x5DE5;&#x5177;&#x8C03;&#x7528;&#x5982;&#x4F55;&#x5F62;&#x6210;&#x95ED;&#x73AF;" class="anchor-navigation-ex-anchor" href="#&#x5DE5;&#x5177;&#x8C03;&#x7528;&#x5982;&#x4F55;&#x5F62;&#x6210;&#x95ED;&#x73AF;"><i class="fa fa-link" aria-hidden="true"></i></a>2.3.3. &#x5DE5;&#x5177;&#x8C03;&#x7528;&#x5982;&#x4F55;&#x5F62;&#x6210;&#x95ED;&#x73AF;</h3>
+<p>&#x5047;&#x8BBE;&#x6A21;&#x578B;&#x51B3;&#x5B9A;&#x8FD0;&#x884C;&#x6D4B;&#x8BD5;&#xFF0C;&#x5B83;&#x4E0D;&#x4F1A;&#x53EA;&#x8F93;&#x51FA;&#x81EA;&#x7136;&#x8BED;&#x8A00;&#x201C;&#x6211;&#x8981;&#x8FD0;&#x884C;&#x6D4B;&#x8BD5;&#x201D;&#xFF0C;&#x800C;&#x662F;&#x751F;&#x6210;&#x7C7B;&#x4F3C;&#x4E0B;&#x9762;&#x7684;&#x7ED3;&#x6784;&#x5316;&#x8BF7;&#x6C42;&#xFF1A;</p>
+<pre><code class="lang-json">{
+  <span class="hljs-string">&quot;tool&quot;</span>: <span class="hljs-string">&quot;shell&quot;</span>,
+  <span class="hljs-string">&quot;arguments&quot;</span>: {
+    <span class="hljs-string">&quot;command&quot;</span>: <span class="hljs-string">&quot;npm test -- login&quot;</span>
+  }
+}
+</code></pre>
+<p>Harness &#x6267;&#x884C;&#x540E;&#x53EF;&#x80FD;&#x8FD4;&#x56DE;&#xFF1A;</p>
+<pre><code class="lang-text">exit_code: 1
+LoginService.test.ts: expected 401, received 500
+TypeError: Cannot read properties of undefined
+</code></pre>
+<p>&#x8FD9;&#x4E2A;&#x7ED3;&#x679C;&#x88AB;&#x8FFD;&#x52A0;&#x5230;&#x4E0A;&#x4E0B;&#x6587;&#x4E2D;&#x3002;&#x4E0B;&#x4E00;&#x6B21;&#x63A8;&#x7406;&#x65F6;&#xFF0C;&#x6A21;&#x578B;&#x4E0D;&#x518D;&#x53EA;&#x77E5;&#x9053;&#x201C;&#x767B;&#x5F55;&#x6709;&#x9519;&#x8BEF;&#x201D;&#xFF0C;&#x800C;&#x662F;&#x83B7;&#x5F97;&#x4E86;&#x5177;&#x4F53;&#x5931;&#x8D25;&#x4F4D;&#x7F6E;&#x3001;&#x671F;&#x671B;&#x503C;&#x548C;&#x5F02;&#x5E38;&#x7C7B;&#x578B;&#xFF0C;&#x4E8E;&#x662F;&#x53EF;&#x4EE5;&#x8BFB;&#x53D6;&#x5BF9;&#x5E94;&#x6D4B;&#x8BD5;&#x53CA;&#x5B9E;&#x73B0;&#x4EE3;&#x7801;&#x3002;</p>
+<p>&#x5DE5;&#x5177;&#x7ED3;&#x679C;&#x662F; Agent Loop &#x4E2D;&#x8FDE;&#x63A5;&#x201C;&#x8BED;&#x8A00;&#x63A8;&#x7406;&#x201D;&#x548C;&#x201C;&#x771F;&#x5B9E;&#x73AF;&#x5883;&#x201D;&#x7684;&#x6865;&#x6881;&#x3002;</p>
+<h2 id="agent-loop-&#x4E3A;&#x4EC0;&#x4E48;&#x6709;&#x6548;"><a name="agent-loop-&#x4E3A;&#x4EC0;&#x4E48;&#x6709;&#x6548;" class="anchor-navigation-ex-anchor" href="#agent-loop-&#x4E3A;&#x4EC0;&#x4E48;&#x6709;&#x6548;"><i class="fa fa-link" aria-hidden="true"></i></a>2.4. Agent Loop &#x4E3A;&#x4EC0;&#x4E48;&#x6709;&#x6548;</h2>
+<h3 id="&#x7528;&#x5916;&#x90E8;&#x4E8B;&#x5B9E;&#x964D;&#x4F4E;&#x731C;&#x6D4B;"><a name="&#x7528;&#x5916;&#x90E8;&#x4E8B;&#x5B9E;&#x964D;&#x4F4E;&#x731C;&#x6D4B;" class="anchor-navigation-ex-anchor" href="#&#x7528;&#x5916;&#x90E8;&#x4E8B;&#x5B9E;&#x964D;&#x4F4E;&#x731C;&#x6D4B;"><i class="fa fa-link" aria-hidden="true"></i></a>2.4.1. &#x7528;&#x5916;&#x90E8;&#x4E8B;&#x5B9E;&#x964D;&#x4F4E;&#x731C;&#x6D4B;</h3>
+<p>&#x6A21;&#x578B;&#x7684;&#x5DF2;&#x6709;&#x77E5;&#x8BC6;&#x4E0D;&#x80FD;&#x66FF;&#x4EE3;&#x5F53;&#x524D;&#x4ED3;&#x5E93;&#x3001;&#x5F53;&#x524D;&#x4F9D;&#x8D56;&#x548C;&#x5F53;&#x524D;&#x8FD0;&#x884C;&#x72B6;&#x6001;&#x3002;Agent Loop &#x5141;&#x8BB8;&#x6A21;&#x578B;&#x901A;&#x8FC7;&#x641C;&#x7D22;&#x3001;&#x6D4B;&#x8BD5;&#x548C;&#x65E5;&#x5FD7;&#x83B7;&#x53D6;&#x5B9E;&#x65F6;&#x4E8B;&#x5B9E;&#xFF0C;&#x4ECE;&#x800C;&#x51CF;&#x5C11;&#x53EA;&#x51ED;&#x8BB0;&#x5FC6;&#x56DE;&#x7B54;&#x9020;&#x6210;&#x7684;&#x9519;&#x8BEF;&#x3002;</p>
+<h3 id="&#x628A;&#x5927;&#x95EE;&#x9898;&#x8F6C;&#x5316;&#x6210;&#x5C0F;&#x53CD;&#x9988;"><a name="&#x628A;&#x5927;&#x95EE;&#x9898;&#x8F6C;&#x5316;&#x6210;&#x5C0F;&#x53CD;&#x9988;" class="anchor-navigation-ex-anchor" href="#&#x628A;&#x5927;&#x95EE;&#x9898;&#x8F6C;&#x5316;&#x6210;&#x5C0F;&#x53CD;&#x9988;"><i class="fa fa-link" aria-hidden="true"></i></a>2.4.2. &#x628A;&#x5927;&#x95EE;&#x9898;&#x8F6C;&#x5316;&#x6210;&#x5C0F;&#x53CD;&#x9988;</h3>
+<p>&#x590D;&#x6742;&#x4EFB;&#x52A1;&#x901A;&#x5E38;&#x65E0;&#x6CD5;&#x4E00;&#x6B65;&#x5B8C;&#x6210;&#x3002;Agent Loop &#x53EF;&#x4EE5;&#x628A;&#x4EFB;&#x52A1;&#x62C6;&#x6210;&#x591A;&#x4E2A;&#x53EF;&#x9A8C;&#x8BC1;&#x52A8;&#x4F5C;&#xFF1A;</p>
+<pre><code class="lang-text">&#x5B9A;&#x4F4D;&#x5165;&#x53E3;
+&#x2192; &#x5EFA;&#x7ACB;&#x5047;&#x8BBE;
+&#x2192; &#x8FD0;&#x884C;&#x6700;&#x5C0F;&#x5B9E;&#x9A8C;
+&#x2192; &#x4FEE;&#x6539;&#x4EE3;&#x7801;
+&#x2192; &#x8FD0;&#x884C;&#x76F8;&#x5173;&#x6D4B;&#x8BD5;
+&#x2192; &#x68C0;&#x67E5;&#x5B8C;&#x6574; diff
+</code></pre>
+<p>&#x6BCF;&#x4E00;&#x6B65;&#x90FD;&#x80FD;&#x4EA7;&#x751F;&#x53CD;&#x9988;&#xFF0C;&#x4F7F;&#x9519;&#x8BEF;&#x66F4;&#x65E9;&#x66B4;&#x9732;&#x3002;</p>
+<h3 id="&#x5141;&#x8BB8;&#x6839;&#x636E;&#x7ED3;&#x679C;&#x6539;&#x53D8;&#x8BA1;&#x5212;"><a name="&#x5141;&#x8BB8;&#x6839;&#x636E;&#x7ED3;&#x679C;&#x6539;&#x53D8;&#x8BA1;&#x5212;" class="anchor-navigation-ex-anchor" href="#&#x5141;&#x8BB8;&#x6839;&#x636E;&#x7ED3;&#x679C;&#x6539;&#x53D8;&#x8BA1;&#x5212;"><i class="fa fa-link" aria-hidden="true"></i></a>2.4.3. &#x5141;&#x8BB8;&#x6839;&#x636E;&#x7ED3;&#x679C;&#x6539;&#x53D8;&#x8BA1;&#x5212;</h3>
+<p>&#x9759;&#x6001;&#x8BA1;&#x5212;&#x5BB9;&#x6613;&#x5EFA;&#x7ACB;&#x5728;&#x9519;&#x8BEF;&#x5047;&#x8BBE;&#x4E0A;&#x3002;Agent Loop &#x53EF;&#x4EE5;&#x5728;&#x6267;&#x884C;&#x4E2D;&#x66F4;&#x65B0;&#x8BA4;&#x8BC6;&#x3002;&#x4F8B;&#x5982;&#xFF0C;&#x539F;&#x8BA1;&#x5212;&#x4FEE;&#x6539;&#x524D;&#x7AEF;&#x72B6;&#x6001;&#x7BA1;&#x7406;&#xFF0C;&#x4F46;&#x6D4B;&#x8BD5;&#x8BC1;&#x660E;&#x540E;&#x7AEF;&#x6CA1;&#x6709;&#x6301;&#x4E45;&#x5316;&#x6570;&#x636E;&#xFF0C;&#x540E;&#x7EED;&#x884C;&#x52A8;&#x5C31;&#x5E94;&#x8BE5;&#x8F6C;&#x5411;&#x540E;&#x7AEF;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x673A;&#x68B0;&#x5B8C;&#x6210;&#x539F;&#x8BA1;&#x5212;&#x3002;</p>
+<h3 id="&#x8BA9;&#x5B8C;&#x6210;&#x53EF;&#x4EE5;&#x88AB;&#x9A8C;&#x8BC1;"><a name="&#x8BA9;&#x5B8C;&#x6210;&#x53EF;&#x4EE5;&#x88AB;&#x9A8C;&#x8BC1;" class="anchor-navigation-ex-anchor" href="#&#x8BA9;&#x5B8C;&#x6210;&#x53EF;&#x4EE5;&#x88AB;&#x9A8C;&#x8BC1;"><i class="fa fa-link" aria-hidden="true"></i></a>2.4.4. &#x8BA9;&#x201C;&#x5B8C;&#x6210;&#x201D;&#x53EF;&#x4EE5;&#x88AB;&#x9A8C;&#x8BC1;</h3>
+<p>&#x8F6F;&#x4EF6;&#x5DE5;&#x7A0B;&#x4EFB;&#x52A1;&#x7684;&#x4E3B;&#x8981;&#x4EA7;&#x51FA;&#x901A;&#x5E38;&#x4E0D;&#x662F;&#x6700;&#x7EC8;&#x6587;&#x5B57;&#xFF0C;&#x800C;&#x662F;&#x4EE3;&#x7801;&#x3001;&#x914D;&#x7F6E;&#x3001;&#x6D4B;&#x8BD5;&#x548C;&#x8FD0;&#x884C;&#x72B6;&#x6001;&#x3002;Agent Loop &#x80FD;&#x5728;&#x7ED3;&#x675F;&#x524D;&#x6267;&#x884C;&#x9A8C;&#x8BC1;&#xFF0C;&#x5C06;&#x201C;&#x6211;&#x8BA4;&#x4E3A;&#x5DF2;&#x7ECF;&#x5B8C;&#x6210;&#x201D;&#x8F6C;&#x5316;&#x4E3A;&#x201C;&#x76F8;&#x5173;&#x6D4B;&#x8BD5;&#x3001;&#x7C7B;&#x578B;&#x68C0;&#x67E5;&#x548C;&#x590D;&#x73B0;&#x6B65;&#x9AA4;&#x5DF2;&#x7ECF;&#x901A;&#x8FC7;&#x201D;&#x3002;</p>
+<h2 id="agent-loop-&#x4E0E;-react-&#x7684;&#x5173;&#x7CFB;"><a name="agent-loop-&#x4E0E;-react-&#x7684;&#x5173;&#x7CFB;" class="anchor-navigation-ex-anchor" href="#agent-loop-&#x4E0E;-react-&#x7684;&#x5173;&#x7CFB;"><i class="fa fa-link" aria-hidden="true"></i></a>2.5. Agent Loop &#x4E0E; ReAct &#x7684;&#x5173;&#x7CFB;</h2>
+<p>ReAct &#x901A;&#x5E38;&#x8868;&#x793A; Reasoning and Acting&#xFF0C;&#x5373;&#x63A8;&#x7406;&#x4E0E;&#x884C;&#x52A8;&#x4EA4;&#x66FF;&#x8FDB;&#x884C;&#xFF1A;</p>
+<pre><code class="lang-text">Reason &#x2192; Act &#x2192; Observe &#x2192; Reason &#x2192; Act &#x2192; Observe
+</code></pre>
+<p>Codex Agent Loop &#x4E0E;&#x8FD9;&#x4E2A;&#x601D;&#x60F3;&#x975E;&#x5E38;&#x63A5;&#x8FD1;&#xFF0C;&#x56E0;&#x4E3A;&#x5B83;&#x4E5F;&#x4F1A;&#x5728;&#x6A21;&#x578B;&#x63A8;&#x7406;&#x3001;&#x5DE5;&#x5177;&#x884C;&#x52A8;&#x548C;&#x73AF;&#x5883;&#x89C2;&#x5BDF;&#x4E4B;&#x95F4;&#x5FAA;&#x73AF;&#x3002;&#x56E0;&#x6B64;&#xFF0C;&#x53EF;&#x4EE5;&#x8BF4; Codex &#x9ED8;&#x8BA4;&#x8FD0;&#x884C;&#x7684;&#x662F;&#x4E00;&#x79CD; ReAct &#x98CE;&#x683C;&#x7684;&#x5DE5;&#x5177;&#x9A71;&#x52A8; Agent&#x3002;</p>
+<p>&#x4F46;&#x8981;&#x6CE8;&#x610F;&#x4E09;&#x4E2A;&#x533A;&#x522B;&#xFF1A;</p>
+<ol>
+<li>Codex &#x5B98;&#x65B9;&#x4EA7;&#x54C1;&#x4E2D;&#x6CA1;&#x6709;&#x540D;&#x4E3A; <code>/react</code> &#x7684;&#x547D;&#x4EE4;&#xFF0C;&#x4E5F;&#x6CA1;&#x6709; <code>react = true</code> &#x914D;&#x7F6E;&#x9879;&#x3002;</li>
+<li>OpenAI &#x5B98;&#x65B9;&#x4F7F;&#x7528;&#x7684;&#x540D;&#x79F0;&#x662F; Agent Loop&#xFF0C;&#x4E0D;&#x4FDD;&#x8BC1;&#x5B83;&#x4E25;&#x683C;&#x590D;&#x73B0;&#x67D0;&#x7BC7; ReAct &#x8BBA;&#x6587;&#x7684;&#x63D0;&#x793A;&#x683C;&#x5F0F;&#x6216;&#x5185;&#x90E8;&#x8F68;&#x8FF9;&#x3002;</li>
+<li>&#x7528;&#x6237;&#x4E0D;&#x9700;&#x8981;&#x3001;&#x4E5F;&#x4E0D;&#x5E94;&#x8981;&#x6C42;&#x8F93;&#x51FA;&#x5B8C;&#x6574;&#x79C1;&#x6709;&#x601D;&#x7EF4;&#x94FE;&#xFF1B;&#x5E94;&#x5173;&#x6CE8;&#x53EF;&#x9A8C;&#x8BC1;&#x7684;&#x884C;&#x52A8;&#x3001;&#x7ED3;&#x679C;&#x548C;&#x5173;&#x952E;&#x4F9D;&#x636E;&#x3002;</li>
+</ol>
+<p>&#x56E0;&#x6B64;&#xFF0C;&#x66F4;&#x51C6;&#x786E;&#x7684;&#x8868;&#x8FBE;&#x662F;&#xFF1A;</p>
+<blockquote>
+<p>Codex &#x9ED8;&#x8BA4;&#x662F;&#x5DE5;&#x5177;&#x9A71;&#x52A8;&#x7684;&#x8FED;&#x4EE3;&#x5F0F; Agent&#xFF0C;&#x5176;&#x884C;&#x4E3A;&#x53EF;&#x4EE5;&#x7528; ReAct &#x601D;&#x60F3;&#x7406;&#x89E3;&#xFF0C;&#x4F46; ReAct &#x4E0D;&#x662F; Codex &#x4E2D;&#x9700;&#x8981;&#x5F00;&#x542F;&#x7684;&#x6B63;&#x5F0F;&#x6A21;&#x5F0F;&#x3002;</p>
+</blockquote>
+<h2 id="agent-loop-&#x4E0E;-plan-and-execute-&#x7684;&#x5173;&#x7CFB;"><a name="agent-loop-&#x4E0E;-plan-and-execute-&#x7684;&#x5173;&#x7CFB;" class="anchor-navigation-ex-anchor" href="#agent-loop-&#x4E0E;-plan-and-execute-&#x7684;&#x5173;&#x7CFB;"><i class="fa fa-link" aria-hidden="true"></i></a>2.6. Agent Loop &#x4E0E; Plan-and-Execute &#x7684;&#x5173;&#x7CFB;</h2>
+<p>Agent Loop &#x89E3;&#x51B3;&#x7684;&#x662F;&#x201C;&#x5982;&#x4F55;&#x6301;&#x7EED;&#x884C;&#x52A8;&#x548C;&#x53CD;&#x9988;&#x201D;&#xFF0C;Plan-and-Execute &#x89E3;&#x51B3;&#x7684;&#x662F;&#x201C;&#x5982;&#x4F55;&#x7EC4;&#x7EC7;&#x4E00;&#x4E2A;&#x8F83;&#x957F;&#x4EFB;&#x52A1;&#x201D;&#x3002;&#x4E8C;&#x8005;&#x4E0D;&#x662F;&#x4E92;&#x65A5;&#x5173;&#x7CFB;&#x3002;</p>
+<h3 id="default-&#x6A21;&#x5F0F;"><a name="default-&#x6A21;&#x5F0F;" class="anchor-navigation-ex-anchor" href="#default-&#x6A21;&#x5F0F;"><i class="fa fa-link" aria-hidden="true"></i></a>2.6.1. Default &#x6A21;&#x5F0F;</h3>
+<p>&#x5728; Default &#x6A21;&#x5F0F;&#x4E0B;&#xFF0C;Codex &#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x63A2;&#x7D22;&#x3001;&#x4FEE;&#x6539;&#x548C;&#x9A8C;&#x8BC1;&#x3002;&#x5B83;&#x53EF;&#x80FD;&#x5728;&#x6267;&#x884C;&#x8FC7;&#x7A0B;&#x4E2D;&#x7EF4;&#x62A4;&#x4EFB;&#x52A1;&#x6E05;&#x5355;&#xFF0C;&#x4F46;&#x4E3B;&#x8981;&#x76EE;&#x6807;&#x662F;&#x5B8C;&#x6210;&#x4EFB;&#x52A1;&#xFF0C;&#x800C;&#x4E0D;&#x53EA;&#x662F;&#x8F93;&#x51FA;&#x8BA1;&#x5212;&#x3002;</p>
+<h3 id="plan-&#x6A21;&#x5F0F;"><a name="plan-&#x6A21;&#x5F0F;" class="anchor-navigation-ex-anchor" href="#plan-&#x6A21;&#x5F0F;"><i class="fa fa-link" aria-hidden="true"></i></a>2.6.2. Plan &#x6A21;&#x5F0F;</h3>
+<p>&#x5728; Codex CLI &#x4E2D;&#x53EF;&#x4EE5;&#x4F7F;&#x7528; <code>/plan</code> &#x8FDB;&#x5165; Plan &#x6A21;&#x5F0F;&#x3002;&#x8FD9;&#x4E2A;&#x9636;&#x6BB5;&#x9002;&#x5408;&#xFF1A;</p>
+<ul>
+<li>&#x9605;&#x8BFB;&#x4EE3;&#x7801;&#x548C;&#x6536;&#x96C6;&#x4E8B;&#x5B9E;&#x3002;</li>
+<li>&#x6F84;&#x6E05;&#x9700;&#x6C42;&#x3002;</li>
+<li>&#x5206;&#x6790;&#x5F71;&#x54CD;&#x8303;&#x56F4;&#x548C;&#x4F9D;&#x8D56;&#x5173;&#x7CFB;&#x3002;</li>
+<li>&#x5236;&#x5B9A;&#x5B9E;&#x65BD;&#x6B65;&#x9AA4;&#x3001;&#x9A8C;&#x8BC1;&#x65B9;&#x5F0F;&#x548C;&#x56DE;&#x6EDA;&#x65B9;&#x6848;&#x3002;</li>
+</ul>
+<p>&#x8BA1;&#x5212;&#x786E;&#x8BA4;&#x540E;&#xFF0C;&#x518D;&#x56DE;&#x5230;&#x6267;&#x884C;&#x9636;&#x6BB5;&#x5B8C;&#x6210;&#x4FEE;&#x6539;&#x3002;</p>
+<h3 id="&#x4E24;&#x8005;&#x5982;&#x4F55;&#x7EC4;&#x5408;"><a name="&#x4E24;&#x8005;&#x5982;&#x4F55;&#x7EC4;&#x5408;" class="anchor-navigation-ex-anchor" href="#&#x4E24;&#x8005;&#x5982;&#x4F55;&#x7EC4;&#x5408;"><i class="fa fa-link" aria-hidden="true"></i></a>2.6.3. &#x4E24;&#x8005;&#x5982;&#x4F55;&#x7EC4;&#x5408;</h3>
+<p>&#x4E00;&#x4E2A;&#x5B8C;&#x6574;&#x7684; Plan-and-Execute &#x5DE5;&#x4F5C;&#x6D41;&#x53EF;&#x4EE5;&#x8868;&#x793A;&#x4E3A;&#xFF1A;</p>
+<pre><code class="lang-text">Plan &#x9636;&#x6BB5;
+  Agent Loop&#xFF1A;&#x8BFB;&#x53D6; &#x2192; &#x641C;&#x7D22; &#x2192; &#x63D0;&#x95EE; &#x2192; &#x66F4;&#x65B0;&#x8BA1;&#x5212;
+        &#x2193;
+&#x8BA1;&#x5212;&#x786E;&#x8BA4;
+        &#x2193;
+Execute &#x9636;&#x6BB5;
+  Agent Loop&#xFF1A;&#x4FEE;&#x6539; &#x2192; &#x6D4B;&#x8BD5; &#x2192; &#x89C2;&#x5BDF; &#x2192; &#x4FEE;&#x6B63; &#x2192; &#x9A8C;&#x8BC1;
+</code></pre>
+<p>&#x5373;&#x4F7F;&#x5148;&#x5236;&#x5B9A;&#x4E86;&#x8BA1;&#x5212;&#xFF0C;&#x6267;&#x884C;&#x9636;&#x6BB5;&#x4ECD;&#x7136;&#x9700;&#x8981; Agent Loop&#x3002;&#x8BA1;&#x5212;&#x63D0;&#x4F9B;&#x5168;&#x5C40;&#x65B9;&#x5411;&#xFF0C;&#x5FAA;&#x73AF;&#x8D1F;&#x8D23;&#x5904;&#x7406;&#x6267;&#x884C;&#x4E2D;&#x51FA;&#x73B0;&#x7684;&#x65B0;&#x4E8B;&#x5B9E;&#x3002;</p>
+<h2 id="agent-loop-&#x4E0E;&#x591A;-agent-&#x7684;&#x5173;&#x7CFB;"><a name="agent-loop-&#x4E0E;&#x591A;-agent-&#x7684;&#x5173;&#x7CFB;" class="anchor-navigation-ex-anchor" href="#agent-loop-&#x4E0E;&#x591A;-agent-&#x7684;&#x5173;&#x7CFB;"><i class="fa fa-link" aria-hidden="true"></i></a>2.7. Agent Loop &#x4E0E;&#x591A; Agent &#x7684;&#x5173;&#x7CFB;</h2>
+<p>&#x591A; Agent &#x662F;&#x5728;&#x5355;&#x4E2A; Agent Loop &#x4E4B;&#x4E0A;&#x589E;&#x52A0;&#x5E76;&#x884C;&#x7F16;&#x6392;&#x3002;&#x4E3B; Agent &#x53EF;&#x4EE5;&#x628A;&#x76F8;&#x4E92;&#x72EC;&#x7ACB;&#x7684;&#x4EFB;&#x52A1;&#x4EA4;&#x7ED9;&#x591A;&#x4E2A;&#x5B50; Agent&#xFF0C;&#x6BCF;&#x4E2A;&#x5B50; Agent &#x90FD;&#x8FD0;&#x884C;&#x81EA;&#x5DF1;&#x7684;&#x5FAA;&#x73AF;&#xFF0C;&#x6700;&#x540E;&#x7531;&#x4E3B; Agent &#x6536;&#x96C6;&#x7ED3;&#x679C;&#x3002;</p>
+<pre><code class="lang-text">&#x4E3B; Agent Loop
+    &#x251C;&#x2500;&#x2500; &#x5B50; Agent A&#xFF1A;&#x641C;&#x7D22;&#x5B89;&#x5168;&#x95EE;&#x9898;
+    &#x251C;&#x2500;&#x2500; &#x5B50; Agent B&#xFF1A;&#x68C0;&#x67E5;&#x6D4B;&#x8BD5;&#x7F3A;&#x53E3;
+    &#x2514;&#x2500;&#x2500; &#x5B50; Agent C&#xFF1A;&#x5206;&#x6790;&#x6027;&#x80FD;&#x98CE;&#x9669;
+                 &#x2193;
+&#x4E3B; Agent &#x6C47;&#x603B;&#x3001;&#x53BB;&#x91CD;&#x3001;&#x6838;&#x9A8C;&#x5E76;&#x8F93;&#x51FA;&#x7ED3;&#x8BBA;
+</code></pre>
+<p>&#x5B83;&#x9002;&#x5408;&#x4EE3;&#x7801;&#x5E93;&#x63A2;&#x7D22;&#x3001;PR &#x591A;&#x7EF4;&#x5BA1;&#x67E5;&#x3001;&#x65E5;&#x5FD7;&#x5206;&#x7247;&#x5206;&#x6790;&#x7B49;&#x53EF;&#x5E76;&#x884C;&#x5DE5;&#x4F5C;&#x3002;&#x591A;&#x4E2A; Agent &#x540C;&#x65F6;&#x4FEE;&#x6539;&#x540C;&#x4E00;&#x6587;&#x4EF6;&#x5219;&#x5BB9;&#x6613;&#x4EA7;&#x751F;&#x51B2;&#x7A81;&#xFF0C;&#x56E0;&#x6B64;&#x5E76;&#x884C; Agent &#x66F4;&#x9002;&#x5408;&#x8BFB;&#x591A;&#x5199;&#x5C11;&#x3001;&#x8D23;&#x4EFB;&#x8FB9;&#x754C;&#x6E05;&#x6670;&#x7684;&#x5B50;&#x4EFB;&#x52A1;&#x3002;</p>
+<p>&#x591A; Agent &#x6CA1;&#x6709;&#x66FF;&#x4EE3; Agent Loop&#x3002;&#x5B83;&#x53EA;&#x662F;&#x8BA9;&#x591A;&#x4E2A; Loop &#x5E76;&#x884C;&#x8FD0;&#x884C;&#xFF0C;&#x5E76;&#x589E;&#x52A0;&#x4E86;&#x4EFB;&#x52A1;&#x5206;&#x89E3;&#x3001;&#x6D88;&#x606F;&#x4F20;&#x9012;&#x3001;&#x7B49;&#x5F85;&#x548C;&#x7ED3;&#x679C;&#x5408;&#x5E76;&#x7B49;&#x7F16;&#x6392;&#x5DE5;&#x4F5C;&#x3002;</p>
+<h1 id="prompt-&#x51B3;&#x5B9A;&#x4EFB;&#x52A1;&#x8FB9;&#x754C;"><a name="prompt-&#x51B3;&#x5B9A;&#x4EFB;&#x52A1;&#x8FB9;&#x754C;" class="anchor-navigation-ex-anchor" href="#prompt-&#x51B3;&#x5B9A;&#x4EFB;&#x52A1;&#x8FB9;&#x754C;"><i class="fa fa-link" aria-hidden="true"></i></a>3. Prompt &#x51B3;&#x5B9A;&#x4EFB;&#x52A1;&#x8FB9;&#x754C;</h1>
+<p>Codex &#x5B98;&#x65B9;&#x5EFA;&#x8BAE;&#xFF0C;&#x4E00;&#x4E2A;&#x597D;&#x7684;&#x4EFB;&#x52A1;&#x8BF4;&#x660E;&#x6700;&#x597D;&#x5305;&#x542B;&#x56DB;&#x90E8;&#x5206;&#xFF1A;</p>
+<pre><code class="lang-text">Goal: &#x4F60;&#x8981;&#x5B83;&#x5B8C;&#x6210;&#x4EC0;&#x4E48;
+Context: &#x54EA;&#x4E9B;&#x6587;&#x4EF6;&#x3001;&#x76EE;&#x5F55;&#x3001;&#x9519;&#x8BEF;&#x3001;&#x6587;&#x6863;&#x3001;&#x8BBE;&#x8BA1;&#x7A3F;&#x3001;&#x65E5;&#x5FD7;&#x548C;&#x80CC;&#x666F;&#x76F8;&#x5173;
+Constraints: &#x5B83;&#x5FC5;&#x987B;&#x9075;&#x5B88;&#x54EA;&#x4E9B;&#x67B6;&#x6784;&#x3001;&#x89C4;&#x8303;&#x3001;&#x5B89;&#x5168;&#x8981;&#x6C42;&#x548C;&#x9650;&#x5236;
+Done when: &#x4EC0;&#x4E48;&#x6761;&#x4EF6;&#x6EE1;&#x8DB3;&#x624D;&#x7B97;&#x5B8C;&#x6210;
+</code></pre>
+<p>&#x4E2D;&#x6587;&#x6A21;&#x677F;&#xFF1A;</p>
+<pre><code class="lang-text">Goal: &#x4FEE;&#x590D;&#x8BBE;&#x7F6E;&#x9875;&#x4FDD;&#x5B58;&#x540E;&#x5237;&#x65B0;&#x4E22;&#x5931;&#x7684;&#x95EE;&#x9898;&#x3002;
+
+Context:
+- &#x590D;&#x73B0;&#x6B65;&#x9AA4;&#xFF1A;&#x6253;&#x5F00; /settings&#xFF0C;&#x5207;&#x6362; Enable alerts&#xFF0C;&#x70B9;&#x51FB; Save&#xFF0C;&#x5237;&#x65B0;&#x540E;&#x72B6;&#x6001;&#x6062;&#x590D;&#x539F;&#x6837;&#x3002;
+- &#x76F8;&#x5173;&#x76EE;&#x5F55;&#xFF1A;src/pages/settings&#x3001;src/api/settings&#x3001;tests/settings&#x3002;
+
+Constraints:
+- &#x4E0D;&#x6539;&#x53D8;&#x73B0;&#x6709; API shape&#x3002;
+- &#x5C3D;&#x91CF;&#x4FDD;&#x6301;&#x6539;&#x52A8;&#x6700;&#x5C0F;&#x3002;
+- &#x5982;&#x679C;&#x9700;&#x8981;&#x6539;&#x540E;&#x7AEF;&#xFF0C;&#x5FC5;&#x987B;&#x4FDD;&#x7559;&#x73B0;&#x6709;&#x6743;&#x9650;&#x6821;&#x9A8C;&#x3002;
+
+Done when:
+- bug &#x4E0D;&#x518D;&#x590D;&#x73B0;&#x3002;
+- &#x6DFB;&#x52A0;&#x6216;&#x66F4;&#x65B0;&#x56DE;&#x5F52;&#x6D4B;&#x8BD5;&#x3002;
+- &#x8FD0;&#x884C;&#x76F8;&#x5173;&#x6D4B;&#x8BD5;&#x3001;lint&#x3001;typecheck&#x3002;
+- &#x6700;&#x540E; review diff&#xFF0C;&#x6307;&#x51FA;&#x98CE;&#x9669;&#x3002;
+</code></pre>
+<p>&#x4E3A;&#x4EC0;&#x4E48;&#x8FD9;&#x5F88;&#x91CD;&#x8981;&#xFF1A;</p>
+<ul>
+<li><code>Goal</code> &#x63A7;&#x5236;&#x65B9;&#x5411;&#x3002;</li>
+<li><code>Context</code> &#x51CF;&#x5C11; agent &#x4E71;&#x627E;&#x6587;&#x4EF6;&#x3002;</li>
+<li><code>Constraints</code> &#x9632;&#x6B62;&#x8FC7;&#x5EA6;&#x91CD;&#x6784;&#x6216;&#x7834;&#x574F;&#x67B6;&#x6784;&#x3002;</li>
+<li><code>Done when</code> &#x7ED9; agent &#x4E00;&#x4E2A;&#x53EF;&#x9A8C;&#x8BC1;&#x7684;&#x505C;&#x6B62;&#x6761;&#x4EF6;&#x3002;</li>
+</ul>
+<h1 id="&#x1F31F;codex-&#x5982;&#x4F55;&#x4F7F;&#x7528;&#x4E0A;&#x4E0B;&#x6587;"><a name="&#x1F31F;codex-&#x5982;&#x4F55;&#x4F7F;&#x7528;&#x4E0A;&#x4E0B;&#x6587;" class="anchor-navigation-ex-anchor" href="#&#x1F31F;codex-&#x5982;&#x4F55;&#x4F7F;&#x7528;&#x4E0A;&#x4E0B;&#x6587;"><i class="fa fa-link" aria-hidden="true"></i></a>4. &#x1F31F;Codex &#x5982;&#x4F55;&#x4F7F;&#x7528;&#x4E0A;&#x4E0B;&#x6587;</h1>
+<p>Codex &#x7684;&#x4E0A;&#x4E0B;&#x6587;&#x6765;&#x81EA;&#x51E0;&#x4E2A;&#x6765;&#x6E90;&#xFF1A;</p>
+<ul>
+<li>&#x4F60;&#x7684; prompt&#x3002;</li>
+<li>&#x4F60;&#x663E;&#x5F0F;&#x63D0;&#x5230;&#x7684;&#x6587;&#x4EF6;&#x3001;&#x76EE;&#x5F55;&#x3001;&#x65E5;&#x5FD7;&#x3001;&#x622A;&#x56FE;&#x6216;&#x9519;&#x8BEF;&#x4FE1;&#x606F;&#x3002;</li>
+<li>IDE &#x4E2D;&#x6253;&#x5F00;&#x7684;&#x6587;&#x4EF6;&#x6216;&#x9009;&#x4E2D;&#x7684;&#x4EE3;&#x7801;&#x3002;</li>
+<li>&#x5B83;&#x81EA;&#x5DF1;&#x901A;&#x8FC7;&#x5DE5;&#x5177;&#x8BFB;&#x53D6;&#x5230;&#x7684;&#x6587;&#x4EF6;&#x5185;&#x5BB9;&#x3002;</li>
+<li>&#x5B83;&#x8FD0;&#x884C;&#x547D;&#x4EE4;&#x5F97;&#x5230;&#x7684;&#x8F93;&#x51FA;&#x3002;</li>
+<li>&#x5F53;&#x524D; thread &#x91CC;&#x5DF2;&#x7ECF;&#x53D1;&#x751F;&#x8FC7;&#x7684;&#x5BF9;&#x8BDD;&#x3001;&#x8BA1;&#x5212;&#x3001;&#x5DE5;&#x5177;&#x8C03;&#x7528;&#x548C;&#x7ED3;&#x679C;&#x3002;</li>
+<li><code>AGENTS.md</code> &#x7B49;&#x6301;&#x4E45;&#x9879;&#x76EE;&#x6307;&#x5BFC;&#x3002;</li>
+<li>MCP&#x3001;Skills&#x3001;&#x6D4F;&#x89C8;&#x5668;&#x3001;GitHub&#x3001;Figma&#x3001;Sentry &#x7B49;&#x5916;&#x90E8;&#x5DE5;&#x5177;&#x3002;</li>
+</ul>
+<p>&#x4E00;&#x4E2A;&#x91CD;&#x8981;&#x9650;&#x5236;&#x662F;&#xFF1A;&#x6240;&#x6709;&#x4E0A;&#x4E0B;&#x6587;&#x90FD;&#x8981;&#x653E;&#x8FDB;&#x6A21;&#x578B;&#x7684;&#x4E0A;&#x4E0B;&#x6587;&#x7A97;&#x53E3;&#x3002;&#x957F;&#x4EFB;&#x52A1;&#x4E2D;&#xFF0C;Codex &#x53EF;&#x80FD;&#x4F1A;&#x538B;&#x7F29;&#x4E0A;&#x4E0B;&#x6587;&#xFF0C;&#x628A;&#x91CD;&#x8981;&#x4FE1;&#x606F;&#x6458;&#x8981;&#x4FDD;&#x7559;&#x4E0B;&#x6765;&#xFF0C;&#x4E22;&#x5F03;&#x8F83;&#x4E0D;&#x91CD;&#x8981;&#x7684;&#x7EC6;&#x8282;&#x3002;</p>
+<p>&#x4F60;&#x7684;&#x5B9E;&#x8DF5;&#x539F;&#x5219;&#xFF1A;</p>
+<ul>
+<li>&#x4E0D;&#x8981;&#x53EA;&#x8BF4;&#x201C;&#x4FEE;&#x4E00;&#x4E0B;&#x8FD9;&#x4E2A; bug&#x201D;&#xFF0C;&#x8981;&#x7ED9;&#x590D;&#x73B0;&#x6B65;&#x9AA4;&#x3002;</li>
+<li>&#x4E0D;&#x8981;&#x53EA;&#x8BF4;&#x201C;&#x4F18;&#x5316;&#x8FD9;&#x4E2A;&#x9875;&#x9762;&#x201D;&#xFF0C;&#x8981;&#x7ED9;&#x76EE;&#x6807;&#x6307;&#x6807;&#x6216;&#x622A;&#x56FE;&#x3002;</li>
+<li>&#x4E0D;&#x8981;&#x53EA;&#x8BF4;&#x201C;&#x5199;&#x6D4B;&#x8BD5;&#x201D;&#xFF0C;&#x8981;&#x6307;&#x51FA;&#x6D4B;&#x8BD5;&#x8303;&#x56F4;&#x548C;&#x8FB9;&#x754C;&#x573A;&#x666F;&#x3002;</li>
+<li>&#x5982;&#x679C;&#x9879;&#x76EE;&#x5927;&#xFF0C;&#x8981;&#x544A;&#x8BC9;&#x5B83;&#x5148;&#x8BFB;&#x54EA;&#x4E9B;&#x76EE;&#x5F55;&#x6216;&#x6587;&#x4EF6;&#x3002;</li>
+</ul>
+<h1 id="thread&#xFF1A;&#x4E00;&#x6B21;&#x4EFB;&#x52A1;&#x7684;&#x5DE5;&#x4F5C;&#x73B0;&#x573A;"><a name="thread&#xFF1A;&#x4E00;&#x6B21;&#x4EFB;&#x52A1;&#x7684;&#x5DE5;&#x4F5C;&#x73B0;&#x573A;" class="anchor-navigation-ex-anchor" href="#thread&#xFF1A;&#x4E00;&#x6B21;&#x4EFB;&#x52A1;&#x7684;&#x5DE5;&#x4F5C;&#x73B0;&#x573A;"><i class="fa fa-link" aria-hidden="true"></i></a>5. Thread&#xFF1A;&#x4E00;&#x6B21;&#x4EFB;&#x52A1;&#x7684;&#x5DE5;&#x4F5C;&#x73B0;&#x573A;</h1>
+<p>Codex &#x7684; thread &#x53EF;&#x4EE5;&#x7406;&#x89E3;&#x6210;&#x4E00;&#x6B21;&#x8FDE;&#x7EED;&#x5DE5;&#x4F5C;&#x4F1A;&#x8BDD;&#x3002;&#x4E00;&#x4E2A; thread &#x91CC;&#x53EF;&#x4EE5;&#x6709;&#x591A;&#x4E2A; prompt&#xFF0C;&#x4E5F;&#x4F1A;&#x5305;&#x542B;&#x6A21;&#x578B;&#x8F93;&#x51FA;&#x3001;&#x5DE5;&#x5177;&#x8C03;&#x7528;&#x3001;&#x6587;&#x4EF6;&#x4FEE;&#x6539;&#x3001;&#x547D;&#x4EE4;&#x7ED3;&#x679C;&#x548C;&#x4F60;&#x7684;&#x540E;&#x7EED;&#x53CD;&#x9988;&#x3002;</p>
+<p>&#x4F8B;&#x5B50;&#xFF1A;</p>
+<pre><code class="lang-text">&#x7B2C; 1 &#x6761; prompt&#xFF1A;&#x5B9E;&#x73B0;&#x7528;&#x6237;&#x8BBE;&#x7F6E;&#x4FDD;&#x5B58;&#x529F;&#x80FD;&#x3002;
+&#x7B2C; 2 &#x6761; prompt&#xFF1A;&#x8865;&#x5145;&#x5931;&#x8D25;&#x8DEF;&#x5F84;&#x6D4B;&#x8BD5;&#x3002;
+&#x7B2C; 3 &#x6761; prompt&#xFF1A;review &#x5F53;&#x524D; diff&#xFF0C;&#x91CD;&#x70B9;&#x770B;&#x6743;&#x9650;&#x548C; API &#x517C;&#x5BB9;&#x6027;&#x3002;
+&#x7B2C; 4 &#x6761; prompt&#xFF1A;&#x6839;&#x636E; review &#x4FEE;&#x6539;&#x3002;
+</code></pre>
+<p>Codex &#x652F;&#x6301;&#x591A;&#x4E2A; thread &#x5E76;&#x884C;&#x5DE5;&#x4F5C;&#xFF0C;&#x4F46;&#x8981;&#x6CE8;&#x610F;&#xFF1A;&#x4E0D;&#x8981;&#x8BA9;&#x4E24;&#x4E2A; thread &#x540C;&#x65F6;&#x4FEE;&#x6539;&#x540C;&#x4E00;&#x6279;&#x6587;&#x4EF6;&#xFF0C;&#x5426;&#x5219;&#x5BB9;&#x6613;&#x4EA7;&#x751F;&#x51B2;&#x7A81;&#x3002;</p>
+<p>&#x672C;&#x5730; thread &#x548C;&#x4E91;&#x7AEF; thread &#x7684;&#x533A;&#x522B;&#xFF1A;</p>
+<ul>
+<li>&#x672C;&#x5730; thread&#xFF1A;&#x8FD0;&#x884C;&#x5728;&#x4F60;&#x7684;&#x673A;&#x5668;&#x4E0A;&#xFF0C;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x8BFB;&#x5199;&#x672C;&#x5730;&#x5DE5;&#x4F5C;&#x533A;&#x3001;&#x8FD0;&#x884C;&#x672C;&#x5730;&#x547D;&#x4EE4;&#xFF0C;&#x9002;&#x5408;&#x5373;&#x65F6;&#x5F00;&#x53D1;&#x548C;&#x8C03;&#x8BD5;&#x3002;</li>
+<li>&#x4E91;&#x7AEF; thread&#xFF1A;&#x8FD0;&#x884C;&#x5728;&#x9694;&#x79BB;&#x73AF;&#x5883;&#x4E2D;&#xFF0C;&#x9002;&#x5408;&#x5E76;&#x884C;&#x59D4;&#x6D3E;&#x4EFB;&#x52A1;&#x3001;&#x4ECE;&#x5176;&#x4ED6;&#x8BBE;&#x5907;&#x542F;&#x52A8;&#x4EFB;&#x52A1;&#x3001;&#x5904;&#x7406; GitHub &#x4E0A;&#x7684;&#x5206;&#x652F;&#x6216; PR&#x3002;</li>
+</ul>
+<h1 id="plan-mode&#xFF1A;&#x590D;&#x6742;&#x4EFB;&#x52A1;&#x5148;&#x8BA1;&#x5212;"><a name="plan-mode&#xFF1A;&#x590D;&#x6742;&#x4EFB;&#x52A1;&#x5148;&#x8BA1;&#x5212;" class="anchor-navigation-ex-anchor" href="#plan-mode&#xFF1A;&#x590D;&#x6742;&#x4EFB;&#x52A1;&#x5148;&#x8BA1;&#x5212;"><i class="fa fa-link" aria-hidden="true"></i></a>6. Plan mode&#xFF1A;&#x590D;&#x6742;&#x4EFB;&#x52A1;&#x5148;&#x8BA1;&#x5212;</h1>
+<p>&#x5BF9;&#x4E8E;&#x590D;&#x6742;&#x3001;&#x6A21;&#x7CCA;&#x3001;&#x9AD8;&#x98CE;&#x9669;&#x4EFB;&#x52A1;&#xFF0C;Codex &#x5B98;&#x65B9;&#x5EFA;&#x8BAE;&#x5148;&#x8BA1;&#x5212;&#x518D;&#x5B9E;&#x73B0;&#x3002;</p>
+<p>&#x9002;&#x5408;&#x5148;&#x8BA1;&#x5212;&#x7684;&#x573A;&#x666F;&#xFF1A;</p>
+<ul>
+<li>&#x9700;&#x6C42;&#x8FD8;&#x4E0D;&#x6E05;&#x695A;&#x3002;</li>
+<li>&#x6D89;&#x53CA;&#x591A;&#x4E2A;&#x6A21;&#x5757;&#x3002;</li>
+<li>&#x6D89;&#x53CA;&#x6570;&#x636E;&#x5E93;&#x8FC1;&#x79FB;&#x3002;</li>
+<li>&#x6D89;&#x53CA;&#x524D;&#x540E;&#x7AEF;&#x8054;&#x52A8;&#x3002;</li>
+<li>&#x53EF;&#x80FD;&#x5F71;&#x54CD;&#x7528;&#x6237;&#x6743;&#x9650;&#x3001;&#x5B89;&#x5168;&#x6216;&#x652F;&#x4ED8;&#x3002;</li>
+<li>&#x4F60;&#x4E0D;&#x786E;&#x5B9A;&#x5B9E;&#x73B0;&#x8DEF;&#x5F84;&#x3002;</li>
+</ul>
+<p>&#x4F60;&#x53EF;&#x4EE5;&#x8FD9;&#x6837;&#x8BF4;&#xFF1A;</p>
+<pre><code class="lang-text">&#x5148;&#x4E0D;&#x8981;&#x6539;&#x4EE3;&#x7801;&#x3002;&#x8BF7;&#x5148;&#x9605;&#x8BFB;&#x76F8;&#x5173;&#x6587;&#x4EF6;&#xFF0C;&#x63D0;&#x51FA;&#x5B9E;&#x73B0;&#x8BA1;&#x5212;&#x3001;&#x98CE;&#x9669;&#x70B9;&#x3001;&#x9700;&#x8981;&#x786E;&#x8BA4;&#x7684;&#x95EE;&#x9898;&#x548C;&#x9A8C;&#x8BC1;&#x65B9;&#x5F0F;&#x3002;
+</code></pre>
+<p>&#x6216;&#x8005;&#xFF1A;</p>
+<pre><code class="lang-text">&#x8BF7;&#x5148; interview &#x6211;&#xFF0C;&#x628A;&#x8FD9;&#x4E2A;&#x6A21;&#x7CCA;&#x9700;&#x6C42;&#x53D8;&#x6210;&#x4E00;&#x4E2A;&#x53EF;&#x6267;&#x884C;&#x4EFB;&#x52A1;&#xFF0C;&#x5305;&#x62EC; Goal&#x3001;Context&#x3001;Constraints&#x3001;Done when&#x3002;
+</code></pre>
+<p>&#x8BA1;&#x5212;&#x9636;&#x6BB5;&#x7684;&#x4EF7;&#x503C;&#x4E0D;&#x662F;&#x5F62;&#x5F0F;&#x4E3B;&#x4E49;&#xFF0C;&#x800C;&#x662F;&#x8BA9; agent &#x5728;&#x52A8;&#x624B;&#x524D;&#x5148;&#x5BF9;&#x9F50;&#x4EFB;&#x52A1;&#x8FB9;&#x754C;&#x3002;</p>
+<h1 id="codex-&#x4E0D;&#x662F;&#x53EA;&#x5199;&#x4EE3;&#x7801;&#xFF0C;&#x8FD8;&#x8981;&#x9A8C;&#x8BC1;"><a name="codex-&#x4E0D;&#x662F;&#x53EA;&#x5199;&#x4EE3;&#x7801;&#xFF0C;&#x8FD8;&#x8981;&#x9A8C;&#x8BC1;" class="anchor-navigation-ex-anchor" href="#codex-&#x4E0D;&#x662F;&#x53EA;&#x5199;&#x4EE3;&#x7801;&#xFF0C;&#x8FD8;&#x8981;&#x9A8C;&#x8BC1;"><i class="fa fa-link" aria-hidden="true"></i></a>7. Codex &#x4E0D;&#x662F;&#x53EA;&#x5199;&#x4EE3;&#x7801;&#xFF0C;&#x8FD8;&#x8981;&#x9A8C;&#x8BC1;</h1>
+<p>Codex &#x7684;&#x53EF;&#x9760;&#x6027;&#x5F88;&#x5927;&#x7A0B;&#x5EA6;&#x6765;&#x81EA;&#x201C;&#x80FD;&#x9A8C;&#x8BC1;&#x201D;&#x3002;&#x5B98;&#x65B9;&#x6587;&#x6863;&#x5F3A;&#x8C03;&#xFF0C;&#x4E0D;&#x8981;&#x53EA;&#x8BA9; Codex &#x505A;&#x4FEE;&#x6539;&#xFF0C;&#x8FD8;&#x8981;&#x8BA9;&#x5B83;&#x8FD0;&#x884C;&#x76F8;&#x5173;&#x68C0;&#x67E5;&#x3002;</p>
+<p>&#x5E38;&#x89C1;&#x9A8C;&#x8BC1;&#x65B9;&#x5F0F;&#xFF1A;</p>
+<ul>
+<li>&#x5355;&#x5143;&#x6D4B;&#x8BD5;</li>
+<li>&#x96C6;&#x6210;&#x6D4B;&#x8BD5;</li>
+<li>E2E &#x6D4B;&#x8BD5;</li>
+<li>lint</li>
+<li>format</li>
+<li>typecheck</li>
+<li>&#x6784;&#x5EFA;</li>
+<li>&#x672C;&#x5730;&#x590D;&#x73B0; bug</li>
+<li>&#x6D4F;&#x89C8;&#x5668;&#x622A;&#x56FE;&#x548C; console &#x68C0;&#x67E5;</li>
+<li>diff review</li>
+</ul>
+<p>&#x5168;&#x6808;&#x5DE5;&#x7A0B;&#x5E08;&#x7684;&#x5B8C;&#x6210;&#x6807;&#x51C6;&#x5E94;&#x8BE5;&#x5199;&#x5F97;&#x5177;&#x4F53;&#xFF1A;</p>
+<pre><code class="lang-text">Done when:
+- &#x540E;&#x7AEF;&#x65B0;&#x589E;&#x63A5;&#x53E3;&#x6709;&#x6210;&#x529F;&#x548C;&#x5931;&#x8D25;&#x8DEF;&#x5F84;&#x6D4B;&#x8BD5;&#x3002;
+- &#x524D;&#x7AEF;&#x9875;&#x9762;&#x5305;&#x542B; loading&#x3001;error&#x3001;empty state&#x3002;
+- API &#x7C7B;&#x578B;&#x540C;&#x6B65;&#x5B8C;&#x6210;&#x3002;
+- npm run lint&#x3001;npm run typecheck&#x3001;npm test &#x901A;&#x8FC7;&#x3002;
+- &#x6700;&#x540E; review diff&#xFF0C;&#x5217;&#x51FA;&#x98CE;&#x9669;&#x548C;&#x672A;&#x8986;&#x76D6;&#x70B9;&#x3002;
+</code></pre>
+<h1 id="codex-&#x7684;&#x6743;&#x9650;&#x6A21;&#x578B;&#xFF1A;sandbox-&#x548C;-approval"><a name="codex-&#x7684;&#x6743;&#x9650;&#x6A21;&#x578B;&#xFF1A;sandbox-&#x548C;-approval" class="anchor-navigation-ex-anchor" href="#codex-&#x7684;&#x6743;&#x9650;&#x6A21;&#x578B;&#xFF1A;sandbox-&#x548C;-approval"><i class="fa fa-link" aria-hidden="true"></i></a>8. Codex &#x7684;&#x6743;&#x9650;&#x6A21;&#x578B;&#xFF1A;Sandbox &#x548C; Approval</h1>
+<p>Codex &#x578B; agent &#x7684;&#x4E00;&#x4E2A;&#x6838;&#x5FC3;&#x7279;&#x70B9;&#x662F;&#xFF1A;&#x5B83;&#x53EF;&#x4EE5;&#x884C;&#x52A8;&#xFF0C;&#x6240;&#x4EE5;&#x5FC5;&#x987B;&#x6709;&#x6743;&#x9650;&#x8FB9;&#x754C;&#x3002;</p>
+<p>&#x5B98;&#x65B9;&#x6587;&#x6863;&#x91CC;&#xFF0C;Codex &#x7684;&#x5B89;&#x5168;&#x63A7;&#x5236;&#x4E3B;&#x8981;&#x6765;&#x81EA;&#x4E24;&#x5C42;&#xFF1A;</p>
+<ul>
+<li>Sandbox mode&#xFF1A;&#x6280;&#x672F;&#x4E0A;&#x5141;&#x8BB8; agent &#x505A;&#x4EC0;&#x4E48;&#xFF0C;&#x6BD4;&#x5982;&#x80FD;&#x8BFB;&#x54EA;&#x91CC;&#x3001;&#x5199;&#x54EA;&#x91CC;&#x3001;&#x662F;&#x5426;&#x80FD;&#x8054;&#x7F51;&#x3002;</li>
+<li>Approval policy&#xFF1A;&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x5FC5;&#x987B;&#x5148;&#x95EE;&#x4F60;&#xFF0C;&#x6BD4;&#x5982;&#x8D8A;&#x8FC7; sandbox&#x3001;&#x8054;&#x7F51;&#x3001;&#x8FD0;&#x884C;&#x9AD8;&#x98CE;&#x9669;&#x547D;&#x4EE4;&#x3001;&#x8C03;&#x7528;&#x6709;&#x526F;&#x4F5C;&#x7528;&#x7684;&#x5DE5;&#x5177;&#x3002;</li>
+</ul>
+<p>&#x5E38;&#x89C1;&#x6A21;&#x5F0F;&#xFF1A;</p>
+<ul>
+<li><code>read-only</code>&#xFF1A;&#x53EA;&#x8BFB;&#xFF0C;&#x9002;&#x5408;&#x8C03;&#x7814;&#x3001;&#x89E3;&#x91CA;&#x4EE3;&#x7801;&#x3001;&#x505A;&#x8BA1;&#x5212;&#x3002;</li>
+<li><code>workspace-write</code>&#xFF1A;&#x53EF;&#x4EE5;&#x8BFB;&#x5199;&#x5F53;&#x524D;&#x5DE5;&#x4F5C;&#x533A;&#xFF0C;&#x9002;&#x5408;&#x65E5;&#x5E38;&#x5F00;&#x53D1;&#x3002;</li>
+<li><code>danger-full-access</code>&#xFF1A;&#x9AD8;&#x6743;&#x9650;&#x6A21;&#x5F0F;&#xFF0C;&#x98CE;&#x9669;&#x5927;&#xFF0C;&#x4E0D;&#x5EFA;&#x8BAE;&#x4F5C;&#x4E3A;&#x9ED8;&#x8BA4;&#x3002;</li>
+</ul>
+<p>&#x9ED8;&#x8BA4;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x672C;&#x5730; Codex &#x901A;&#x5E38;&#x4F1A;&#x5173;&#x95ED;&#x547D;&#x4EE4;&#x7684;&#x7F51;&#x7EDC;&#x8BBF;&#x95EE;&#xFF0C;&#x5E76;&#x628A;&#x5199;&#x6743;&#x9650;&#x9650;&#x5236;&#x5728;&#x5F53;&#x524D; workspace&#x3002;&#x9700;&#x8981;&#x7F16;&#x8F91; workspace &#x5916;&#x6587;&#x4EF6;&#x3001;&#x8054;&#x7F51;&#x3001;&#x6267;&#x884C;&#x9AD8;&#x98CE;&#x9669;&#x64CD;&#x4F5C;&#x65F6;&#xFF0C;Codex &#x4F1A;&#x8BF7;&#x6C42;&#x6279;&#x51C6;&#x3002;</p>
+<p>&#x5B9E;&#x8DF5;&#x5EFA;&#x8BAE;&#xFF1A;</p>
+<ul>
+<li>&#x65B0;&#x9879;&#x76EE;&#x6216;&#x964C;&#x751F;&#x9879;&#x76EE;&#x5148;&#x7528;&#x53EA;&#x8BFB;&#x6216;&#x9ED8;&#x8BA4;&#x6743;&#x9650;&#x3002;</li>
+<li>&#x65E5;&#x5E38;&#x5F00;&#x53D1;&#x7528; workspace-write&#x3002;</li>
+<li>&#x4E0D;&#x8981;&#x968F;&#x4FBF;&#x5F00;&#x542F;&#x5168;&#x6743;&#x9650;&#x3002;</li>
+<li>&#x6D89;&#x53CA;&#x751F;&#x4EA7;&#x6570;&#x636E;&#x3001;&#x5BC6;&#x94A5;&#x3001;&#x90E8;&#x7F72;&#x3001;&#x6570;&#x636E;&#x5E93;&#x5220;&#x9664;&#x3001;&#x6743;&#x9650;&#x53D8;&#x66F4;&#x65F6;&#xFF0C;&#x5FC5;&#x987B;&#x8BA9; agent &#x5148;&#x89E3;&#x91CA;&#x8BA1;&#x5212;&#x518D;&#x6267;&#x884C;&#x3002;</li>
+<li>&#x5BF9;&#x6765;&#x81EA;&#x7F51;&#x9875;&#x3001;issue&#x3001;&#x5916;&#x90E8;&#x6587;&#x6863;&#x7684;&#x5185;&#x5BB9;&#x4FDD;&#x6301;&#x8B66;&#x60D5;&#xFF0C;&#x56E0;&#x4E3A; prompt injection &#x53EF;&#x80FD;&#x8BA9; agent &#x63A5;&#x6536;&#x5230;&#x6076;&#x610F;&#x6307;&#x4EE4;&#x3002;</li>
+</ul>
+<h1 id="agentsmd&#xFF1A;&#x8BA9;&#x4E0A;&#x4E0B;&#x6587;&#x957F;&#x671F;&#x751F;&#x6548;"><a name="agentsmd&#xFF1A;&#x8BA9;&#x4E0A;&#x4E0B;&#x6587;&#x957F;&#x671F;&#x751F;&#x6548;" class="anchor-navigation-ex-anchor" href="#agentsmd&#xFF1A;&#x8BA9;&#x4E0A;&#x4E0B;&#x6587;&#x957F;&#x671F;&#x751F;&#x6548;"><i class="fa fa-link" aria-hidden="true"></i></a>9. AGENTS.md&#xFF1A;&#x8BA9;&#x4E0A;&#x4E0B;&#x6587;&#x957F;&#x671F;&#x751F;&#x6548;</h1>
+<p><code>AGENTS.md</code> &#x662F;&#x7ED9; agent &#x770B;&#x7684;&#x9879;&#x76EE;&#x8BF4;&#x660E;&#x4E66;&#x3002;&#x5B83;&#x4F1A;&#x5728; Codex &#x5F00;&#x59CB;&#x5DE5;&#x4F5C;&#x524D;&#x52A0;&#x8F7D;&#xFF0C;&#x5E2E;&#x52A9; agent &#x7406;&#x89E3;&#x9879;&#x76EE;&#x7EA6;&#x5B9A;&#x3002;</p>
+<p>&#x4E00;&#x4E2A;&#x597D;&#x7684; <code>AGENTS.md</code> &#x53EF;&#x4EE5;&#x5305;&#x542B;&#xFF1A;</p>
+<ul>
+<li>repo &#x7ED3;&#x6784;&#x548C;&#x91CD;&#x8981;&#x76EE;&#x5F55;&#x3002;</li>
+<li>&#x5982;&#x4F55;&#x5B89;&#x88C5;&#x3001;&#x542F;&#x52A8;&#x3001;&#x6784;&#x5EFA;&#x9879;&#x76EE;&#x3002;</li>
+<li>&#x6D4B;&#x8BD5;&#x3001;lint&#x3001;typecheck &#x547D;&#x4EE4;&#x3002;</li>
+<li>&#x5DE5;&#x7A0B;&#x89C4;&#x8303;&#x548C; PR &#x671F;&#x671B;&#x3002;</li>
+<li>&#x7981;&#x6B62;&#x4E8B;&#x9879;&#x548C;&#x5B89;&#x5168;&#x7EA6;&#x675F;&#x3002;</li>
+<li>&#x4EC0;&#x4E48;&#x53EB;&#x5B8C;&#x6210;&#xFF0C;&#x4EE5;&#x53CA;&#x5982;&#x4F55;&#x9A8C;&#x8BC1;&#x3002;</li>
+</ul>
+<p>&#x5BF9;&#x5168;&#x6808;&#x9879;&#x76EE;&#xFF0C;&#x5EFA;&#x8BAE;&#x5305;&#x542B;&#xFF1A;</p>
+<pre><code class="lang-md"><span class="hljs-section"># AGENTS.md</span>
+
+<span class="hljs-section">## Project layout</span>
+
+<span class="hljs-bullet">- </span><span class="hljs-code">`apps/web`</span>: frontend app
+<span class="hljs-bullet">- </span><span class="hljs-code">`apps/api`</span>: backend service
+<span class="hljs-bullet">- </span><span class="hljs-code">`packages/shared`</span>: shared types and utilities
+
+<span class="hljs-section">## Commands</span>
+
+<span class="hljs-bullet">- </span><span class="hljs-code">`npm run lint`</span>
+<span class="hljs-bullet">- </span><span class="hljs-code">`npm run typecheck`</span>
+<span class="hljs-bullet">- </span><span class="hljs-code">`npm test`</span>
+
+<span class="hljs-section">## API rules</span>
+
+<span class="hljs-bullet">- </span>Do not change public API response shapes without updating frontend types.
+<span class="hljs-bullet">- </span>Backend endpoints must validate input and enforce authorization.
+
+<span class="hljs-section">## Frontend rules</span>
+
+<span class="hljs-bullet">- </span>New pages must include loading, error, and empty states.
+<span class="hljs-bullet">- </span>Check mobile layout before finalizing UI changes.
+
+<span class="hljs-section">## Done means</span>
+
+<span class="hljs-bullet">- </span>Relevant tests pass.
+<span class="hljs-bullet">- </span>Typecheck passes.
+<span class="hljs-bullet">- </span>Diff has been reviewed for regressions and security issues.
+</code></pre>
+<p><code>AGENTS.md</code> &#x7684;&#x6700;&#x4F73;&#x4F7F;&#x7528;&#x65B9;&#x5F0F;&#xFF1A;</p>
+<ul>
+<li>&#x5F00;&#x59CB;&#x65F6;&#x77ED;&#x4E00;&#x70B9;&#xFF0C;&#x53EA;&#x5199;&#x771F;&#x6B63;&#x91CD;&#x8981;&#x7684;&#x89C4;&#x5219;&#x3002;</li>
+<li>&#x5F53; agent &#x72AF;&#x540C;&#x6837;&#x9519;&#x8BEF;&#x4E24;&#x6B21;&#xFF0C;&#x628A;&#x89C4;&#x5219;&#x8865;&#x8FDB;&#x53BB;&#x3002;</li>
+<li>&#x9879;&#x76EE;&#x6839;&#x76EE;&#x5F55;&#x5199;&#x901A;&#x7528;&#x89C4;&#x5219;&#xFF0C;&#x5B50;&#x76EE;&#x5F55;&#x5199;&#x5C40;&#x90E8;&#x89C4;&#x5219;&#x3002;</li>
+<li>&#x628A;&#x5B83;&#x5F53;&#x6210;&#x56E2;&#x961F;&#x534F;&#x4F5C;&#x534F;&#x8BAE;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x957F;&#x7BC7;&#x8BF4;&#x660E;&#x4E66;&#x3002;</li>
+</ul>
+<h1 id="skills&#x3001;mcp-&#x548C;-subagents-&#x5728;&#x5DE5;&#x4F5C;&#x65B9;&#x5F0F;&#x4E2D;&#x7684;&#x4F4D;&#x7F6E;"><a name="skills&#x3001;mcp-&#x548C;-subagents-&#x5728;&#x5DE5;&#x4F5C;&#x65B9;&#x5F0F;&#x4E2D;&#x7684;&#x4F4D;&#x7F6E;" class="anchor-navigation-ex-anchor" href="#skills&#x3001;mcp-&#x548C;-subagents-&#x5728;&#x5DE5;&#x4F5C;&#x65B9;&#x5F0F;&#x4E2D;&#x7684;&#x4F4D;&#x7F6E;"><i class="fa fa-link" aria-hidden="true"></i></a>10. Skills&#x3001;MCP &#x548C; Subagents &#x5728;&#x5DE5;&#x4F5C;&#x65B9;&#x5F0F;&#x4E2D;&#x7684;&#x4F4D;&#x7F6E;</h1>
+<p>&#x8FD9;&#x4E00;&#x6B65;&#x4E0D;&#x9700;&#x8981;&#x6DF1;&#x5165;&#x5B9E;&#x73B0;&#xFF0C;&#x4F46;&#x8981;&#x5148;&#x77E5;&#x9053;&#x5B83;&#x4EEC;&#x89E3;&#x51B3;&#x4EC0;&#x4E48;&#x95EE;&#x9898;&#x3002;</p>
+<h2 id="skills"><a name="skills" class="anchor-navigation-ex-anchor" href="#skills"><i class="fa fa-link" aria-hidden="true"></i></a>10.1. Skills</h2>
+<p>Skills &#x662F;&#x53EF;&#x590D;&#x7528;&#x5DE5;&#x4F5C;&#x6D41;&#x3002;&#x9002;&#x5408;&#x628A;&#x91CD;&#x590D;&#x4EFB;&#x52A1;&#x5199;&#x6210;&#x56FA;&#x5B9A;&#x6D41;&#x7A0B;&#xFF0C;&#x6BD4;&#x5982;&#xFF1A;</p>
+<ul>
+<li>PR review</li>
+<li>CI &#x5931;&#x8D25;&#x6392;&#x67E5;</li>
+<li>&#x751F;&#x6210; release note</li>
+<li>&#x6839;&#x636E; issue &#x751F;&#x6210;&#x5B9E;&#x73B0;&#x8BA1;&#x5212;</li>
+<li>&#x68C0;&#x67E5;&#x524D;&#x540E;&#x7AEF; API &#x662F;&#x5426;&#x540C;&#x6B65;</li>
+</ul>
+<p>Codex &#x4F1A;&#x5148;&#x770B;&#x5230; skill &#x7684;&#x540D;&#x79F0;&#x548C;&#x63CF;&#x8FF0;&#xFF0C;&#x53EA;&#x6709;&#x9700;&#x8981;&#x65F6;&#x624D;&#x52A0;&#x8F7D;&#x5B8C;&#x6574;&#x8BF4;&#x660E;&#x3002;&#x8FD9;&#x53EB; progressive disclosure&#xFF0C;&#x53EF;&#x4EE5;&#x907F;&#x514D;&#x4E00;&#x5F00;&#x59CB;&#x585E;&#x592A;&#x591A;&#x4E0A;&#x4E0B;&#x6587;&#x3002;</p>
+<h2 id="mcp"><a name="mcp" class="anchor-navigation-ex-anchor" href="#mcp"><i class="fa fa-link" aria-hidden="true"></i></a>10.2. MCP</h2>
+<p>MCP &#x662F;&#x8FDE;&#x63A5;&#x5916;&#x90E8;&#x5DE5;&#x5177;&#x548C;&#x4E0A;&#x4E0B;&#x6587;&#x7684;&#x6807;&#x51C6;&#x65B9;&#x5F0F;&#x3002;&#x5B83;&#x53EF;&#x4EE5;&#x8BA9; Codex &#x8BBF;&#x95EE;&#xFF1A;</p>
+<ul>
+<li>GitHub issue / PR / actions</li>
+<li>Figma &#x8BBE;&#x8BA1;&#x7A3F;</li>
+<li>&#x6D4F;&#x89C8;&#x5668;&#x548C;&#x9875;&#x9762;&#x622A;&#x56FE;</li>
+<li>Sentry &#x65E5;&#x5FD7;</li>
+<li>&#x5185;&#x90E8;&#x6587;&#x6863;</li>
+<li>&#x6570;&#x636E;&#x5E93;&#x6216;&#x4E1A;&#x52A1; API</li>
+</ul>
+<p>&#x4F60;&#x53EF;&#x4EE5;&#x7406;&#x89E3;&#x6210;&#xFF1A;</p>
+<pre><code class="lang-text">Codex &#x662F; host
+MCP client &#x662F; Codex &#x5185;&#x90E8;&#x8FDE;&#x63A5;
+MCP server &#x662F;&#x5916;&#x90E8;&#x5DE5;&#x5177;
+</code></pre>
+<p>MCP server &#x53EF;&#x4EE5;&#x66B4;&#x9732;&#xFF1A;</p>
+<ul>
+<li>Tools&#xFF1A;&#x53EF;&#x4EE5;&#x6267;&#x884C;&#x52A8;&#x4F5C;&#x3002;</li>
+<li>Resources&#xFF1A;&#x53EF;&#x4EE5;&#x8BFB;&#x53D6;&#x6570;&#x636E;&#x3002;</li>
+<li>Prompts&#xFF1A;&#x53EF;&#x590D;&#x7528;&#x63D0;&#x793A;&#x6A21;&#x677F;&#x3002;</li>
+</ul>
+<h2 id="subagents"><a name="subagents" class="anchor-navigation-ex-anchor" href="#subagents"><i class="fa fa-link" aria-hidden="true"></i></a>10.3. Subagents</h2>
+<p>Subagents &#x662F;&#x628A;&#x4E0D;&#x540C;&#x4EFB;&#x52A1;&#x59D4;&#x6D3E;&#x7ED9;&#x4E0D;&#x540C;&#x89D2;&#x8272;&#x7684; agent&#x3002;&#x6BD4;&#x5982;&#x4E00;&#x4E2A; agent &#x4E13;&#x95E8;&#x8DD1;&#x6D4B;&#x8BD5;&#xFF0C;&#x4E00;&#x4E2A; agent &#x4E13;&#x95E8;&#x67E5;&#x65E5;&#x5FD7;&#xFF0C;&#x4E00;&#x4E2A; agent &#x4E13;&#x95E8;&#x505A;&#x5B89;&#x5168; review&#x3002;</p>
+<p>&#x521D;&#x5B66;&#x9636;&#x6BB5;&#x4E0D;&#x6025;&#x7740;&#x7528; subagents&#x3002;&#x5148;&#x628A;&#x5355;&#x4E2A; Codex thread &#x7528;&#x597D;&#xFF0C;&#x518D;&#x8003;&#x8651;&#x591A; agent&#x3002;</p>
+<h1 id="codex-&#x578B;-agent-&#x7684;&#x5178;&#x578B;&#x5168;&#x6808;&#x5DE5;&#x4F5C;&#x6D41;"><a name="codex-&#x578B;-agent-&#x7684;&#x5178;&#x578B;&#x5168;&#x6808;&#x5DE5;&#x4F5C;&#x6D41;" class="anchor-navigation-ex-anchor" href="#codex-&#x578B;-agent-&#x7684;&#x5178;&#x578B;&#x5168;&#x6808;&#x5DE5;&#x4F5C;&#x6D41;"><i class="fa fa-link" aria-hidden="true"></i></a>11. Codex &#x578B; Agent &#x7684;&#x5178;&#x578B;&#x5168;&#x6808;&#x5DE5;&#x4F5C;&#x6D41;</h1>
+<h2 id="&#x8BFB;&#x61C2;&#x4E00;&#x4E2A;&#x6A21;&#x5757;"><a name="&#x8BFB;&#x61C2;&#x4E00;&#x4E2A;&#x6A21;&#x5757;" class="anchor-navigation-ex-anchor" href="#&#x8BFB;&#x61C2;&#x4E00;&#x4E2A;&#x6A21;&#x5757;"><i class="fa fa-link" aria-hidden="true"></i></a>11.1. &#x8BFB;&#x61C2;&#x4E00;&#x4E2A;&#x6A21;&#x5757;</h2>
+<pre><code class="lang-text">Read @apps/api/src/orders and @apps/web/src/orders.
+Explain the order creation flow from frontend submit to backend persistence.
+Include validation, authorization, database writes, and frontend state updates.
+End with a list of files I should inspect before changing this flow.
+</code></pre>
+<h2 id="&#x4FEE;&#x590D;&#x4E00;&#x4E2A;-bug"><a name="&#x4FEE;&#x590D;&#x4E00;&#x4E2A;-bug" class="anchor-navigation-ex-anchor" href="#&#x4FEE;&#x590D;&#x4E00;&#x4E2A;-bug"><i class="fa fa-link" aria-hidden="true"></i></a>11.2. &#x4FEE;&#x590D;&#x4E00;&#x4E2A; bug</h2>
+<pre><code class="lang-text">Bug: &#x7528;&#x6237;&#x4FDD;&#x5B58; profile &#x540E;&#x9875;&#x9762;&#x63D0;&#x793A;&#x6210;&#x529F;&#xFF0C;&#x4F46;&#x5237;&#x65B0;&#x540E;&#x6570;&#x636E;&#x6CA1;&#x6709;&#x53D8;&#x5316;&#x3002;
+
+Repro:
+1. npm run dev
+2. &#x6253;&#x5F00; /profile
+3. &#x4FEE;&#x6539; display name
+4. &#x70B9;&#x51FB; Save
+5. &#x5237;&#x65B0;&#x9875;&#x9762;&#xFF0C;display name &#x6062;&#x590D;&#x65E7;&#x503C;
+
+Constraints:
+- &#x4E0D;&#x6539;&#x53D8; API response shape&#x3002;
+- &#x4FDD;&#x6301;&#x73B0;&#x6709;&#x6743;&#x9650;&#x6821;&#x9A8C;&#x3002;
+- &#x6539;&#x52A8;&#x5C3D;&#x91CF;&#x5C0F;&#x3002;
+
+Done when:
+- &#x672C;&#x5730;&#x590D;&#x73B0;&#x5E76;&#x4FEE;&#x590D;&#x3002;
+- &#x6DFB;&#x52A0;&#x56DE;&#x5F52;&#x6D4B;&#x8BD5;&#x3002;
+- &#x8FD0;&#x884C;&#x76F8;&#x5173;&#x6D4B;&#x8BD5;&#x548C; typecheck&#x3002;
+- review diff&#x3002;
+</code></pre>
+<h2 id="&#x5B9E;&#x73B0;&#x4E00;&#x4E2A;&#x524D;&#x540E;&#x7AEF;&#x529F;&#x80FD;"><a name="&#x5B9E;&#x73B0;&#x4E00;&#x4E2A;&#x524D;&#x540E;&#x7AEF;&#x529F;&#x80FD;" class="anchor-navigation-ex-anchor" href="#&#x5B9E;&#x73B0;&#x4E00;&#x4E2A;&#x524D;&#x540E;&#x7AEF;&#x529F;&#x80FD;"><i class="fa fa-link" aria-hidden="true"></i></a>11.3. &#x5B9E;&#x73B0;&#x4E00;&#x4E2A;&#x524D;&#x540E;&#x7AEF;&#x529F;&#x80FD;</h2>
+<pre><code class="lang-text">Goal: &#x6DFB;&#x52A0;&#x7528;&#x6237;&#x901A;&#x77E5;&#x504F;&#x597D;&#x8BBE;&#x7F6E;&#x3002;
+
+Context:
+- &#x524D;&#x7AEF;&#x8BBE;&#x7F6E;&#x9875;&#x5728; apps/web/src/pages/settings&#x3002;
+- &#x540E;&#x7AEF;&#x7528;&#x6237;&#x8BBE;&#x7F6E; API &#x5728; apps/api/src/settings&#x3002;
+- &#x5171;&#x4EAB;&#x7C7B;&#x578B;&#x5728; packages/shared&#x3002;
+
+Constraints:
+- &#x4E0D;&#x5F15;&#x5165;&#x65B0;&#x4F9D;&#x8D56;&#x3002;
+- API &#x5FC5;&#x987B;&#x505A;&#x8F93;&#x5165;&#x6821;&#x9A8C;&#x548C;&#x6743;&#x9650;&#x6821;&#x9A8C;&#x3002;
+- &#x524D;&#x7AEF;&#x5FC5;&#x987B;&#x5305;&#x542B; loading&#x3001;error&#x3001;empty state&#x3002;
+
+Done when:
+- &#x524D;&#x7AEF;&#x53EF;&#x4FDD;&#x5B58;&#x548C;&#x5C55;&#x793A;&#x901A;&#x77E5;&#x504F;&#x597D;&#x3002;
+- &#x540E;&#x7AEF;&#x63A5;&#x53E3;&#x6709;&#x6D4B;&#x8BD5;&#x3002;
+- &#x524D;&#x7AEF;&#x7C7B;&#x578B;&#x548C;&#x540E;&#x7AEF; schema &#x540C;&#x6B65;&#x3002;
+- lint&#x3001;typecheck&#x3001;test &#x901A;&#x8FC7;&#x3002;
+</code></pre>
+<h2 id="review-&#x5F53;&#x524D;&#x6539;&#x52A8;"><a name="review-&#x5F53;&#x524D;&#x6539;&#x52A8;" class="anchor-navigation-ex-anchor" href="#review-&#x5F53;&#x524D;&#x6539;&#x52A8;"><i class="fa fa-link" aria-hidden="true"></i></a>11.4. Review &#x5F53;&#x524D;&#x6539;&#x52A8;</h2>
+<pre><code class="lang-text">Review the current diff.
+Focus on correctness, regressions, missing tests, frontend/backend API mismatch, authorization, input validation, error handling, and edge cases.
+Report findings first, ordered by severity, with file and line references.
+</code></pre>
+<h1 id="&#x4F60;&#x5E94;&#x8BE5;&#x5F62;&#x6210;&#x7684;&#x5FC3;&#x667A;&#x6A21;&#x578B;"><a name="&#x4F60;&#x5E94;&#x8BE5;&#x5F62;&#x6210;&#x7684;&#x5FC3;&#x667A;&#x6A21;&#x578B;" class="anchor-navigation-ex-anchor" href="#&#x4F60;&#x5E94;&#x8BE5;&#x5F62;&#x6210;&#x7684;&#x5FC3;&#x667A;&#x6A21;&#x578B;"><i class="fa fa-link" aria-hidden="true"></i></a>12. &#x4F60;&#x5E94;&#x8BE5;&#x5F62;&#x6210;&#x7684;&#x5FC3;&#x667A;&#x6A21;&#x578B;</h1>
+<p>Codex &#x578B;&#x901A;&#x7528; agent &#x4E0D;&#x662F;&#x4E00;&#x4E2A;&#x201C;&#x66F4;&#x5F3A;&#x7684;&#x81EA;&#x52A8;&#x8865;&#x5168;&#x201D;&#xFF0C;&#x800C;&#x662F;&#x4E00;&#x4E2A;&#x53D7;&#x4E0A;&#x4E0B;&#x6587;&#x3001;&#x5DE5;&#x5177;&#x3001;&#x6743;&#x9650;&#x548C;&#x9A8C;&#x8BC1;&#x7EA6;&#x675F;&#x7684;&#x5F00;&#x53D1;&#x6267;&#x884C;&#x7CFB;&#x7EDF;&#x3002;</p>
+<p>&#x53EF;&#x4EE5;&#x7528;&#x8FD9;&#x4E2A;&#x6A21;&#x578B;&#x7406;&#x89E3;&#xFF1A;</p>
+<pre><code class="lang-text">&#x8F93;&#x5165;&#x5C42;&#xFF1A;
+  prompt&#x3001;&#x6587;&#x4EF6;&#x3001;&#x65E5;&#x5FD7;&#x3001;&#x622A;&#x56FE;&#x3001;AGENTS.md&#x3001;MCP resources
+
+&#x63A8;&#x7406;&#x5C42;&#xFF1A;
+  &#x7406;&#x89E3;&#x76EE;&#x6807;&#x3001;&#x62C6;&#x4EFB;&#x52A1;&#x3001;&#x5236;&#x5B9A;&#x8BA1;&#x5212;&#x3001;&#x9009;&#x62E9;&#x5DE5;&#x5177;&#x3001;&#x5224;&#x65AD;&#x5B8C;&#x6210;&#x6761;&#x4EF6;
+
+&#x884C;&#x52A8;&#x5C42;&#xFF1A;
+  &#x8BFB;&#x6587;&#x4EF6;&#x3001;&#x641C;&#x7D22;&#x4EE3;&#x7801;&#x3001;&#x7F16;&#x8F91;&#x6587;&#x4EF6;&#x3001;&#x8FD0;&#x884C;&#x547D;&#x4EE4;&#x3001;&#x6253;&#x5F00;&#x6D4F;&#x89C8;&#x5668;&#x3001;&#x8C03;&#x7528; MCP tools
+
+&#x53CD;&#x9988;&#x5C42;&#xFF1A;
+  &#x6D4B;&#x8BD5;&#x7ED3;&#x679C;&#x3001;&#x547D;&#x4EE4;&#x8F93;&#x51FA;&#x3001;diff&#x3001;&#x622A;&#x56FE;&#x3001;&#x9519;&#x8BEF;&#x65E5;&#x5FD7;&#x3001;&#x7528;&#x6237;&#x53CD;&#x9988;
+
+&#x5B89;&#x5168;&#x5C42;&#xFF1A;
+  sandbox&#x3001;approval&#x3001;network policy&#x3001;&#x53EA;&#x8BFB;/&#x5199;&#x5165;&#x6743;&#x9650;&#x3001;&#x4EBA;&#x5DE5;&#x786E;&#x8BA4;
+
+&#x6C89;&#x6DC0;&#x5C42;&#xFF1A;
+  AGENTS.md&#x3001;Skills&#x3001;&#x914D;&#x7F6E;&#x3001;&#x81EA;&#x52A8;&#x5316;&#x6D41;&#x7A0B;&#x3001;&#x56E2;&#x961F;&#x89C4;&#x8303;
+</code></pre>
+<p>&#x5B66;&#x4E60; Codex &#x578B; agent&#xFF0C;&#x672C;&#x8D28;&#x4E0A;&#x662F;&#x5728;&#x5B66;&#x4E60;&#x5982;&#x4F55;&#x8BBE;&#x8BA1;&#x8FD9;&#x51E0;&#x4E2A;&#x5C42;&#x4E4B;&#x95F4;&#x7684;&#x5173;&#x7CFB;&#x3002;</p>
+<h1 id="&#x7B2C;&#x4E00;&#x9636;&#x6BB5;&#x7EC3;&#x4E60;&#x6E05;&#x5355;"><a name="&#x7B2C;&#x4E00;&#x9636;&#x6BB5;&#x7EC3;&#x4E60;&#x6E05;&#x5355;" class="anchor-navigation-ex-anchor" href="#&#x7B2C;&#x4E00;&#x9636;&#x6BB5;&#x7EC3;&#x4E60;&#x6E05;&#x5355;"><i class="fa fa-link" aria-hidden="true"></i></a>13. &#x7B2C;&#x4E00;&#x9636;&#x6BB5;&#x7EC3;&#x4E60;&#x6E05;&#x5355;</h1>
+<p>&#x5EFA;&#x8BAE;&#x4F60;&#x7528;&#x771F;&#x5B9E;&#x9879;&#x76EE;&#x5B8C;&#x6210;&#x8FD9;&#x4E9B;&#x7EC3;&#x4E60;&#xFF1A;</p>
+<ol>
+<li>&#x8BA9; Codex &#x89E3;&#x91CA;&#x4E00;&#x4E2A;&#x524D;&#x540E;&#x7AEF;&#x8BF7;&#x6C42;&#x94FE;&#x8DEF;&#x3002;</li>
+<li>&#x8BA9; Codex &#x4FEE;&#x4E00;&#x4E2A;&#x6709;&#x590D;&#x73B0;&#x6B65;&#x9AA4;&#x7684;&#x5C0F; bug&#x3002;</li>
+<li>&#x8BA9; Codex &#x4E3A;&#x4E00;&#x4E2A;&#x51FD;&#x6570;&#x6216;&#x63A5;&#x53E3;&#x8865;&#x6D4B;&#x8BD5;&#x3002;</li>
+<li>&#x8BA9; Codex review &#x5F53;&#x524D; diff&#x3002;</li>
+<li>&#x8BA9; Codex &#x5148;&#x8BA1;&#x5212;&#x518D;&#x5B9E;&#x73B0;&#x4E00;&#x4E2A;&#x5C0F;&#x529F;&#x80FD;&#x3002;</li>
+<li>&#x7ED9;&#x9879;&#x76EE;&#x5199;&#x7B2C;&#x4E00;&#x7248; <code>AGENTS.md</code>&#x3002;</li>
+<li>&#x6545;&#x610F;&#x7ED9;&#x4E00;&#x4E2A;&#x4E0D;&#x5B8C;&#x6574;&#x9700;&#x6C42;&#xFF0C;&#x8BA9; Codex &#x5148; interview &#x4F60;&#xFF0C;&#x8865;&#x9F50;&#x9700;&#x6C42;&#x8FB9;&#x754C;&#x3002;</li>
+</ol>
+<p>&#x6BCF;&#x6B21;&#x7EC3;&#x4E60;&#x540E;&#x8BB0;&#x5F55;&#x4E09;&#x4EF6;&#x4E8B;&#xFF1A;</p>
+<ul>
+<li>&#x54EA;&#x4E9B;&#x4E0A;&#x4E0B;&#x6587;&#x7ED9;&#x5F97;&#x4E0D;&#x591F;&#xFF1F;</li>
+<li>&#x54EA;&#x4E9B;&#x5B8C;&#x6210;&#x6807;&#x51C6;&#x4E0D;&#x591F;&#x6E05;&#x695A;&#xFF1F;</li>
+<li>&#x54EA;&#x4E9B;&#x89C4;&#x5219;&#x5E94;&#x8BE5;&#x6C89;&#x6DC0;&#x5230; <code>AGENTS.md</code>&#xFF1F;</li>
+</ul>
+<h1 id="&#x672C;&#x9636;&#x6BB5;&#x6700;&#x4F4E;&#x638C;&#x63E1;&#x6807;&#x51C6;"><a name="&#x672C;&#x9636;&#x6BB5;&#x6700;&#x4F4E;&#x638C;&#x63E1;&#x6807;&#x51C6;" class="anchor-navigation-ex-anchor" href="#&#x672C;&#x9636;&#x6BB5;&#x6700;&#x4F4E;&#x638C;&#x63E1;&#x6807;&#x51C6;"><i class="fa fa-link" aria-hidden="true"></i></a>14. &#x672C;&#x9636;&#x6BB5;&#x6700;&#x4F4E;&#x638C;&#x63E1;&#x6807;&#x51C6;</h1>
+<p>&#x5B66;&#x5B8C;&#x8FD9;&#x4E00;&#x6B65;&#xFF0C;&#x4F60;&#x5E94;&#x8BE5;&#x80FD;&#x505A;&#x5230;&#xFF1A;</p>
+<ul>
+<li>&#x8BF4;&#x6E05; Codex &#x7684; agent loop&#x3002;</li>
+<li>&#x77E5;&#x9053; thread&#x3001;context&#x3001;tool call&#x3001;sandbox&#x3001;approval &#x5206;&#x522B;&#x662F;&#x4EC0;&#x4E48;&#x3002;</li>
+<li>&#x80FD;&#x5199;&#x51FA;&#x5305;&#x542B; <code>Goal / Context / Constraints / Done when</code> &#x7684;&#x4EFB;&#x52A1;&#x8BF4;&#x660E;&#x3002;</li>
+<li>&#x80FD;&#x8BA9; Codex &#x5148;&#x8BA1;&#x5212;&#xFF0C;&#x518D;&#x6267;&#x884C;&#xFF0C;&#x518D;&#x9A8C;&#x8BC1;&#x3002;</li>
+<li>&#x80FD;&#x5224;&#x65AD;&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x8BE5;&#x7528;&#x53EA;&#x8BFB;&#x6A21;&#x5F0F;&#xFF0C;&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x53EF;&#x4EE5;&#x8BA9;&#x5B83;&#x5199;&#x4EE3;&#x7801;&#x3002;</li>
+<li>&#x80FD;&#x628A;&#x4E00;&#x4E2A;&#x5168;&#x6808;&#x4EFB;&#x52A1;&#x62C6;&#x6210;&#x53EF;&#x6267;&#x884C;&#x3001;&#x53EF;&#x9A8C;&#x8BC1;&#x7684; agent &#x4EFB;&#x52A1;&#x3002;</li>
+</ul>
+<p>&#x5982;&#x679C;&#x4F60;&#x80FD;&#x7A33;&#x5B9A;&#x505A;&#x5230;&#x8FD9;&#x4E9B;&#xFF0C;&#x518D;&#x8FDB;&#x5165;&#x4E0B;&#x4E00;&#x6B65;&#xFF1A;&#x4E0A;&#x4E0B;&#x6587;&#x5DE5;&#x7A0B;&#x548C; <code>AGENTS.md</code>&#x3002;</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="00 Ai基础概念.html" class="navigation navigation-prev " aria-label="Previous page: 00 Ai基础概念">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="02 上下文工程和 AGENTS.html" class="navigation navigation-next " aria-label="Next page: 02 上下文工程和 AGENTS">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"01 Codex 型通用 Agent 的工作方式","level":"1.12.2","depth":2,"next":{"title":"02 上下文工程和 AGENTS","level":"1.12.3","depth":2,"path":"10 Ai/02 上下文工程和 AGENTS.md","ref":"./10 Ai/02 上下文工程和 AGENTS.md","articles":[]},"previous":{"title":"00 Ai基础概念","level":"1.12.1","depth":2,"path":"10 Ai/00 Ai基础概念.md","ref":"./10 Ai/00 Ai基础概念.md","articles":[]},"dir":"ltr"},"config":{"plugins":["highlight","search","livereload","splitter","expandable-chapters-small","anchors","anchor-navigation-ex"],"styles":{"website":"./styles/website.css"},"pluginsConfig":{"livereload":{},"splitter":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"anchor-navigation-ex":{"associatedWithSummary":true,"float":{"floatIcon":"fa fa-navicon","level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"mode":"float","multipleH1":true,"pageTop":{"level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"printLog":false,"showGoTop":true,"showLevel":true},"expandable-chapters-small":{},"sharing":{"all":["facebook","google","twitter","weibo","instapaper"],"facebook":true,"google":false,"instapaper":false,"twitter":true,"vk":false,"weibo":false},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"theme":"default","author":"Mezzsy","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Mezzsy is here","language":"zh-hans","gitbook":"3.2.3"},"file":{"path":"10 Ai/01 Codex 型通用 Agent 的工作方式.md","mtime":"2026-07-12T12:15:28.207Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2026-08-24T01:12:02.520Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-splitter/splitter.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-expandable-chapters-small/expandable-chapters-small.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
