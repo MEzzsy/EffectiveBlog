@@ -8,3 +8,7 @@ auto_pull.sh
 count.py
 docs
 AGENTS.md
+book.json
+clean_unused_images.py
+ignoredFile
+README.md
