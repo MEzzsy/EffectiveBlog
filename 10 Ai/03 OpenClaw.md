@@ -76,6 +76,12 @@ OpenClaw 的运行可以分为两个阶段：Gateway 启动时准备运行环境
 10. 模型继续判断，直到完成任务或需要用户确认
 11. 保存会话与必要记忆，并把结果发送回原渠道
 
+# Channels 和 Nodes
+
+Channels 把外部聊天平台连接到 Gateway。不同渠道支持的文本、媒体、回复、表情和群聊能力并不完全相同，但它们共享同一套 Agent 运行时。
+
+Nodes 是连接到 Gateway 的其他设备或执行节点。根据平台和授权，它们可以提供语音、摄像头、屏幕、位置、Canvas 或设备本地操作。Gateway 负责协调，具体能力则在节点所在设备上执行。
+
 # Gateway
 
 Gateway 是 OpenClaw 的核心常驻进程和控制平面，**可以理解为个人 AI 助手的“操作系统服务”**。它负责连接用户入口、Agent、大语言模型和真实工具。
@@ -199,8 +205,6 @@ Gateway 选择 Agent 与 Session
 
 一个 Gateway 可以运行多个 Agent。不同 Agent 可以拥有独立的 Workspace、模型、工具权限、记忆和 Sessions，再通过 `bindings` 分别服务个人、工作或其他渠道。多个 Agent 适合做职责隔离；如果需要隔离互不信任的用户，应使用独立 Gateway 或更强的系统级隔离。
 
-
-
 # Session
 
 ## Session 是什么
@@ -256,7 +260,14 @@ Session 中保存的内容不一定会全部进入上下文。OpenClaw 会根据
 
 当历史接近模型的上下文窗口上限时，OpenClaw 会把较早的对话压缩成摘要，并保留最近消息，使当前 Session 可以继续运行。较旧或体积较大的工具结果也可以从本轮上下文中裁剪，但这不会等同于删除 Session 中保存的原始记录。
 
-### 上下文压缩如何实现
+### 压缩时机
+
+- **自动触发**：当前上下文的 token 数接近模型的上下文窗口上限，并进入预留的安全区。
+- **溢出后触发**：模型返回 `context length exceeded`、`input is too long` 等上下文溢出错误，OpenClaw 压缩后重试本轮请求。
+- **手动触发**：用户执行 `/compact`，也可以附带指令，要求摘要重点保留特定内容。
+- **Context Engine 触发**：自定义 Context Engine 可以根据自己的策略主动执行压缩。
+
+### 🌟整体介绍：上下文压缩如何实现
 
 上下文压缩由 Context Engine 负责。Context Engine 是控制模型上下文生命周期的组件，决定从 Session 和记忆中选择哪些信息、如何组装本轮输入，以及历史过长时怎样压缩。OpenClaw 默认使用内置的 `legacy` Context Engine，也可以通过 Plugin 替换为自定义实现。
 
@@ -277,26 +288,46 @@ Session 中保存的内容不一定会全部进入上下文。OpenClaw 会根据
 
 这种压缩是有损的语义总结，摘要无法保证保留所有原始细节。默认情况下，原始 transcript 仍保存在 Session 存储中，只是不再全部发送给模型。Pruning 与压缩不同：它只从本轮内存上下文中裁剪较旧的工具结果，不生成摘要，也不修改 Session transcript。
 
-### 什么时候触发上下文压缩
+### Memory Flush：压缩前保存重要信息
 
-上下文压缩主要在以下情况触发：
-
-- **自动触发**：当前上下文的 token 数接近模型的上下文窗口上限，并进入预留的安全区。
-- **溢出后触发**：模型返回 `context length exceeded`、`input is too long` 等上下文溢出错误，OpenClaw 压缩后重试本轮请求。
-- **手动触发**：用户执行 `/compact`，也可以附带指令，要求摘要重点保留特定内容。
-- **Context Engine 触发**：自定义 Context Engine 可以根据自己的策略主动执行压缩。
+Memory Flush 是上下文压缩前的一次静默 Agent 回合。它用于识别当前对话中需要长期保留的信息，并在有损压缩发生前将其**写入 Agent Workspace 的记忆文件**，通常是 `memory/YYYY-MM-DD.md`。
 
 ```text
-接近窗口上限
-或发生上下文溢出
-或收到主动压缩指令
+上下文接近压缩阈值
         ↓
-触发上下文压缩
+静默触发 Memory Flush
+        ↓
+提取重要事实、决定和待办事项
+        ↓
+写入记忆文件并返回 NO_REPLY
+        ↓
+继续执行上下文压缩
 ```
 
-压缩前，OpenClaw 可以执行一次静默的 memory flush，把可能需要长期保留的信息先写入记忆文件。memory flush 只负责保存记忆，并不等于已经压缩上下文。`/new`、`/reset` 会开始新的 Session，Gateway 重启和普通的空闲等待也不属于上下文压缩。
+OpenClaw 默认启用 Memory Flush。它会在正式压缩阈值之前的软阈值触发，默认提前量为 `4000` tokens，并且每个压缩周期最多执行一次。由于回合以 `NO_REPLY` 结束，用户通常不会看到额外消息。
 
-## 长期记忆
+Memory Flush 只负责保存重要信息，不会压缩 Session，也不能替代压缩摘要。它通常只适用于 OpenClaw 内置 Agent Session；CLI Backend、Heartbeat 或只读 Workspace 会跳过该步骤。还可以通过 `agents.defaults.compaction.memoryFlush.model` 为这个回合单独指定模型，该模型不会继承当前 Session 的备用模型链。
+
+### 如何划分较早历史和最近消息
+
+OpenClaw 默认不是按照主题或固定消息数量划分，而是使用 `keepRecentTokens` 作为最近消息的 token 预算，默认值为 `20000`。它从最新消息开始向前累计估算 token，达到预算后将当前位置作为候选切分点：
+
+```text
+从最新消息向前扫描
+        ↓
+累计估算 token
+        ↓ 达到 keepRecentTokens
+确定候选切分点
+        ↓
+切分点之前生成摘要
+切分点之后保留原文
+```
+
+如果候选切分点落在 Assistant 的 Tool Call 和对应的 Tool Result 之间，OpenClaw 会把切分点向前移动到 Tool Call 的开始位置，使调用及其结果一起保留。即使因此略微超过 `keepRecentTokens`，也优先保证工具调用块完整；已经中止或报错的工具调用不会持续阻止切分。
+
+压缩记录会保存 `firstKeptEntryId`。后续模型上下文由压缩摘要和从该位置开始的最近消息组成。在 `safeguard` 模式下，还可以通过 `recentTurnsPreserve` 额外保留最近若干个用户与 Assistant 回合。
+
+## 长期记忆（Memory）
 
 OpenClaw 的长期记忆主要保存在 Agent Workspace 的 Markdown 文件中：
 
@@ -306,157 +337,86 @@ OpenClaw 的长期记忆主要保存在 Agent Workspace 的 Markdown 文件中�
 
 `MEMORY.md` 适合保存精炼且长期有效的内容，详细过程更适合写入每日记忆文件。需要历史信息时，Agent 可以通过记忆搜索读取相关片段，并把结果重新加入当前上下文。
 
+### OpenClaw 的记忆召回机制
+
+OpenClaw 会把 `USER.md`、`MEMORY.md` 和 `memory/*.md` 切分成较小片段并建立索引。召回机制根据当前问题找到相关片段，再把少量结果加入本轮模型上下文，整体类似面向个人记忆的 RAG。
+
 ```text
-Session 历史 ─────┐
-Workspace 文件 ──┼→ 组装本轮上下文 → 模型推理
-长期记忆检索 ────┘                    ↓
-                              新结果写回 Session
-                                      ↓
-                           重要信息写入长期记忆
+用户消息
+   ↓
+从长期记忆中检索候选片段
+   ↓
+按相关性、时间和重要性排序并去重
+   ↓
+把少量相关内容加入当前上下文
+   ↓
+模型继续推理
 ```
+
+OpenClaw 主要有三种召回方式：
+
+1. **启动注入**：符合条件的主 Session 或私有 Session 启动时，可以直接加载 `USER.md` 和 `MEMORY.md` 中经过限制的内容，适合经常需要的稳定信息。
+2. **系统自动召回**：主 Agent 运行前，系统匹配可信记忆的触发短语，将少量强相关内容作为隐藏上下文注入。启用 Active Memory 后，还可以由受限的记忆子 Agent 执行更深的召回。
+3. **Agent 主动搜索**：主 Agent 已经开始推理，但发现缺少历史信息时，在 Agent Loop 中调用 `memory_search`；需要准确原文时，再调用 `memory_get` 读取指定文件和行范围。
+
+   - 内置的 `memory_search` 通常综合以下信号：
+
+     - 关键词匹配，可通过本地全文索引离线完成。
+
+     - Embedding 语义相似度；Embedding 模型负责把文本转换成向量，不等同于负责对话的大语言模型。
+
+     - 时间新鲜度和记忆重要性。
+
+     - MMR 去重，减少返回内容重复的片段。
+
+```text
+Agent 判断需要历史信息
+        ↓
+memory_search 搜索相关片段
+        ↓
+必要时 memory_get 读取准确原文
+        ↓
+结果作为 Tool Result 加入 Agent Loop
+        ↓
+模型继续推理并生成回答
+```
+
+系统自动召回发生在主 Agent 第一次推理之前，范围较窄且只注入少量可信信息；Agent 主动搜索发生在 Agent Loop 内部，搜索范围更广，也可以多次查询和精读。两者可以先后执行，并不冲突。
+
+这种“加入上下文”是本轮运行时注入，并不是把整个记忆文件复制到 Session。工具调用和结果通常会记录在当前 Session 中，但原始长期记忆仍保存在 Agent Workspace。
 
 因此，Session 保证当前对话连续，上下文决定模型本轮能够看到什么，长期记忆负责让重要信息跨 Session 延续。
 
-# 草稿
+# Agent Workspace
 
-# 核心架构
-
-## Session
-
-Session 是连续对话和执行状态的载体。它保存消息、模型输出、工具调用和上下文压缩后的结果。
-
-OpenClaw 默认把同一用户从不同直接消息渠道发来的内容汇聚到主 Session。因此，用户可以在手机上通过聊天软件提出问题，再从电脑上的 Control UI 继续同一个上下文。
-
-群聊、后台任务和子 Agent 通常使用独立 Session，以避免所有内容混入主对话。Session 可以被重置或压缩，但需要长期保留的信息应写入记忆文件，而不是只依赖模型上下文窗口。
-
-## Workspace
-
-Workspace 是 Agent 的工作目录，也是它的持久上下文目录，默认位置为：
+Agent Workspace 是一个 Agent 的工作目录和持久化上下文目录。它保存 Agent 的身份、规则、用户信息、记忆和专用 Skills，默认路径通常是：
 
 ```text
 ~/.openclaw/workspace
 ```
 
-一个典型工作区包含：
+典型结构如下：
 
 ```text
 workspace/
-├── AGENTS.md       # 操作规则和工作方式
-├── SOUL.md         # 人格、语气和边界
-├── IDENTITY.md     # 名称、身份和形象
-├── USER.md         # 用户资料与稳定偏好
-├── TOOLS.md        # 本地工具说明和使用约定
+├── AGENTS.md       # 工作规则和操作约定
+├── SOUL.md         # 人格、语气和行为边界
+├── IDENTITY.md     # Agent 的身份信息
+├── USER.md         # 用户资料和稳定偏好
+├── TOOLS.md        # 工具说明和使用约定
 ├── MEMORY.md       # 精炼后的长期记忆
-├── memory/         # 按日期保存的工作记忆
-├── skills/         # 当前工作区专用 Skills
-└── canvas/         # 可选的 Canvas UI 内容
+├── memory/         # 每日记忆和工作记录
+└── skills/         # 当前 Workspace 专用 Skills
 ```
 
-这些文件让 Agent 的行为可以被用户查看、修改、备份和版本控制，而不是隐藏在一个不可见的服务端状态里。
+Workspace 属于 Agent，而不是某个 Session。一个 Agent 的多个 Session 通常共享同一个 Workspace，因此 Memory Flush 写入的记忆能够在后续 Session 中继续使用。多 Agent 场景应为不同 Agent 配置独立 Workspace；如果多个 Agent 指向同一目录，它们就会共享规则和记忆文件。
 
-Workspace 只是工具的默认工作目录，**本身不是安全沙箱**。如果未启用沙箱或文件访问限制，工具仍可能通过绝对路径访问工作区之外的宿主机文件。
+Workspace 只是默认工作目录，不等于安全 Sandbox。没有启用 Sandbox 时，拥有文件工具的 Agent 仍可能通过绝对路径访问 Workspace 之外的文件。
 
-## Memory
+# 草稿
 
-OpenClaw 的长期记忆主要由普通 Markdown 文件构成。它没有一个模型可以自动永久记住所有对话；只有被写入持久存储并在后续检索或注入上下文的信息，才能跨 Session 使用。
+# TODO
 
-记忆可以分为三层：
+1. skill是如何选择的
 
-| 层次 | 典型文件 | 适合保存的内容 |
-| --- | --- | --- |
-| 用户模型 | `USER.md` | 稳定偏好、称呼方式、关系和长期项目背景 |
-| 精炼记忆 | `MEMORY.md` | 长期有效的事实、决定和简短总结 |
-| 工作记忆 | `memory/YYYY-MM-DD.md` | 每日记录、过程观察、详细上下文和临时线索 |
 
-当对话接近上下文压缩时，OpenClaw 可以先触发一次 memory flush，提醒 Agent 把重要事实写入记忆文件，再压缩当前会话。后续需要历史信息时，Agent 可以通过记忆搜索读取相关片段。
-
-这种机制的优点是可观察、可编辑和可迁移；缺点是记忆质量依赖写入和整理策略。错误、过期或互相矛盾的记录也可能影响后续行为，因此长期记忆需要定期审查。
-
-## Channels 和 Nodes
-
-Channels 把外部聊天平台连接到 Gateway。不同渠道支持的文本、媒体、回复、表情和群聊能力并不完全相同，但它们共享同一套 Agent 运行时。
-
-官方支持的渠道包括 Telegram、WhatsApp、Discord、Slack、Signal、Google Chat、Microsoft Teams、iMessage、Matrix、飞书、QQ 等；部分随核心安装提供，部分需要安装官方插件。
-
-Nodes 是连接到 Gateway 的其他设备或执行节点。根据平台和授权，它们可以提供语音、摄像头、屏幕、位置、Canvas 或设备本地操作。Gateway 负责协调，具体能力则在节点所在设备上执行。
-
-# 能力扩展
-
-## Tools
-
-Tool 是 Agent 可以调用的结构化动作。它有明确的名称、参数和返回结果，而不是让模型假装完成了操作。
-
-常见工具类别包括：
-
-- 文件读取、写入和补丁修改。
-- Shell 命令与后台进程。
-- 浏览器控制、网页抓取和搜索。
-- 消息发送和渠道操作。
-- Session 查询、跨 Session 通信和子 Agent。
-- 定时任务、提醒和后台自动化。
-- 图片、音频和其他媒体处理。
-
-模型只能看到经过当前工具配置、allow/deny 策略、渠道权限、沙箱状态和插件可用性共同过滤后仍然可用的工具。
-
-## Skills
-
-Skill 是以 `SKILL.md` 为入口的操作说明包，用来告诉 Agent **什么时候以及怎样完成一类任务**。它适合保存：
-
-- 重复工作流。
-- 命令执行顺序。
-- 项目规范和审查清单。
-- 特定工具的使用方法。
-- 输出模板和完成标准。
-
-Tool 提供“能做什么”，Skill 提供“应该怎样做”。例如，浏览器工具让 Agent 可以操作网页，而一个“提交费用报销”Skill 可以规定登录入口、表单字段、附件要求、审批前暂停点和验证步骤。
-
-Skill 本身不能突破工具权限。说明中要求执行 Shell 命令，并不代表 Agent 自动获得 Shell 权限。
-
-## Plugins
-
-Plugin 是包含代码和清单的运行时扩展，可以新增：
-
-- 工具。
-- Skills。
-- 聊天渠道。
-- 模型提供商。
-- 语音、媒体和搜索能力。
-- 生命周期 Hook 和其他 Gateway 能力。
-
-当需求只是告诉 Agent 一套已有工具的使用流程时，优先使用 Skill；当需求涉及新代码、凭据、协议或运行时生命周期时，使用 Plugin 更合适。
-
-第三方 Plugin 和 Skill 都属于供应链输入。安装前应检查来源、权限、依赖和脚本，安装后也应限制它们能够访问的工具与凭据。
-
-## Model Providers
-
-OpenClaw 把模型选择与 Agent 运行时分开。用户可以为 Agent 配置主模型、备用模型和用于辅助任务的模型，也可以接入不同的模型提供商。
-
-选择模型时应关注：
-
-- 是否可靠支持工具调用。
-- 上下文窗口是否满足任务需要。
-- 延迟、价格和速率限制。
-- 多模态输入输出能力。
-- 对复杂指令和长流程的遵循能力。
-- 数据是否允许发送给对应提供商。
-
-OpenClaw 在自己的设备运行，不等于所有数据都只在本地处理。使用云端模型、搜索服务或聊天渠道时，相关内容仍会发送给对应服务。只有模型、工具和数据链路都在本地时，才能称为完整的本地处理。
-
-# 主动工作能力
-
-## Heartbeat
-
-Heartbeat 会周期性唤醒主 Session，让 Agent 检查当前是否有需要处理的事项。它适合轻量的状态检查和提醒发现。
-
-Heartbeat 触发的是完整 Agent 回合，频率越高，模型调用和 token 消耗通常越高。没有明确检查目标时，不应只为了“让助手更主动”而设置很短的周期。
-
-## Automations
-
-需要在确定时间执行、重复执行或可靠跟踪的工作，应使用 Automations。典型场景包括：
-
-- 每天固定时间汇总信息。
-- 在指定时间提醒用户。
-- 周期性检查服务状态。
-- 延迟执行一次后续任务。
-
-可以把两者简单区分为：Heartbeat 负责“醒来看看是否有事”，Automation 负责“在明确的时间执行明确的任务”。
