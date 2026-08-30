@@ -276,7 +276,7 @@ private void ranslation2() {
 
 具体可以跟的方法以及方法所对应的 `View` 中的实际操作的方法如图所示
 
-![29](assets/29.jpg)
+![29](../../../assets/eb_00119.jpg)
 
 不加By的操作是将值渐变为100，加By的是增加100。
 
@@ -358,7 +358,7 @@ anim.start();
 
 具体的效果如下：
 
-![img](assets/30.gif)
+![img](../../../assets/eb_00120.gif)
 
 **用途**：就像上面说的，它是一种最符合物理世界的模型，所以如果你要做的是最简单的状态变化（位移、放缩、旋转等等），那么一般不用设置 `Interpolator`，就用这个默认的最好。
 
@@ -366,7 +366,7 @@ anim.start();
 
 匀速。
 
-![img](assets/31.gif)
+![img](../../../assets/eb_00121.gif)
 
 ### AccelerateInterpolator
 
@@ -374,7 +374,7 @@ anim.start();
 
 在整个动画过程中，一直在加速，直到动画结束的一瞬间，直接停止。
 
-![img](assets/32.gif)
+![img](../../../assets/eb_00122.gif)
 
 主要用在离场效果中，比如某个物体从界面中飞离，就可以用这种效果。它给人的感觉就会是「这货从零起步，加速飞走了」。到了最后动画骤停的时候，物体已经飞出用户视野，看不到了，所以他们是并不会察觉到这个骤停的。
 
@@ -384,7 +384,7 @@ anim.start();
 
 动画开始的时候是最高速度，然后在动画过程中逐渐减速，直到动画结束的时候恰好减速到 0。
 
-![img](assets/33.gif)
+![img](../../../assets/eb_00123.gif)
 
 它的效果和上面这个 `AccelerateInterpolator` 相反，适用场景也和它相反：它主要用于入场效果，比如某个物体从界面的外部飞入界面后停在某处。
 
@@ -392,7 +392,7 @@ anim.start();
 
 先回拉一下再进行正常动画轨迹。效果看起来有点像投掷物体或跳跃等动作前的蓄力。
 
-![img](assets/34.gif)
+![img](../../../assets/eb_00124.gif)
 
 如果是图中这样的平移动画，那么就是位置上的回拉；如果是放大动画，那么就是先缩小一下再放大；其他类型的动画同理。
 
@@ -400,19 +400,19 @@ anim.start();
 
 动画会超过目标值一些，然后再弹回来。效果看起来有点像你一屁股坐在沙发上后又被弹起来一点的感觉。
 
-![img](assets/35.gif)
+![img](../../../assets/eb_00125.gif)
 
 ### AnticipateOvershootInterpolator
 
 上面这两个的结合版：开始前回拉，最后超过一些然后回弹。
 
-![img](assets/36.gif)
+![img](../../../assets/eb_00126.gif)
 
 ### BounceInterpolator
 
 在目标值处弹跳。有点像玻璃球掉在地板上的效果。
 
-![img](assets/37.gif)
+![img](../../../assets/eb_00127.gif)
 
 ### CycleInterpolator
 
@@ -420,11 +420,11 @@ anim.start();
 
 > 参数为 0.5f：
 
-![img](assets/38.gif)
+![img](../../../assets/eb_00128.gif)
 
 > 参数为 2f：
 
-![img](assets/39.gif)
+![img](../../../assets/eb_00129.gif)
 
 ### PathInterpolator
 
@@ -441,9 +441,9 @@ Path interpolatorPath = new Path();
 interpolatorPath.lineTo(1, 1);  
 ```
 
-![img](assets/177.jpg)
+![img](../../../assets/eb_00130.jpg)
 
-![img](assets/42.gif)
+![img](../../../assets/eb_00131.gif)
 
 ```java
 Path interpolatorPath = new Path();
@@ -458,15 +458,15 @@ interpolatorPath.moveTo(0.25f, 1.5f);
 interpolatorPath.lineTo(1, 1);  
 ```
 
-![img](assets/178.jpg)
+![img](../../../assets/eb_00132.jpg)
 
-![img](assets/179.gif)
+![img](../../../assets/eb_00133.gif)
 
 这条 `Path` 描述的其实是一个 `y = f(x) (0 ≤ x ≤ 1)` （y 为动画完成度，x 为时间完成度）的曲线，所以同一段时间完成度上不能有两段不同的动画完成度，而且每一个时间完成度的点上都必须要有对应的动画完成度（因为内容不能在某段时间段内消失呀）。所以，下面这样的 `Path` 是非法的，会导致程序 FC：
 
-![img](assets/180.jpg)
+![img](../../../assets/eb_00134.jpg)
 
-![img](assets/181.jpg)
+![img](../../../assets/eb_00135.jpg)
 
 除了上面的这些，Android 5.0 （API 21）引入了三个新的 `Interpolator` 模型，并把它们加入了 support v4 包中。这三个新的 `Interpolator` 每个都和之前的某个已有的 `Interpolator` 规则相似，只有略微的区别。
 
@@ -478,15 +478,15 @@ interpolatorPath.lineTo(1, 1);
 
 `FastOutLinearInInterpolator`：
 
-![img](assets/182.jpg)
+![img](../../../assets/eb_00136.jpg)
 
-![img](assets/183.gif)
+![img](../../../assets/eb_00137.gif)
 
 `AccelerateInterpolator`：
 
-![img](assets/184.jpg)
+![img](../../../assets/eb_00138.jpg)
 
-![img](assets/185.gif)
+![img](../../../assets/eb_00139.gif)
 
 这俩的速度模型几乎就是一样的
 
@@ -500,15 +500,15 @@ interpolatorPath.lineTo(1, 1);
 
 `FastOutSlowInInterpolator`：
 
-![img](assets/186.jpg)
+![img](../../../assets/eb_00140.jpg)
 
-![img](assets/187.gif)
+![img](../../../assets/eb_00141.gif)
 
 `AccelerateDecelerateInterpolator`：
 
-![img](assets/188.jpg)
+![img](../../../assets/eb_00142.jpg)
 
-![img](assets/189.gif)
+![img](../../../assets/eb_00143.gif)
 
 不论是从动图还是从曲线都可以看出，这二者比起来，`FastOutSlowInInterpolator` 的前期加速更猛一些，后期的减速过程的也减得更迅速。用更直观一点的表达就是，`AccelerateDecelerateInterpolator`像是物体的自我移动，而 `FastOutSlowInInterpolator` 则看起来像有一股强大的外力「推」着它加速，在接近目标值之后又「拽」着它减速。总之，`FastOutSlowInterpolator` 看起来有一点「着急」的感觉。
 
@@ -800,7 +800,7 @@ public class D23Activity extends AppCompatActivity {
 
 **效果**
 
-![42](assets/190.gif)
+![42](../../../assets/eb_00144.gif)
 
 ## TypeEvaluator
 
@@ -818,7 +818,7 @@ animator.setEvaluator(new ArgbEvaluator());
 animator.start();  
 ```
 
-![42](assets/191.gif)
+![42](../../../assets/eb_00145.gif)
 
 另外，在 Android 5.0 （API 21） 加入了新的方法 `ofArgb()`，所以 `minSdk` 大于或者等于 21，你可以直接用下面这种方式：
 
@@ -873,7 +873,7 @@ animator.setEvaluator(new HsvEvaluator());
 animator.start();  
 ```
 
-![42](assets/192.gif)
+![42](../../../assets/eb_00146.gif)
 
 ### ofObject()
 
@@ -902,7 +902,7 @@ ObjectAnimator animator = ObjectAnimator.ofObject(view, "position",
 animator.start();  
 ```
 
-![42](assets/194.gif)
+![42](../../../assets/eb_00147.gif)
 
 另外在 API 21 中，已经自带了 `PointFEvaluator` 这个类，所以如果你的 `minSdk` 大于或者等于 21，上面这个类你就不用写了，直接用就行了。
 
@@ -917,7 +917,7 @@ view.animate()
         .alpha(1);
 ```
 
-![42](assets/193.gif)
+![42](../../../assets/eb_00148.gif)
 
 而对于 `ObjectAnimator`，是不能这么用的。不过你可以使用 `PropertyValuesHolder` 来同时在一个动画中改变多个属性。
 
@@ -950,7 +950,7 @@ animatorSet.playSequentially(animator1, animator2);
 animatorSet.start();  
 ```
 
-![42](assets/195.gif)
+![42](../../../assets/eb_00149.gif)
 
 使用 `playSequentially()`，就可以让两个动画依次播放，而不用为它们设置监听器来手动为他们监管协作。
 
@@ -992,4 +992,4 @@ ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(view, holder);
 animator.start();  
 ```
 
-![42](assets/196.gif)
+![42](../../../assets/eb_00150.gif)

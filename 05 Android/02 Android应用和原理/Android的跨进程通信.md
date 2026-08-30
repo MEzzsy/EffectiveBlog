@@ -6,7 +6,7 @@ Android的内核是Linux，但是它的IPC方式并不能完全继承Linux，它
 
 # Linux进程基本概念
 
-<img src="assets/255.jpg" alt="8" style="zoom:50%;" />
+<img src="../../assets/eb_00100.jpg" alt="8" style="zoom:50%;" />
 
 上图展示了 Linux 中跨进程通信涉及到的一些基本概念：
 
@@ -57,7 +57,7 @@ copy_to_user() //将数据从内核空间拷贝到用户空间
 
 输入`adb shell ps | grep "com.mezzsy"`查看相关的进程
 
-![6](assets/256.jpg)
+![6](../../assets/eb_00092.jpg)
 
 FirstActivity 和SecondActivity的`android:process`属性分别为 ":remote" 和 "com.mezzsy.remote" 。这两种方式的区别：
 
@@ -506,11 +506,11 @@ SMgr收到这个连接请求，从请求数据包里获得Binder的名字，在�
 
 并不是所有Binder都需要注册给SMgr广而告之的。Server端可以通过已经建立的Binder连接将创建的Binder实体传给Client，当然这条已经建立的Binder连接必须是通过实名Binder实现。由于这个Binder没有向SMgr注册名字，所以是个匿名Binder。Client将会收到这个匿名Binder的引用，通过这个引用向位于Server中的实体发送请求。匿名Binder为通信双方建立一条私密通道，只要Server没有把匿名Binder发给别的进程，别的进程就无法通过穷举或猜测等任何方式获得该Binder的引用，向该Binder发送请求。
 
-![1](assets/257.jpg)
+![1](../../assets/eb_00093.jpg)
 
 ### Linux补充概念
 
-![266](assets/266.png)
+![266](../../assets/eb_00094.png)
 
 当两个进程之间需要通信的时候，Binder 驱动会在两个进程之间建立两个映射关系：内核缓存区和内核中数据接收缓存区之间的映射关系，以及内核中数据接收缓存区和接收进程用户空间地址的映射关系。这样，当把数据从 1 个用户空间拷贝到内核缓冲区的时候，就相当于拷贝到了另一个用户空间中。这样只需要做一次拷贝，省去了内核中暂存这个步骤，提升了一倍的性能。实现内存映射靠的就是上面的 `mmap()` 函数。
 
@@ -692,7 +692,7 @@ A 进程想要 B 进程中某个对象（object）是如何实现的呢？毕竟
 
 当 Binder 驱动接收到 A 进程的消息后，发现这是个 objectProxy 就去查询自己维护的表单，一查发现这是 B 进程 object 的代理对象。于是就会去通知 B 进程调用 object 的方法，并要求 B 进程把返回结果发给自己。当驱动拿到 B 进程的返回结果后就会转发给 A 进程，一次通信就完成了。
 
-<img src="assets/258.jpg" alt="9" style="zoom:33%;" />
+<img src="../../assets/eb_00101.jpg" alt="9" style="zoom:33%;" />
 
 ## Binder通信模型总结
 
@@ -1030,7 +1030,7 @@ public class MultiProcessBook implements Parcelable {
 
 AIDLServer中创建AIDL文件：
 
-![2](assets/259.jpg)
+![2](../../assets/eb_00095.jpg)
 
 创建一个IBookManager.aidl文件：
 
@@ -1073,7 +1073,7 @@ parcelable MultiProcessBook;
 >
 > 不能把java文件和AIDL文件放在同一个包下，应该这样：
 >
-> ![3](assets/260.jpg)
+> ![3](../../assets/eb_00096.jpg)
 
 上面讲述了如何定义AIDL接口，接下来需要实现这个接口了。先创建一个Service，称为BookManagerService，代码如下：
 
@@ -1476,7 +1476,7 @@ public class MainActivity extends AppCompatActivity {
 
 log显示：
 
-![4](assets/261.jpg)
+![4](../../assets/eb_00097.jpg)
 
 服务端没有像预期的那样执行。在解注册的过程中，服务端无法找到之前注册的那个listener。其实，这种解注册的处理方式在日常开发过程中时常使用到，但是放到多进程中却无法奏效，因为Binder会把客户端传递过来的对象重新转化并生成一个新的对象。虽然在注册和解注册过程中使用的是同一个客户端对象，但是通过Binder传递到服务端后，却会产生一个全新的对象。对象是不能跨进程直接传输的，对象的跨进程传输本质上是反序列化的过程，这就是为什么AIDL中的自定义对象都必须要实现Parcelable接口。
 
@@ -1535,7 +1535,7 @@ private void newBookArrived(Book book) {
 
 log：
 
-![5](assets/262.jpg)
+![5](../../assets/eb_00098.jpg)
 
 > 注意，beginBroadcast方法和finishBroadcast要配对使用。
 
@@ -1607,7 +1607,7 @@ Binder 是可能意外死亡的，这往往是由于服务端进程意外停止�
 # IPC方式的优缺点和适用场景
 
 
-![7](assets/263.jpg)
+![7](../../assets/eb_00099.jpg)
 
 >   RPC（Remote Procedure Call）远程过程调用，简单的理解是一个节点请求另一个节点提供的服务
 >

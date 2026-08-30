@@ -90,7 +90,7 @@ protected void onCreate(Bundle savedInstanceState) {
 }
 ```
 
-<img src="assets/5.jpg" alt="5" style="zoom:30%;" />
+<img src="../../../assets/eb_00116.jpg" alt="5" style="zoom:30%;" />
 
 ```
 D/测试生命周期-Main: onCreate: before
@@ -319,7 +319,7 @@ onDestroy: A
 
 ### 具体调用场景
 
-![6](assets/6.jpg)
+![6](../../../assets/eb_00115.jpg)
 
 ## 恢复状态onRestoreInstanceState
 

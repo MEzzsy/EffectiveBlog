@@ -56,7 +56,7 @@ git commit --amend
 
 如：
 
-<img src="assets/1.png" alt="1" style="zoom:50%;" />
+<img src="../../assets/eb_00228.png" alt="1" style="zoom:50%;" />
 
 
 

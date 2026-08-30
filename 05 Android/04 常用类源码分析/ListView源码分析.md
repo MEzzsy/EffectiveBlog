@@ -192,7 +192,7 @@ obatinView方法定义了列表控件的Item View的复用逻辑，首先会从R
 
 通过这种缓存机制，即使有成千上万的数据项，ListView也能够流畅运行，因此，只有填满屏所需的Item View存在内存中。ListView根据Adapter设置的数据项数量循环调用getView方法获取视图，第一次加载填满屏幕的数据项时getView的第二个参数convertView都为空，此时每次都需要从xml中加载布局文件，填充数据之后返回给ListView。当整屏的数据项加载完毕之后用户向下滚动屏幕，此时item1滚出屏幕，并且一个新的项目从屏幕低端上来时，ListView再请求一个视图，此时item1被缓存起来，在下一项数据加载时传递给getView的第二个参数convertView，因此，convertView此时不是空值，它的值是item1。此时只需设定新的数据然后返回convertView，这样就避免了每次都从xml加载、初始化视图，减少了时间、性能上的消耗。原理如图所示。
 
-![20190408140601](assets/4.png)
+![20190408140601](../../assets/eb_00182.png)
 
 了解了它的工作原理后，就可以重复利用ListView的Item View，只要convertView不为空就直接使用，改变它绑定的数据就行了。当然，由于视图被缓存了，视图中的数据也会被缓存，因此，你需要在每次获取到了Item view时对每个数据项重新赋值，否则会出现数据错误的现象。
 

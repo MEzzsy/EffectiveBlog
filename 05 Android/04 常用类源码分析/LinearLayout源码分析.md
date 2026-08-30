@@ -333,7 +333,7 @@ public static int getChildMeasureSpec(int spec, int padding, int childDimension)
 }
 ```
 
-![5](assets/5.jpg)
+![5](../../assets/eb_00181.jpg)
 
 ### View#resolveSizeAndState
 

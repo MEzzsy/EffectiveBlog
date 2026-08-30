@@ -48,7 +48,7 @@ task groovyDemo {
 
 设置文件主要是为了配置子工程（Android Project下的module）。一个子工程只有在Settings文件里配置了Gradle才会识别，才会在构建的时候被包含进去（include）。
 
-![1](assets/1.png)
+![1](../assets/eb_00233.png)
 
 如果不指定，默认目录是其同级的目录。
 

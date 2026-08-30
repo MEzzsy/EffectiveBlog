@@ -28,7 +28,7 @@ startActivity方法方法内部会获取AMS（运行在SystemServer进程）在�
 
 上述逻辑都是运行在AMS所在的SystemServer进程中，如果想要与目标应用程序进程通信，就需要跨进程通信。类似地，AMS也需要一个本地代理来与目标进程交互，这个对象就是ActivityThread的内部类ApplicationThread，它继承了IApplicationThread.Stub。
 
-![1](assets/1.jpg)
+![1](../../assets/eb_00077.jpg)
 
 # ActivityThread启动Activity的过程
 
@@ -147,7 +147,7 @@ ApplicationThread将启动Activity的参数进行封装，并通知H消息管理
 
 根Activity启动过程中会涉及到四个进程：Zygote进程，Launcher进程，AMS所在进程（SystemServer），应用程序进程。关系如下：
 
-![2](assets/2.jpg)
+![2](../../assets/eb_00078.jpg)
 
 首先Launcher进程向AMS请求创建根Activity，AMS会判断根Activity所需的应用程序进程是否存在并启动，如果不存在就会请求Zygote进程创建应用程序进程。应用程序进程启动后，AMS会请求创建应用程序进程并启动根Activity。
 

@@ -166,7 +166,7 @@ public T get() {
 
 一般不在老年代使用。
 
-<img src="img/4.jpg" alt="4" style="zoom:50%;" />
+<img src="../../assets/eb_00062.jpg" alt="4" style="zoom:50%;" />
 
 ## 标记-整理算法
 

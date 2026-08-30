@@ -1,6 +1,6 @@
 # 介绍
 
-![3](assets/3.jpg)
+![3](../../assets/eb_00080.jpg)
 
 Android8.0后以AIDL的方式进行跨进程通信，AM通过getService获得AMS在本地的代理，通过此代理与AMS进行交互。
 
@@ -103,7 +103,7 @@ enum ActivityState {
 
 Activity任务栈并不是凭空想象出来的，它是由多种数据结构共同组合而成的。
 
-<img src="assets/4.jpg" alt="4" style="zoom:50%;" />
+<img src="../../assets/eb_00081.jpg" alt="4" style="zoom:50%;" />
 
 ## Launch Mode
 

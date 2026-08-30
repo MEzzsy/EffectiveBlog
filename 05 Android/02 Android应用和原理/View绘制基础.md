@@ -174,7 +174,7 @@ public int addToDisplay(IWindow window, int seq, WindowManager.LayoutParams attr
 
 # View绘制流程
 
-![265](assets/265.jpg)
+![265](../../assets/eb_00102.jpg)
 
 ## 绘制流程
 
@@ -224,7 +224,7 @@ MeasureSpec是一个32位int值，高两位是SpecMode（测量模式），低30
 - 当View采用match_parent的时候，如果父容器是精确模式，那么View也是精确模式并且大小是父容器的剩余空间。如果父容器是最大模式，那么View也是最大模式，并且不会超过父容器的剩余空间。
 - 当View采用wrap_content的时候，View总是最大模式，并且不会超过父容器的剩余空间。
 
-![11](../../assets/11.jpg)
+![11](../../assets/eb_00103.jpg)
 
 ### 实验
 
@@ -261,43 +261,43 @@ MeasureSpec是一个32位int值，高两位是SpecMode（测量模式），低30
 
 ##### Child为px/dp
 
-<img src="assets/23.jpg" alt="23" style="zoom:50%;" />
+<img src="../../assets/eb_00104.jpg" alt="23" style="zoom:50%;" />
 
 ##### Child为match_parent
 
-<img src="assets/24.jpg" alt="24" style="zoom:50%;" />
+<img src="../../assets/eb_00105.jpg" alt="24" style="zoom:50%;" />
 
 ##### Child为wrap_content
 
-<img src="assets/25.jpg" alt="25" style="zoom:50%;" />
+<img src="../../assets/eb_00106.jpg" alt="25" style="zoom:50%;" />
 
 #### Parent为match_parent
 
 ##### Child为px/dp
 
-<img src="assets/26.jpg" alt="26" style="zoom:50%;" />
+<img src="../../assets/eb_00107.jpg" alt="26" style="zoom:50%;" />
 
 ##### Child为match_parent
 
-<img src="assets/27.jpg" alt="27" style="zoom:50%;" />
+<img src="../../assets/eb_00108.jpg" alt="27" style="zoom:50%;" />
 
 ##### Child为wrap_content
 
-<img src="assets/28.jpg" alt="28" style="zoom:50%;" />
+<img src="../../assets/eb_00109.jpg" alt="28" style="zoom:50%;" />
 
 #### Parent为wrap_content
 
 ##### Child为px/dp
 
-<img src="assets/31.jpg" alt="31" style="zoom:50%;" />
+<img src="../../assets/eb_00110.jpg" alt="31" style="zoom:50%;" />
 
 ##### Child为match_parent
 
-<img src="assets/30.jpg" alt="30" style="zoom:50%;" />
+<img src="../../assets/eb_00111.jpg" alt="30" style="zoom:50%;" />
 
 ##### Child为wrap_content
 
-<img src="assets/29.jpg" alt="29" style="zoom:50%;" />
+<img src="../../assets/eb_00112.jpg" alt="29" style="zoom:50%;" />
 
 
 

@@ -140,6 +140,7 @@
   - [06 新](./05 Android/06 新/README.md)
     - [01 Google Dynamic Feature插件](./05 Android/06 新/01 Google Dynamic Feature插件.md)
     - [02 Android类从源码到运行时加载](./05 Android/06 新/02 Android类从源码到运行时加载.md)
+    - [03 虚拟机](./05 Android/06 新/03 虚拟机.md)
 - [06 计算机网络](./06 计算机网络/README.md)
   - [计算机网络](./06 计算机网络/计算机网络.md)
 - [07 设计模式](./07 设计模式/README.md)

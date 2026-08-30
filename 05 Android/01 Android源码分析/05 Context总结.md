@@ -9,7 +9,7 @@ Activity，Service和Application都间接地继承自Context，因此一个应�
 
 Context是一个抽象类，它的内部定义了很多方法以及静态常量，它的具体实现类为Contextlmpl。和Context相关联的类，除了ContextImpl ，还有ContextWrapper，ContextThemeWrapper和Activity等。
 
-![266](assets/266.jpg)
+![266](../../assets/eb_00079.jpg)
 
 从Wrapper的名字就能看出，Context的关联类利用装饰模式，这样做有这么几个优点：
 

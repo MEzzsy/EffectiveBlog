@@ -16,7 +16,7 @@ Drawable的内部宽/高这个参数比较重要，通过getIntrinsicWidth和get
 
 这几乎是最简单的Drawable了，在实际开发中可以直接使用原始图片，也可以用XML来描述。
 
-![1](assets/216.jpg)
+![1](../../../assets/eb_00163.jpg)
 
 - android:src 
   图片id
@@ -56,11 +56,11 @@ Drawable的内部宽/高这个参数比较重要，通过getIntrinsicWidth和get
   三种效果：
   
   - repeat
-    ![repeat](assets/217.png)
+    ![repeat](../../../assets/eb_00164.png)
   - mirror
-    ![mirror](assets/218.png)
+    ![mirror](../../../assets/eb_00165.png)
   - clamp
-    ![clamp](assets/219.png)
+    ![clamp](../../../assets/eb_00166.png)
 
 ### 使用
 
@@ -85,7 +85,7 @@ Drawable的内部宽/高这个参数比较重要，通过getIntrinsicWidth和get
 
 它表示的是一张 .9 格式的图片，.9 图片可以自动地根据所需的宽/高进行相应的缩放并保证不失真。和BitmapDrawable一样，在实际使用中直接引用图片即可，但是也可以通过XML来描述.9图。
 
-![2](assets/220.jpg)
+![2](../../../assets/eb_00167.jpg)
 
 上述XML中的属性的含义和BitmapDrawable中的对应属性的含义是相同的。
 
@@ -173,7 +173,7 @@ ShapeDrawable是用颜色来构造的图形。可以是纯色，也可以具有�
 </shape>
 ```
 
-![3](assets/221.jpg)
+![3](../../../assets/eb_00168.jpg)
 
 #### corners		
 
@@ -231,11 +231,11 @@ ShapeDrawable是用颜色来构造的图形。可以是纯色，也可以具有�
 
 angle为0的情况
 
-![4](assets/222.jpg)
+![4](../../../assets/eb_00169.jpg)
 
 angle为45的情况
 
-![5](assets/223.jpg)
+![5](../../../assets/eb_00170.jpg)
 
 #### solid
 
@@ -271,7 +271,7 @@ angle为45的情况
 </shape>
 ```
 
-![6](assets/224.jpg)
+![6](../../../assets/eb_00171.jpg)
 
 #### padding
 
@@ -287,7 +287,7 @@ Drawable的两个方法getIntrinsicWidth和getIntrinsicHeight表示的是Drawabl
 
 对应的xml标签是layer-list，它表示一种层次化的Drawable集合，通过将不同的Drawable 放置在不同的层上面从而达到一种叠加后的效果。
 
-![7](assets/225.jpg)
+![7](../../../assets/eb_00172.jpg)
 
 一个layer-list中可以包含多个item，每个item表示一个Drawable。Item的结构也比较简单，比较常用的属性有android:top、android:bottom、android:left和android:right，它们分别表示Drawable 相对于View的上下左右的偏移量，单位为像素。
 
@@ -325,7 +325,7 @@ Layer-list有层次的概念，下面的item会覆盖上面的item，通过合�
 </layer-list>
 ```
 
-![8](assets/226.jpg)
+![8](../../../assets/eb_00173.jpg)
 
 ## StateListDrawable
 
@@ -388,7 +388,7 @@ item标签表示一个具体的Drawable，它的结构也比较简单，其中an
 
 对应于level-list标签，它同样表示一个 Drawable集合，集合中的每个Drawable都有一个等级(level) 的概念。根据不同的等级，LevelListDrawable 会切换为对应的Drawable，它的语法如下所示。
 
-![9](assets/227.jpg)
+![9](../../../assets/eb_00174.jpg)
 
 上面的语法中，每个item表示一个Drawable，并且有对应的等级范围，由 android:minLevel 和 android:maxLevel 来指定，在最小值和最大值之间的等级会对应此item 中的 Drawable。
 
@@ -411,7 +411,7 @@ item标签表示一个具体的Drawable，它的结构也比较简单，其中an
 TransitionDrawable对应于transition标签，它用于实现两个Drawable之间的淡入淡出
 效果，语法如下所示。
 
-![10](assets/228.jpg)
+![10](../../../assets/eb_00175.jpg)
 
 其中android:top、android:bottom、android:left和android:right仍然表示的是Drawable四周的偏移量，这里就不多介绍了。
 
@@ -445,7 +445,7 @@ InsetDrawable对应于inset标签，它可以将其他Drawable内嵌到自己当
 
 InsetDrawable的语法如下所示。
 
-![11](assets/229.jpg)
+![11](../../../assets/eb_00176.jpg)
 
 上面的属性都比较好理解，其中android:insetTop、android:insetBottom、android:insetLeft和android:insetRight分别表示顶部、底部、左边和右边内凹的大小。
 
@@ -469,7 +469,7 @@ InsetDrawable的语法如下所示。
 
 ScaleDrawable对应于scale标签，它可以根据自己的等级(level)将指定的Drawable缩放到一定比例，它的语法如下所示。
 
-![12](assets/230.jpg)
+![12](../../../assets/eb_00177.jpg)
 
 android:scaleGravity 的含义等同于shape 中的android:gravity，而android:scaleWidth和android:scaleHeight分别表示对指定Drawable宽和高的缩放比例，以百分比的形式表示，比如25%。
 
@@ -479,7 +479,7 @@ android:scaleGravity 的含义等同于shape 中的android:gravity，而android:
 
 ClipDrawable对应于clip标签，它可以根据自己当前的等级(level)来裁剪另一个Drawable，裁剪方向可以通过android:clipOrientation和android:gravity这两个属性来共同控制，它的语法如下所示。
 
-![13](assets/231.jpg)
+![13](../../../assets/eb_00178.jpg)
 
 其中clipOrientation表示裁剪方向，有水平和竖直两个方向，gravity 比较复杂，需要和clipOrientation一起才能发挥作用，如表所示。另外gravity的各种选项是可以通过“|”来组合使用的。
 

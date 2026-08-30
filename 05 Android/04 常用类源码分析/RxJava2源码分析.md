@@ -503,7 +503,7 @@ public Disposable schedule(Runnable run, long delay, TimeUnit unit) {
 
 # 类关系图
 
-![1](assets/1.jpg)
+![1](../../assets/eb_00185.jpg)
 
 # 总结
 

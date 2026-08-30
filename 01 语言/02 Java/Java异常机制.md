@@ -65,7 +65,7 @@ Java异常机制主要依赖于try、catch、finally、throw、throws五个关�
 
 # 异常类
 
-![5](assets/5.jpg)
+![5](../../assets/eb_00021.jpg)
 
 **java把所有非正常情况分成两种：异常（Exception）和错误（Error），都是继承自Throwable父类。**
 

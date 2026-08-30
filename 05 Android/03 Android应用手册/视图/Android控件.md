@@ -389,7 +389,7 @@ int width=devPop.getContentView().getMeasuredWidth();
 
 ## 效果展示
 
-![1](assets/204.png)
+
 
 ## 相关 API
 
@@ -1189,7 +1189,7 @@ public boolean isSlideToBottom(RecyclerView recyclerView) {
 
 这种方法原理其实很简单，而且也是View自带的方法。
 
-![12](assets/205.jpg)
+![12](../../../assets/eb_00151.jpg)
 
 这样就很清晰明了，computeVerticalScrollExtent()是当前屏幕显示的区域高度，computeVerticalScrollOffset() 是当前屏幕之前滑过的距离，而computeVerticalScrollRange()是整个View控件的高度。
 这种方法经过测试，暂时还没发现有bug，而且它用的是View自带的方法，所以个人觉得比较靠谱。
@@ -1203,7 +1203,7 @@ RecyclerView.canScrollVertically(-1)的值表示是否能向下滚动，false表
 
 这种方法更简单，就通过简单的调用方法，就可以得到你想要的结果。我一讲过这种方法与第二种方法其实是同一种方法，那下面来分析一下，看看canScrollVertically的源码：
 
-![10](assets/206.jpg)
+![10](../../../assets/eb_00152.jpg)
 
 是不是一目了然了，canScrollVertically方法的实现实际上运用到的是方法二的三个函数，只是这个方法Android已经帮我们封装好了，原理一模一样的。
 
@@ -1374,30 +1374,30 @@ https://www.jianshu.com/p/502127a493fb （xml操作）
 
 虽说Button已经添加到界面上了，但是由于还没有给Button添加任何的约束，因此Button并不知道自己应该出现在什么位置。现在在预览界面上看到的Button位置并不是它最终运行后的实际位置，如果一个控件没有添加任何约束的话，它在运行之后会自动位于界面的左上角。
 
-![1](assets/207.jpg)
+![1](../../../assets/eb_00153.jpg)
 
 每个控件的约束都分为垂直和水平两类，一共可以在四个方向上给控件添加约束。
 
 给Button的右边和下边添加了约束，因此Button就会将自己定位到布局的右下角了。
 
-![1](assets/208.jpg)
+![1](../../../assets/eb_00154.jpg)
 
 除此之外，还可以使用约束让一个控件相对于另一个控件进行定位。比如，希望再添加一个Button，让它位于第一个Button的正下方，并且间距108dp。
 
-![1](assets/209.jpg)
+![1](../../../assets/eb_00155.jpg)
 
 删除约束的方式一共有两种：
 
 - 第一种用于删除一个单独的约束，将鼠标悬浮在某个约束的圆圈上，然后该圆圈会变成红色，这个时候单击一下就能删除了。
 - 第二种用于删除当前界面中的所有约束，点击工具栏中的删除约束图标即可。
 
-![1](assets/210.jpg)
+![1](../../../assets/eb_00156.jpg)
 
 ## Inspector
 
 当你选中任意一个控件的时候，在右侧的Properties区域就会出现很多的属性选项，如下图所示。
 
-![1](assets/211.jpg)
+![1](../../../assets/eb_00157.jpg)
 
 在这里可以设置当前控件的所有属性，如文本内容、颜色、点击事件等等。
 
@@ -1405,13 +1405,13 @@ https://www.jianshu.com/p/502127a493fb （xml操作）
 
 如果调整了纵横轴的比例，那么Button的位置也会随之改变。
 
-![1](assets/212.jpg)
+![1](../../../assets/eb_00158.jpg)
 
 而Android Studio给控件的每个方向上的约束都默认添加了一个8dp的间距，从Inspector上面也可以明显地看出来这些间距的值。修改成0之后Button右侧的间距就没了。
 
 接下来我们再来学习一下位于Inspector最中间的那个正方形区域，它是用来控制控件大小的。一共有三种模式可选，每种模式都使用了一种不同的符号表示，点击符号即可进行切换。
 
-![1](assets/213.jpg)
+![1](../../../assets/eb_00159.jpg)
 首先需要说明，在ConstraintLayout中是有match parent的，只不过用的比较少，因为ConstraintLayout的一大特点就是为了解决布局嵌套，既然没有了布局嵌套，那么match parent也就没有多大意义了。
 
 any size就是用于在ConstraintLayout中顶替match parent的，先看一下我们怎样使用any size实现和match parent同样的效果吧。将Button的宽度指定成any size，它就会自动充满整个布局了。当然还要记得将Button左侧的间距设置成0才行。
@@ -1426,11 +1426,11 @@ match parent是用于填充满当前控件的父布局，而any size是用于填
 
 Autoconnect可以根据我们拖放控件的状态自动判断应该如何添加约束，比如我们将Button放到界面的正中央，那么它的上下左右都会自动地添加上约束。
 
-![1](assets/214.jpg)
+![1](../../../assets/eb_00160.jpg)
 
 Inference也是用于自动添加约束的，但它比Autoconnect的功能要更为强大，因为AutoConnect只能给当前操作的控件自动添加约束，而Inference会给当前界面中的所有元素自动添加约束。因而Inference比较适合用来实现复杂度比较高的界面，它可以一键自动生成所有的约束。
 
-![1](assets/215.jpg)
+
 
 # MediaPlay
 
@@ -1994,7 +1994,7 @@ collapsingToolbarLayout.setTitle("标题");
 
 ## 系统的Toast
 
-<img src="assets/286.jpg" alt="286" style="zoom:50%;" />
+<img src="../../../assets/eb_00161.jpg" alt="286" style="zoom:50%;" />
 
 系统的Toast用起来简单，但是界面很丑。
 
@@ -2027,7 +2027,7 @@ private static Toast createMyToast(Context context, String content, int duration
 
 效果如下：
 
-<img src="assets/287.jpg" alt="287" style="zoom:50%;" />
+<img src="../../../assets/eb_00162.jpg" alt="287" style="zoom:50%;" />
 
 可能更丑了。
 

@@ -4,13 +4,13 @@
 
 ## 可视化操作
 
-<img src="../../assets/1.png" alt="1" style="zoom:50%;" />
+<img src="../../assets/eb_00189.png" alt="1" style="zoom:50%;" />
 
 选择`Callstack Sample Recording`点击 Record，交互完成时点击 Stop。
 
 ### 分析堆栈
 
-<img src="../../assets/2.png" alt="2" style="zoom:50%;" />
+<img src="../../assets/eb_00190.png" alt="2" style="zoom:50%;" />
 
 1.   通过`w/s`键缩小/放大时间轴，通过`a/d`键左/右移动时间轴。
 2.   左边是某个线程实时的堆栈，用于寻找单次耗时函数。
@@ -21,7 +21,7 @@
 >   官方文档：https://android.googlesource.com/platform/system/extras/+/master/simpleperf/doc/README.md
 >
 >   源码：https://android.googlesource.com/platform/system/extras/+/master/simpleperf/
->   ![3](../../assets/3.png)
+>   ![3](../../assets/eb_00186.png)
 
 ### dump堆栈5s
 
@@ -43,7 +43,7 @@ adb pull /data/local/tmp/perf.data ~/Downloads/
 python /Users/mezzsy/Projects/Android/SimplePerf/scripts/inferno/inferno.py -sc --record_file ~/Downloads/perf.data --symfs ~/Downloads
 ```
 
-![4](../../assets/4.png)
+![4](../../assets/eb_00187.png)
 
 ## adb命令行
 
@@ -61,11 +61,11 @@ python /Users/mezzsy/Projects/Android/SimplePerf/scripts/inferno/inferno.py -sc 
 
 ## 可视化操作
 
-<img src="../../assets/5.png" alt="5" style="zoom:50%;" />
+<img src="../../assets/eb_00191.png" alt="5" style="zoom:50%;" />
 
 选择`System Trace Recording`点击 Record，交互完成时点击 Stop。
 
-![6](../../assets/6.png)
+![6](../../assets/eb_00188.png)
 
 **Frame Lifecycle** 部分包含层名称和四个轨迹。每个轨迹分别代表帧呈现流水线中的一个阶段。**Frame Lifecycle** 元素如下：
 

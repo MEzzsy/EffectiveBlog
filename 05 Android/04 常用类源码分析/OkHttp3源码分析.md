@@ -263,7 +263,7 @@ Response getResponseWithInterceptorChain() throws IOException {
 
 这里先添加用户创建的应用拦截器，然后添加几个默认的应用拦截器，这里最后添加的应用拦截器ConnectInterceptor要注意，再添加用户创建的网络拦截器，最后添加一个网络拦截器CallServerInterceptor，这个也要注意。OkHttp的网络请求是链式调用的，如图所示：
 
-![2](assets/2.png)
+![2](../../assets/eb_00183.png)
 
 拦截器运用了典型的责任链模式。这里主要看最后的应用拦截器和最后的网络拦截器。
 
@@ -315,7 +315,7 @@ OkHttp的底层是通过Socket发送HTTP请求与接受响应的。
 
 ## 思路
 
-![3](assets/3.png)
+![3](../../assets/eb_00184.png)
 
 # 参考
 

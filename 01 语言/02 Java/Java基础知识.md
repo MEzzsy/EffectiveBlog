@@ -512,7 +512,7 @@ out:
 
 switch要求使用一个选择因子，并且必须是int或char那样的整数值。例如，假如将一个字符串（Java8以后可以）或者浮点数作为选择因子使用，那么它们在switch语句里是不会工作的。
 
-<img src="assets/11.jpg" alt="11" style="zoom:50%;" />
+<img src="../../assets/eb_00020.jpg" alt="11" style="zoom:50%;" />
 
 看一下demo了解一下switch：
 

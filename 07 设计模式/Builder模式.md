@@ -128,7 +128,7 @@ builder.create().show();
 
 这是经常用到的AlertDialog，效果如图：
 
-![2](assets/2.png)
+
 
 看一下AlertDialog：
 
@@ -243,7 +243,7 @@ protected AlertController(Context context, DialogInterface di, Window window) {
 
 可以看到，AlertDialog的布局资源就是alert_dialog.xml
 
-![2](assets/1.jpg)
+
 
 当通过Builder对象的setTitle、setMessage 等方法设置具体内容时，就是将这些内容填充到对应的视图中。而AlertDialog也允许你通过setView传入内容视图，这个内容视图就是替换掉上面图示的第二行的部分，AlertDialog 预留了一个costomPanel区域用来显示用户自定义的内容视图。
 
