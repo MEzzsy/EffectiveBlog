@@ -11,7 +11,8 @@
     },
     "plugins": [
         "highlight",
-        "search",
+        "-search",
+        "-lunr",
         "livereload",
         "splitter",
         "expandable-chapters-small",

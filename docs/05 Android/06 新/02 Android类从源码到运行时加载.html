@@ -1,0 +1,3429 @@
+
+<!DOCTYPE HTML>
+<html lang="zh-hans" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>02 Android类从源码到运行时加载 · Mezzsy is here</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        <meta name="author" content="Mezzsy">
+        
+        
+    
+    <link rel="stylesheet" href="../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-splitter/splitter.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-expandable-chapters-small/expandable-chapters-small.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-anchors/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-anchor-navigation-ex/style/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../../06 计算机网络/" />
+    
+    
+    <link rel="prev" href="01 Google Dynamic Feature插件.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    00 介绍
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../../01 语言/">
+            
+                <a href="../../01 语言/">
+            
+                    
+                    01 语言
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../../01 语言/01 Cpp/">
+            
+                <a href="../../01 语言/01 Cpp/">
+            
+                    
+                    01 Cpp
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.1" data-path="../../01 语言/01 Cpp/原理总结/">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/">
+            
+                    
+                    原理总结
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.1.1" data-path="../../01 语言/01 Cpp/原理总结/其它.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/其它.html">
+            
+                    
+                    其它
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.2" data-path="../../01 语言/01 Cpp/原理总结/函数.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/函数.html">
+            
+                    
+                    函数
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.3" data-path="../../01 语言/01 Cpp/原理总结/对象.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/对象.html">
+            
+                    
+                    对象
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.4" data-path="../../01 语言/01 Cpp/原理总结/成员变量.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/成员变量.html">
+            
+                    
+                    成员变量
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.5" data-path="../../01 语言/01 Cpp/原理总结/执行期.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/执行期.html">
+            
+                    
+                    执行期
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.6" data-path="../../01 语言/01 Cpp/原理总结/构造函数.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/构造函数.html">
+            
+                    
+                    构造函数
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.1.7" data-path="../../01 语言/01 Cpp/原理总结/构造析构拷贝.html">
+            
+                <a href="../../01 语言/01 Cpp/原理总结/构造析构拷贝.html">
+            
+                    
+                    构造析构拷贝
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2" data-path="../../01 语言/01 Cpp/知识点/">
+            
+                <a href="../../01 语言/01 Cpp/知识点/">
+            
+                    
+                    知识点
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.2.1" data-path="../../01 语言/01 Cpp/知识点/01 基础.html">
+            
+                <a href="../../01 语言/01 Cpp/知识点/01 基础.html">
+            
+                    
+                    01 基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.2" data-path="../../01 语言/01 Cpp/知识点/类.html">
+            
+                <a href="../../01 语言/01 Cpp/知识点/类.html">
+            
+                    
+                    类
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2.3" data-path="../../01 语言/01 Cpp/知识点/线程.html">
+            
+                <a href="../../01 语言/01 Cpp/知识点/线程.html">
+            
+                    
+                    线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../../01 语言/02 Java/">
+            
+                <a href="../../01 语言/02 Java/">
+            
+                    
+                    02 Java
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.2.1" data-path="../../01 语言/02 Java/Java-IO.html">
+            
+                <a href="../../01 语言/02 Java/Java-IO.html">
+            
+                    
+                    Java-IO
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.2" data-path="../../01 语言/02 Java/Java反射机制和泛型.html">
+            
+                <a href="../../01 语言/02 Java/Java反射机制和泛型.html">
+            
+                    
+                    Java反射机制和泛型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.3" data-path="../../01 语言/02 Java/Java基础知识.html">
+            
+                <a href="../../01 语言/02 Java/Java基础知识.html">
+            
+                    
+                    Java基础知识
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.4" data-path="../../01 语言/02 Java/Java异常机制.html">
+            
+                <a href="../../01 语言/02 Java/Java异常机制.html">
+            
+                    
+                    Java异常机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.5" data-path="../../01 语言/02 Java/并发.html">
+            
+                <a href="../../01 语言/02 Java/并发.html">
+            
+                    
+                    并发
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.6" data-path="../../01 语言/02 Java/异常.html">
+            
+                <a href="../../01 语言/02 Java/异常.html">
+            
+                    
+                    异常
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.7" data-path="../../01 语言/02 Java/禁止在foreach循环里进行元素的remove-add操作.html">
+            
+                <a href="../../01 语言/02 Java/禁止在foreach循环里进行元素的remove-add操作.html">
+            
+                    
+                    禁止在foreach循环里进行元素的remove-add操作
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2.8" data-path="../../01 语言/02 Java/类和接口.html">
+            
+                <a href="../../01 语言/02 Java/类和接口.html">
+            
+                    
+                    类和接口
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../../02 计算机系统/">
+            
+                <a href="../../02 计算机系统/">
+            
+                    
+                    02 计算机系统
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../../02 计算机系统/01-操作系统.html">
+            
+                <a href="../../02 计算机系统/01-操作系统.html">
+            
+                    
+                    01-操作系统
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../../02 计算机系统/02-内存.html">
+            
+                <a href="../../02 计算机系统/02-内存.html">
+            
+                    
+                    02-内存
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../../02 计算机系统/03-线程.html">
+            
+                <a href="../../02 计算机系统/03-线程.html">
+            
+                    
+                    03-线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../../02 计算机系统/04-编译链接.html">
+            
+                <a href="../../02 计算机系统/04-编译链接.html">
+            
+                    
+                    04-编译链接
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../../02 计算机系统/深入理解计算机系统/">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/">
+            
+                    
+                    深入理解计算机系统
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.5.1" data-path="../../02 计算机系统/深入理解计算机系统/01-计算机系统漫游.html">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/01-计算机系统漫游.html">
+            
+                    
+                    01-计算机系统漫游
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.2" data-path="../../02 计算机系统/深入理解计算机系统/02-信息的表示和处理.html">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/02-信息的表示和处理.html">
+            
+                    
+                    02-信息的表示和处理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.3" data-path="../../02 计算机系统/深入理解计算机系统/07-链接.html">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/07-链接.html">
+            
+                    
+                    07-链接
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.4" data-path="../../02 计算机系统/深入理解计算机系统/09-虚拟内存.html">
+            
+                <a href="../../02 计算机系统/深入理解计算机系统/09-虚拟内存.html">
+            
+                    
+                    09-虚拟内存
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../../03 Java/">
+            
+                <a href="../../03 Java/">
+            
+                    
+                    03 Java
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../../03 Java/01 Java知识点/">
+            
+                <a href="../../03 Java/01 Java知识点/">
+            
+                    
+                    01 Java知识点
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1.1" data-path="../../03 Java/01 Java知识点/Java基础知识.html">
+            
+                <a href="../../03 Java/01 Java知识点/Java基础知识.html">
+            
+                    
+                    Java基础知识
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.2" data-path="../../03 Java/01 Java知识点/Java问题.html">
+            
+                <a href="../../03 Java/01 Java知识点/Java问题.html">
+            
+                    
+                    Java问题
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.3" data-path="../../03 Java/01 Java知识点/泛型.html">
+            
+                <a href="../../03 Java/01 Java知识点/泛型.html">
+            
+                    
+                    泛型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.4" data-path="../../03 Java/01 Java知识点/注解.html">
+            
+                <a href="../../03 Java/01 Java知识点/注解.html">
+            
+                    
+                    注解
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../../03 Java/02 Java虚拟机/">
+            
+                <a href="../../03 Java/02 Java虚拟机/">
+            
+                    
+                    02 Java虚拟机
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.2.1" data-path="../../03 Java/02 Java虚拟机/01-Java介绍.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/01-Java介绍.html">
+            
+                    
+                    01-Java介绍
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.2" data-path="../../03 Java/02 Java虚拟机/02-内存区域.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/02-内存区域.html">
+            
+                    
+                    02-内存区域
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.3" data-path="../../03 Java/02 Java虚拟机/03-垃圾收集TODO.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/03-垃圾收集TODO.html">
+            
+                    
+                    03-垃圾收集TODO
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.4" data-path="../../03 Java/02 Java虚拟机/06-类文件结构.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/06-类文件结构.html">
+            
+                    
+                    06-类文件结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.5" data-path="../../03 Java/02 Java虚拟机/07-虚拟机类加载机制.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/07-虚拟机类加载机制.html">
+            
+                    
+                    07-虚拟机类加载机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.6" data-path="../../03 Java/02 Java虚拟机/08-虚拟机字节码执行引擎.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/08-虚拟机字节码执行引擎.html">
+            
+                    
+                    08-虚拟机字节码执行引擎
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.7" data-path="../../03 Java/02 Java虚拟机/12-Java内存模型与线程.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/12-Java内存模型与线程.html">
+            
+                    
+                    12-Java内存模型与线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.8" data-path="../../03 Java/02 Java虚拟机/13-线程安全与锁优化.html">
+            
+                <a href="../../03 Java/02 Java虚拟机/13-线程安全与锁优化.html">
+            
+                    
+                    13-线程安全与锁优化
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../../03 Java/03 常用源码分析/">
+            
+                <a href="../../03 Java/03 常用源码分析/">
+            
+                    
+                    03 常用源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.3.1" data-path="../../03 Java/03 常用源码分析/ArrayList源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/ArrayList源码分析.html">
+            
+                    
+                    ArrayList源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.2" data-path="../../03 Java/03 常用源码分析/ConcurrentHashMap源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/ConcurrentHashMap源码分析.html">
+            
+                    
+                    ConcurrentHashMap源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.3" data-path="../../03 Java/03 常用源码分析/HashMap源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/HashMap源码分析.html">
+            
+                    
+                    HashMap源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.4" data-path="../../03 Java/03 常用源码分析/HashTable源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/HashTable源码分析.html">
+            
+                    
+                    HashTable源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.5" data-path="../../03 Java/03 常用源码分析/LinkedHashMap源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/LinkedHashMap源码分析.html">
+            
+                    
+                    LinkedHashMap源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.6" data-path="../../03 Java/03 常用源码分析/LinkedList源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/LinkedList源码分析.html">
+            
+                    
+                    LinkedList源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.7" data-path="../../03 Java/03 常用源码分析/ThreadLocal源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/ThreadLocal源码分析.html">
+            
+                    
+                    ThreadLocal源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3.8" data-path="../../03 Java/03 常用源码分析/线程池源码分析.html">
+            
+                <a href="../../03 Java/03 常用源码分析/线程池源码分析.html">
+            
+                    
+                    线程池源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../../03 Kotlin/">
+            
+                <a href="../../03 Kotlin/">
+            
+                    
+                    03 Kotlin
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../../03 Kotlin/KMP/">
+            
+                <a href="../../03 Kotlin/KMP/">
+            
+                    
+                    KMP
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1.1" data-path="../../03 Kotlin/KMP/KMP基础概念与工程结构.html">
+            
+                <a href="../../03 Kotlin/KMP/KMP基础概念与工程结构.html">
+            
+                    
+                    KMP基础概念与工程结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../../03 Kotlin/KMP学习路径.html">
+            
+                <a href="../../03 Kotlin/KMP学习路径.html">
+            
+                    
+                    KMP学习路径
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="../../03 Kotlin/协程与异步编程.html">
+            
+                <a href="../../03 Kotlin/协程与异步编程.html">
+            
+                    
+                    协程与异步编程
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../../04 源码分析/">
+            
+                <a href="../../04 源码分析/">
+            
+                    
+                    04 源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../../04 源码分析/AddressSanitizer.html">
+            
+                <a href="../../04 源码分析/AddressSanitizer.html">
+            
+                    
+                    AddressSanitizer
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="../../04 源码分析/ByteX.html">
+            
+                <a href="../../04 源码分析/ByteX.html">
+            
+                    
+                    ByteX
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3" data-path="../../04 源码分析/PltHook.html">
+            
+                <a href="../../04 源码分析/PltHook.html">
+            
+                    
+                    PltHook
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4" data-path="../../04 源码分析/Raphael分析.html">
+            
+                <a href="../../04 源码分析/Raphael分析.html">
+            
+                    
+                    Raphael分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.5" data-path="../../04 源码分析/基于fp的栈回朔.html">
+            
+                <a href="../../04 源码分析/基于fp的栈回朔.html">
+            
+                    
+                    基于fp的栈回朔
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    05 Android
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.1" data-path="../01 Android源码分析/">
+            
+                <a href="../01 Android源码分析/">
+            
+                    
+                    01 Android源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.1.1" data-path="../01 Android源码分析/01 系统启动过程.html">
+            
+                <a href="../01 Android源码分析/01 系统启动过程.html">
+            
+                    
+                    01 系统启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.2" data-path="../01 Android源码分析/02 应用进程启动过程.html">
+            
+                <a href="../01 Android源码分析/02 应用进程启动过程.html">
+            
+                    
+                    02 应用进程启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.3" data-path="../01 Android源码分析/03 Activity启动过程.html">
+            
+                <a href="../01 Android源码分析/03 Activity启动过程.html">
+            
+                    
+                    03 Activity启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.4" data-path="../01 Android源码分析/04 其它组件启动过程.html">
+            
+                <a href="../01 Android源码分析/04 其它组件启动过程.html">
+            
+                    
+                    04 其它组件启动过程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.5" data-path="../01 Android源码分析/05 Context总结.html">
+            
+                <a href="../01 Android源码分析/05 Context总结.html">
+            
+                    
+                    05 Context总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.6" data-path="../01 Android源码分析/06 AMS.html">
+            
+                <a href="../01 Android源码分析/06 AMS.html">
+            
+                    
+                    06 AMS
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.7" data-path="../01 Android源码分析/07 WM.html">
+            
+                <a href="../01 Android源码分析/07 WM.html">
+            
+                    
+                    07 WM
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.8" data-path="../01 Android源码分析/08 WMS.html">
+            
+                <a href="../01 Android源码分析/08 WMS.html">
+            
+                    
+                    08 WMS
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.9" data-path="../01 Android源码分析/10 JNI.html">
+            
+                <a href="../01 Android源码分析/10 JNI.html">
+            
+                    
+                    10 JNI
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.10" data-path="../01 Android源码分析/13 ClassLoader.html">
+            
+                <a href="../01 Android源码分析/13 ClassLoader.html">
+            
+                    
+                    13 ClassLoader
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.11" data-path="../01 Android源码分析/14 热修复.html">
+            
+                <a href="../01 Android源码分析/14 热修复.html">
+            
+                    
+                    14 热修复
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.12" data-path="../01 Android源码分析/15 Hook.html">
+            
+                <a href="../01 Android源码分析/15 Hook.html">
+            
+                    
+                    15 Hook
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.13" data-path="../01 Android源码分析/16 插件化.html">
+            
+                <a href="../01 Android源码分析/16 插件化.html">
+            
+                    
+                    16 插件化
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.14" data-path="../01 Android源码分析/17 绘制流程-生产者.html">
+            
+                <a href="../01 Android源码分析/17 绘制流程-生产者.html">
+            
+                    
+                    17 绘制流程-生产者
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.15" data-path="../01 Android源码分析/18 绘制流程-消费者.html">
+            
+                <a href="../01 Android源码分析/18 绘制流程-消费者.html">
+            
+                    
+                    18 绘制流程-消费者
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.16" data-path="../01 Android源码分析/19 渲染总结.html">
+            
+                <a href="../01 Android源码分析/19 渲染总结.html">
+            
+                    
+                    19 渲染总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.17" data-path="../01 Android源码分析/20 硬件加速.html">
+            
+                <a href="../01 Android源码分析/20 硬件加速.html">
+            
+                    
+                    20 硬件加速
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.1.18" data-path="../01 Android源码分析/21 Android资源管理原理.html">
+            
+                <a href="../01 Android源码分析/21 Android资源管理原理.html">
+            
+                    
+                    21 Android资源管理原理
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2" data-path="../02 Android应用和原理/">
+            
+                <a href="../02 Android应用和原理/">
+            
+                    
+                    02 Android应用和原理
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.2.1" data-path="../02 Android应用和原理/Android动画.html">
+            
+                <a href="../02 Android应用和原理/Android动画.html">
+            
+                    
+                    Android动画
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2.2" data-path="../02 Android应用和原理/Android消息机制.html">
+            
+                <a href="../02 Android应用和原理/Android消息机制.html">
+            
+                    
+                    Android消息机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2.3" data-path="../02 Android应用和原理/Android的跨进程通信.html">
+            
+                <a href="../02 Android应用和原理/Android的跨进程通信.html">
+            
+                    
+                    Android的跨进程通信
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2.4" data-path="../02 Android应用和原理/Android类加载机制.html">
+            
+                <a href="../02 Android应用和原理/Android类加载机制.html">
+            
+                    
+                    Android类加载机制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2.5" data-path="../02 Android应用和原理/Android线程.html">
+            
+                <a href="../02 Android应用和原理/Android线程.html">
+            
+                    
+                    Android线程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2.6" data-path="../02 Android应用和原理/Drawable.html">
+            
+                <a href="../02 Android应用和原理/Drawable.html">
+            
+                    
+                    Drawable
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2.7" data-path="../02 Android应用和原理/View手势事件.html">
+            
+                <a href="../02 Android应用和原理/View手势事件.html">
+            
+                    
+                    View手势事件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2.8" data-path="../02 Android应用和原理/View绘制基础.html">
+            
+                <a href="../02 Android应用和原理/View绘制基础.html">
+            
+                    
+                    View绘制基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2.9" data-path="../02 Android应用和原理/四大组件.html">
+            
+                <a href="../02 Android应用和原理/四大组件.html">
+            
+                    
+                    四大组件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2.10" data-path="../02 Android应用和原理/性能优化.html">
+            
+                <a href="../02 Android应用和原理/性能优化.html">
+            
+                    
+                    性能优化
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2.11" data-path="../02 Android应用和原理/虚拟机.html">
+            
+                <a href="../02 Android应用和原理/虚拟机.html">
+            
+                    
+                    虚拟机
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2.12" data-path="../02 Android应用和原理/面试题.html">
+            
+                <a href="../02 Android应用和原理/面试题.html">
+            
+                    
+                    面试题
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3" data-path="../03 Android应用手册/">
+            
+                <a href="../03 Android应用手册/">
+            
+                    
+                    03 Android应用手册
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.3.1" data-path="../03 Android应用手册/四大组件/">
+            
+                <a href="../03 Android应用手册/四大组件/">
+            
+                    
+                    四大组件
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.3.1.1" data-path="../03 Android应用手册/四大组件/Android启动模式研究.html">
+            
+                <a href="../03 Android应用手册/四大组件/Android启动模式研究.html">
+            
+                    
+                    Android启动模式研究
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.1.2" data-path="../03 Android应用手册/四大组件/Android生命周期.html">
+            
+                <a href="../03 Android应用手册/四大组件/Android生命周期.html">
+            
+                    
+                    Android生命周期
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.1.3" data-path="../03 Android应用手册/四大组件/Broadcast.html">
+            
+                <a href="../03 Android应用手册/四大组件/Broadcast.html">
+            
+                    
+                    Broadcast
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.2" data-path="../03 Android应用手册/架构组件/">
+            
+                <a href="../03 Android应用手册/架构组件/">
+            
+                    
+                    架构组件
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.3.2.1" data-path="../03 Android应用手册/架构组件/LiveData.html">
+            
+                <a href="../03 Android应用手册/架构组件/LiveData.html">
+            
+                    
+                    LiveData
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.2.2" data-path="../03 Android应用手册/架构组件/Navigation.html">
+            
+                <a href="../03 Android应用手册/架构组件/Navigation.html">
+            
+                    
+                    Navigation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.2.3" data-path="../03 Android应用手册/架构组件/ViewModel.html">
+            
+                <a href="../03 Android应用手册/架构组件/ViewModel.html">
+            
+                    
+                    ViewModel
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.3" data-path="../03 Android应用手册/视图/">
+            
+                <a href="../03 Android应用手册/视图/">
+            
+                    
+                    视图
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.3.3.1" data-path="../03 Android应用手册/视图/Android动画.html">
+            
+                <a href="../03 Android应用手册/视图/Android动画.html">
+            
+                    
+                    Android动画
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.3.2" data-path="../03 Android应用手册/视图/Android布局.html">
+            
+                <a href="../03 Android应用手册/视图/Android布局.html">
+            
+                    
+                    Android布局
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.3.3" data-path="../03 Android应用手册/视图/Android控件.html">
+            
+                <a href="../03 Android应用手册/视图/Android控件.html">
+            
+                    
+                    Android控件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.3.4" data-path="../03 Android应用手册/视图/Drawable.html">
+            
+                <a href="../03 Android应用手册/视图/Drawable.html">
+            
+                    
+                    Drawable
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.3.5" data-path="../03 Android应用手册/视图/View绘制.html">
+            
+                <a href="../03 Android应用手册/视图/View绘制.html">
+            
+                    
+                    View绘制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.3.6" data-path="../03 Android应用手册/视图/视图相关工具类.html">
+            
+                <a href="../03 Android应用手册/视图/视图相关工具类.html">
+            
+                    
+                    视图相关工具类
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.3.7" data-path="../03 Android应用手册/视图/资源文件.html">
+            
+                <a href="../03 Android应用手册/视图/资源文件.html">
+            
+                    
+                    资源文件
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.4" data-path="../03 Android应用手册/项目/">
+            
+                <a href="../03 Android应用手册/项目/">
+            
+                    
+                    项目
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.3.4.1" data-path="../03 Android应用手册/项目/命令行调试.html">
+            
+                <a href="../03 Android应用手册/项目/命令行调试.html">
+            
+                    
+                    命令行调试
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.3.4.2" data-path="../03 Android应用手册/项目/打包.html">
+            
+                <a href="../03 Android应用手册/项目/打包.html">
+            
+                    
+                    打包
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.4" data-path="../04 常用类源码分析/">
+            
+                <a href="../04 常用类源码分析/">
+            
+                    
+                    04 常用类源码分析
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.4.1" data-path="../04 常用类源码分析/AsyncTask源码分析.html">
+            
+                <a href="../04 常用类源码分析/AsyncTask源码分析.html">
+            
+                    
+                    AsyncTask源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.4.2" data-path="../04 常用类源码分析/EventBus源码分析.html">
+            
+                <a href="../04 常用类源码分析/EventBus源码分析.html">
+            
+                    
+                    EventBus源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.4.3" data-path="../04 常用类源码分析/Glide源码分析.html">
+            
+                <a href="../04 常用类源码分析/Glide源码分析.html">
+            
+                    
+                    Glide源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.4.4" data-path="../04 常用类源码分析/Handler源码分析.html">
+            
+                <a href="../04 常用类源码分析/Handler源码分析.html">
+            
+                    
+                    Handler源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.4.5" data-path="../04 常用类源码分析/LeakCanary.html">
+            
+                <a href="../04 常用类源码分析/LeakCanary.html">
+            
+                    
+                    LeakCanary
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.4.6" data-path="../04 常用类源码分析/LinearLayout源码分析.html">
+            
+                <a href="../04 常用类源码分析/LinearLayout源码分析.html">
+            
+                    
+                    LinearLayout源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.4.7" data-path="../04 常用类源码分析/ListView源码分析.html">
+            
+                <a href="../04 常用类源码分析/ListView源码分析.html">
+            
+                    
+                    ListView源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.4.8" data-path="../04 常用类源码分析/LruCache源码分析.html">
+            
+                <a href="../04 常用类源码分析/LruCache源码分析.html">
+            
+                    
+                    LruCache源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.4.9" data-path="../04 常用类源码分析/OkHttp3源码分析.html">
+            
+                <a href="../04 常用类源码分析/OkHttp3源码分析.html">
+            
+                    
+                    OkHttp3源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.4.10" data-path="../04 常用类源码分析/Retrofit2源码分析.html">
+            
+                <a href="../04 常用类源码分析/Retrofit2源码分析.html">
+            
+                    
+                    Retrofit2源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.4.11" data-path="../04 常用类源码分析/RxJava2源码分析.html">
+            
+                <a href="../04 常用类源码分析/RxJava2源码分析.html">
+            
+                    
+                    RxJava2源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.4.12" data-path="../04 常用类源码分析/SparseArray源码分析.html">
+            
+                <a href="../04 常用类源码分析/SparseArray源码分析.html">
+            
+                    
+                    SparseArray源码分析
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.5" data-path="../05 性能优化工具/">
+            
+                <a href="../05 性能优化工具/">
+            
+                    
+                    05 性能优化工具
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.5.1" data-path="../05 性能优化工具/cpu工具.html">
+            
+                <a href="../05 性能优化工具/cpu工具.html">
+            
+                    
+                    cpu工具
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.6" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    06 新
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.6.1" data-path="01 Google Dynamic Feature插件.html">
+            
+                <a href="01 Google Dynamic Feature插件.html">
+            
+                    
+                    01 Google Dynamic Feature插件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.7.6.2" data-path="02 Android类从源码到运行时加载.html">
+            
+                <a href="02 Android类从源码到运行时加载.html">
+            
+                    
+                    02 Android类从源码到运行时加载
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../../06 计算机网络/">
+            
+                <a href="../../06 计算机网络/">
+            
+                    
+                    06 计算机网络
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.8.1" data-path="../../06 计算机网络/计算机网络.html">
+            
+                <a href="../../06 计算机网络/计算机网络.html">
+            
+                    
+                    计算机网络
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="../../07 设计模式/">
+            
+                <a href="../../07 设计模式/">
+            
+                    
+                    07 设计模式
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.9.1" data-path="../../07 设计模式/Builder模式.html">
+            
+                <a href="../../07 设计模式/Builder模式.html">
+            
+                    
+                    Builder模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.2" data-path="../../07 设计模式/代理模式.html">
+            
+                <a href="../../07 设计模式/代理模式.html">
+            
+                    
+                    代理模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3" data-path="../../07 设计模式/其它设计模式/">
+            
+                <a href="../../07 设计模式/其它设计模式/">
+            
+                    
+                    其它设计模式
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.9.3.1" data-path="../../07 设计模式/其它设计模式/中介者模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/中介者模式.html">
+            
+                    
+                    中介者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.2" data-path="../../07 设计模式/其它设计模式/享元模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/享元模式.html">
+            
+                    
+                    享元模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.3" data-path="../../07 设计模式/其它设计模式/原型模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/原型模式.html">
+            
+                    
+                    原型模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.4" data-path="../../07 设计模式/其它设计模式/命令模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/命令模式.html">
+            
+                    
+                    命令模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.5" data-path="../../07 设计模式/其它设计模式/备忘录模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/备忘录模式.html">
+            
+                    
+                    备忘录模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.6" data-path="../../07 设计模式/其它设计模式/外观模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/外观模式.html">
+            
+                    
+                    外观模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.7" data-path="../../07 设计模式/其它设计模式/工厂方法模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/工厂方法模式.html">
+            
+                    
+                    工厂方法模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.8" data-path="../../07 设计模式/其它设计模式/抽象工厂模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/抽象工厂模式.html">
+            
+                    
+                    抽象工厂模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.9" data-path="../../07 设计模式/其它设计模式/框架模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/框架模式.html">
+            
+                    
+                    框架模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.10" data-path="../../07 设计模式/其它设计模式/桥接模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/桥接模式.html">
+            
+                    
+                    桥接模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.11" data-path="../../07 设计模式/其它设计模式/模板方法模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/模板方法模式.html">
+            
+                    
+                    模板方法模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.12" data-path="../../07 设计模式/其它设计模式/状态模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/状态模式.html">
+            
+                    
+                    状态模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.13" data-path="../../07 设计模式/其它设计模式/策略模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/策略模式.html">
+            
+                    
+                    策略模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.14" data-path="../../07 设计模式/其它设计模式/组合模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/组合模式.html">
+            
+                    
+                    组合模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.15" data-path="../../07 设计模式/其它设计模式/装饰模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/装饰模式.html">
+            
+                    
+                    装饰模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.16" data-path="../../07 设计模式/其它设计模式/解释器模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/解释器模式.html">
+            
+                    
+                    解释器模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.17" data-path="../../07 设计模式/其它设计模式/访问者模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/访问者模式.html">
+            
+                    
+                    访问者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.18" data-path="../../07 设计模式/其它设计模式/责任链模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/责任链模式.html">
+            
+                    
+                    责任链模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.19" data-path="../../07 设计模式/其它设计模式/迭代器模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/迭代器模式.html">
+            
+                    
+                    迭代器模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.20" data-path="../../07 设计模式/其它设计模式/适配器模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/适配器模式.html">
+            
+                    
+                    适配器模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3.21" data-path="../../07 设计模式/其它设计模式/静态工厂方法模式.html">
+            
+                <a href="../../07 设计模式/其它设计模式/静态工厂方法模式.html">
+            
+                    
+                    静态工厂方法模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.4" data-path="../../07 设计模式/单例模式.html">
+            
+                <a href="../../07 设计模式/单例模式.html">
+            
+                    
+                    单例模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.5" data-path="../../07 设计模式/架构模式.html">
+            
+                <a href="../../07 设计模式/架构模式.html">
+            
+                    
+                    架构模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.6" data-path="../../07 设计模式/生产者消费者模式.html">
+            
+                <a href="../../07 设计模式/生产者消费者模式.html">
+            
+                    
+                    生产者消费者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.7" data-path="../../07 设计模式/观察者模式.html">
+            
+                <a href="../../07 设计模式/观察者模式.html">
+            
+                    
+                    观察者模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10" data-path="../../08 杂项/">
+            
+                <a href="../../08 杂项/">
+            
+                    
+                    08 杂项
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.10.1" data-path="../../08 杂项/git手册/">
+            
+                <a href="../../08 杂项/git手册/">
+            
+                    
+                    git手册
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10.2" data-path="../../08 杂项/常用命令/">
+            
+                <a href="../../08 杂项/常用命令/">
+            
+                    
+                    常用命令
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10.3" data-path="../../08 杂项/环境搭建记录/">
+            
+                <a href="../../08 杂项/环境搭建记录/">
+            
+                    
+                    环境搭建记录
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.10.3.1" data-path="../../08 杂项/环境搭建记录/环境搭建.html">
+            
+                <a href="../../08 杂项/环境搭建记录/环境搭建.html">
+            
+                    
+                    环境搭建
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11" data-path="../../09 Gradle总结/">
+            
+                <a href="../../09 Gradle总结/">
+            
+                    
+                    09 Gradle总结
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.11.1" data-path="../../09 Gradle总结/Gradle总结.html">
+            
+                <a href="../../09 Gradle总结/Gradle总结.html">
+            
+                    
+                    Gradle总结
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12" data-path="../../10 Ai/">
+            
+                <a href="../../10 Ai/">
+            
+                    
+                    10 Ai
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.12.1" data-path="../../10 Ai/00 Ai基础概念.html">
+            
+                <a href="../../10 Ai/00 Ai基础概念.html">
+            
+                    
+                    00 Ai基础概念
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.2" data-path="../../10 Ai/01 Codex 型通用 Agent 的工作方式.html">
+            
+                <a href="../../10 Ai/01 Codex 型通用 Agent 的工作方式.html">
+            
+                    
+                    01 Codex 型通用 Agent 的工作方式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.3" data-path="../../10 Ai/02 上下文工程和 AGENTS.html">
+            
+                <a href="../../10 Ai/02 上下文工程和 AGENTS.html">
+            
+                    
+                    02 上下文工程和 AGENTS
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.4" data-path="../../10 Ai/03 OpenClaw.html">
+            
+                <a href="../../10 Ai/03 OpenClaw.html">
+            
+                    
+                    03 OpenClaw
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.5" data-path="../../10 Ai/AI Native Agent 学习资料.html">
+            
+                <a href="../../10 Ai/AI Native Agent 学习资料.html">
+            
+                    
+                    AI Native Agent 学习资料
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.6" data-path="../../10 Ai/知识点/">
+            
+                <a href="../../10 Ai/知识点/">
+            
+                    
+                    知识点
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.12.6.1" data-path="../../10 Ai/知识点/00 知识点总览.html">
+            
+                <a href="../../10 Ai/知识点/00 知识点总览.html">
+            
+                    
+                    00 知识点总览
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.6.2" data-path="../../10 Ai/知识点/01 大模型基础.html">
+            
+                <a href="../../10 Ai/知识点/01 大模型基础.html">
+            
+                    
+                    01 大模型基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.6.3" data-path="../../10 Ai/知识点/02 Agent.html">
+            
+                <a href="../../10 Ai/知识点/02 Agent.html">
+            
+                    
+                    02 Agent
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.6.4" data-path="../../10 Ai/知识点/结构化输出.html">
+            
+                <a href="../../10 Ai/知识点/结构化输出.html">
+            
+                    
+                    结构化输出
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13" data-path="../../11 服务端/">
+            
+                <a href="../../11 服务端/">
+            
+                    
+                    11 服务端
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.13.1" data-path="../../11 服务端/01 RPC调用.html">
+            
+                <a href="../../11 服务端/01 RPC调用.html">
+            
+                    
+                    01 RPC调用
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13.2" data-path="../../11 服务端/02 服务端缓存.html">
+            
+                <a href="../../11 服务端/02 服务端缓存.html">
+            
+                    
+                    02 服务端缓存
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13.3" data-path="../../11 服务端/03 分布式服务.html">
+            
+                <a href="../../11 服务端/03 分布式服务.html">
+            
+                    
+                    03 分布式服务
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.14" data-path="../../12 知识点/">
+            
+                <a href="../../12 知识点/">
+            
+                    
+                    12 知识点
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.14.1" data-path="../../12 知识点/04-操作系统.html">
+            
+                <a href="../../12 知识点/04-操作系统.html">
+            
+                    
+                    04-操作系统
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.14.2" data-path="../../12 知识点/06-数据结构.html">
+            
+                <a href="../../12 知识点/06-数据结构.html">
+            
+                    
+                    06-数据结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.14.3" data-path="../../12 知识点/07-第三方库.html">
+            
+                <a href="../../12 知识点/07-第三方库.html">
+            
+                    
+                    07-第三方库
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.14.4" data-path="../../12 知识点/08-设计模式.html">
+            
+                <a href="../../12 知识点/08-设计模式.html">
+            
+                    
+                    08-设计模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.14.5" data-path="../../12 知识点/09-算法.html">
+            
+                <a href="../../12 知识点/09-算法.html">
+            
+                    
+                    09-算法
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.14.6" data-path="../../12 知识点/10-计算机底层基础.html">
+            
+                <a href="../../12 知识点/10-计算机底层基础.html">
+            
+                    
+                    10-计算机底层基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            本书使用 GitBook 发布
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../.." >02 Android类从源码到运行时加载</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+                                <section class="normal markdown-section">
+                                
+                                <div id="anchor-navigation-ex-navbar"><i class="fa fa-navicon"></i><ul><li><span class="title-icon "></span><a href="#&#x5B8C;&#x6574;&#x94FE;&#x8DEF;"><b>1. </b>&#x5B8C;&#x6574;&#x94FE;&#x8DEF;</a></li><li><span class="title-icon "></span><a href="#&#x4ECE;&#x6E90;&#x7801;&#x5230;-jvm-&#x5B57;&#x8282;&#x7801;"><b>2. </b>&#x4ECE;&#x6E90;&#x7801;&#x5230; JVM &#x5B57;&#x8282;&#x7801;</a></li><ul><li><span class="title-icon "></span><a href="#kotlin-&#x4E0E;-java-&#x6E90;&#x7801;&#x7F16;&#x8BD1;"><b>2.1. </b>Kotlin &#x4E0E; Java &#x6E90;&#x7801;&#x7F16;&#x8BD1;</a></li><li><span class="title-icon "></span><a href="#&#x751F;&#x6210;&#x4EE3;&#x7801;&#x4E5F;&#x4F1A;&#x53C2;&#x4E0E;&#x7F16;&#x8BD1;"><b>2.2. </b>&#x751F;&#x6210;&#x4EE3;&#x7801;&#x4E5F;&#x4F1A;&#x53C2;&#x4E0E;&#x7F16;&#x8BD1;</a></li><li><span class="title-icon "></span><a href="#android-&#x4E0D;&#x76F4;&#x63A5;&#x6267;&#x884C;-class-&#x6587;&#x4EF6;"><b>2.3. </b>Android &#x4E0D;&#x76F4;&#x63A5;&#x6267;&#x884C; class &#x6587;&#x4EF6;</a></li></ul><li><span class="title-icon "></span><a href="#&#x4ECE;-class-&#x5230;-dex"><b>3. </b>&#x4ECE; class &#x5230; DEX</a></li><ul><li><span class="title-icon "></span><a href="#dex-&#x662F;&#x4EC0;&#x4E48;"><b>3.1. </b>DEX &#x662F;&#x4EC0;&#x4E48;</a></li><li><span class="title-icon "></span><a href="#desugaring"><b>3.2. </b>Desugaring</a></li><li><span class="title-icon "></span><a href="#d8-&#x7684;&#x804C;&#x8D23;"><b>3.3. </b>D8 &#x7684;&#x804C;&#x8D23;</a></li><li><span class="title-icon "></span><a href="#r8-&#x7684;&#x804C;&#x8D23;"><b>3.4. </b>R8 &#x7684;&#x804C;&#x8D23;</a></li><li><span class="title-icon "></span><a href="#&#x4E3A;&#x4EC0;&#x4E48;&#x4F1A;&#x6709;&#x591A;&#x4E2A;-dex"><b>3.5. </b>&#x4E3A;&#x4EC0;&#x4E48;&#x4F1A;&#x6709;&#x591A;&#x4E2A; DEX</a></li></ul><li><span class="title-icon "></span><a href="#dex-&#x5982;&#x4F55;&#x8FDB;&#x5165;-apk-&#x4E0E;-aab"><b>4. </b>DEX &#x5982;&#x4F55;&#x8FDB;&#x5165; APK &#x4E0E; AAB</a></li><ul><li><span class="title-icon "></span><a href="#apk-&#x4E2D;&#x7684;-dex"><b>4.1. </b>APK &#x4E2D;&#x7684; DEX</a></li><li><span class="title-icon "></span><a href="#aab-&#x4E2D;&#x7684;-dex"><b>4.2. </b>AAB &#x4E2D;&#x7684; DEX</a></li><li><span class="title-icon "></span><a href="#&#x6784;&#x5EFA;&#x671F;&#x4F9D;&#x8D56;&#x51B3;&#x5B9A;&#x4EE3;&#x7801;&#x53EF;&#x89C1;&#x6027;"><b>4.3. </b>&#x6784;&#x5EFA;&#x671F;&#x4F9D;&#x8D56;&#x51B3;&#x5B9A;&#x4EE3;&#x7801;&#x53EF;&#x89C1;&#x6027;</a></li></ul><li><span class="title-icon "></span><a href="#&#x5B89;&#x88C5;&#x4E0E;-art-&#x7F16;&#x8BD1;&#x4EA7;&#x7269;"><b>5. </b>&#x5B89;&#x88C5;&#x4E0E; ART &#x7F16;&#x8BD1;&#x4EA7;&#x7269;</a></li><ul><li><span class="title-icon "></span><a href="#packagemanager-&#x767B;&#x8BB0;-apk-&#x8DEF;&#x5F84;"><b>5.1. </b>PackageManager &#x767B;&#x8BB0; APK &#x8DEF;&#x5F84;</a></li><li><span class="title-icon "></span><a href="#dex-&#x4F18;&#x5316;&#x4E0D;&#x7B49;&#x4E8E;&#x7C7B;&#x52A0;&#x8F7D;"><b>5.2. </b>DEX &#x4F18;&#x5316;&#x4E0D;&#x7B49;&#x4E8E;&#x7C7B;&#x52A0;&#x8F7D;</a></li></ul><li><span class="title-icon "></span><a href="#&#x5E94;&#x7528;&#x8FDB;&#x7A0B;&#x5982;&#x4F55;&#x5EFA;&#x7ACB;&#x7C7B;&#x8DEF;&#x5F84;"><b>6. </b>&#x5E94;&#x7528;&#x8FDB;&#x7A0B;&#x5982;&#x4F55;&#x5EFA;&#x7ACB;&#x7C7B;&#x8DEF;&#x5F84;</a></li><ul><li><span class="title-icon "></span><a href="#zygote-&#x4E0E;&#x6846;&#x67B6;&#x7C7B;"><b>6.1. </b>Zygote &#x4E0E;&#x6846;&#x67B6;&#x7C7B;</a></li><li><span class="title-icon "></span><a href="#&#x7CFB;&#x7EDF;&#x6536;&#x96C6;-base-&#x4E0E;-split-&#x8DEF;&#x5F84;"><b>6.2. </b>&#x7CFB;&#x7EDF;&#x6536;&#x96C6; Base &#x4E0E; split &#x8DEF;&#x5F84;</a></li><li><span class="title-icon "></span><a href="#&#x9ED8;&#x8BA4;&#x6A21;&#x5F0F;&#x4E0E;-isolated-split"><b>6.3. </b>&#x9ED8;&#x8BA4;&#x6A21;&#x5F0F;&#x4E0E; isolated split</a></li><li><span class="title-icon "></span><a href="#&#x5E38;&#x89C1;-android-classloader"><b>6.4. </b>&#x5E38;&#x89C1; Android ClassLoader</a></li></ul><li><span class="title-icon "></span><a href="#classloader-&#x5185;&#x90E8;&#x5982;&#x4F55;&#x8868;&#x793A;-dex"><b>7. </b>ClassLoader &#x5185;&#x90E8;&#x5982;&#x4F55;&#x8868;&#x793A; DEX</a></li><ul><li><span class="title-icon "></span><a href="#basedexclassloader"><b>7.1. </b>BaseDexClassLoader</a></li><li><span class="title-icon "></span><a href="#dexpathlist-&#x4E0E;-dexelements"><b>7.2. </b>DexPathList &#x4E0E; dexElements</a></li><li><span class="title-icon "></span><a href="#dexfile"><b>7.3. </b>DexFile</a></li></ul><li><span class="title-icon "></span><a href="#&#x4E00;&#x4E2A;&#x7C7B;&#x5728;&#x8FD0;&#x884C;&#x65F6;&#x5982;&#x4F55;&#x88AB;&#x52A0;&#x8F7D;"><b>8. </b>&#x4E00;&#x4E2A;&#x7C7B;&#x5728;&#x8FD0;&#x884C;&#x65F6;&#x5982;&#x4F55;&#x88AB;&#x52A0;&#x8F7D;</a></li><ul><li><span class="title-icon "></span><a href="#&#x4EC0;&#x4E48;&#x64CD;&#x4F5C;&#x4F1A;&#x89E6;&#x53D1;&#x7C7B;&#x52A0;&#x8F7D;"><b>8.1. </b>&#x4EC0;&#x4E48;&#x64CD;&#x4F5C;&#x4F1A;&#x89E6;&#x53D1;&#x7C7B;&#x52A0;&#x8F7D;</a></li><li><span class="title-icon "></span><a href="#loadclass-&#x7684;&#x53CC;&#x4EB2;&#x59D4;&#x6D3E;"><b>8.2. </b>loadClass &#x7684;&#x53CC;&#x4EB2;&#x59D4;&#x6D3E;</a></li><li><span class="title-icon "></span><a href="#dex-&#x5185;&#x90E8;&#x67E5;&#x627E;"><b>8.3. </b>DEX &#x5185;&#x90E8;&#x67E5;&#x627E;</a></li><li><span class="title-icon "></span><a href="#&#x52A0;&#x8F7D;&#x3001;&#x94FE;&#x63A5;&#x548C;&#x521D;&#x59CB;&#x5316;"><b>8.4. </b>&#x52A0;&#x8F7D;&#x3001;&#x94FE;&#x63A5;&#x548C;&#x521D;&#x59CB;&#x5316;</a></li><li><span class="title-icon "></span><a href="#&#x7C7B;&#x4F55;&#x65F6;&#x771F;&#x6B63;&#x5360;&#x7528;&#x5185;&#x5B58;"><b>8.5. </b>&#x7C7B;&#x4F55;&#x65F6;&#x771F;&#x6B63;&#x5360;&#x7528;&#x5185;&#x5B58;</a></li><li><span class="title-icon "></span><a href="#&#x7C7B;&#x7684;&#x8EAB;&#x4EFD;&#x5305;&#x542B;-classloader"><b>8.6. </b>&#x7C7B;&#x7684;&#x8EAB;&#x4EFD;&#x5305;&#x542B; ClassLoader</a></li></ul><li><span class="title-icon "></span><a href="#&#x5E38;&#x89C1;&#x5F02;&#x5E38;&#x5BF9;&#x5E94;&#x94FE;&#x8DEF;&#x4E2D;&#x7684;&#x4F4D;&#x7F6E;"><b>9. </b>&#x5E38;&#x89C1;&#x5F02;&#x5E38;&#x5BF9;&#x5E94;&#x94FE;&#x8DEF;&#x4E2D;&#x7684;&#x4F4D;&#x7F6E;</a></li><li><span class="title-icon "></span><a href="#&#x52A8;&#x6001;&#x6269;&#x5C55;&#x7C7B;&#x8DEF;&#x5F84;"><b>10. </b>&#x52A8;&#x6001;&#x6269;&#x5C55;&#x7C7B;&#x8DEF;&#x5F84;</a></li><ul><li><span class="title-icon "></span><a href="#legacy-multidex"><b>10.1. </b>Legacy MultiDex</a></li><li><span class="title-icon "></span><a href="#dynamic-feature"><b>10.2. </b>Dynamic Feature</a></li><li><span class="title-icon "></span><a href="#&#x70ED;&#x4FEE;&#x590D;&#x4E0E;&#x63D2;&#x4EF6;&#x5316;"><b>10.3. </b>&#x70ED;&#x4FEE;&#x590D;&#x4E0E;&#x63D2;&#x4EF6;&#x5316;</a></li></ul><li><span class="title-icon "></span><a href="#&#x5982;&#x4F55;&#x89C2;&#x5BDF;&#x8FD9;&#x6761;&#x94FE;&#x8DEF;"><b>11. </b>&#x5982;&#x4F55;&#x89C2;&#x5BDF;&#x8FD9;&#x6761;&#x94FE;&#x8DEF;</a></li><ul><li><span class="title-icon "></span><a href="#&#x68C0;&#x67E5;&#x6784;&#x5EFA;&#x4EA7;&#x7269;&#x4E2D;&#x7684;-dex"><b>11.1. </b>&#x68C0;&#x67E5;&#x6784;&#x5EFA;&#x4EA7;&#x7269;&#x4E2D;&#x7684; DEX</a></li><li><span class="title-icon "></span><a href="#&#x68C0;&#x67E5;&#x8BBE;&#x5907;&#x4E0A;&#x7684;-apk-&#x8DEF;&#x5F84;"><b>11.2. </b>&#x68C0;&#x67E5;&#x8BBE;&#x5907;&#x4E0A;&#x7684; APK &#x8DEF;&#x5F84;</a></li><li><span class="title-icon "></span><a href="#&#x67E5;&#x770B;&#x7C7B;&#x4E0E;-classloader"><b>11.3. </b>&#x67E5;&#x770B;&#x7C7B;&#x4E0E; ClassLoader</a></li></ul><li><span class="title-icon "></span><a href="#&#x603B;&#x7ED3;"><b>12. </b>&#x603B;&#x7ED3;</a></li></ul></div><a href="#&#x5B8C;&#x6574;&#x94FE;&#x8DEF;" id="anchorNavigationExGoTop"><i class="fa fa-arrow-up"></i></a><blockquote>
+<p>&#x672C;&#x6587;&#x8BA8;&#x8BBA; Kotlin/Java &#x7F16;&#x5199;&#x7684; Android &#x6258;&#x7BA1;&#x4EE3;&#x7801;&#xFF0C;&#x4E0D;&#x8BA8;&#x8BBA; C/C++ &#x6E90;&#x7801;&#x7F16;&#x8BD1;&#x548C; native library &#x52A0;&#x8F7D;&#x3002;&#x91CD;&#x70B9;&#x4E0D;&#x662F;&#x67D0;&#x4E00;&#x4E2A; ClassLoader API&#xFF0C;&#x800C;&#x662F;&#x4E00;&#x6BB5;&#x4EE3;&#x7801;&#x5982;&#x4F55;&#x4ECE;&#x6E90;&#x7801;&#x53D8;&#x6210; DEX&#xFF0C;&#x5E76;&#x6700;&#x7EC8;&#x6210;&#x4E3A; ART &#x4E2D;&#x53EF;&#x4EE5;&#x6267;&#x884C;&#x7684;&#x7C7B;&#x3002;</p>
+</blockquote>
+<h1 id="&#x5B8C;&#x6574;&#x94FE;&#x8DEF;"><a name="&#x5B8C;&#x6574;&#x94FE;&#x8DEF;" class="anchor-navigation-ex-anchor" href="#&#x5B8C;&#x6574;&#x94FE;&#x8DEF;"><i class="fa fa-link" aria-hidden="true"></i></a>1. &#x5B8C;&#x6574;&#x94FE;&#x8DEF;</h1>
+<p>Android &#x7C7B;&#x4ECE;&#x6E90;&#x7801;&#x5230;&#x8FD0;&#x884C;&#x65F6;&#xFF0C;&#x5927;&#x81F4;&#x7ECF;&#x5386;&#x4E0B;&#x9762;&#x51E0;&#x4E2A;&#x9636;&#x6BB5;&#xFF1A;</p>
+<pre><code class="lang-text">Kotlin / Java &#x6E90;&#x7801;
+        &#x2193; Kotlin &#x7F16;&#x8BD1;&#x5668; / javac
+JVM &#x5B57;&#x8282;&#x7801;&#xFF08;.class&#xFF09;
+        &#x2193; D8&#xFF0C;&#x6216;&#x8005;&#x5F00;&#x542F;&#x538B;&#x7F29;&#x65F6;&#x7531; R8 &#x7EDF;&#x4E00;&#x5904;&#x7406;
+DEX &#x5B57;&#x8282;&#x7801;&#xFF08;classes.dex&#x3001;classes2.dex...&#xFF09;
+        &#x2193; Android Gradle Plugin &#x6253;&#x5305;
+APK&#xFF0C;&#x6216;&#x8005; AAB &#x4E2D;&#x5404;&#x6A21;&#x5757;&#x7684; DEX
+        &#x2193; &#x5B89;&#x88C5;
+Base APK / Split APK &#x88AB; PackageManager &#x767B;&#x8BB0;
+        &#x2193; &#x5E94;&#x7528;&#x8FDB;&#x7A0B;&#x542F;&#x52A8;
+&#x7CFB;&#x7EDF;&#x6839;&#x636E; APK &#x8DEF;&#x5F84;&#x521B;&#x5EFA;&#x5E94;&#x7528; ClassLoader
+        &#x2193; &#x67D0;&#x4E2A;&#x7C7B;&#x7B2C;&#x4E00;&#x6B21;&#x88AB;&#x4F7F;&#x7528;
+ClassLoader &#x67E5;&#x627E; DEX &#x2192; ART &#x5B9A;&#x4E49;&#x3001;&#x9A8C;&#x8BC1;&#x3001;&#x94FE;&#x63A5;&#x3001;&#x521D;&#x59CB;&#x5316;&#x7C7B;
+        &#x2193; &#x65B9;&#x6CD5;&#x88AB;&#x6267;&#x884C;
+&#x89E3;&#x91CA;&#x6267;&#x884C;&#xFF0C;&#x6216;&#x8005;&#x8FD0;&#x884C; AOT / JIT &#x7F16;&#x8BD1;&#x540E;&#x7684;&#x673A;&#x5668;&#x7801;
+</code></pre>
+<p>&#x8FD9;&#x6761;&#x94FE;&#x8DEF;&#x6709;&#x4E09;&#x7EC4;&#x6982;&#x5FF5;&#x4E0D;&#x80FD;&#x6DF7;&#x4E3A;&#x4E00;&#x8C08;&#xFF1A;</p>
+<table>
+<thead>
+<tr>
+<th>&#x6982;&#x5FF5;</th>
+<th>&#x89E3;&#x51B3;&#x7684;&#x95EE;&#x9898;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&#x7F16;&#x8BD1;&#x4E0E; DEX &#x8F6C;&#x6362;</td>
+<td>&#x6E90;&#x7801;&#x5982;&#x4F55;&#x53D8;&#x6210; Android &#x80FD;&#x8BC6;&#x522B;&#x7684;&#x5B57;&#x8282;&#x7801;</td>
+</tr>
+<tr>
+<td>&#x6253;&#x5305;&#x4E0E;&#x5B89;&#x88C5;</td>
+<td>DEX &#x88AB;&#x653E;&#x5728;&#x54EA;&#x4E2A; APK &#x4E2D;&#xFF0C;&#x8BBE;&#x5907;&#x4E0A;&#x6709;&#x54EA;&#x4E9B;&#x4EE3;&#x7801;&#x6587;&#x4EF6;</td>
+</tr>
+<tr>
+<td>&#x7C7B;&#x52A0;&#x8F7D;&#x4E0E;&#x4EE3;&#x7801;&#x6267;&#x884C;</td>
+<td>&#x8FD0;&#x884C;&#x65F6;&#x5982;&#x4F55;&#x627E;&#x5230;&#x7C7B;&#xFF0C;&#x4EE5;&#x53CA;&#x7C7B;&#x7684;&#x65B9;&#x6CD5;&#x6700;&#x7EC8;&#x5982;&#x4F55;&#x6267;&#x884C;</td>
+</tr>
+</tbody>
+</table>
+<p>&#x5176;&#x4E2D;&#x201C;&#x7C7B;&#x5DF2;&#x7ECF;&#x80FD;&#x88AB; ClassLoader &#x627E;&#x5230;&#x201D;&#x548C;&#x201C;&#x8FD9;&#x4E2A;&#x7C7B;&#x7684;&#x6240;&#x6709;&#x4EE3;&#x7801;&#x5DF2;&#x7ECF;&#x52A0;&#x8F7D;&#x3001;&#x7F16;&#x8BD1;&#x5E76;&#x6267;&#x884C;&#x201D;&#x4E0D;&#x662F;&#x4E00;&#x56DE;&#x4E8B;&#x3002;</p>
+<h1 id="&#x4ECE;&#x6E90;&#x7801;&#x5230;-jvm-&#x5B57;&#x8282;&#x7801;"><a name="&#x4ECE;&#x6E90;&#x7801;&#x5230;-jvm-&#x5B57;&#x8282;&#x7801;" class="anchor-navigation-ex-anchor" href="#&#x4ECE;&#x6E90;&#x7801;&#x5230;-jvm-&#x5B57;&#x8282;&#x7801;"><i class="fa fa-link" aria-hidden="true"></i></a>2. &#x4ECE;&#x6E90;&#x7801;&#x5230; JVM &#x5B57;&#x8282;&#x7801;</h1>
+<h2 id="kotlin-&#x4E0E;-java-&#x6E90;&#x7801;&#x7F16;&#x8BD1;"><a name="kotlin-&#x4E0E;-java-&#x6E90;&#x7801;&#x7F16;&#x8BD1;" class="anchor-navigation-ex-anchor" href="#kotlin-&#x4E0E;-java-&#x6E90;&#x7801;&#x7F16;&#x8BD1;"><i class="fa fa-link" aria-hidden="true"></i></a>2.1. Kotlin &#x4E0E; Java &#x6E90;&#x7801;&#x7F16;&#x8BD1;</h2>
+<p>Android &#x9879;&#x76EE;&#x4E2D;&#x7684; Java &#x6E90;&#x7801;&#x7531; <code>javac</code> &#x7F16;&#x8BD1;&#xFF0C;Kotlin/JVM &#x6E90;&#x7801;&#x7531; Kotlin &#x7F16;&#x8BD1;&#x5668;&#x7F16;&#x8BD1;&#x3002;&#x4E24;&#x8005;&#x7684;&#x4E3B;&#x8981;&#x8F93;&#x51FA;&#x90FD;&#x662F; JVM <code>.class</code> &#x6587;&#x4EF6;&#xFF1A;</p>
+<pre><code class="lang-text">MainActivity.kt &#x2500;&#x2500;Kotlin &#x7F16;&#x8BD1;&#x5668;&#x2500;&#x2500;&#x25B6; MainActivity.class
+User.java       &#x2500;&#x2500;&#x2500;&#x2500;&#x2500;javac&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x25B6; User.class
+</code></pre>
+<p><code>.class</code> &#x4E2D;&#x5305;&#x62EC;&#xFF1A;</p>
+<ul>
+<li>&#x7C7B;&#x3001;&#x5B57;&#x6BB5;&#x548C;&#x65B9;&#x6CD5;&#x7684;&#x7ED3;&#x6784;&#x4FE1;&#x606F;&#xFF1B;</li>
+<li>JVM &#x6307;&#x4EE4;&#xFF1B;</li>
+<li>&#x5E38;&#x91CF;&#x6C60;&#x548C;&#x7B26;&#x53F7;&#x5F15;&#x7528;&#xFF1B;</li>
+<li>&#x6CE8;&#x89E3;&#x3001;&#x6CDB;&#x578B;&#x7B7E;&#x540D;&#x548C;&#x8C03;&#x8BD5;&#x4FE1;&#x606F;&#x7B49;&#x5143;&#x6570;&#x636E;&#x3002;</li>
+</ul>
+<p>Kotlin &#x7684;&#x4E00;&#x4E9B;&#x8BED;&#x8A00;&#x7ED3;&#x6784;&#x4F1A;&#x4EA7;&#x751F;&#x989D;&#x5916;&#x7C7B;&#x3002;&#x4F8B;&#x5982; lambda&#x3001;&#x534F;&#x7A0B;&#x72B6;&#x6001;&#x673A;&#x3001;&#x9ED8;&#x8BA4;&#x53C2;&#x6570;&#x8F85;&#x52A9;&#x65B9;&#x6CD5;&#x4EE5;&#x53CA;&#x533F;&#x540D;&#x5BF9;&#x8C61;&#x90FD;&#x53EF;&#x80FD;&#x751F;&#x6210;&#x989D;&#x5916;&#x7684; <code>.class</code>&#x3002;&#x56E0;&#x6B64;&#x4E00;&#x4E2A; Kotlin &#x6E90;&#x6587;&#x4EF6;&#x4E0D;&#x4E00;&#x5B9A;&#x53EA;&#x5BF9;&#x5E94;&#x4E00;&#x4E2A;&#x7C7B;&#x6587;&#x4EF6;&#x3002;</p>
+<h2 id="&#x751F;&#x6210;&#x4EE3;&#x7801;&#x4E5F;&#x4F1A;&#x53C2;&#x4E0E;&#x7F16;&#x8BD1;"><a name="&#x751F;&#x6210;&#x4EE3;&#x7801;&#x4E5F;&#x4F1A;&#x53C2;&#x4E0E;&#x7F16;&#x8BD1;" class="anchor-navigation-ex-anchor" href="#&#x751F;&#x6210;&#x4EE3;&#x7801;&#x4E5F;&#x4F1A;&#x53C2;&#x4E0E;&#x7F16;&#x8BD1;"><i class="fa fa-link" aria-hidden="true"></i></a>2.2. &#x751F;&#x6210;&#x4EE3;&#x7801;&#x4E5F;&#x4F1A;&#x53C2;&#x4E0E;&#x7F16;&#x8BD1;</h2>
+<p>&#x6784;&#x5EFA;&#x671F;&#x95F4;&#x8FD8;&#x53EF;&#x80FD;&#x7531; KSP&#x3001;KAPT&#x3001;Data Binding &#x7B49;&#x5DE5;&#x5177;&#x4EA7;&#x751F;&#x65B0;&#x7684; Kotlin&#x3001;Java &#x6216;&#x5B57;&#x8282;&#x7801;&#x8F93;&#x51FA;&#x3002;&#x8FD9;&#x4E9B;&#x751F;&#x6210;&#x7ED3;&#x679C;&#x968F;&#x540E;&#x8FDB;&#x5165;&#x540C;&#x4E00;&#x6761;&#x7F16;&#x8BD1;&#x548C; DEX &#x8F6C;&#x6362;&#x94FE;&#x8DEF;&#xFF0C;&#x5E76;&#x4E0D;&#x4F1A;&#x5728;&#x8FD0;&#x884C;&#x65F6;&#x4EAB;&#x6709;&#x7279;&#x6B8A;&#x5730;&#x4F4D;&#x3002;</p>
+<p>&#x53EF;&#x4EE5;&#x628A;&#x5E94;&#x7528;&#x6700;&#x7EC8;&#x53C2;&#x4E0E; DEX &#x8F6C;&#x6362;&#x7684;&#x8F93;&#x5165;&#x7406;&#x89E3;&#x4E3A;&#xFF1A;</p>
+<pre><code class="lang-text">&#x9879;&#x76EE;&#x6E90;&#x7801;&#x7F16;&#x8BD1;&#x7ED3;&#x679C;
++ &#x4EE3;&#x7801;&#x751F;&#x6210;&#x7ED3;&#x679C;
++ &#x672C;&#x5730;&#x6A21;&#x5757;&#x7684;&#x5B57;&#x8282;&#x7801;
++ JAR / AAR &#x4F9D;&#x8D56;&#x4E2D;&#x7684;&#x5B57;&#x8282;&#x7801;
+</code></pre>
+<p>AAR &#x672C;&#x8EAB;&#x4E0D;&#x662F;&#x8FD0;&#x884C;&#x65F6;&#x7C7B;&#x5BB9;&#x5668;&#x3002;&#x6784;&#x5EFA;&#x5E94;&#x7528;&#x65F6;&#xFF0C;AAR &#x4E2D;&#x7684; <code>classes.jar</code> &#x4F1A;&#x6210;&#x4E3A; D8 &#x6216; R8 &#x7684;&#x8F93;&#x5165;&#xFF0C;&#x5176;&#x4EE3;&#x7801;&#x6700;&#x7EC8;&#x4ECD;&#x4F1A;&#x8FDB;&#x5165;&#x5E94;&#x7528;&#x7684; DEX&#x3002;</p>
+<h2 id="android-&#x4E0D;&#x76F4;&#x63A5;&#x6267;&#x884C;-class-&#x6587;&#x4EF6;"><a name="android-&#x4E0D;&#x76F4;&#x63A5;&#x6267;&#x884C;-class-&#x6587;&#x4EF6;" class="anchor-navigation-ex-anchor" href="#android-&#x4E0D;&#x76F4;&#x63A5;&#x6267;&#x884C;-class-&#x6587;&#x4EF6;"><i class="fa fa-link" aria-hidden="true"></i></a>2.3. Android &#x4E0D;&#x76F4;&#x63A5;&#x6267;&#x884C; class &#x6587;&#x4EF6;</h2>
+<p>Java &#x548C; Kotlin &#x7F16;&#x8BD1;&#x5668;&#x751F;&#x6210; <code>.class</code>&#xFF0C;&#x4E3B;&#x8981;&#x662F;&#x4E3A;&#x4E86;&#x590D;&#x7528; JVM &#x8BED;&#x8A00;&#x751F;&#x6001;&#x548C;&#x5DE5;&#x5177;&#x94FE;&#xFF1B;Android &#x8FD0;&#x884C;&#x65F6;&#x771F;&#x6B63;&#x652F;&#x6301;&#x7684;&#x662F; DEX &#x683C;&#x5F0F;&#x53CA;&#x5176;&#x6307;&#x4EE4;&#x96C6;&#x3002;<code>.class</code> &#x8FD8;&#x9700;&#x8981;&#x7ECF;&#x8FC7; D8 &#x6216; R8 &#x8F6C;&#x6362;&#xFF0C;&#x624D;&#x80FD;&#x6210;&#x4E3A;&#x5E94;&#x7528;&#x5728;&#x8BBE;&#x5907;&#x4E0A;&#x8FD0;&#x884C;&#x7684;&#x4EE3;&#x7801;&#x3002;<a href="https://source.android.com/docs/core/runtime" target="_blank">Android Runtime</a></p>
+<h1 id="&#x4ECE;-class-&#x5230;-dex"><a name="&#x4ECE;-class-&#x5230;-dex" class="anchor-navigation-ex-anchor" href="#&#x4ECE;-class-&#x5230;-dex"><i class="fa fa-link" aria-hidden="true"></i></a>3. &#x4ECE; class &#x5230; DEX</h1>
+<h2 id="dex-&#x662F;&#x4EC0;&#x4E48;"><a name="dex-&#x662F;&#x4EC0;&#x4E48;" class="anchor-navigation-ex-anchor" href="#dex-&#x662F;&#x4EC0;&#x4E48;"><i class="fa fa-link" aria-hidden="true"></i></a>3.1. DEX &#x662F;&#x4EC0;&#x4E48;</h2>
+<p>DEX &#x662F; Dalvik Executable &#x7684;&#x7F29;&#x5199;&#x3002;&#x5B83;&#x4E0D;&#x662F;&#x7B80;&#x5355;&#x5730;&#x628A;&#x591A;&#x4E2A; <code>.class</code> &#x6587;&#x4EF6;&#x62FC;&#x63A5;&#x5230;&#x4E00;&#x8D77;&#xFF0C;&#x800C;&#x662F;&#x91CD;&#x65B0;&#x7EC4;&#x7EC7;&#x7C7B;&#x5B9A;&#x4E49;&#x3001;&#x5B57;&#x7B26;&#x4E32;&#x3001;&#x7C7B;&#x578B;&#x3001;&#x5B57;&#x6BB5;&#x548C;&#x65B9;&#x6CD5;&#x7B49;&#x6570;&#x636E;&#xFF0C;&#x4F7F;&#x591A;&#x4E2A;&#x7C7B;&#x53EF;&#x4EE5;&#x5171;&#x4EAB;&#x76F8;&#x540C;&#x7684;&#x6570;&#x636E;&#x8868;&#x3002;</p>
+<p>DEX &#x6587;&#x4EF6;&#x4E3B;&#x8981;&#x5305;&#x542B;&#xFF1A;</p>
+<ul>
+<li>&#x5B57;&#x7B26;&#x4E32;&#x3001;&#x7C7B;&#x578B;&#x3001;&#x539F;&#x578B;&#x3001;&#x5B57;&#x6BB5;&#x548C;&#x65B9;&#x6CD5; ID &#x8868;&#xFF1B;</li>
+<li>&#x6BCF;&#x4E2A;&#x7C7B;&#x7684;&#x5B9A;&#x4E49;&#x53CA;&#x5176;&#x7EE7;&#x627F;&#x5173;&#x7CFB;&#xFF1B;</li>
+<li>&#x65B9;&#x6CD5;&#x5BF9;&#x5E94;&#x7684; DEX &#x6307;&#x4EE4;&#xFF1B;</li>
+<li>&#x6CE8;&#x89E3;&#x3001;&#x8C03;&#x8BD5;&#x4FE1;&#x606F;&#x53CA;&#x5176;&#x4ED6;&#x5143;&#x6570;&#x636E;&#x3002;</li>
+</ul>
+<p>&#x5177;&#x4F53;&#x4E8C;&#x8FDB;&#x5236;&#x7ED3;&#x6784;&#x53EF;&#x4EE5;&#x53C2;&#x8003; Android &#x5F00;&#x6E90;&#x9879;&#x76EE;&#x7684; <a href="https://source.android.com/docs/core/runtime/dex-format" target="_blank">DEX &#x683C;&#x5F0F;&#x8BF4;&#x660E;</a>&#x3002;&#x7406;&#x89E3;&#x7C7B;&#x52A0;&#x8F7D;&#x65F6;&#x4E0D;&#x9700;&#x8981;&#x8BB0;&#x4F4F;&#x6240;&#x6709;&#x5B57;&#x6BB5;&#xFF0C;&#x53EA;&#x8981;&#x77E5;&#x9053;&#x4E00;&#x4E2A; DEX &#x53EF;&#x4EE5;&#x4FDD;&#x5B58;&#x5927;&#x91CF;&#x7C7B;&#xFF0C;&#x800C; ClassLoader &#x6700;&#x7EC8;&#x4F1A;&#x6309;&#x7C7B;&#x7684;&#x4E8C;&#x8FDB;&#x5236;&#x540D;&#x79F0;&#x5728;&#x8FD9;&#x4E9B; DEX &#x4E2D;&#x67E5;&#x627E;&#x5B9A;&#x4E49;&#x3002;</p>
+<h2 id="desugaring"><a name="desugaring" class="anchor-navigation-ex-anchor" href="#desugaring"><i class="fa fa-link" aria-hidden="true"></i></a>3.2. Desugaring</h2>
+<p>&#x6E90;&#x7801;&#x53EF;&#x80FD;&#x4F7F;&#x7528;&#x4E86;&#x4F4E;&#x7248;&#x672C; Android &#x4E0D;&#x76F4;&#x63A5;&#x652F;&#x6301;&#x7684; Java &#x8BED;&#x8A00;&#x7279;&#x6027;&#x6216; Java API&#x3002;DEX &#x8F6C;&#x6362;&#x671F;&#x95F4;&#x4F1A;&#x8FDB;&#x884C; desugaring&#xFF0C;&#x5C06;&#x8FD9;&#x4E9B;&#x7528;&#x6CD5;&#x6539;&#x5199;&#x6210;&#x76EE;&#x6807; Android &#x7248;&#x672C;&#x80FD;&#x591F;&#x6267;&#x884C;&#x7684;&#x5F62;&#x5F0F;&#x3002;</p>
+<p>&#x4F8B;&#x5982;&#xFF0C;&#x67D0;&#x4E9B;&#x8BED;&#x8A00;&#x7279;&#x6027;&#x53EF;&#x4EE5;&#x88AB;&#x6539;&#x5199;&#x4E3A;&#x517C;&#x5BB9;&#x7684;&#x5B57;&#x8282;&#x7801;&#x7ED3;&#x6784;&#xFF1B;&#x542F;&#x7528; core library desugaring &#x540E;&#xFF0C;&#x90E8;&#x5206;&#x8F83;&#x65B0;&#x7684; Java API &#x8C03;&#x7528;&#x4E5F;&#x53EF;&#x4EE5;&#x88AB;&#x6539;&#x5199;&#x5230;&#x968F;&#x5E94;&#x7528;&#x6253;&#x5305;&#x7684;&#x517C;&#x5BB9;&#x5B9E;&#x73B0;&#x4E2D;&#x3002;</p>
+<p>Desugaring &#x6539;&#x53D8;&#x7684;&#x662F;&#x6700;&#x7EC8;&#x4EE3;&#x7801;&#x5F62;&#x6001;&#xFF0C;&#x5E76;&#x4E0D;&#x4F1A;&#x6539;&#x53D8;&#x4E1A;&#x52A1;&#x6E90;&#x7801;&#x8868;&#x8FBE;&#x7684;&#x4E3B;&#x8981;&#x8BED;&#x4E49;&#x3002;</p>
+<h2 id="d8-&#x7684;&#x804C;&#x8D23;"><a name="d8-&#x7684;&#x804C;&#x8D23;" class="anchor-navigation-ex-anchor" href="#d8-&#x7684;&#x804C;&#x8D23;"><i class="fa fa-link" aria-hidden="true"></i></a>3.3. D8 &#x7684;&#x804C;&#x8D23;</h2>
+<p>D8 &#x63A5;&#x6536;&#x9879;&#x76EE;&#x53CA;&#x4F9D;&#x8D56;&#x4E2D;&#x7684; JVM &#x5B57;&#x8282;&#x7801;&#xFF0C;&#x5B8C;&#x6210; desugaring&#xFF0C;&#x5E76;&#x751F;&#x6210; DEX &#x5B57;&#x8282;&#x7801;&#x3002;Android Gradle Plugin &#x4F1A;&#x66FF;&#x5E94;&#x7528;&#x7EC4;&#x7EC7;&#x8FD9;&#x4E9B;&#x8F93;&#x5165;&#xFF0C;&#x901A;&#x5E38;&#x4E0D;&#x9700;&#x8981;&#x76F4;&#x63A5;&#x8C03;&#x7528; D8&#x3002;<a href="https://developer.android.com/tools/d8" target="_blank">D8 &#x5B98;&#x65B9;&#x8BF4;&#x660E;</a></p>
+<p>&#x6982;&#x5FF5;&#x4E0A;&#x53EF;&#x4EE5;&#x8868;&#x793A;&#x4E3A;&#xFF1A;</p>
+<pre><code class="lang-text">.class / JAR &#x4E2D;&#x7684; .class
+          &#x2193; D8
+classes.dex&#x3001;classes2.dex...
+</code></pre>
+<p>Debug &#x6784;&#x5EFA;&#x901A;&#x5E38;&#x66F4;&#x91CD;&#x89C6;&#x6784;&#x5EFA;&#x901F;&#x5EA6;&#x548C;&#x8C03;&#x8BD5;&#x4FE1;&#x606F;&#xFF0C;Release &#x6784;&#x5EFA;&#x5219;&#x53EF;&#x80FD;&#x989D;&#x5916;&#x542F;&#x7528;&#x5B8C;&#x6574;&#x7684;&#x4EE3;&#x7801;&#x538B;&#x7F29;&#x548C;&#x4F18;&#x5316;&#x3002;</p>
+<h2 id="r8-&#x7684;&#x804C;&#x8D23;"><a name="r8-&#x7684;&#x804C;&#x8D23;" class="anchor-navigation-ex-anchor" href="#r8-&#x7684;&#x804C;&#x8D23;"><i class="fa fa-link" aria-hidden="true"></i></a>3.4. R8 &#x7684;&#x804C;&#x8D23;</h2>
+<p>&#x5F00;&#x542F;&#x4EE3;&#x7801;&#x538B;&#x7F29;&#x540E;&#xFF0C;R8 &#x4F1A;&#x5206;&#x6790;&#x6574;&#x4E2A;&#x7A0B;&#x5E8F;&#xFF0C;&#x5E76;&#x5B8C;&#x6210;&#x591A;&#x9879;&#x5DE5;&#x4F5C;&#xFF1A;</p>
+<ul>
+<li>Shrinking&#xFF1A;&#x5220;&#x9664;&#x88AB;&#x5224;&#x65AD;&#x4E3A;&#x4E0D;&#x53EF;&#x8FBE;&#x7684;&#x7C7B;&#x3001;&#x5B57;&#x6BB5;&#x548C;&#x65B9;&#x6CD5;&#xFF1B;</li>
+<li>Optimization&#xFF1A;&#x5185;&#x8054;&#x6216;&#x91CD;&#x5199;&#x90E8;&#x5206;&#x4EE3;&#x7801;&#xFF1B;</li>
+<li>Obfuscation&#xFF1A;&#x7F29;&#x77ED;&#x7C7B;&#x540D;&#x3001;&#x65B9;&#x6CD5;&#x540D;&#x548C;&#x5B57;&#x6BB5;&#x540D;&#xFF1B;</li>
+<li>Dexing&#xFF1A;&#x751F;&#x6210;&#x6700;&#x7EC8; DEX&#x3002;</li>
+</ul>
+<p>&#x56E0;&#x6B64;&#xFF0C;&#x5F00;&#x542F; R8 &#x540E;&#x4E0D;&#x5E94;&#x673A;&#x68B0;&#x5730;&#x7406;&#x89E3;&#x6210;&#x201C;&#x5148;&#x751F;&#x6210;&#x4E00;&#x5957;&#x6700;&#x7EC8; DEX&#xFF0C;&#x518D;&#x7531;&#x53E6;&#x4E00;&#x4E2A;&#x5B8C;&#x5168;&#x72EC;&#x7ACB;&#x7684;&#x6B65;&#x9AA4;&#x538B;&#x7F29;&#x201D;&#x3002;&#x73B0;&#x4EE3;&#x6784;&#x5EFA;&#x5DE5;&#x5177;&#x53EF;&#x4EE5;&#x5C06;&#x5206;&#x6790;&#x3001;&#x4F18;&#x5316;&#x548C; DEX &#x751F;&#x6210;&#x6574;&#x5408;&#x8D77;&#x6765;&#x3002;<a href="https://developer.android.com/topic/performance/app-optimization/enable-app-optimization" target="_blank">R8 &#x4F18;&#x5316;&#x8BF4;&#x660E;</a></p>
+<p>R8 &#x4F1A;&#x76F4;&#x63A5;&#x5F71;&#x54CD;&#x8FD0;&#x884C;&#x65F6;&#x7C7B;&#x67E5;&#x627E;&#xFF1A;</p>
+<ul>
+<li>&#x7C7B;&#x88AB;&#x5220;&#x9664;&#x540E;&#xFF0C;&#x8FD0;&#x884C;&#x65F6;&#x81EA;&#x7136;&#x4E0D;&#x53EF;&#x80FD;&#x627E;&#x5230;&#x5B83;&#xFF1B;</li>
+<li>&#x7C7B;&#x88AB;&#x6DF7;&#x6DC6;&#x540E;&#xFF0C;&#x539F;&#x59CB;&#x5B57;&#x7B26;&#x4E32;&#x7C7B;&#x540D;&#x53EF;&#x80FD;&#x4E0D;&#x518D;&#x6709;&#x6548;&#xFF1B;</li>
+<li>&#x53CD;&#x5C04;&#x3001;JNI&#x3001;&#x5E8F;&#x5217;&#x5316;&#x548C;&#x6846;&#x67B6;&#x56DE;&#x8C03;&#x7B49;&#x9690;&#x5F0F;&#x5165;&#x53E3;&#x9700;&#x8981;&#x6B63;&#x786E;&#x7684; keep &#x89C4;&#x5219;&#x3002;</li>
+</ul>
+<h2 id="&#x4E3A;&#x4EC0;&#x4E48;&#x4F1A;&#x6709;&#x591A;&#x4E2A;-dex"><a name="&#x4E3A;&#x4EC0;&#x4E48;&#x4F1A;&#x6709;&#x591A;&#x4E2A;-dex" class="anchor-navigation-ex-anchor" href="#&#x4E3A;&#x4EC0;&#x4E48;&#x4F1A;&#x6709;&#x591A;&#x4E2A;-dex"><i class="fa fa-link" aria-hidden="true"></i></a>3.5. &#x4E3A;&#x4EC0;&#x4E48;&#x4F1A;&#x6709;&#x591A;&#x4E2A; DEX</h2>
+<p>&#x5355;&#x4E2A; DEX &#x7684;&#x65B9;&#x6CD5;&#x5F15;&#x7528;&#x7B49;&#x7D22;&#x5F15;&#x5B58;&#x5728;&#x4E0A;&#x9650;&#xFF0C;&#x5927;&#x578B;&#x5E94;&#x7528;&#x53EF;&#x80FD;&#x751F;&#x6210;&#xFF1A;</p>
+<pre><code class="lang-text">classes.dex
+classes2.dex
+classes3.dex
+...
+</code></pre>
+<p>&#x8FD9;&#x79F0;&#x4E3A; MultiDex&#x3002;Android 5.0 &#x53CA;&#x4EE5;&#x4E0A;&#x7684; ART &#x539F;&#x751F;&#x652F;&#x6301;&#x4ECE; APK &#x52A0;&#x8F7D;&#x591A;&#x4E2A; DEX&#xFF1B;&#x66F4;&#x8001;&#x7684;&#x7CFB;&#x7EDF;&#x9700;&#x8981; AndroidX MultiDex &#x5728;&#x8FD0;&#x884C;&#x65F6;&#x6269;&#x5C55;&#x7C7B;&#x8DEF;&#x5F84;&#x3002;<a href="https://developer.android.com/build/multidex" target="_blank">MultiDex &#x5B98;&#x65B9;&#x8BF4;&#x660E;</a></p>
+<p>&#x201C;&#x4E00;&#x4E2A; APK &#x53EA;&#x6709;&#x4E00;&#x4E2A; DEX&#x201D;&#x53EA;&#x9002;&#x7528;&#x4E8E;&#x89C4;&#x6A21;&#x8F83;&#x5C0F;&#x6216;&#x88AB;&#x6709;&#x6548;&#x538B;&#x7F29;&#x7684;&#x5E94;&#x7528;&#xFF0C;&#x4E0D;&#x662F; Android &#x6253;&#x5305;&#x7684;&#x666E;&#x904D;&#x89C4;&#x5219;&#x3002;</p>
+<h1 id="dex-&#x5982;&#x4F55;&#x8FDB;&#x5165;-apk-&#x4E0E;-aab"><a name="dex-&#x5982;&#x4F55;&#x8FDB;&#x5165;-apk-&#x4E0E;-aab" class="anchor-navigation-ex-anchor" href="#dex-&#x5982;&#x4F55;&#x8FDB;&#x5165;-apk-&#x4E0E;-aab"><i class="fa fa-link" aria-hidden="true"></i></a>4. DEX &#x5982;&#x4F55;&#x8FDB;&#x5165; APK &#x4E0E; AAB</h1>
+<h2 id="apk-&#x4E2D;&#x7684;-dex"><a name="apk-&#x4E2D;&#x7684;-dex" class="anchor-navigation-ex-anchor" href="#apk-&#x4E2D;&#x7684;-dex"><i class="fa fa-link" aria-hidden="true"></i></a>4.1. APK &#x4E2D;&#x7684; DEX</h2>
+<p>&#x6784;&#x5EFA;&#x666E;&#x901A; APK &#x65F6;&#xFF0C;DEX &#x901A;&#x5E38;&#x4F4D;&#x4E8E; APK &#x6839;&#x76EE;&#x5F55;&#xFF1A;</p>
+<pre><code class="lang-text">app.apk
+&#x251C;&#x2500;&#x2500; AndroidManifest.xml
+&#x251C;&#x2500;&#x2500; classes.dex
+&#x251C;&#x2500;&#x2500; classes2.dex
+&#x251C;&#x2500;&#x2500; resources.arsc
+&#x251C;&#x2500;&#x2500; res/
+&#x2514;&#x2500;&#x2500; lib/
+</code></pre>
+<p>APK &#x662F;&#x8BBE;&#x5907;&#x53EF;&#x4EE5;&#x5B89;&#x88C5;&#x548C;&#x6267;&#x884C;&#x7684;&#x683C;&#x5F0F;&#x3002;ClassLoader &#x53EF;&#x4EE5;&#x628A; APK &#x672C;&#x8EAB;&#x4F5C;&#x4E3A;&#x4EE3;&#x7801;&#x8DEF;&#x5F84;&#xFF0C;&#x4E0D;&#x9700;&#x8981;&#x5F00;&#x53D1;&#x8005;&#x5148;&#x624B;&#x52A8;&#x628A; <code>classes.dex</code> &#x89E3;&#x538B;&#x5230;&#x67D0;&#x4E2A;&#x56FA;&#x5B9A;&#x76EE;&#x5F55;&#x3002;</p>
+<h2 id="aab-&#x4E2D;&#x7684;-dex"><a name="aab-&#x4E2D;&#x7684;-dex" class="anchor-navigation-ex-anchor" href="#aab-&#x4E2D;&#x7684;-dex"><i class="fa fa-link" aria-hidden="true"></i></a>4.2. AAB &#x4E2D;&#x7684; DEX</h2>
+<p>AAB &#x662F;&#x53D1;&#x5E03;&#x683C;&#x5F0F;&#xFF0C;&#x4E0D;&#x80FD;&#x76F4;&#x63A5;&#x5B89;&#x88C5;&#x3002;&#x5B83;&#x6309;&#x7167; Base&#x3001;Dynamic Feature &#x7B49;&#x6A21;&#x5757;&#x4FDD;&#x5B58;&#x7F16;&#x8BD1;&#x540E;&#x7684;&#x4EE3;&#x7801;&#x548C;&#x8D44;&#x6E90;&#xFF1B;&#x6BCF;&#x4E2A;&#x6A21;&#x5757;&#x7684; DEX &#x4F4D;&#x4E8E;&#x8BE5;&#x6A21;&#x5757;&#x81EA;&#x5DF1;&#x7684; <code>dex/</code> &#x76EE;&#x5F55;&#x4E2D;&#x3002;&#x5E94;&#x7528;&#x5546;&#x5E97;&#x518D;&#x6839;&#x636E;&#x8BBE;&#x5907;&#x548C;&#x4EA4;&#x4ED8;&#x6761;&#x4EF6;&#xFF0C;&#x4ECE; AAB &#x751F;&#x6210; Base APK&#x3001;Feature APK &#x4E0E;&#x914D;&#x7F6E; APK&#x3002;<a href="https://developer.android.com/guide/app-bundle/app-bundle-format" target="_blank">Android App Bundle &#x683C;&#x5F0F;</a></p>
+<pre><code class="lang-text">app.aab
+&#x251C;&#x2500;&#x2500; base/dex/classes.dex
+&#x2514;&#x2500;&#x2500; feature_checkout/dex/classes.dex
+
+Google Play &#x751F;&#x6210;&#x540E;&#xFF1A;
+
+base-master.apk              &#x2192; Base DEX
+feature_checkout-master.apk  &#x2192; Feature DEX
+</code></pre>
+<p>&#x56E0;&#x6B64;&#x5728;&#x6A21;&#x5757;&#x5316;&#x5E94;&#x7528;&#x4E2D;&#xFF0C;&#x201C;&#x8FD9;&#x4E2A;&#x7C7B;&#x6700;&#x7EC8;&#x5C5E;&#x4E8E;&#x54EA;&#x4E2A;&#x6A21;&#x5757;&#x201D;&#x4F1A;&#x51B3;&#x5B9A;&#x5176; DEX &#x88AB;&#x653E;&#x5165;&#x54EA;&#x4E2A; APK&#xFF0C;&#x4E5F;&#x4F1A;&#x51B3;&#x5B9A;&#x8BBE;&#x5907;&#x672A;&#x5B89;&#x88C5;&#x5BF9;&#x5E94; split &#x65F6;&#x80FD;&#x5426;&#x627E;&#x5230;&#x8BE5;&#x7C7B;&#x3002;</p>
+<h2 id="&#x6784;&#x5EFA;&#x671F;&#x4F9D;&#x8D56;&#x51B3;&#x5B9A;&#x4EE3;&#x7801;&#x53EF;&#x89C1;&#x6027;"><a name="&#x6784;&#x5EFA;&#x671F;&#x4F9D;&#x8D56;&#x51B3;&#x5B9A;&#x4EE3;&#x7801;&#x53EF;&#x89C1;&#x6027;" class="anchor-navigation-ex-anchor" href="#&#x6784;&#x5EFA;&#x671F;&#x4F9D;&#x8D56;&#x51B3;&#x5B9A;&#x4EE3;&#x7801;&#x53EF;&#x89C1;&#x6027;"><i class="fa fa-link" aria-hidden="true"></i></a>4.3. &#x6784;&#x5EFA;&#x671F;&#x4F9D;&#x8D56;&#x51B3;&#x5B9A;&#x4EE3;&#x7801;&#x53EF;&#x89C1;&#x6027;</h2>
+<p>&#x6A21;&#x5757; A &#x4F9D;&#x8D56;&#x6A21;&#x5757; B&#xFF0C;&#x8868;&#x793A;&#x7F16;&#x8BD1; A &#x65F6;&#x53EF;&#x4EE5;&#x4F7F;&#x7528; B &#x66B4;&#x9732;&#x7684;&#x7C7B;&#x578B;&#xFF1B;&#x5B83;&#x4E0D;&#x7B49;&#x540C;&#x4E8E;&#x8FD0;&#x884C;&#x65F6;&#x4E00;&#x5B9A;&#x5B58;&#x5728;&#x4E24;&#x4E2A; ClassLoader&#x3002;</p>
+<p>&#x4F8B;&#x5982; Dynamic Feature &#x4F9D;&#x8D56; Base&#xFF1A;</p>
+<pre><code class="lang-text">Feature &#x2500;&#x2500;&#x7F16;&#x8BD1;&#x671F;&#x4F9D;&#x8D56;&#x2500;&#x2500;&#x25B6; Base
+</code></pre>
+<p>Feature &#x7F16;&#x8BD1;&#x65F6;&#x53EF;&#x4EE5;&#x89E3;&#x6790; Base &#x7C7B;&#x578B;&#x3002;Base &#x6CA1;&#x6709;&#x53CD;&#x5411;&#x4F9D;&#x8D56; Feature&#xFF0C;&#x56E0;&#x6B64; Base &#x6E90;&#x7801;&#x4E0D;&#x80FD;&#x76F4;&#x63A5;&#x9759;&#x6001;&#x5F15;&#x7528; Feature &#x7C7B;&#x578B;&#x3002;&#x8FD9;&#x4E2A;&#x9650;&#x5236;&#x9996;&#x5148;&#x6765;&#x81EA;&#x7F16;&#x8BD1;&#x671F;&#x4F9D;&#x8D56;&#x56FE;&#xFF0C;&#x800C;&#x4E0D;&#x662F; ClassLoader &#x7684;&#x53CC;&#x4EB2;&#x59D4;&#x6D3E;&#x3002;</p>
+<h1 id="&#x5B89;&#x88C5;&#x4E0E;-art-&#x7F16;&#x8BD1;&#x4EA7;&#x7269;"><a name="&#x5B89;&#x88C5;&#x4E0E;-art-&#x7F16;&#x8BD1;&#x4EA7;&#x7269;" class="anchor-navigation-ex-anchor" href="#&#x5B89;&#x88C5;&#x4E0E;-art-&#x7F16;&#x8BD1;&#x4EA7;&#x7269;"><i class="fa fa-link" aria-hidden="true"></i></a>5. &#x5B89;&#x88C5;&#x4E0E; ART &#x7F16;&#x8BD1;&#x4EA7;&#x7269;</h1>
+<h2 id="packagemanager-&#x767B;&#x8BB0;-apk-&#x8DEF;&#x5F84;"><a name="packagemanager-&#x767B;&#x8BB0;-apk-&#x8DEF;&#x5F84;" class="anchor-navigation-ex-anchor" href="#packagemanager-&#x767B;&#x8BB0;-apk-&#x8DEF;&#x5F84;"><i class="fa fa-link" aria-hidden="true"></i></a>5.1. PackageManager &#x767B;&#x8BB0; APK &#x8DEF;&#x5F84;</h2>
+<p>&#x5B89;&#x88C5; APK &#x540E;&#xFF0C;PackageManager &#x4F1A;&#x6821;&#x9A8C;&#x5E76;&#x767B;&#x8BB0;&#x5E94;&#x7528;&#x53CA;&#x5176;&#x4EE3;&#x7801;&#x8DEF;&#x5F84;&#x3002;&#x5BF9;&#x5305;&#x542B; split &#x7684;&#x5E94;&#x7528;&#xFF0C;&#x8FD0;&#x884C;&#x65F6;&#x53EF;&#x4EE5;&#x4ECE; <code>ApplicationInfo</code> &#x83B7;&#x5F97;&#xFF1A;</p>
+<ul>
+<li><code>sourceDir</code>&#xFF1A;Base APK &#x8DEF;&#x5F84;&#xFF1B;</li>
+<li><code>splitNames</code>&#xFF1A;&#x5DF2;&#x5B89;&#x88C5; split &#x7684;&#x540D;&#x79F0;&#xFF1B;</li>
+<li><code>splitSourceDirs</code>&#xFF1A;&#x5DF2;&#x5B89;&#x88C5; split &#x7684; APK &#x8DEF;&#x5F84;&#x3002;</li>
+</ul>
+<p>&#x8FD9;&#x4E9B;&#x8DEF;&#x5F84;&#x662F;&#x540E;&#x7EED;&#x5EFA;&#x7ACB;&#x5E94;&#x7528; ClassLoader &#x7684;&#x8F93;&#x5165;&#x3002;Base &#x4E0E; split &#x867D;&#x7136;&#x662F;&#x591A;&#x4E2A;&#x6587;&#x4EF6;&#xFF0C;&#x4F46;&#x5E73;&#x53F0;&#x53EF;&#x4EE5;&#x628A;&#x5B83;&#x4EEC;&#x4F5C;&#x4E3A;&#x540C;&#x4E00;&#x4E2A;&#x5DF2;&#x5B89;&#x88C5;&#x5E94;&#x7528;&#x5904;&#x7406;&#x3002;<a href="https://developer.android.com/reference/android/content/pm/ApplicationInfo" target="_blank">ApplicationInfo</a></p>
+<h2 id="dex-&#x4F18;&#x5316;&#x4E0D;&#x7B49;&#x4E8E;&#x7C7B;&#x52A0;&#x8F7D;"><a name="dex-&#x4F18;&#x5316;&#x4E0D;&#x7B49;&#x4E8E;&#x7C7B;&#x52A0;&#x8F7D;" class="anchor-navigation-ex-anchor" href="#dex-&#x4F18;&#x5316;&#x4E0D;&#x7B49;&#x4E8E;&#x7C7B;&#x52A0;&#x8F7D;"><i class="fa fa-link" aria-hidden="true"></i></a>5.2. DEX &#x4F18;&#x5316;&#x4E0D;&#x7B49;&#x4E8E;&#x7C7B;&#x52A0;&#x8F7D;</h2>
+<p>&#x5B89;&#x88C5;&#x671F;&#x95F4;&#x6216;&#x5B89;&#x88C5;&#x540E;&#xFF0C;ART &#x53EF;&#x80FD;&#x9A8C;&#x8BC1; DEX&#xFF0C;&#x5E76;&#x901A;&#x8FC7; <code>dex2oat</code>&#x3001;&#x540E;&#x53F0;&#x7F16;&#x8BD1;&#x4EFB;&#x52A1;&#x548C; profile &#x751F;&#x6210;&#x4F18;&#x5316;&#x4EA7;&#x7269;&#x3002;Android 7.0 &#x4EE5;&#x540E;&#x901A;&#x5E38;&#x7EFC;&#x5408;&#x4F7F;&#x7528;&#xFF1A;</p>
+<ul>
+<li>&#x89E3;&#x91CA;&#x6267;&#x884C;&#xFF1B;</li>
+<li>JIT&#xFF0C;&#x5373;&#x8FD0;&#x884C;&#x65F6;&#x5373;&#x65F6;&#x7F16;&#x8BD1;&#xFF1B;</li>
+<li>AOT&#xFF0C;&#x5373;&#x8FD0;&#x884C;&#x524D;&#x7F16;&#x8BD1;&#xFF1B;</li>
+<li>&#x57FA;&#x4E8E; profile &#x7684;&#x5F15;&#x5BFC;&#x4F18;&#x5316;&#x3002;</li>
+</ul>
+<p>&#x4E0D;&#x540C;&#x7CFB;&#x7EDF;&#x7248;&#x672C;&#x3001;&#x8BBE;&#x5907;&#x5382;&#x5546;&#x548C;&#x7F16;&#x8BD1;&#x7B56;&#x7565;&#x4EA7;&#x751F;&#x7684; <code>.vdex</code>&#x3001;<code>.odex</code>&#x3001;<code>.art</code> &#x7B49;&#x6587;&#x4EF6;&#x5E76;&#x4E0D;&#x5B8C;&#x5168;&#x4E00;&#x81F4;&#xFF0C;&#x4E0D;&#x80FD;&#x628A;&#x5B83;&#x4EEC;&#x5F53;&#x4F5C;&#x7A33;&#x5B9A;&#x7684;&#x5E94;&#x7528;&#x63A5;&#x53E3;&#x3002;<a href="https://source.android.com/docs/core/runtime/configure" target="_blank">ART &#x6267;&#x884C;&#x4E0E;&#x7F16;&#x8BD1;&#x6A21;&#x5F0F;</a></p>
+<p>&#x9700;&#x8981;&#x533A;&#x5206;&#x4E24;&#x4EF6;&#x4E8B;&#xFF1A;</p>
+<pre><code class="lang-text">&#x7C7B;&#x52A0;&#x8F7D;&#xFF1A;&#x6839;&#x636E;&#x7C7B;&#x540D;&#x627E;&#x5230;&#x5B9A;&#x4E49;&#xFF0C;&#x5E76;&#x5728; ART &#x4E2D;&#x5F62;&#x6210; Class &#x5BF9;&#x8C61;
+&#x65B9;&#x6CD5;&#x7F16;&#x8BD1;&#xFF1A;&#x628A;&#x65B9;&#x6CD5;&#x7684; DEX &#x6307;&#x4EE4;&#x8F6C;&#x6362;&#x6210;&#x53EF;&#x6267;&#x884C;&#x673A;&#x5668;&#x7801;
+</code></pre>
+<p>&#x67D0;&#x4E2A;&#x65B9;&#x6CD5;&#x53EF;&#x4EE5;&#x5DF2;&#x7ECF;&#x88AB; AOT &#x7F16;&#x8BD1;&#xFF0C;&#x4F46;&#x5BF9;&#x5E94;&#x7C7B;&#x4ECD;&#x8981;&#x7ECF;&#x8FC7;&#x8FD0;&#x884C;&#x65F6;&#x89E3;&#x6790;&#xFF1B;&#x67D0;&#x4E2A;&#x7C7B;&#x4E5F;&#x53EF;&#x4EE5;&#x5DF2;&#x7ECF;&#x52A0;&#x8F7D;&#xFF0C;&#x800C;&#x5176;&#x4E2D;&#x7684;&#x65B9;&#x6CD5;&#x4ECD;&#x901A;&#x8FC7;&#x89E3;&#x91CA;&#x5668;&#x6267;&#x884C;&#xFF0C;&#x4E4B;&#x540E;&#x624D;&#x88AB; JIT &#x7F16;&#x8BD1;&#x3002;</p>
+<h1 id="&#x5E94;&#x7528;&#x8FDB;&#x7A0B;&#x5982;&#x4F55;&#x5EFA;&#x7ACB;&#x7C7B;&#x8DEF;&#x5F84;"><a name="&#x5E94;&#x7528;&#x8FDB;&#x7A0B;&#x5982;&#x4F55;&#x5EFA;&#x7ACB;&#x7C7B;&#x8DEF;&#x5F84;" class="anchor-navigation-ex-anchor" href="#&#x5E94;&#x7528;&#x8FDB;&#x7A0B;&#x5982;&#x4F55;&#x5EFA;&#x7ACB;&#x7C7B;&#x8DEF;&#x5F84;"><i class="fa fa-link" aria-hidden="true"></i></a>6. &#x5E94;&#x7528;&#x8FDB;&#x7A0B;&#x5982;&#x4F55;&#x5EFA;&#x7ACB;&#x7C7B;&#x8DEF;&#x5F84;</h1>
+<h2 id="zygote-&#x4E0E;&#x6846;&#x67B6;&#x7C7B;"><a name="zygote-&#x4E0E;&#x6846;&#x67B6;&#x7C7B;" class="anchor-navigation-ex-anchor" href="#zygote-&#x4E0E;&#x6846;&#x67B6;&#x7C7B;"><i class="fa fa-link" aria-hidden="true"></i></a>6.1. Zygote &#x4E0E;&#x6846;&#x67B6;&#x7C7B;</h2>
+<p>Android &#x5E94;&#x7528;&#x8FDB;&#x7A0B;&#x901A;&#x5E38;&#x7531; Zygote fork &#x800C;&#x6765;&#x3002;Zygote &#x5DF2;&#x7ECF;&#x52A0;&#x8F7D;&#x4E86;&#x4E00;&#x6279;&#x7CFB;&#x7EDF;&#x6846;&#x67B6;&#x7C7B;&#xFF0C;&#x56E0;&#x6B64;&#x5E94;&#x7528;&#x8FDB;&#x7A0B;&#x53EF;&#x4EE5;&#x5171;&#x4EAB;&#x8FD9;&#x4E9B;&#x53EA;&#x8BFB;&#x5185;&#x5B58;&#x9875;&#xFF0C;&#x51CF;&#x5C11;&#x542F;&#x52A8;&#x6210;&#x672C;&#x3002;</p>
+<p>&#x6846;&#x67B6;&#x7C7B;&#x4F4D;&#x4E8E; boot class path&#xFF0C;&#x7531;&#x5F15;&#x5BFC;&#x7C7B;&#x52A0;&#x8F7D;&#x4F53;&#x7CFB;&#x8D1F;&#x8D23;&#x3002;&#x5E94;&#x7528;&#x81EA;&#x5DF1;&#x7684;&#x7C7B;&#x4E0D;&#x5728; boot class path &#x4E2D;&#xFF0C;&#x800C;&#x662F;&#x7531;&#x5E94;&#x7528; ClassLoader &#x52A0;&#x8F7D;&#x3002;&#x5E38;&#x89C1;&#x5173;&#x7CFB;&#x53EF;&#x4EE5;&#x7B80;&#x5316;&#x4E3A;&#xFF1A;</p>
+<pre><code class="lang-text">BootClassLoader
+      &#x2191; parent
+&#x5E94;&#x7528; PathClassLoader
+</code></pre>
+<p>&#x8FD9;&#x8868;&#x793A;&#x5E94;&#x7528; ClassLoader &#x9047;&#x5230; <code>java.lang.String</code>&#x3001;<code>android.app.Activity</code> &#x7B49;&#x7C7B;&#x578B;&#x65F6;&#xFF0C;&#x4F1A;&#x4F18;&#x5148;&#x59D4;&#x6258;&#x7ED9;&#x80FD;&#x591F;&#x8BBF;&#x95EE;&#x7CFB;&#x7EDF;&#x7C7B;&#x7684;&#x7236;&#x52A0;&#x8F7D;&#x5668;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x4ECE;&#x5E94;&#x7528; DEX &#x4E2D;&#x5B9A;&#x4E49;&#x540C;&#x540D;&#x7C7B;&#x578B;&#x3002;</p>
+<h2 id="&#x7CFB;&#x7EDF;&#x6536;&#x96C6;-base-&#x4E0E;-split-&#x8DEF;&#x5F84;"><a name="&#x7CFB;&#x7EDF;&#x6536;&#x96C6;-base-&#x4E0E;-split-&#x8DEF;&#x5F84;" class="anchor-navigation-ex-anchor" href="#&#x7CFB;&#x7EDF;&#x6536;&#x96C6;-base-&#x4E0E;-split-&#x8DEF;&#x5F84;"><i class="fa fa-link" aria-hidden="true"></i></a>6.2. &#x7CFB;&#x7EDF;&#x6536;&#x96C6; Base &#x4E0E; split &#x8DEF;&#x5F84;</h2>
+<p>&#x5E94;&#x7528;&#x542F;&#x52A8;&#x65F6;&#xFF0C;framework &#x4E2D;&#x7684; <code>LoadedApk</code> &#x6839;&#x636E; <code>ApplicationInfo.sourceDir</code> &#x4E0E; <code>splitSourceDirs</code> &#x7EC4;&#x7EC7;&#x4EE3;&#x7801;&#x8DEF;&#x5F84;&#xFF0C;&#x9ED8;&#x8BA4;&#x987A;&#x5E8F;&#x662F; Base &#x5728;&#x524D;&#x3001;split &#x5728;&#x540E;&#x3002;&#x968F;&#x540E; <code>ApplicationLoaders</code> &#x521B;&#x5EFA;&#x6216;&#x590D;&#x7528;&#x5E94;&#x7528; ClassLoader&#x3002;<a href="https://android.googlesource.com/platform/frameworks/base/+/refs/heads/main/core/java/android/app/LoadedApk.java" target="_blank">LoadedApk &#x6E90;&#x7801;</a></p>
+<pre><code class="lang-text">ApplicationInfo
+&#x251C;&#x2500;&#x2500; sourceDir = /data/app/.../base.apk
+&#x2514;&#x2500;&#x2500; splitSourceDirs = [.../split_feature.apk, ...]
+             &#x2193;
+LoadedApk.makePaths()
+             &#x2193;
+ApplicationLoaders
+             &#x2193;
+PathClassLoader
+</code></pre>
+<p><code>Context.getClassLoader()</code> &#x6700;&#x7EC8;&#x8FD4;&#x56DE;&#x7684;&#x5C31;&#x662F;&#x80FD;&#x591F;&#x52A0;&#x8F7D;&#x8BE5; Context &#x5BF9;&#x5E94;&#x5305;&#x4EE3;&#x7801;&#x7684; ClassLoader&#x3002;</p>
+<h2 id="&#x9ED8;&#x8BA4;&#x6A21;&#x5F0F;&#x4E0E;-isolated-split"><a name="&#x9ED8;&#x8BA4;&#x6A21;&#x5F0F;&#x4E0E;-isolated-split" class="anchor-navigation-ex-anchor" href="#&#x9ED8;&#x8BA4;&#x6A21;&#x5F0F;&#x4E0E;-isolated-split"><i class="fa fa-link" aria-hidden="true"></i></a>6.3. &#x9ED8;&#x8BA4;&#x6A21;&#x5F0F;&#x4E0E; isolated split</h2>
+<p>&#x9ED8;&#x8BA4;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;Base APK &#x548C;&#x666E;&#x901A; split &#x7684;&#x4EE3;&#x7801;&#x8DEF;&#x5F84;&#x901A;&#x5E38;&#x8FDB;&#x5165;&#x540C;&#x4E00;&#x4E2A;&#x5E94;&#x7528; <code>PathClassLoader</code>&#xFF0C;&#x5E76;&#x4E0D;&#x662F;&#x6BCF;&#x4E2A; APK &#x521B;&#x5EFA;&#x4E00;&#x4E2A; ClassLoader&#x3002;</p>
+<p>Android &#x8FD8;&#x652F;&#x6301; isolated split loading&#x3002;&#x542F;&#x7528;&#x540E;&#xFF0C;framework &#x53EF;&#x4EE5;&#x6839;&#x636E; split &#x4F9D;&#x8D56;&#x5173;&#x7CFB;&#x4E3A;&#x7279;&#x5B9A; split &#x521B;&#x5EFA;&#x72EC;&#x7ACB; ClassLoader&#xFF0C;&#x4F7F;&#x5B83;&#x53EA;&#x770B;&#x89C1; Base&#x3001;&#x7236; split &#x548C;&#x81EA;&#x5DF1;&#x7684;&#x4EE3;&#x7801;&#x3002;&#x8FD9;&#x662F;&#x7279;&#x6B8A;&#x914D;&#x7F6E;&#xFF0C;&#x4E0D;&#x80FD;&#x636E;&#x6B64;&#x63A8;&#x65AD;&#x6240;&#x6709; Dynamic Feature &#x90FD;&#x6709;&#x72EC;&#x7ACB; ClassLoader&#x3002;</p>
+<h2 id="&#x5E38;&#x89C1;-android-classloader"><a name="&#x5E38;&#x89C1;-android-classloader" class="anchor-navigation-ex-anchor" href="#&#x5E38;&#x89C1;-android-classloader"><i class="fa fa-link" aria-hidden="true"></i></a>6.4. &#x5E38;&#x89C1; Android ClassLoader</h2>
+<table>
+<thead>
+<tr>
+<th>ClassLoader</th>
+<th>&#x4E3B;&#x8981;&#x7528;&#x9014;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BootClassLoader</code></td>
+<td>&#x52A0;&#x8F7D; boot class path &#x4E2D;&#x7684;&#x7CFB;&#x7EDF;&#x6838;&#x5FC3;&#x7C7B;&#xFF0C;&#x5C5E;&#x4E8E;&#x8FD0;&#x884C;&#x65F6;&#x5185;&#x90E8;&#x5B9E;&#x73B0;</td>
+</tr>
+<tr>
+<td><code>PathClassLoader</code></td>
+<td>Android &#x9ED8;&#x8BA4;&#x7528;&#x6765;&#x52A0;&#x8F7D;&#x5E94;&#x7528; APK&#x3001;split &#x548C;&#x7CFB;&#x7EDF;&#x5E93;&#x4EE3;&#x7801;</td>
+</tr>
+<tr>
+<td><code>DexClassLoader</code></td>
+<td>&#x4ECE;&#x5305;&#x542B; DEX &#x7684; APK&#x3001;JAR &#x6216; DEX &#x8DEF;&#x5F84;&#x521B;&#x5EFA;&#x989D;&#x5916;&#x52A0;&#x8F7D;&#x5668;</td>
+</tr>
+<tr>
+<td><code>InMemoryDexClassLoader</code></td>
+<td>&#x4ECE;&#x5185;&#x5B58;&#x4E2D;&#x7684; DEX <code>ByteBuffer</code> &#x52A0;&#x8F7D;&#x4EE3;&#x7801;&#xFF0C;API 26 &#x5F15;&#x5165;</td>
+</tr>
+<tr>
+<td><code>DelegateLastClassLoader</code></td>
+<td>&#x91C7;&#x7528; delegate-last &#x67E5;&#x627E;&#x7B56;&#x7565;&#x7684;&#x7279;&#x6B8A;&#x52A0;&#x8F7D;&#x5668;</td>
+</tr>
+</tbody>
+</table>
+<p><code>PathClassLoader</code> &#x548C; <code>DexClassLoader</code> &#x90FD;&#x7EE7;&#x627F; <code>BaseDexClassLoader</code>&#x3002;&#x73B0;&#x4EE3; Android &#x4E2D;&#x4E0D;&#x5E94;&#x518D;&#x7B80;&#x5355;&#x5730;&#x628A;&#x4E8C;&#x8005;&#x89E3;&#x91CA;&#x6210;&#x201C;&#x5DF2;&#x5B89;&#x88C5; APK&#x201D;&#x548C;&#x201C;&#x672A;&#x5B89;&#x88C5; APK&#x201D;&#x7684;&#x7EDD;&#x5BF9;&#x533A;&#x522B;&#xFF1B;&#x5B83;&#x4EEC;&#x7684;&#x516C;&#x5F00;&#x6784;&#x9020;&#x65B9;&#x5F0F;&#x548C;&#x9002;&#x7528;&#x573A;&#x666F;&#x4E0D;&#x540C;&#xFF0C;&#x4F46;&#x5E95;&#x5C42;&#x90FD;&#x56F4;&#x7ED5; DEX &#x8DEF;&#x5F84;&#x5DE5;&#x4F5C;&#x3002;&#x5C24;&#x5176;&#x662F; <code>optimizedDirectory</code> &#x53C2;&#x6570;&#x4ECE; API 26 &#x8D77;&#x5DF2;&#x7ECF;&#x5E9F;&#x5F03;&#x4E14;&#x4E0D;&#x8D77;&#x4F5C;&#x7528;&#x3002;<a href="https://android.googlesource.com/platform/libcore/+/refs/heads/main/dalvik/src/main/java/dalvik/system/BaseDexClassLoader.java" target="_blank">BaseDexClassLoader &#x6E90;&#x7801;</a></p>
+<h1 id="classloader-&#x5185;&#x90E8;&#x5982;&#x4F55;&#x8868;&#x793A;-dex"><a name="classloader-&#x5185;&#x90E8;&#x5982;&#x4F55;&#x8868;&#x793A;-dex" class="anchor-navigation-ex-anchor" href="#classloader-&#x5185;&#x90E8;&#x5982;&#x4F55;&#x8868;&#x793A;-dex"><i class="fa fa-link" aria-hidden="true"></i></a>7. ClassLoader &#x5185;&#x90E8;&#x5982;&#x4F55;&#x8868;&#x793A; DEX</h1>
+<h2 id="basedexclassloader"><a name="basedexclassloader" class="anchor-navigation-ex-anchor" href="#basedexclassloader"><i class="fa fa-link" aria-hidden="true"></i></a>7.1. BaseDexClassLoader</h2>
+<p>&#x5E94;&#x7528; <code>PathClassLoader</code> &#x7EE7;&#x627F;&#x81EA; <code>BaseDexClassLoader</code>&#x3002;&#x540E;&#x8005;&#x4FDD;&#x5B58;&#x6838;&#x5FC3;&#x5B57;&#x6BB5; <code>pathList</code>&#xFF1A;</p>
+<pre><code class="lang-text">PathClassLoader
+&#x2514;&#x2500;&#x2500; BaseDexClassLoader
+    &#x2514;&#x2500;&#x2500; pathList: DexPathList
+</code></pre>
+<p><code>BaseDexClassLoader.findClass()</code> &#x81EA;&#x5DF1;&#x4E0D;&#x89E3;&#x6790; DEX&#xFF0C;&#x800C;&#x662F;&#x628A;&#x67E5;&#x627E;&#x4EA4;&#x7ED9; <code>pathList.findClass()</code>&#x3002;</p>
+<h2 id="dexpathlist-&#x4E0E;-dexelements"><a name="dexpathlist-&#x4E0E;-dexelements" class="anchor-navigation-ex-anchor" href="#dexpathlist-&#x4E0E;-dexelements"><i class="fa fa-link" aria-hidden="true"></i></a>7.2. DexPathList &#x4E0E; dexElements</h2>
+<p><code>DexPathList</code> &#x628A;&#x6BCF;&#x4E2A; DEX&#x3001;APK &#x6216;&#x542B; DEX &#x7684;&#x5BB9;&#x5668;&#x8868;&#x793A;&#x6210;&#x4E00;&#x4E2A; <code>Element</code>&#xFF0C;&#x5E76;&#x4FDD;&#x5B58;&#x5728;&#x6709;&#x5E8F;&#x7684; <code>dexElements</code> &#x6570;&#x7EC4;&#x4E2D;&#xFF1A;</p>
+<pre><code class="lang-text">DexPathList
+&#x2514;&#x2500;&#x2500; dexElements: Element[]
+    &#x251C;&#x2500;&#x2500; Element(Base APK &#x2192; DexFile)
+    &#x251C;&#x2500;&#x2500; Element(classes2.dex &#x2192; DexFile)
+    &#x2514;&#x2500;&#x2500; Element(Feature Split APK &#x2192; DexFile)
+</code></pre>
+<p>&#x8FD9;&#x91CC;&#x7684; <code>Element</code> &#x4E0D;&#x662F;&#x4E00;&#x4E2A;&#x7C7B;&#xFF0C;&#x800C;&#x662F;&#x4E00;&#x4E2A;&#x4EE3;&#x7801;&#x5BB9;&#x5668;&#x3002;&#x4E00;&#x4E2A; Element &#x5BF9;&#x5E94;&#x7684; <code>DexFile</code> &#x4E2D;&#x53EF;&#x4EE5;&#x5305;&#x542B;&#x5927;&#x91CF;&#x7C7B;&#x3002;</p>
+<p><code>DexPathList.findClass()</code> &#x4F1A;&#x6309;&#x6570;&#x7EC4;&#x987A;&#x5E8F;&#x904D;&#x5386; Element&#xFF0C;&#x5E76;&#x8FD4;&#x56DE;&#x6700;&#x5148;&#x627E;&#x5230;&#x7684;&#x7C7B;&#x3002;AOSP &#x6E90;&#x7801;&#x660E;&#x786E;&#x628A;&#x5B83;&#x63CF;&#x8FF0;&#x4E3A;&#x201C;&#x5728;&#x6700;&#x65E9;&#x5217;&#x51FA;&#x7684; path element &#x4E2D;&#x547D;&#x4E2D;&#x201D;&#x3002;<a href="https://android.googlesource.com/platform/libcore/+/refs/heads/main/dalvik/src/main/java/dalvik/system/DexPathList.java" target="_blank">DexPathList &#x6E90;&#x7801;</a></p>
+<p>&#x8FD9;&#x4F1A;&#x4EA7;&#x751F;&#x4E00;&#x4E2A;&#x91CD;&#x8981;&#x7ED3;&#x679C;&#xFF1A;&#x5982;&#x679C;&#x4E0D;&#x540C; DEX &#x4E2D;&#x5B58;&#x5728;&#x76F8;&#x540C;&#x4E8C;&#x8FDB;&#x5236;&#x540D;&#x79F0;&#x7684;&#x7C7B;&#xFF0C;&#x6392;&#x5728;&#x524D;&#x9762;&#x7684; Element &#x4F18;&#x5148;&#x3002;&#x4F46;&#x5DF2;&#x7ECF;&#x5B9A;&#x4E49;&#x8FC7;&#x7684;&#x7C7B;&#x8FD8;&#x4F1A;&#x66F4;&#x65E9;&#x88AB; <code>findLoadedClass()</code> &#x547D;&#x4E2D;&#xFF0C;&#x6240;&#x4EE5;&#x4EC5;&#x4FEE;&#x6539; Element &#x987A;&#x5E8F;&#x4E5F;&#x65E0;&#x6CD5;&#x66FF;&#x6362;&#x5F53;&#x524D; ClassLoader &#x5DF2;&#x7ECF;&#x52A0;&#x8F7D;&#x7684;&#x7C7B;&#x3002;</p>
+<h2 id="dexfile"><a name="dexfile" class="anchor-navigation-ex-anchor" href="#dexfile"><i class="fa fa-link" aria-hidden="true"></i></a>7.3. DexFile</h2>
+<p>Element &#x5185;&#x90E8;&#x7684; <code>DexFile</code> &#x8868;&#x793A; ART &#x5DF2;&#x6253;&#x5F00;&#x7684; DEX&#x3002;&#x67E5;&#x627E;&#x547D;&#x4E2D;&#x540E;&#xFF0C;&#x8C03;&#x7528;&#x94FE;&#x53EF;&#x4EE5;&#x6982;&#x62EC;&#x4E3A;&#xFF1A;</p>
+<pre><code class="lang-text">BaseDexClassLoader.findClass(name)
+        &#x2193;
+DexPathList.findClass(name)
+        &#x2193; &#x904D;&#x5386; dexElements
+Element.findClass(name)
+        &#x2193;
+DexFile.loadClassBinaryName(name, definingClassLoader)
+        &#x2193;
+ART native runtime &#x5B9A;&#x4E49;&#x7C7B;
+</code></pre>
+<p>&#x6700;&#x7EC8;&#x5B9A;&#x4E49;&#x7C7B;&#x7684;&#x662F; ART &#x7684; native &#x5B9E;&#x73B0;&#xFF0C;Java &#x5C42;&#x7684; ClassLoader&#x3001;DexPathList &#x548C; DexFile &#x4E3B;&#x8981;&#x8D1F;&#x8D23;&#x7EF4;&#x62A4;&#x8DEF;&#x5F84;&#x3001;&#x6267;&#x884C;&#x59D4;&#x6D3E;&#x548C;&#x628A;&#x67E5;&#x627E;&#x8BF7;&#x6C42;&#x4F20;&#x7ED9;&#x8FD0;&#x884C;&#x65F6;&#x3002;<a href="https://android.googlesource.com/platform/libcore/+/refs/heads/main/dalvik/src/main/java/dalvik/system/DexFile.java" target="_blank">DexFile &#x6E90;&#x7801;</a></p>
+<h1 id="&#x4E00;&#x4E2A;&#x7C7B;&#x5728;&#x8FD0;&#x884C;&#x65F6;&#x5982;&#x4F55;&#x88AB;&#x52A0;&#x8F7D;"><a name="&#x4E00;&#x4E2A;&#x7C7B;&#x5728;&#x8FD0;&#x884C;&#x65F6;&#x5982;&#x4F55;&#x88AB;&#x52A0;&#x8F7D;" class="anchor-navigation-ex-anchor" href="#&#x4E00;&#x4E2A;&#x7C7B;&#x5728;&#x8FD0;&#x884C;&#x65F6;&#x5982;&#x4F55;&#x88AB;&#x52A0;&#x8F7D;"><i class="fa fa-link" aria-hidden="true"></i></a>8. &#x4E00;&#x4E2A;&#x7C7B;&#x5728;&#x8FD0;&#x884C;&#x65F6;&#x5982;&#x4F55;&#x88AB;&#x52A0;&#x8F7D;</h1>
+<h2 id="&#x4EC0;&#x4E48;&#x64CD;&#x4F5C;&#x4F1A;&#x89E6;&#x53D1;&#x7C7B;&#x52A0;&#x8F7D;"><a name="&#x4EC0;&#x4E48;&#x64CD;&#x4F5C;&#x4F1A;&#x89E6;&#x53D1;&#x7C7B;&#x52A0;&#x8F7D;" class="anchor-navigation-ex-anchor" href="#&#x4EC0;&#x4E48;&#x64CD;&#x4F5C;&#x4F1A;&#x89E6;&#x53D1;&#x7C7B;&#x52A0;&#x8F7D;"><i class="fa fa-link" aria-hidden="true"></i></a>8.1. &#x4EC0;&#x4E48;&#x64CD;&#x4F5C;&#x4F1A;&#x89E6;&#x53D1;&#x7C7B;&#x52A0;&#x8F7D;</h2>
+<p>&#x5E38;&#x89C1;&#x89E6;&#x53D1;&#x70B9;&#x5305;&#x62EC;&#xFF1A;</p>
+<ul>
+<li>&#x521B;&#x5EFA;&#x5BF9;&#x8C61;&#xFF1B;</li>
+<li>&#x8C03;&#x7528;&#x67D0;&#x4E2A;&#x5C1A;&#x672A;&#x52A0;&#x8F7D;&#x7C7B;&#x7684;&#x9759;&#x6001;&#x65B9;&#x6CD5;&#xFF1B;</li>
+<li>&#x8BBF;&#x95EE;&#x67D0;&#x4E9B;&#x9759;&#x6001;&#x5B57;&#x6BB5;&#xFF1B;</li>
+<li>framework &#x6839;&#x636E; Manifest &#x4E2D;&#x7684;&#x7C7B;&#x540D;&#x521B;&#x5EFA; Activity&#x3001;Service&#x3001;Provider &#x6216; Application&#xFF1B;</li>
+<li><code>Class.forName()</code> &#x6216;&#x5176;&#x4ED6;&#x53CD;&#x5C04;&#x8C03;&#x7528;&#xFF1B;</li>
+<li>&#x89E3;&#x6790;&#x53E6;&#x4E00;&#x4E2A;&#x7C7B;&#x7684;&#x5B57;&#x6BB5;&#x3001;&#x65B9;&#x6CD5;&#x7B7E;&#x540D;&#x6216;&#x7236;&#x7C7B;&#x65F6;&#x9700;&#x8981;&#x8BE5;&#x7C7B;&#x578B;&#x3002;</li>
+</ul>
+<p>&#x7F16;&#x8BD1;&#x671F;&#x80FD;&#x89E3;&#x6790;&#x67D0;&#x4E2A;&#x7C7B;&#x578B;&#xFF0C;&#x53EA;&#x8BF4;&#x660E;&#x7F16;&#x8BD1;&#x5668;&#x5F53;&#x65F6;&#x80FD;&#x5728;&#x4F9D;&#x8D56;&#x4E2D;&#x627E;&#x5230;&#x5B83;&#xFF1B;&#x8FD0;&#x884C;&#x65F6;&#x662F;&#x5426;&#x80FD;&#x52A0;&#x8F7D;&#xFF0C;&#x8FD8;&#x8981;&#x770B;&#x76EE;&#x6807;&#x7C7B;&#x662F;&#x5426;&#x4FDD;&#x7559;&#x5728;&#x6700;&#x7EC8; DEX &#x4E2D;&#xFF0C;&#x4EE5;&#x53CA;&#x5BF9;&#x5E94; DEX &#x662F;&#x5426;&#x4F4D;&#x4E8E;&#x5F53;&#x524D; ClassLoader &#x7684;&#x67E5;&#x627E;&#x8303;&#x56F4;&#x3002;</p>
+<h2 id="loadclass-&#x7684;&#x53CC;&#x4EB2;&#x59D4;&#x6D3E;"><a name="loadclass-&#x7684;&#x53CC;&#x4EB2;&#x59D4;&#x6D3E;" class="anchor-navigation-ex-anchor" href="#loadclass-&#x7684;&#x53CC;&#x4EB2;&#x59D4;&#x6D3E;"><i class="fa fa-link" aria-hidden="true"></i></a>8.2. loadClass &#x7684;&#x53CC;&#x4EB2;&#x59D4;&#x6D3E;</h2>
+<p><code>ClassLoader.loadClass(name)</code> &#x7684;&#x9ED8;&#x8BA4;&#x67E5;&#x627E;&#x8FC7;&#x7A0B;&#x53EF;&#x4EE5;&#x6982;&#x62EC;&#x4E3A;&#xFF1A;</p>
+<ol>
+<li>&#x8C03;&#x7528; <code>findLoadedClass()</code>&#xFF0C;&#x68C0;&#x67E5;&#x8BE5; ClassLoader &#x662F;&#x5426;&#x5DF2;&#x7ECF;&#x52A0;&#x8F7D;&#x8FC7;&#x76EE;&#x6807;&#x7C7B;&#xFF1B;</li>
+<li>&#x5982;&#x679C;&#x6CA1;&#x6709;&#xFF0C;&#x59D4;&#x6258; parent &#x52A0;&#x8F7D;&#xFF1B;</li>
+<li>parent &#x627E;&#x4E0D;&#x5230;&#x65F6;&#xFF0C;&#x518D;&#x8C03;&#x7528;&#x5F53;&#x524D;&#x52A0;&#x8F7D;&#x5668;&#x7684; <code>findClass()</code>&#xFF1B;</li>
+<li>&#x4ECD;&#x7136;&#x627E;&#x4E0D;&#x5230;&#x5219;&#x629B;&#x51FA; <code>ClassNotFoundException</code>&#x3002;</li>
+</ol>
+<pre><code class="lang-text">&#x5E94;&#x7528;&#x8BF7;&#x6C42; com.example.User
+        &#x2193;
+&#x5E94;&#x7528; PathClassLoader &#x662F;&#x5426;&#x5DF2;&#x52A0;&#x8F7D;&#xFF1F;
+        &#x2193; &#x5426;
+&#x59D4;&#x6258;&#x7236;&#x52A0;&#x8F7D;&#x5668;&#x67E5;&#x627E;
+        &#x2193; &#x627E;&#x4E0D;&#x5230;&#x5E94;&#x7528;&#x7C7B;
+&#x5E94;&#x7528; PathClassLoader.findClass()
+        &#x2193;
+&#x904D;&#x5386;&#x81EA;&#x5DF1;&#x7684; dexElements
+</code></pre>
+<p>&#x8FD9;&#x901A;&#x5E38;&#x79F0;&#x4E3A; parent-first &#x6216;&#x53CC;&#x4EB2;&#x59D4;&#x6D3E;&#x3002;&#x7236;&#x5B50;&#x5173;&#x7CFB;&#x7531; ClassLoader &#x6784;&#x9020;&#x65F6;&#x4FDD;&#x5B58;&#x7684; <code>parent</code> &#x5F15;&#x7528;&#x5F62;&#x6210;&#xFF0C;&#x4E0D;&#x662F; Java &#x7C7B;&#x7EE7;&#x627F;&#x5173;&#x7CFB;&#x3002;<a href="https://developer.android.com/reference/java/lang/ClassLoader" target="_blank">ClassLoader API</a></p>
+<p>Android &#x7684;&#x5171;&#x4EAB; Java &#x5E93;&#x548C; <code>DelegateLastClassLoader</code> &#x7B49;&#x573A;&#x666F;&#x4F1A;&#x5BF9;&#x67E5;&#x627E;&#x987A;&#x5E8F;&#x8FDB;&#x884C;&#x6269;&#x5C55;&#xFF0C;&#x56E0;&#x6B64;&#x201C;&#x53CC;&#x4EB2;&#x59D4;&#x6D3E;&#x201D;&#x662F;&#x7406;&#x89E3;&#x666E;&#x901A;&#x5E94;&#x7528;&#x52A0;&#x8F7D;&#x8DEF;&#x5F84;&#x7684;&#x4E3B;&#x5E72;&#x6A21;&#x578B;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x6240;&#x6709; Android ClassLoader &#x7684;&#x552F;&#x4E00;&#x7B56;&#x7565;&#x3002;</p>
+<h2 id="dex-&#x5185;&#x90E8;&#x67E5;&#x627E;"><a name="dex-&#x5185;&#x90E8;&#x67E5;&#x627E;" class="anchor-navigation-ex-anchor" href="#dex-&#x5185;&#x90E8;&#x67E5;&#x627E;"><i class="fa fa-link" aria-hidden="true"></i></a>8.3. DEX &#x5185;&#x90E8;&#x67E5;&#x627E;</h2>
+<p>&#x8F6E;&#x5230;&#x5E94;&#x7528; <code>PathClassLoader.findClass()</code> &#x540E;&#xFF0C;&#x67E5;&#x627E;&#x8FC7;&#x7A0B;&#x662F;&#xFF1A;</p>
+<pre><code class="lang-text">dexElements[0] &#x662F;&#x5426;&#x5305;&#x542B;&#x76EE;&#x6807;&#x7C7B;&#xFF1F;&#x2500;&#x2500;&#x662F;&#x2500;&#x2500;&#x25B6; &#x5B9A;&#x4E49;&#x5E76;&#x8FD4;&#x56DE;
+        &#x2502; &#x5426;
+        &#x25BC;
+dexElements[1] &#x662F;&#x5426;&#x5305;&#x542B;&#x76EE;&#x6807;&#x7C7B;&#xFF1F;&#x2500;&#x2500;&#x662F;&#x2500;&#x2500;&#x25B6; &#x5B9A;&#x4E49;&#x5E76;&#x8FD4;&#x56DE;
+        &#x2502; &#x5426;
+        &#x25BC;
+&#x7EE7;&#x7EED;&#x904D;&#x5386;&#xFF0C;&#x5168;&#x90E8;&#x5931;&#x8D25;&#x540E;&#x629B;&#x51FA; ClassNotFoundException
+</code></pre>
+<p>&#x67E5;&#x627E;&#x4F9D;&#x636E;&#x662F;&#x7C7B;&#x7684;&#x4E8C;&#x8FDB;&#x5236;&#x540D;&#x79F0;&#xFF0C;&#x4F8B;&#x5982; <code>com.example.User</code>&#x3002;&#x6E90;&#x7801;&#x6587;&#x4EF6;&#x8DEF;&#x5F84;&#x672C;&#x8EAB;&#x4E0D;&#x53C2;&#x4E0E;&#x8FD0;&#x884C;&#x65F6;&#x7C7B;&#x67E5;&#x627E;&#x3002;</p>
+<h2 id="&#x52A0;&#x8F7D;&#x3001;&#x94FE;&#x63A5;&#x548C;&#x521D;&#x59CB;&#x5316;"><a name="&#x52A0;&#x8F7D;&#x3001;&#x94FE;&#x63A5;&#x548C;&#x521D;&#x59CB;&#x5316;" class="anchor-navigation-ex-anchor" href="#&#x52A0;&#x8F7D;&#x3001;&#x94FE;&#x63A5;&#x548C;&#x521D;&#x59CB;&#x5316;"><i class="fa fa-link" aria-hidden="true"></i></a>8.4. &#x52A0;&#x8F7D;&#x3001;&#x94FE;&#x63A5;&#x548C;&#x521D;&#x59CB;&#x5316;</h2>
+<p>&#x201C;&#x52A0;&#x8F7D;&#x4E00;&#x4E2A;&#x7C7B;&#x201D;&#x5728;&#x5BBD;&#x6CDB;&#x8868;&#x8FF0;&#x4E2D;&#x5E38;&#x5305;&#x542B;&#x51E0;&#x4E2A;&#x9636;&#x6BB5;&#xFF1A;</p>
+<ol>
+<li>&#x52A0;&#x8F7D;&#xFF1A;&#x627E;&#x5230; DEX &#x4E2D;&#x7684;&#x7C7B;&#x5B9A;&#x4E49;&#xFF0C;&#x5E76;&#x5728; ART &#x4E2D;&#x521B;&#x5EFA;&#x5BF9;&#x5E94;&#x7684; <code>Class</code> &#x5BF9;&#x8C61;&#xFF1B;</li>
+<li>&#x9A8C;&#x8BC1;&#xFF1A;&#x68C0;&#x67E5;&#x5B57;&#x8282;&#x7801;&#x7ED3;&#x6784;&#x3001;&#x7C7B;&#x578B;&#x4F7F;&#x7528;&#x548C;&#x6307;&#x4EE4;&#x662F;&#x5426;&#x5408;&#x6CD5;&#xFF1B;</li>
+<li>&#x94FE;&#x63A5;&#xFF1A;&#x51C6;&#x5907;&#x7C7B;&#x7684;&#x8FD0;&#x884C;&#x65F6;&#x7ED3;&#x6784;&#xFF0C;&#x5E76;&#x89E3;&#x6790;&#x7236;&#x7C7B;&#x3001;&#x63A5;&#x53E3;&#x3001;&#x5B57;&#x6BB5;&#x548C;&#x65B9;&#x6CD5;&#x7B49;&#x7B26;&#x53F7;&#x5F15;&#x7528;&#xFF1B;</li>
+<li>&#x521D;&#x59CB;&#x5316;&#xFF1A;&#x6267;&#x884C;&#x9759;&#x6001;&#x521D;&#x59CB;&#x5316;&#x903B;&#x8F91;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x7F16;&#x8BD1;&#x7ED3;&#x679C;&#x4E2D;&#x7684; <code>&lt;clinit&gt;</code>&#x3002;</li>
+</ol>
+<p>ART &#x53EF;&#x4EE5;&#x63D0;&#x524D;&#x9A8C;&#x8BC1;&#x6216;&#x5EF6;&#x8FDF;&#x89E3;&#x6790;&#x90E8;&#x5206;&#x5185;&#x5BB9;&#xFF0C;&#x56E0;&#x6B64;&#x8FD9;&#x4E9B;&#x9636;&#x6BB5;&#x5728;&#x5177;&#x4F53;&#x5B9E;&#x73B0;&#x4E2D;&#x4E0D;&#x4E00;&#x5B9A;&#x4E25;&#x683C;&#x96C6;&#x4E2D;&#x53D1;&#x751F;&#x5728;&#x4E00;&#x4E2A;&#x77AC;&#x95F4;&#x3002;&#x5BF9;&#x4E1A;&#x52A1;&#x6700;&#x91CD;&#x8981;&#x7684;&#x533A;&#x5206;&#x662F;&#xFF1A;</p>
+<ul>
+<li>&#x5F97;&#x5230; <code>SomeClass::class.java</code> &#x4E0D;&#x7B49;&#x4E8E;&#x5DF2;&#x7ECF;&#x6267;&#x884C;&#x8BE5;&#x7C7B;&#x7684;&#x9759;&#x6001;&#x521D;&#x59CB;&#x5316;&#xFF1B;</li>
+<li><code>Class.forName(&quot;com.example.SomeClass&quot;)</code> &#x9ED8;&#x8BA4;&#x4F1A;&#x521D;&#x59CB;&#x5316;&#x7C7B;&#xFF1B;</li>
+<li><code>Class.forName(name, false, loader)</code> &#x53EF;&#x4EE5;&#x8BF7;&#x6C42;&#x52A0;&#x8F7D;&#x4F46;&#x4E0D;&#x4E3B;&#x52A8;&#x521D;&#x59CB;&#x5316;&#xFF1B;</li>
+<li>&#x4E00;&#x4E2A;&#x7C7B;&#x7684;&#x9759;&#x6001;&#x521D;&#x59CB;&#x5316;&#x5931;&#x8D25;&#x540E;&#xFF0C;&#x540E;&#x7EED;&#x4F7F;&#x7528;&#x53EF;&#x80FD;&#x5F97;&#x5230; <code>NoClassDefFoundError</code>&#x3002;</li>
+</ul>
+<h2 id="&#x7C7B;&#x4F55;&#x65F6;&#x771F;&#x6B63;&#x5360;&#x7528;&#x5185;&#x5B58;"><a name="&#x7C7B;&#x4F55;&#x65F6;&#x771F;&#x6B63;&#x5360;&#x7528;&#x5185;&#x5B58;" class="anchor-navigation-ex-anchor" href="#&#x7C7B;&#x4F55;&#x65F6;&#x771F;&#x6B63;&#x5360;&#x7528;&#x5185;&#x5B58;"><i class="fa fa-link" aria-hidden="true"></i></a>8.5. &#x7C7B;&#x4F55;&#x65F6;&#x771F;&#x6B63;&#x5360;&#x7528;&#x5185;&#x5B58;</h2>
+<p>&#x628A; APK &#x8DEF;&#x5F84;&#x653E;&#x5165; ClassLoader&#xFF0C;&#x53EA;&#x662F;&#x8BA9; DEX &#x6210;&#x4E3A;&#x53EF;&#x641C;&#x7D22;&#x6765;&#x6E90;&#xFF0C;&#x4E0D;&#x4F1A;&#x628A;&#x5176;&#x4E2D;&#x6240;&#x6709;&#x7C7B;&#x5BF9;&#x8C61;&#x4E00;&#x6B21;&#x6027;&#x521B;&#x5EFA;&#x51FA;&#x6765;&#x3002;</p>
+<p>&#x8FD0;&#x884C;&#x65F6;&#x901A;&#x5E38;&#x6309;&#x9700;&#x5B8C;&#x6210;&#xFF1A;</p>
+<ul>
+<li>&#x6620;&#x5C04;&#x6216;&#x6253;&#x5F00; DEX &#x53CA;&#x76F8;&#x5173; ART &#x7F16;&#x8BD1;&#x4EA7;&#x7269;&#xFF1B;</li>
+<li>&#x4E3A;&#x5B9E;&#x9645;&#x4F7F;&#x7528;&#x7684;&#x7C7B;&#x5EFA;&#x7ACB;&#x8FD0;&#x884C;&#x65F6;&#x5143;&#x6570;&#x636E;&#xFF1B;</li>
+<li>&#x89E3;&#x6790;&#x5B9E;&#x9645;&#x8BBF;&#x95EE;&#x5230;&#x7684;&#x5B57;&#x6BB5;&#x548C;&#x65B9;&#x6CD5;&#xFF1B;</li>
+<li>&#x5BF9;&#x70ED;&#x70B9;&#x65B9;&#x6CD5;&#x8FDB;&#x884C; JIT &#x7F16;&#x8BD1;&#x3002;</li>
+</ul>
+<p>&#x56E0;&#x6B64;&#x201C;&#x5B89;&#x88C5;&#x4E86;&#x4E00;&#x4E2A;&#x5F88;&#x5927;&#x7684; DEX&#x201D;&#x201C;ClassLoader &#x5DF2;&#x7ECF;&#x5305;&#x542B;&#x8BE5; DEX&#x201D;&#x548C;&#x201C;DEX &#x4E2D;&#x6240;&#x6709;&#x7C7B;&#x90FD;&#x9A7B;&#x7559;&#x5728;&#x5185;&#x5B58;&#x201D;&#x662F;&#x4E09;&#x79CD;&#x4E0D;&#x540C;&#x72B6;&#x6001;&#x3002;</p>
+<h2 id="&#x7C7B;&#x7684;&#x8EAB;&#x4EFD;&#x5305;&#x542B;-classloader"><a name="&#x7C7B;&#x7684;&#x8EAB;&#x4EFD;&#x5305;&#x542B;-classloader" class="anchor-navigation-ex-anchor" href="#&#x7C7B;&#x7684;&#x8EAB;&#x4EFD;&#x5305;&#x542B;-classloader"><i class="fa fa-link" aria-hidden="true"></i></a>8.6. &#x7C7B;&#x7684;&#x8EAB;&#x4EFD;&#x5305;&#x542B; ClassLoader</h2>
+<p>&#x8FD0;&#x884C;&#x65F6;&#x5224;&#x65AD;&#x4E24;&#x4E2A;&#x7C7B;&#x662F;&#x5426;&#x76F8;&#x540C;&#xFF0C;&#x4E0D;&#x53EA;&#x770B;&#x7C7B;&#x540D;&#xFF0C;&#x8FD8;&#x8981;&#x770B;&#x5B9A;&#x4E49;&#x5B83;&#x4EEC;&#x7684; ClassLoader&#xFF1A;</p>
+<pre><code class="lang-text">&#x7C7B;&#x7684;&#x8FD0;&#x884C;&#x65F6;&#x8EAB;&#x4EFD; = &#x4E8C;&#x8FDB;&#x5236;&#x7C7B;&#x540D; + defining ClassLoader
+</code></pre>
+<p>&#x4E24;&#x4E2A;&#x4E92;&#x4E0D;&#x76F8;&#x5173;&#x7684; ClassLoader &#x5373;&#x4F7F;&#x90FD;&#x52A0;&#x8F7D;&#x4E86; <code>com.example.User</code>&#xFF0C;&#x4E5F;&#x4F1A;&#x5F97;&#x5230;&#x4E24;&#x4E2A;&#x4E0D;&#x540C;&#x7C7B;&#x578B;&#x3002;&#x628A;&#x4E00;&#x4E2A;&#x52A0;&#x8F7D;&#x5668;&#x521B;&#x5EFA;&#x7684;&#x5BF9;&#x8C61;&#x5F3A;&#x8F6C;&#x6210;&#x53E6;&#x4E00;&#x4E2A;&#x52A0;&#x8F7D;&#x5668;&#x4E2D;&#x7684;&#x540C;&#x540D;&#x7C7B;&#x578B;&#xFF0C;&#x4ECD;&#x7136;&#x53EF;&#x80FD;&#x53D1;&#x751F; <code>ClassCastException</code>&#x3002;</p>
+<p>&#x8FD9;&#x4E5F;&#x662F;&#x63D2;&#x4EF6;&#x5316;&#x9700;&#x8981;&#x628A;&#x516C;&#x5171;&#x63A5;&#x53E3;&#x653E;&#x5728;&#x5171;&#x540C;&#x7236; ClassLoader &#x4E2D;&#x7684;&#x539F;&#x56E0;&#xFF1B;Dynamic Feature &#x9ED8;&#x8BA4;&#x590D;&#x7528;&#x5E94;&#x7528; ClassLoader&#xFF0C;&#x56E0;&#x6B64;&#x901A;&#x5E38;&#x6CA1;&#x6709;&#x8FD9;&#x4E2A;&#x7C7B;&#x578B;&#x9694;&#x79BB;&#x95EE;&#x9898;&#x3002;</p>
+<h1 id="&#x5E38;&#x89C1;&#x5F02;&#x5E38;&#x5BF9;&#x5E94;&#x94FE;&#x8DEF;&#x4E2D;&#x7684;&#x4F4D;&#x7F6E;"><a name="&#x5E38;&#x89C1;&#x5F02;&#x5E38;&#x5BF9;&#x5E94;&#x94FE;&#x8DEF;&#x4E2D;&#x7684;&#x4F4D;&#x7F6E;" class="anchor-navigation-ex-anchor" href="#&#x5E38;&#x89C1;&#x5F02;&#x5E38;&#x5BF9;&#x5E94;&#x94FE;&#x8DEF;&#x4E2D;&#x7684;&#x4F4D;&#x7F6E;"><i class="fa fa-link" aria-hidden="true"></i></a>9. &#x5E38;&#x89C1;&#x5F02;&#x5E38;&#x5BF9;&#x5E94;&#x94FE;&#x8DEF;&#x4E2D;&#x7684;&#x4F4D;&#x7F6E;</h1>
+<table>
+<thead>
+<tr>
+<th>&#x5F02;&#x5E38;</th>
+<th>&#x901A;&#x5E38;&#x8868;&#x793A;&#x4EC0;&#x4E48;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ClassNotFoundException</code></td>
+<td>&#x663E;&#x5F0F;&#x8C03;&#x7528; ClassLoader &#x6216;&#x53CD;&#x5C04;&#x67E5;&#x627E;&#x7C7B;&#xFF0C;&#x4F46;&#x5F53;&#x524D;&#x52A0;&#x8F7D;&#x8DEF;&#x5F84;&#x4E2D;&#x4E0D;&#x5B58;&#x5728;&#x76EE;&#x6807;&#x5B9A;&#x4E49;</td>
+</tr>
+<tr>
+<td><code>NoClassDefFoundError</code></td>
+<td>&#x6267;&#x884C;&#x4EE3;&#x7801;&#x9700;&#x8981;&#x67D0;&#x4E2A;&#x7C7B;&#xFF0C;&#x4F46;&#x7C7B;&#x7F3A;&#x5931;&#xFF0C;&#x6216;&#x8005;&#x8BE5;&#x7C7B;&#x4E4B;&#x524D;&#x7684;&#x5B9A;&#x4E49;&#x3001;&#x9A8C;&#x8BC1;&#x3001;&#x521D;&#x59CB;&#x5316;&#x5DF2;&#x7ECF;&#x5931;&#x8D25;</td>
+</tr>
+<tr>
+<td><code>VerifyError</code></td>
+<td>ART &#x9A8C;&#x8BC1;&#x7C7B;&#x65F6;&#x53D1;&#x73B0;&#x4E0D;&#x5408;&#x6CD5;&#x6216;&#x4E0D;&#x517C;&#x5BB9;&#x7684;&#x5B57;&#x8282;&#x7801;&#x3001;&#x7C7B;&#x578B;&#x5173;&#x7CFB;</td>
+</tr>
+<tr>
+<td><code>ExceptionInInitializerError</code></td>
+<td>&#x7C7B;&#x7684;&#x9759;&#x6001;&#x521D;&#x59CB;&#x5316;&#x4EE3;&#x7801;&#x629B;&#x51FA;&#x5F02;&#x5E38;</td>
+</tr>
+<tr>
+<td><code>ClassCastException</code></td>
+<td>&#x5BF9;&#x8C61;&#x7684;&#x5B9E;&#x9645;&#x7C7B;&#x578B;&#x4E0D;&#x517C;&#x5BB9;&#xFF0C;&#x4E5F;&#x53EF;&#x80FD;&#x662F;&#x540C;&#x540D;&#x7C7B;&#x7531;&#x4E0D;&#x540C; ClassLoader &#x5B9A;&#x4E49;</td>
+</tr>
+</tbody>
+</table>
+<p>&#x6392;&#x67E5;&#x65F6;&#x5E94;&#x4ECE;&#x5B8C;&#x6574;&#x94FE;&#x8DEF;&#x5B9A;&#x4F4D;&#x95EE;&#x9898;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x4E00;&#x770B;&#x5230; <code>ClassNotFoundException</code> &#x5C31;&#x8BA4;&#x5B9A;&#x662F; ClassLoader &#x5B9E;&#x73B0;&#x9519;&#x8BEF;&#xFF1A;</p>
+<pre><code class="lang-text">&#x6E90;&#x7801;&#x662F;&#x5426;&#x53C2;&#x4E0E;&#x7F16;&#x8BD1;&#xFF1F;
+  &#x2193;
+R8 &#x662F;&#x5426;&#x5220;&#x9664;&#x6216;&#x91CD;&#x547D;&#x540D;&#xFF1F;
+  &#x2193;
+&#x76EE;&#x6807;&#x7C7B;&#x662F;&#x5426;&#x4F4D;&#x4E8E;&#x6700;&#x7EC8; DEX&#xFF1F;
+  &#x2193;
+&#x5305;&#x542B;&#x8BE5; DEX &#x7684; APK / split &#x662F;&#x5426;&#x5DF2;&#x5B89;&#x88C5;&#xFF1F;
+  &#x2193;
+APK &#x8DEF;&#x5F84;&#x662F;&#x5426;&#x8FDB;&#x5165;&#x5F53;&#x524D; ClassLoader&#xFF1F;
+  &#x2193;
+&#x76EE;&#x6807;&#x7C7B;&#x7684;&#x4F9D;&#x8D56;&#x80FD;&#x5426;&#x5B8C;&#x6210;&#x9A8C;&#x8BC1;&#x548C;&#x94FE;&#x63A5;&#xFF1F;
+</code></pre>
+<h1 id="&#x52A8;&#x6001;&#x6269;&#x5C55;&#x7C7B;&#x8DEF;&#x5F84;"><a name="&#x52A8;&#x6001;&#x6269;&#x5C55;&#x7C7B;&#x8DEF;&#x5F84;" class="anchor-navigation-ex-anchor" href="#&#x52A8;&#x6001;&#x6269;&#x5C55;&#x7C7B;&#x8DEF;&#x5F84;"><i class="fa fa-link" aria-hidden="true"></i></a>10. &#x52A8;&#x6001;&#x6269;&#x5C55;&#x7C7B;&#x8DEF;&#x5F84;</h1>
+<h2 id="legacy-multidex"><a name="legacy-multidex" class="anchor-navigation-ex-anchor" href="#legacy-multidex"><i class="fa fa-link" aria-hidden="true"></i></a>10.1. Legacy MultiDex</h2>
+<p>Android 5.0 &#x4EE5;&#x4E0B;&#x7684;&#x8FD0;&#x884C;&#x65F6;&#x9ED8;&#x8BA4;&#x53EA;&#x8BA4;&#x8BC6;&#x4E3B; DEX&#x3002;AndroidX MultiDex &#x7684;&#x6838;&#x5FC3;&#x5DE5;&#x4F5C;&#x4E4B;&#x4E00;&#xFF0C;&#x5C31;&#x662F;&#x5728;&#x5E94;&#x7528;&#x542F;&#x52A8;&#x65E9;&#x671F;&#x628A; <code>classes2.dex</code> &#x7B49;&#x6B21;&#x8981; DEX &#x52A0;&#x5165; ClassLoader &#x7684;&#x67E5;&#x627E;&#x8303;&#x56F4;&#x3002;</p>
+<p>&#x8FD9;&#x4E0E; Dynamic Feature &#x7684;&#x5E95;&#x5C42;&#x95EE;&#x9898;&#x76F8;&#x4F3C;&#xFF1A;DEX &#x6587;&#x4EF6;&#x5DF2;&#x7ECF;&#x5B58;&#x5728;&#xFF0C;&#x4F46;&#x5F53;&#x524D; ClassLoader &#x8FD8;&#x4E0D;&#x77E5;&#x9053;&#x5B83;&#xFF0C;&#x9700;&#x8981;&#x6269;&#x5C55; <code>DexPathList</code>&#x3002;Android 5.0 &#x53CA;&#x4EE5;&#x4E0A;&#x5DF2;&#x7ECF;&#x539F;&#x751F;&#x652F;&#x6301; APK &#x5185;&#x7684; MultiDex&#xFF0C;&#x4E0D;&#x9700;&#x8981;&#x518D;&#x7531;&#x5E94;&#x7528;&#x5B8C;&#x6210;&#x8FD9;&#x4E00;&#x6B65;&#x3002;</p>
+<h2 id="dynamic-feature"><a name="dynamic-feature" class="anchor-navigation-ex-anchor" href="#dynamic-feature"><i class="fa fa-link" aria-hidden="true"></i></a>10.2. Dynamic Feature</h2>
+<p>Dynamic Feature &#x7684;&#x7C7B;&#x4E5F;&#x9075;&#x5FAA;&#x672C;&#x6587;&#x63CF;&#x8FF0;&#x7684;&#x5B8C;&#x6574;&#x94FE;&#x8DEF;&#xFF1A;&#x6E90;&#x7801;&#x5148;&#x53D8;&#x6210; Feature DEX&#xFF0C;&#x518D;&#x88AB;&#x6253;&#x5305;&#x8FDB; Feature Split APK&#x3002;&#x533A;&#x522B;&#x53EA;&#x5728;&#x4E8E;&#x6309;&#x9700;&#x6A21;&#x5757;&#x7684; split &#x53EF;&#x80FD;&#x5728;&#x5E94;&#x7528;&#x8FDB;&#x7A0B;&#x542F;&#x52A8;&#x540E;&#x624D;&#x5B89;&#x88C5;&#x3002;</p>
+<p>&#x9ED8;&#x8BA4;&#x5E94;&#x7528; ClassLoader &#x5DF2;&#x7ECF;&#x5EFA;&#x7ACB;&#x65F6;&#xFF0C;&#x65B0; Feature DEX &#x4E0D;&#x5728;&#x539F;&#x6709; <code>dexElements</code> &#x4E2D;&#x3002;Play Feature Delivery &#x7684;&#x517C;&#x5BB9;&#x5C42;&#x9700;&#x8981;&#x8BA9;&#x5F53;&#x524D;&#x8FDB;&#x7A0B;&#x8BA4;&#x8BC6;&#x65B0;&#x589E;&#x7684; split&#xFF0C;&#x540E;&#x7EED; <code>loadClass()</code> &#x624D;&#x80FD;&#x627E;&#x5230; Feature &#x7C7B;&#x3002;&#x5177;&#x4F53;&#x6CE8;&#x5165;&#x8FC7;&#x7A0B;&#x89C1; <a href="01%20Google%20Dynamic%20Feature&#x63D2;&#x4EF6;.md#dynamic-feature-&#x5B89;&#x88C5;&#x540E;&#x7684;&#x8FD0;&#x884C;&#x65F6;&#x52A0;&#x8F7D;&#x673A;&#x5236;">Google Dynamic Feature &#x63D2;&#x4EF6;</a>&#x3002;</p>
+<h2 id="&#x70ED;&#x4FEE;&#x590D;&#x4E0E;&#x63D2;&#x4EF6;&#x5316;"><a name="&#x70ED;&#x4FEE;&#x590D;&#x4E0E;&#x63D2;&#x4EF6;&#x5316;" class="anchor-navigation-ex-anchor" href="#&#x70ED;&#x4FEE;&#x590D;&#x4E0E;&#x63D2;&#x4EF6;&#x5316;"><i class="fa fa-link" aria-hidden="true"></i></a>10.3. &#x70ED;&#x4FEE;&#x590D;&#x4E0E;&#x63D2;&#x4EF6;&#x5316;</h2>
+<p>&#x70ED;&#x4FEE;&#x590D;&#x548C;&#x63D2;&#x4EF6;&#x5316;&#x4E5F;&#x5E38;&#x4FEE;&#x6539; DEX &#x8DEF;&#x5F84;&#xFF0C;&#x4F46;&#x76EE;&#x6807;&#x4E0D;&#x540C;&#xFF1A;</p>
+<ul>
+<li>Dynamic Feature&#xFF1A;&#x540C;&#x4E00;&#x5E94;&#x7528;&#x7684;&#x5B98;&#x65B9; split &#x4EA4;&#x4ED8;&#xFF0C;&#x91CD;&#x70B9;&#x662F;&#x8BA9;&#x65B0;&#x589E;&#x529F;&#x80FD;&#x4EE3;&#x7801;&#x53D8;&#x5F97;&#x53EF;&#x89C1;&#xFF1B;</li>
+<li>Legacy MultiDex&#xFF1A;&#x8BA9;&#x65E7;&#x7CFB;&#x7EDF;&#x80FD;&#x591F;&#x627E;&#x5230; APK &#x5185;&#x7684;&#x6B21;&#x8981; DEX&#xFF1B;</li>
+<li>&#x70ED;&#x4FEE;&#x590D;&#xFF1A;&#x53EF;&#x80FD;&#x628A;&#x8865;&#x4E01; DEX &#x653E;&#x5728;&#x539F; DEX &#x524D;&#x9762;&#xFF0C;&#x5C1D;&#x8BD5;&#x4F18;&#x5148;&#x547D;&#x4E2D;&#x4FEE;&#x590D;&#x7C7B;&#xFF1B;</li>
+<li>&#x63D2;&#x4EF6;&#x5316;&#xFF1A;&#x53EF;&#x80FD;&#x521B;&#x5EFA;&#x72EC;&#x7ACB; ClassLoader&#xFF0C;&#x5F62;&#x6210;&#x4EE3;&#x7801;&#x9694;&#x79BB;&#x4E0E;&#x4F9D;&#x8D56;&#x8FB9;&#x754C;&#x3002;</li>
+</ul>
+<p>&#x8FD9;&#x4E9B;&#x65B9;&#x6848;&#x90FD;&#x6D89;&#x53CA; ClassLoader&#xFF0C;&#x5E76;&#x4E0D;&#x4EE3;&#x8868;&#x5B83;&#x4EEC;&#x5177;&#x6709;&#x76F8;&#x540C;&#x7684;&#x5B89;&#x88C5;&#x3001;&#x5B89;&#x5168;&#x548C;&#x751F;&#x547D;&#x5468;&#x671F;&#x8BED;&#x4E49;&#x3002;</p>
+<h1 id="&#x5982;&#x4F55;&#x89C2;&#x5BDF;&#x8FD9;&#x6761;&#x94FE;&#x8DEF;"><a name="&#x5982;&#x4F55;&#x89C2;&#x5BDF;&#x8FD9;&#x6761;&#x94FE;&#x8DEF;" class="anchor-navigation-ex-anchor" href="#&#x5982;&#x4F55;&#x89C2;&#x5BDF;&#x8FD9;&#x6761;&#x94FE;&#x8DEF;"><i class="fa fa-link" aria-hidden="true"></i></a>11. &#x5982;&#x4F55;&#x89C2;&#x5BDF;&#x8FD9;&#x6761;&#x94FE;&#x8DEF;</h1>
+<h2 id="&#x68C0;&#x67E5;&#x6784;&#x5EFA;&#x4EA7;&#x7269;&#x4E2D;&#x7684;-dex"><a name="&#x68C0;&#x67E5;&#x6784;&#x5EFA;&#x4EA7;&#x7269;&#x4E2D;&#x7684;-dex" class="anchor-navigation-ex-anchor" href="#&#x68C0;&#x67E5;&#x6784;&#x5EFA;&#x4EA7;&#x7269;&#x4E2D;&#x7684;-dex"><i class="fa fa-link" aria-hidden="true"></i></a>11.1. &#x68C0;&#x67E5;&#x6784;&#x5EFA;&#x4EA7;&#x7269;&#x4E2D;&#x7684; DEX</h2>
+<p>&#x5217;&#x51FA; APK &#x4E2D;&#x7684; DEX&#xFF1A;</p>
+<pre><code class="lang-shell">zipinfo -1 app-debug.apk | rg &apos;^classes[0-9]*\.dex$&apos;
+</code></pre>
+<p>&#x4E5F;&#x53EF;&#x4EE5;&#x4F7F;&#x7528; Android Studio &#x7684; APK Analyzer&#xFF0C;&#x67E5;&#x770B;&#x7C7B;&#x6700;&#x7EC8;&#x8FDB;&#x5165;&#x4E86;&#x54EA;&#x4E2A; DEX&#x3001;&#x65B9;&#x6CD5;&#x6570;&#x3001;&#x5F15;&#x7528;&#x5173;&#x7CFB;&#x4EE5;&#x53CA;&#x538B;&#x7F29;&#x540E;&#x7684;&#x7C7B;&#x540D;&#x3002;</p>
+<h2 id="&#x68C0;&#x67E5;&#x8BBE;&#x5907;&#x4E0A;&#x7684;-apk-&#x8DEF;&#x5F84;"><a name="&#x68C0;&#x67E5;&#x8BBE;&#x5907;&#x4E0A;&#x7684;-apk-&#x8DEF;&#x5F84;" class="anchor-navigation-ex-anchor" href="#&#x68C0;&#x67E5;&#x8BBE;&#x5907;&#x4E0A;&#x7684;-apk-&#x8DEF;&#x5F84;"><i class="fa fa-link" aria-hidden="true"></i></a>11.2. &#x68C0;&#x67E5;&#x8BBE;&#x5907;&#x4E0A;&#x7684; APK &#x8DEF;&#x5F84;</h2>
+<pre><code class="lang-shell">adb shell pm path com.example.app
+</code></pre>
+<p>&#x5305;&#x542B; split &#x7684;&#x5E94;&#x7528;&#x901A;&#x5E38;&#x4F1A;&#x8F93;&#x51FA;&#x591A;&#x4E2A;&#x8DEF;&#x5F84;&#xFF0C;&#x4F8B;&#x5982; Base APK &#x548C; Feature Split APK&#x3002;&#x8FD9;&#x4E2A;&#x7ED3;&#x679C;&#x80FD;&#x56DE;&#x7B54;&#x201C;&#x8BBE;&#x5907;&#x4E0A;&#x662F;&#x5426;&#x771F;&#x7684;&#x5B58;&#x5728;&#x76EE;&#x6807;&#x4EE3;&#x7801;&#x5BB9;&#x5668;&#x201D;&#xFF0C;&#x4F46;&#x4E0D;&#x80FD;&#x5355;&#x72EC;&#x8BC1;&#x660E;&#x5F53;&#x524D;&#x8FDB;&#x7A0B;&#x5DF2;&#x7ECF;&#x5237;&#x65B0;&#x4E86; ClassLoader&#x3002;</p>
+<h2 id="&#x67E5;&#x770B;&#x7C7B;&#x4E0E;-classloader"><a name="&#x67E5;&#x770B;&#x7C7B;&#x4E0E;-classloader" class="anchor-navigation-ex-anchor" href="#&#x67E5;&#x770B;&#x7C7B;&#x4E0E;-classloader"><i class="fa fa-link" aria-hidden="true"></i></a>11.3. &#x67E5;&#x770B;&#x7C7B;&#x4E0E; ClassLoader</h2>
+<pre><code class="lang-kotlin">Log.d(<span class="hljs-string">&quot;ClassLoad&quot;</span>, SomeClass::<span class="hljs-class"><span class="hljs-keyword">class</span>.<span class="hljs-title">java</span>.<span class="hljs-title">name</span>)</span>
+Log.d(<span class="hljs-string">&quot;ClassLoad&quot;</span>, SomeClass::<span class="hljs-class"><span class="hljs-keyword">class</span>.<span class="hljs-title">java</span>.<span class="hljs-title">classLoader</span>.<span class="hljs-title">toString</span></span>())
+Log.d(<span class="hljs-string">&quot;ClassLoad&quot;</span>, applicationContext.classLoader.toString())
+</code></pre>
+<p>&#x5982;&#x679C;&#x53EA;&#x60F3;&#x5224;&#x65AD;&#x7C7B;&#x662F;&#x5426;&#x53EF;&#x89C1;&#x800C;&#x4E0D;&#x4E3B;&#x52A8;&#x521D;&#x59CB;&#x5316;&#xFF1A;</p>
+<pre><code class="lang-kotlin"><span class="hljs-keyword">val</span> clazz = Class.forName(
+    <span class="hljs-string">&quot;com.example.SomeClass&quot;</span>,
+    <span class="hljs-literal">false</span>,
+    applicationContext.classLoader
+)
+</code></pre>
+<p><code>pathList</code>&#x3001;<code>dexElements</code> &#x7B49;&#x5B57;&#x6BB5;&#x5C5E;&#x4E8E;&#x975E;&#x516C;&#x5F00;&#x5B9E;&#x73B0;&#x3002;&#x8C03;&#x8BD5;&#x548C;&#x7406;&#x89E3;&#x6E90;&#x7801;&#x65F6;&#x53EF;&#x4EE5;&#x5173;&#x6CE8;&#x5B83;&#x4EEC;&#xFF0C;&#x4F46;&#x4E1A;&#x52A1;&#x4EE3;&#x7801;&#x4E0D;&#x5E94;&#x4F9D;&#x8D56;&#x53CD;&#x5C04;&#x8BBF;&#x95EE;&#x8FD9;&#x4E9B;&#x5B57;&#x6BB5;&#xFF1B;Android &#x7248;&#x672C;&#x53D8;&#x5316;&#x548C;&#x975E; SDK &#x63A5;&#x53E3;&#x9650;&#x5236;&#x90FD;&#x53EF;&#x80FD;&#x4F7F;&#x8FD9;&#x79CD;&#x4EE3;&#x7801;&#x5931;&#x6548;&#x3002;</p>
+<h1 id="&#x603B;&#x7ED3;"><a name="&#x603B;&#x7ED3;" class="anchor-navigation-ex-anchor" href="#&#x603B;&#x7ED3;"><i class="fa fa-link" aria-hidden="true"></i></a>12. &#x603B;&#x7ED3;</h1>
+<p>Android &#x7C7B;&#x52A0;&#x8F7D;&#x7684;&#x4E3B;&#x7EBF;&#x53EF;&#x4EE5;&#x538B;&#x7F29;&#x4E3A;&#x4E0B;&#x9762;&#x51E0;&#x53E5;&#x8BDD;&#xFF1A;</p>
+<ol>
+<li>Kotlin &#x548C; Java &#x6E90;&#x7801;&#x5148;&#x7F16;&#x8BD1;&#x6210; JVM <code>.class</code>&#xFF1B;</li>
+<li>D8 &#x6216; R8 &#x5C06;&#x5E94;&#x7528;&#x53CA;&#x4F9D;&#x8D56;&#x5B57;&#x8282;&#x7801;&#x8F6C;&#x6362;&#x6210;&#x4E00;&#x4E2A;&#x6216;&#x591A;&#x4E2A; DEX&#xFF1B;</li>
+<li>DEX &#x88AB;&#x6253;&#x5305;&#x8FDB; Base APK &#x6216; Split APK&#xFF0C;&#x5E76;&#x5728;&#x5B89;&#x88C5;&#x540E;&#x6210;&#x4E3A;&#x5E94;&#x7528;&#x4EE3;&#x7801;&#x8DEF;&#x5F84;&#xFF1B;</li>
+<li>&#x5E94;&#x7528;&#x8FDB;&#x7A0B;&#x542F;&#x52A8;&#x65F6;&#xFF0C;&#x7CFB;&#x7EDF;&#x6839;&#x636E; Base &#x4E0E; split &#x8DEF;&#x5F84;&#x521B;&#x5EFA;&#x5E94;&#x7528; ClassLoader&#xFF1B;</li>
+<li><code>loadClass()</code> &#x5148;&#x68C0;&#x67E5;&#x5DF2;&#x52A0;&#x8F7D;&#x7C7B;&#x5E76;&#x59D4;&#x6258;&#x7236;&#x52A0;&#x8F7D;&#x5668;&#xFF0C;&#x518D;&#x7531; <code>BaseDexClassLoader</code> &#x904D;&#x5386; <code>DexPathList.dexElements</code>&#xFF1B;</li>
+<li>&#x547D;&#x4E2D;&#x76EE;&#x6807; DEX &#x540E;&#xFF0C;ART &#x5B9A;&#x4E49;&#x3001;&#x9A8C;&#x8BC1;&#x3001;&#x94FE;&#x63A5;&#x5E76;&#x5728;&#x9700;&#x8981;&#x65F6;&#x521D;&#x59CB;&#x5316;&#x7C7B;&#xFF1B;</li>
+<li>&#x7C7B;&#x7684;&#x65B9;&#x6CD5;&#x53EF;&#x4EE5;&#x89E3;&#x91CA;&#x6267;&#x884C;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x8FD0;&#x884C; AOT &#x6216; JIT &#x7F16;&#x8BD1;&#x540E;&#x7684;&#x673A;&#x5668;&#x7801;&#xFF0C;&#x8FD9;&#x4E0E;&#x201C;&#x7C7B;&#x662F;&#x5426;&#x5DF2;&#x52A0;&#x8F7D;&#x201D;&#x662F;&#x4E0D;&#x540C;&#x7EF4;&#x5EA6;&#x3002;</li>
+</ol>
+<p>&#x7406;&#x89E3;&#x8FD9;&#x6761;&#x94FE;&#x8DEF;&#x540E;&#xFF0C;MultiDex&#x3001;Dynamic Feature&#x3001;&#x70ED;&#x4FEE;&#x590D;&#x548C;&#x63D2;&#x4EF6;&#x5316;&#x7684;&#x5171;&#x540C;&#x70B9;&#x5C31;&#x4F1A;&#x5F88;&#x6E05;&#x695A;&#xFF1A;&#x5B83;&#x4EEC;&#x90FD;&#x5728;&#x56DE;&#x7B54;&#x201C;&#x65B0;&#x7684; DEX &#x5982;&#x4F55;&#x8FDB;&#x5165;&#x67D0;&#x4E2A; ClassLoader &#x7684;&#x53EF;&#x641C;&#x7D22;&#x8303;&#x56F4;&#x201D;&#xFF0C;&#x53EA;&#x662F;&#x4EE3;&#x7801;&#x6765;&#x6E90;&#x3001;&#x52A0;&#x5165;&#x65F6;&#x673A;&#x548C;&#x9694;&#x79BB;&#x7B56;&#x7565;&#x4E0D;&#x540C;&#x3002;</p>
+
+                                
+                                </section>
+                            
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="01 Google Dynamic Feature插件.html" class="navigation navigation-prev " aria-label="Previous page: 01 Google Dynamic Feature插件">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../../06 计算机网络/" class="navigation navigation-next " aria-label="Next page: 06 计算机网络">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"02 Android类从源码到运行时加载","level":"1.7.6.2","depth":3,"next":{"title":"06 计算机网络","level":"1.8","depth":1,"path":"06 计算机网络/README.md","ref":"./06 计算机网络/README.md","articles":[{"title":"计算机网络","level":"1.8.1","depth":2,"path":"06 计算机网络/计算机网络.md","ref":"./06 计算机网络/计算机网络.md","articles":[]}]},"previous":{"title":"01 Google Dynamic Feature插件","level":"1.7.6.1","depth":3,"path":"05 Android/06 新/01 Google Dynamic Feature插件.md","ref":"./05 Android/06 新/01 Google Dynamic Feature插件.md","articles":[]},"dir":"ltr"},"config":{"plugins":["highlight","-search","-lunr","livereload","splitter","expandable-chapters-small","anchors","anchor-navigation-ex"],"styles":{"website":"./styles/website.css"},"pluginsConfig":{"livereload":{},"splitter":{},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"anchor-navigation-ex":{"associatedWithSummary":true,"float":{"floatIcon":"fa fa-navicon","level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"mode":"float","multipleH1":true,"pageTop":{"level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"printLog":false,"showGoTop":true,"showLevel":true},"expandable-chapters-small":{},"sharing":{"all":["facebook","google","twitter","weibo","instapaper"],"facebook":true,"google":false,"instapaper":false,"twitter":true,"vk":false,"weibo":false},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"theme":"default","author":"Mezzsy","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Mezzsy is here","language":"zh-hans","gitbook":"3.2.3"},"file":{"path":"05 Android/06 新/02 Android类从源码到运行时加载.md","mtime":"2026-08-30T08:00:33.303Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2026-08-30T13:10:17.696Z"},"basePath":"../..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../gitbook/gitbook.js"></script>
+    <script src="../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-splitter/splitter.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-expandable-chapters-small/expandable-chapters-small.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
