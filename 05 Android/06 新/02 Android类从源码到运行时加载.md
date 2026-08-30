@@ -1,4 +1,4 @@
-> 本文讨论 Kotlin/Java 编写的 Android 托管代码，不讨论 C/C++ 源码编译和 native library 加载。重点不是某一个 ClassLoader API，而是一段代码如何从源码变成 DEX，并最终成为 ART 中可以执行的类。
+> 本文讨论一段代码如何从源码变成 DEX，并最终成为 ART 中可以执行的类。
 
 # 完整链路
 
@@ -22,54 +22,11 @@ ClassLoader 查找 DEX → ART 定义、验证、链接、初始化类
 解释执行，或者运行 AOT / JIT 编译后的机器码
 ```
 
-这条链路有三组概念不能混为一谈：
-
-| 概念 | 解决的问题 |
-| --- | --- |
-| 编译与 DEX 转换 | 源码如何变成 Android 能识别的字节码 |
-| 打包与安装 | DEX 被放在哪个 APK 中，设备上有哪些代码文件 |
-| 类加载与代码执行 | 运行时如何找到类，以及类的方法最终如何执行 |
-
-其中“类已经能被 ClassLoader 找到”和“这个类的所有代码已经加载、编译并执行”不是一回事。
-
 # 从源码到 JVM 字节码
 
-## Kotlin 与 Java 源码编译
+Android 项目中的 Java 和 Kotlin 源码会先被各自的编译器编译成 JVM `.class` 文件，其中包含类结构、JVM 指令和相关元数据。这些 `.class` 是后续 D8 或 R8 生成 DEX 的输入，并不会直接由 Android 运行时执行。
 
-Android 项目中的 Java 源码由 `javac` 编译，Kotlin/JVM 源码由 Kotlin 编译器编译。两者的主要输出都是 JVM `.class` 文件：
-
-```text
-MainActivity.kt ──Kotlin 编译器──▶ MainActivity.class
-User.java       ─────javac───────▶ User.class
-```
-
-`.class` 中包括：
-
-- 类、字段和方法的结构信息；
-- JVM 指令；
-- 常量池和符号引用；
-- 注解、泛型签名和调试信息等元数据。
-
-Kotlin 的一些语言结构会产生额外类。例如 lambda、协程状态机、默认参数辅助方法以及匿名对象都可能生成额外的 `.class`。因此一个 Kotlin 源文件不一定只对应一个类文件。
-
-## 生成代码也会参与编译
-
-构建期间还可能由 KSP、KAPT、Data Binding 等工具产生新的 Kotlin、Java 或字节码输出。这些生成结果随后进入同一条编译和 DEX 转换链路，并不会在运行时享有特殊地位。
-
-可以把应用最终参与 DEX 转换的输入理解为：
-
-```text
-项目源码编译结果
-+ 代码生成结果
-+ 本地模块的字节码
-+ JAR / AAR 依赖中的字节码
-```
-
-AAR 本身不是运行时类容器。构建应用时，AAR 中的 `classes.jar` 会成为 D8 或 R8 的输入，其代码最终仍会进入应用的 DEX。
-
-## Android 不直接执行 class 文件
-
-Java 和 Kotlin 编译器生成 `.class`，主要是为了复用 JVM 语言生态和工具链；Android 运行时真正支持的是 DEX 格式及其指令集。`.class` 还需要经过 D8 或 R8 转换，才能成为应用在设备上运行的代码。[Android Runtime](https://source.android.com/docs/core/runtime)
+源码文件与 `.class` 不是一一对应的。例如，Kotlin 编译器可能为 lambda、协程或匿名对象生成额外的 `.class`。
 
 # 从 class 到 DEX
 
@@ -127,7 +84,15 @@ R8 会直接影响运行时类查找：
 
 ## 为什么会有多个 DEX
 
-单个 DEX 的方法引用等索引存在上限，大型应用可能生成：
+DEX 不会在每条指令中重复保存完整的方法名、类型和参数，而是把被引用的方法集中记录在 `method_ids` 等表中，指令只保存对应的索引。这样可以减小指令体积并提高查找效率，但索引位数是有限的。
+
+方法引用索引使用 16 位表示，取值范围为 `0x0000`～`0xffff`，因此单个 DEX 最多只能容纳 65,536 个方法引用：
+
+```text
+16 位索引 → 2¹⁶ = 65,536 个可用编号
+```
+
+这里限制的是方法引用数，不只是应用自己声明的方法数，还包括代码引用的依赖库方法和 Android Framework 方法。字段等其他索引也存在类似限制。当一个 DEX 无法容纳全部引用时，构建工具就会把代码拆分到多个具有独立索引表的 DEX 中：
 
 ```text
 classes.dex
@@ -175,18 +140,6 @@ feature_checkout-master.apk  → Feature DEX
 
 因此在模块化应用中，“这个类最终属于哪个模块”会决定其 DEX 被放入哪个 APK，也会决定设备未安装对应 split 时能否找到该类。
 
-## 构建期依赖决定代码可见性
-
-模块 A 依赖模块 B，表示编译 A 时可以使用 B 暴露的类型；它不等同于运行时一定存在两个 ClassLoader。
-
-例如 Dynamic Feature 依赖 Base：
-
-```text
-Feature ──编译期依赖──▶ Base
-```
-
-Feature 编译时可以解析 Base 类型。Base 没有反向依赖 Feature，因此 Base 源码不能直接静态引用 Feature 类型。这个限制首先来自编译期依赖图，而不是 ClassLoader 的双亲委派。
-
 # 安装与 ART 编译产物
 
 ## PackageManager 登记 APK 路径
@@ -202,6 +155,8 @@ Feature 编译时可以解析 Base 类型。Base 没有反向依赖 Feature，�
 ## DEX 优化不等于类加载
 
 安装期间或安装后，ART 可能验证 DEX，并通过 `dex2oat`、后台编译任务和 profile 生成优化产物。Android 7.0 以后通常综合使用：
+
+> 见 [03 虚拟机.md](03 虚拟机.md) 
 
 - 解释执行；
 - JIT，即运行时即时编译；
@@ -257,7 +212,17 @@ PathClassLoader
 
 默认情况下，Base APK 和普通 split 的代码路径通常进入同一个应用 `PathClassLoader`，并不是每个 APK 创建一个 ClassLoader。
 
-Android 还支持 isolated split loading。启用后，framework 可以根据 split 依赖关系为特定 split 创建独立 ClassLoader，使它只看见 Base、父 split 和自己的代码。这是特殊配置，不能据此推断所有 Dynamic Feature 都有独立 ClassLoader。
+isolated split 是 Android 8.0（API 26）引入的 split 隔离加载模式。在 Base APK 的 `<manifest>` 中设置 `android:isolatedSplits="true"` 后，split 的代码和资源不会再自动加入 Base Context；framework 会根据依赖关系，为含代码的 feature split 创建对应的 ClassLoader 和 Context。
+
+此时，split Context 只能访问 Base、自身及其依赖 split 的代码和资源，不能直接访问无依赖关系的其他 split。需要主动获取某个 split 的环境时，可以调用 `Context.createContextForSplit(splitName)`。
+
+这种隔离只限制代码和资源的查找范围，不会改变应用的进程、UID 或权限。它也不是 Dynamic Feature 的默认行为，不能与 `isolatedProcess` 混为一谈。
+
+### 应用场景
+
+isolated split 主要适用于模块较多、依赖关系明确的大型应用：一方面可以限制 Base 和各 feature split 只能访问声明的依赖，避免无关模块产生隐式耦合；另一方面可以通过独立 Context 按需加载已安装 split 的代码和资源，避免全部加入 Base 的查找范围。
+
+普通 Dynamic Feature 通常使用默认模式即可。由于 isolated split 不提供进程或权限隔离，因此不适合用来运行不可信插件。
 
 ## 常见 Android ClassLoader
 
@@ -272,6 +237,14 @@ Android 还支持 isolated split loading。启用后，framework 可以根据 sp
 `PathClassLoader` 和 `DexClassLoader` 都继承 `BaseDexClassLoader`。现代 Android 中不应再简单地把二者解释成“已安装 APK”和“未安装 APK”的绝对区别；它们的公开构造方式和适用场景不同，但底层都围绕 DEX 路径工作。尤其是 `optimizedDirectory` 参数从 API 26 起已经废弃且不起作用。[BaseDexClassLoader 源码](https://android.googlesource.com/platform/libcore/+/refs/heads/main/dalvik/src/main/java/dalvik/system/BaseDexClassLoader.java)
 
 # ClassLoader 内部如何表示 DEX
+
+## 🌟🌟🌟整体介绍
+
+1. loadClass加载应用类
+2. 一般基于双亲委托模式最终由 PathClassLoader（继承 BaseDexClassLoader） 加载。
+3. BaseDexClassLoader的pathList（DexPathList）负责维护和查找 DEX、资源及 Native Library。
+4. DexPathList通过有序数组 `dexElements` 保存各个 APK、JAR 或 DEX 容器，查找类时按数组顺序依次遍历。
+5. 每个 `Element` 内部通常关联一个 `DexFile`。`DexFile` 表示 ART 已打开的 DEX 文件，负责根据类的完整二进制名查找并交由 ART 定义类。
 
 ## BaseDexClassLoader
 
@@ -360,6 +333,27 @@ ART native runtime 定义类
 这通常称为 parent-first 或双亲委派。父子关系由 ClassLoader 构造时保存的 `parent` 引用形成，不是 Java 类继承关系。[ClassLoader API](https://developer.android.com/reference/java/lang/ClassLoader)
 
 Android 的共享 Java 库和 `DelegateLastClassLoader` 等场景会对查找顺序进行扩展，因此“双亲委派”是理解普通应用加载路径的主干模型，而不是所有 Android ClassLoader 的唯一策略。
+
+### 双亲委托模式
+
+类加载器查找Class所采用的是双亲委托模式，所谓双亲委托模式就是首先判断该Class是否已经加载，如果没有则不是自身去查找而是委托给父加载器进行查找，这样依次进行递归，直到委托到最顶层的Bootstrap ClassLoader，如果Bootstrap ClassLoader找到了该Class，就会直接返回，如果没找到，则继续依次向下查找，如果还没找到则最后会交由自身去查找。
+
+![6](./assets/6.jpg)
+
+类加载子系统用来查找和加载Class文件到Java虚拟机中，假设要加载一个位于D盘的Class文件，这时系统所提供的类加载器不能满足条件，这时就需要自定义类加载器继承自`java.lang.ClassLoader`，并复写它的findClass方法。加载D盘的Class文件步骤如下：
+
+1.  自定义类加载器首先从缓存中查找Class文件是否已经加载，如果已经加载就返回该Class，如果没加载则委托给父加载器也就是AppClassLoader。
+2.  按照图中虚线的方向递归步骤1。
+3.  一直委托到Bootstrap ClassLoader，如果Bootstrap ClassLoader查找缓存也没有加载Class文件，则在`$JAVA_HOME/jre/lib`目录中或者`--Xbootclasspath`参数指定的目录中进行查找，如果找到就加载并返回该Class，如果没有找到则交给子加载器ExtClassLoader。
+4.  ExtClassLoader在`$JAVA_HOME/jre/lib/ext`目录中或者系统属性`java.ext.dir`所指定的目录中进行查找，如果找到就加载并返回，找不到则交给AppClassLoader。
+5.  AppClassLoader在Classpath目录中或者系统属性`java.class.path`指定的目录中进行查找，如果找到就加载并返回，找不到交给自定义的类加载器，如果还找不到则抛出异常。
+
+总的来说就是Class文件加载到类加载子系统后，先沿着图中虚线的方向自下而上进行委托，再沿着实线的方向自上而下进行查找和加载，整个过程就是先上后下。结合ClassLoader的继承关系，可以得出ClassLoader的父子关系并不是使用继承来实现的，而是使用组合来实现代码复用的。
+
+**采取双亲委托模式主要有如下两点好处：**
+
+-   避免重复加载，如果已经加载过一次Class，就不需要再次加载，而是直接读取已经加载的Class。
+-   更加安全，如果不使用双亲委托模式，就可以自定义一个String类来替代系统的String类，这显然会造成安全隐患，采用双亲委托模式会使得系统的String类在Java虚拟机启动时就被加载，也就无法自定义String类来替代系统的String类，除非修改类加载器搜索类的默认算法。还有一点，只有两个类名一致并且被同一个类加载器加载的类，Java虚拟机才会认为它们是同一个类。
 
 ## DEX 内部查找
 

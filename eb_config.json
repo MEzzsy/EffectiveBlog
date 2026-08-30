@@ -1,0 +1,28 @@
+{
+  "img_ignore": [
+    "/_book/",
+    "/docs/",
+    "/node_modules/",
+    "EffectiveBlogHelper"
+  ],
+  "gen_ignore": [
+    "_book",
+    "assets",
+    "img",
+    "EffectiveBlogHelper",
+    "generateSummary.jar",
+    "node_modules",
+    "auto_pull.sh",
+    "count.py",
+    "docs",
+    "AGENTS.md",
+    "book.json",
+    "eb_tool.py",
+    "eb_config.json",
+    "ignoredFile",
+    "README.md",
+    "imgIgnoredFile",
+    "SUMMARY.md",
+    "SUMMARY_temp.md"
+  ]
+}
