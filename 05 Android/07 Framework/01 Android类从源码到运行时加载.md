@@ -1,26 +1,33 @@
 > 本文讨论一段代码如何从源码变成 DEX，并最终成为 ART 中可以执行的类。
 
-# 完整链路
+# 🌟🌟🌟完整链路
+
+## 类从源码到运行时
 
 Android 类从源码到运行时，大致经历下面几个阶段：
 
-```text
-Kotlin / Java 源码
-        ↓ Kotlin 编译器 / javac
-JVM 字节码（.class）
-        ↓ D8，或者开启压缩时由 R8 统一处理
-DEX 字节码（classes.dex、classes2.dex...）
-        ↓ Android Gradle Plugin 打包
-APK，或者 AAB 中各模块的 DEX
-        ↓ 安装
-Base APK / Split APK 被 PackageManager 登记
-        ↓ 应用进程启动
-系统根据 APK 路径创建应用 ClassLoader
-        ↓ 某个类第一次被使用
-ClassLoader 查找 DEX → ART 定义、验证、链接、初始化类
-        ↓ 方法被执行
-解释执行，或者运行 AOT / JIT 编译后的机器码
-```
+1. Kotlin 或 Java 源码经过 Kotlin 编译器或 `javac` 编译，生成 JVM 字节码（`.class`）。
+2. D8 将 `.class` 转换成 DEX 字节码；开启代码压缩时，由 R8 完成优化并生成 DEX。
+3. Android Gradle Plugin 将 DEX 打包进 APK，或者放入 AAB 的相应模块。
+4. 应用安装后，PackageManager 登记 Base APK 和 Split APK 的路径。
+5. 应用进程启动时，系统根据 APK 路径创建应用 ClassLoader。
+6. 运行时加载类（见下）
+
+## 类在运行时如何被加载
+
+> - `dexElements`：有序的代码路径列表；
+> - `Element`：对一个代码来源的包装；
+> - `DexFile`：Element 内部用于访问 DEX 内容的对象；
+> - `Class`：ART 根据某个类定义创建的运行时对象。
+
+一个类进入运行时后，大致按照下面的顺序被加载：
+
+1. 程序首次使用某个类时，向当前 ClassLoader 发起加载请求。
+2. `loadClass()` 先检查该类是否已经加载；如果没有，则委托 parent 查找。
+3. parent 未找到时，应用 `PathClassLoader` 按顺序遍历 `dexElements`，在各个 DEX 中查找类定义。
+4. 某个 Element 命中目标类后，通过对应的 `DexFile` 将类名和 defining ClassLoader 交给 ART。
+5. ART 创建对应的 `Class` 对象，并完成验证和链接。
+6. 首次主动使用该类时，ART 执行静态初始化逻辑；此后即可创建对象或调用方法。
 
 # 从源码到 JVM 字节码
 
@@ -51,21 +58,11 @@ DEX 文件主要包含：
 
 Desugaring 改变的是最终代码形态，并不会改变业务源码表达的主要语义。
 
-## D8 的职责
+## D8 的职责（面向debug）
 
-D8 接收项目及依赖中的 JVM 字节码，完成 desugaring，并生成 DEX 字节码。Android Gradle Plugin 会替应用组织这些输入，通常不需要直接调用 D8。[D8 官方说明](https://developer.android.com/tools/d8)
+D8 接收项目及依赖中的 JVM 字节码，完成 desugaring，并生成 DEX 字节码。Android Gradle Plugin 会替应用组织这些输入，通常不需要直接调用 D8。
 
-概念上可以表示为：
-
-```text
-.class / JAR 中的 .class
-          ↓ D8
-classes.dex、classes2.dex...
-```
-
-Debug 构建通常更重视构建速度和调试信息，Release 构建则可能额外启用完整的代码压缩和优化。
-
-## R8 的职责
+## R8 的职责（面向release）
 
 开启代码压缩后，R8 会分析整个程序，并完成多项工作：
 
@@ -82,7 +79,7 @@ R8 会直接影响运行时类查找：
 - 类被混淆后，原始字符串类名可能不再有效；
 - 反射、JNI、序列化和框架回调等隐式入口需要正确的 keep 规则。
 
-## 为什么会有多个 DEX
+## 为什么会有多个 DEX（64K限制）
 
 DEX 不会在每条指令中重复保存完整的方法名、类型和参数，而是把被引用的方法集中记录在 `method_ids` 等表中，指令只保存对应的索引。这样可以减小指令体积并提高查找效率，但索引位数是有限的。
 
@@ -156,7 +153,7 @@ feature_checkout-master.apk  → Feature DEX
 
 安装期间或安装后，ART 可能验证 DEX，并通过 `dex2oat`、后台编译任务和 profile 生成优化产物。Android 7.0 以后通常综合使用：
 
-> 见 [03 虚拟机.md](03 虚拟机.md) 
+> 见 [03 虚拟机.md](<../../06 新/03 虚拟机.md>)
 
 - 解释执行；
 - JIT，即运行时即时编译；
@@ -190,7 +187,7 @@ BootClassLoader
 
 这表示应用 ClassLoader 遇到 `java.lang.String`、`android.app.Activity` 等类型时，会优先委托给能够访问系统类的父加载器，而不是从应用 DEX 中定义同名类型。
 
-## 系统收集 Base 与 split 路径
+## 🌟系统收集 Base 与 split 路径
 
 应用启动时，framework 中的 `LoadedApk` 根据 `ApplicationInfo.sourceDir` 与 `splitSourceDirs` 组织代码路径，默认顺序是 Base 在前、split 在后。随后 `ApplicationLoaders` 创建或复用应用 ClassLoader。[LoadedApk 源码](https://android.googlesource.com/platform/frameworks/base/+/refs/heads/main/core/java/android/app/LoadedApk.java)
 
@@ -237,14 +234,6 @@ isolated split 主要适用于模块较多、依赖关系明确的大型应用�
 `PathClassLoader` 和 `DexClassLoader` 都继承 `BaseDexClassLoader`。现代 Android 中不应再简单地把二者解释成“已安装 APK”和“未安装 APK”的绝对区别；它们的公开构造方式和适用场景不同，但底层都围绕 DEX 路径工作。尤其是 `optimizedDirectory` 参数从 API 26 起已经废弃且不起作用。[BaseDexClassLoader 源码](https://android.googlesource.com/platform/libcore/+/refs/heads/main/dalvik/src/main/java/dalvik/system/BaseDexClassLoader.java)
 
 # ClassLoader 内部如何表示 DEX
-
-## 🌟🌟🌟整体介绍
-
-1. loadClass加载应用类
-2. 一般基于双亲委托模式最终由 PathClassLoader（继承 BaseDexClassLoader） 加载。
-3. BaseDexClassLoader的pathList（DexPathList）负责维护和查找 DEX、资源及 Native Library。
-4. DexPathList通过有序数组 `dexElements` 保存各个 APK、JAR 或 DEX 容器，查找类时按数组顺序依次遍历。
-5. 每个 `Element` 内部通常关联一个 `DexFile`。`DexFile` 表示 ART 已打开的 DEX 文件，负责根据类的完整二进制名查找并交由 ART 定义类。
 
 ## BaseDexClassLoader
 
@@ -450,7 +439,7 @@ Android 5.0 以下的运行时默认只认识主 DEX。AndroidX MultiDex 的核�
 
 Dynamic Feature 的类也遵循本文描述的完整链路：源码先变成 Feature DEX，再被打包进 Feature Split APK。区别只在于按需模块的 split 可能在应用进程启动后才安装。
 
-默认应用 ClassLoader 已经建立时，新 Feature DEX 不在原有 `dexElements` 中。Play Feature Delivery 的兼容层需要让当前进程认识新增的 split，后续 `loadClass()` 才能找到 Feature 类。具体注入过程见 [Google Dynamic Feature 插件](<01 Google Dynamic Feature插件.md#dynamic-feature-安装后的运行时加载机制>)。
+默认应用 ClassLoader 已经建立时，新 Feature DEX 不在原有 `dexElements` 中。Play Feature Delivery 的兼容层需要让当前进程认识新增的 split，后续 `loadClass()` 才能找到 Feature 类。具体注入过程见 [Google Dynamic Feature 插件](<../../06 新/01 Google DF插件.md#dynamic-feature-安装后的运行时加载机制>)。
 
 ## 热修复与插件化
 

@@ -739,6 +739,11 @@ HTML_IMAGE_RE = re.compile(
     r"<img\b[^>]*?\bsrc\s*=\s*([\"'])(.*?)\1[^>]*>",
     re.IGNORECASE | re.DOTALL,
 )
+WIKI_LINK_RE = re.compile(r"!?\[\[([^\]\n]+)\]\]")
+HTML_LINK_RE = re.compile(
+    r"<a\b[^>]*?\bhref\s*=\s*([\"'])(.*?)\1[^>]*>",
+    re.IGNORECASE | re.DOTALL,
+)
 
 
 def rewrite_markdown_images(
@@ -864,6 +869,298 @@ def rewrite_markdown_images(
     return markdown, replaced_count, missing_count
 
 
+def local_target_suffix(raw_target: str) -> str:
+    """返回本地链接目标中的查询参数和锚点，并保持原始顺序。"""
+    suffix_indexes = [
+        index for marker in ("?", "#") if (index := raw_target.find(marker)) != -1
+    ]
+    return raw_target[min(suffix_indexes) :] if suffix_indexes else ""
+
+
+def replace_destination_target(raw_destination: str, new_target: str) -> str:
+    """只替换 Markdown destination 的路径，保留尖括号、标题与空白。"""
+    raw_target = parse_destination(raw_destination)
+    target_start = raw_destination.find(raw_target)
+    if not raw_target or target_start == -1:
+        return raw_destination
+    target_end = target_start + len(raw_target)
+    return raw_destination[:target_start] + new_target + raw_destination[target_end:]
+
+
+def relative_markdown_path(markdown_file: Path, target: Path) -> str:
+    return os.path.relpath(target, markdown_file.parent).replace(os.sep, "/")
+
+
+def rewritten_reference_destination(
+    raw_destination: str,
+    root: Path,
+    markdown_file: Path,
+    source: Path,
+    destination: Path,
+) -> str | None:
+    """当 destination 指向待移动文件时，返回新的相对引用。"""
+    raw_target = parse_destination(raw_destination)
+    target = clean_local_target(raw_target)
+    if target is None or resolve_target(root, markdown_file, target) != source:
+        return None
+
+    new_target = relative_markdown_path(markdown_file, destination)
+    new_target += local_target_suffix(raw_target)
+    return replace_destination_target(raw_destination, new_target)
+
+
+def rewritten_moved_document_destination(
+    raw_destination: str,
+    root: Path,
+    source: Path,
+    destination: Path,
+) -> str | None:
+    """重定位被移动文档自身的相对链接，使其仍指向移动前的目标。"""
+    raw_target = parse_destination(raw_destination)
+    target = clean_local_target(raw_target)
+    if target is None or target.startswith("/"):
+        return None
+
+    original_target = resolve_target(root, source, target)
+    if relative_if_inside(original_target, root) is None:
+        return None
+    target_after_move = destination if original_target == source else original_target
+    new_target = relative_markdown_path(destination, target_after_move)
+    new_target += local_target_suffix(raw_target)
+    rewritten = replace_destination_target(raw_destination, new_target)
+    return rewritten if rewritten != raw_destination else None
+
+
+def rewrite_markdown_file_reference(
+    markdown: str,
+    root: Path,
+    markdown_file: Path,
+    source: Path,
+    destination: Path,
+    preserve_moved_document_targets: bool = False,
+) -> tuple[str, int]:
+    """改写入站引用，或重定位被移动文档自身的相对引用。"""
+    code_ranges = fenced_code_ranges(markdown)
+    replacements: list[tuple[int, int, str]] = []
+
+    def rewrite_destination(raw_destination: str) -> str | None:
+        if preserve_moved_document_targets:
+            return rewritten_moved_document_destination(
+                raw_destination, root, source, destination
+            )
+        return rewritten_reference_destination(
+            raw_destination, root, markdown_file, source, destination
+        )
+
+    for definition in REFERENCE_DEFINITION_RE.finditer(markdown):
+        if is_in_ranges(definition.start(), code_ranges):
+            continue
+        raw_destination = definition.group(2)
+        rewritten = rewrite_destination(raw_destination)
+        if rewritten is not None:
+            start, end = definition.span(2)
+            replacements.append((start, end, rewritten))
+
+    for match in LINK_RE.finditer(markdown):
+        if is_escaped(markdown, match.start()) or is_in_ranges(
+            match.start(), code_ranges
+        ):
+            continue
+        opening_index = match.end()
+        if opening_index >= len(markdown) or markdown[opening_index] != "(":
+            continue
+        parsed = find_parenthesized(markdown, opening_index)
+        if parsed is None:
+            continue
+        raw_destination, end = parsed
+        rewritten = rewrite_destination(raw_destination)
+        if rewritten is not None:
+            replacements.append((opening_index + 1, end - 1, rewritten))
+
+    for match in WIKI_LINK_RE.finditer(markdown):
+        if is_escaped(markdown, match.start()) or is_in_ranges(
+            match.start(), code_ranges
+        ):
+            continue
+        wiki_value = match.group(1)
+        raw_destination = wiki_value.split("|", 1)[0]
+        target = raw_destination.strip()
+        rewritten = rewrite_destination(target)
+        if rewritten is not None:
+            target_start = match.start(1) + raw_destination.find(target)
+            replacements.append(
+                (target_start, target_start + len(target), rewritten)
+            )
+
+    for match in HTML_LINK_RE.finditer(markdown):
+        if is_in_ranges(match.start(), code_ranges):
+            continue
+        raw_destination = match.group(2)
+        rewritten = rewrite_destination(raw_destination)
+        if rewritten is not None:
+            start, end = match.span(2)
+            replacements.append((start, end, rewritten))
+
+    for match in HTML_IMAGE_RE.finditer(markdown):
+        if is_in_ranges(match.start(), code_ranges):
+            continue
+        rewritten = rewrite_destination(match.group(2))
+        if rewritten is not None:
+            start, end = match.span(2)
+            replacements.append((start, end, rewritten))
+
+    for match in CSS_URL_RE.finditer(markdown):
+        if is_in_ranges(match.start(), code_ranges):
+            continue
+        group_index = next(
+            (index for index in range(1, 4) if match.group(index) is not None),
+            None,
+        )
+        if group_index is None:
+            continue
+        rewritten = rewrite_destination(match.group(group_index))
+        if rewritten is not None:
+            start, end = match.span(group_index)
+            replacements.append((start, end, rewritten))
+
+    # 各语法的匹配区间互不重叠；去重后逆序修改可保持原始索引有效。
+    unique_replacements = sorted(set(replacements), reverse=True)
+    for start, end, replacement in unique_replacements:
+        markdown = markdown[:start] + replacement + markdown[end:]
+    return markdown, len(unique_replacements)
+
+
+def repository_argument_path(root: Path, path: Path) -> Path:
+    path = path.expanduser()
+    if not path.is_absolute():
+        path = root / path
+    path = Path(os.path.abspath(os.path.normpath(path)))
+    # 规范化父目录（例如 macOS 的 /var -> /private/var），但不跟随参数本身
+    # 可能指向的符号链接，便于后续明确拒绝移动符号链接文件。
+    return path.parent.resolve() / path.name
+
+
+def move_markdown_file(
+    root: Path,
+    ignores: IgnoreMatcher,
+    source_argument: Path,
+    destination_argument: Path,
+) -> None:
+    """移动或重命名 Markdown 文件，并以事务方式更新其它文档中的引用。"""
+    root = root.resolve()
+    source = repository_argument_path(root, source_argument)
+    destination_path = repository_argument_path(root, destination_argument)
+
+    if relative_if_inside(source, root) is None:
+        raise ValueError(f"源文件必须位于扫描根目录内：{source}")
+    if relative_if_inside(source.resolve(), root) is None:
+        raise ValueError(f"源文件的实际路径必须位于扫描根目录内：{source}")
+    if source.suffix.casefold() != ".md":
+        raise ValueError(f"源文件必须是 Markdown 文件：{source}")
+    if source.is_symlink():
+        raise ValueError(f"暂不支持移动符号链接：{source}")
+    if not source.is_file():
+        raise ValueError(f"源文件不存在或不是普通文件：{source}")
+    if destination_path.is_dir():
+        destination = destination_path / source.name
+    else:
+        destination = destination_path
+        if destination.suffix.casefold() != ".md":
+            raise ValueError(
+                "目标不存在时必须指定完整的 Markdown 文件路径（扩展名为 .md）："
+                f"{destination}"
+            )
+        if not destination.parent.is_dir():
+            raise ValueError(f"目标文件的父目录不存在或不是目录：{destination.parent}")
+
+    if relative_if_inside(destination.parent.resolve(), root) is None:
+        raise ValueError(f"目标路径必须位于扫描根目录内：{destination}")
+    if destination == source:
+        raise ValueError("源文件与目标文件相同")
+    if destination.exists():
+        raise ValueError(f"目标文件已经存在：{destination}")
+
+    try:
+        original_source_bytes = source.read_bytes()
+        source_has_bom = original_source_bytes.startswith(b"\xef\xbb\xbf")
+        source_markdown = original_source_bytes.decode("utf-8-sig")
+    except (OSError, UnicodeError) as error:
+        raise RuntimeError(f"无法读取 Markdown 文件 {source}：{error}") from error
+
+    rewritten_source, source_reference_count = rewrite_markdown_file_reference(
+        source_markdown,
+        root,
+        source,
+        source,
+        destination,
+        preserve_moved_document_targets=True,
+    )
+    source_prefix = b"\xef\xbb\xbf" if source_has_bom else b""
+    rewritten_source_bytes = source_prefix + rewritten_source.encode("utf-8")
+
+    markdown_files = sorted(
+        path
+        for path in iter_repository_files(root, ignores)
+        if path.suffix.casefold() == ".md" and path != source
+    )
+    changed_files: dict[Path, tuple[bytes, bytes, int]] = {}
+    updated_references = 0
+
+    for markdown_file in markdown_files:
+        try:
+            original_bytes = markdown_file.read_bytes()
+            has_bom = original_bytes.startswith(b"\xef\xbb\xbf")
+            markdown = original_bytes.decode("utf-8-sig")
+        except (OSError, UnicodeError) as error:
+            raise RuntimeError(
+                f"无法读取 Markdown 文件 {markdown_file}：{error}"
+            ) from error
+
+        rewritten, count = rewrite_markdown_file_reference(
+            markdown, root, markdown_file, source, destination
+        )
+        if rewritten != markdown:
+            prefix = b"\xef\xbb\xbf" if has_bom else b""
+            changed_files[markdown_file] = (
+                original_bytes,
+                prefix + rewritten.encode("utf-8"),
+                count,
+            )
+            updated_references += count
+
+    moved = False
+    written_files: list[Path] = []
+    try:
+        source.rename(destination)
+        moved = True
+        if rewritten_source_bytes != original_source_bytes:
+            destination.write_bytes(rewritten_source_bytes)
+        for markdown_file, (_, rewritten_bytes, _) in changed_files.items():
+            written_files.append(markdown_file)
+            markdown_file.write_bytes(rewritten_bytes)
+    except OSError as error:
+        for markdown_file in reversed(written_files):
+            try:
+                markdown_file.write_bytes(changed_files[markdown_file][0])
+            except OSError:
+                pass
+        if moved:
+            try:
+                destination.rename(source)
+                source.write_bytes(original_source_bytes)
+            except OSError:
+                pass
+        raise RuntimeError(f"Markdown 移动失败，已尝试回滚：{error}") from error
+
+    print(
+        f"Markdown 移动完成：{source.relative_to(root).as_posix()} -> "
+        f"{destination.relative_to(root).as_posix()}；扫描其它文档 "
+        f"{len(markdown_files)} 个，修改 {len(changed_files)} 个，"
+        f"更新入站引用 {updated_references} 处，调整文档自身引用 "
+        f"{source_reference_count} 处。"
+    )
+
+
 def format_images(root: Path, ignores: IgnoreMatcher) -> None:
     repository_files = list(iter_repository_files(root, ignores))
     markdown_files = sorted(
@@ -939,17 +1236,19 @@ def format_images(root: Path, ignores: IgnoreMatcher) -> None:
 
 def build_argument_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="生成 EffectiveBlog 目录，并维护 Markdown 使用的本地图片。",
+        description="生成 EffectiveBlog 目录，并维护 Markdown 文档与本地图片。",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""示例：
   python3 eb_tool.py --clean_img --dry-run
   python3 eb_tool.py --clean_img --delete
   python3 eb_tool.py --gen
   python3 eb_tool.py --format_img
+  python3 eb_tool.py --move_md "旧目录/文档.md" "新目录"
+  python3 eb_tool.py --move_md "目录/旧名称.md" "目录/新名称.md"
 
 配置：
   工具读取扫描根目录下的 eb_config.json。
-  - img_ignore：--clean_img 和 --format_img 使用的忽略规则数组
+  - img_ignore：--clean_img、--format_img 和 --move_md 使用的忽略规则数组
   - gen_ignore：--gen 按名称过滤的字符串数组
 """,
     )
@@ -968,6 +1267,13 @@ def build_argument_parser() -> argparse.ArgumentParser:
         "--format_img",
         action="store_true",
         help="集中、重命名本地图片并更新 Markdown 引用",
+    )
+    actions.add_argument(
+        "--move_md",
+        nargs=2,
+        type=Path,
+        metavar=("SOURCE", "DESTINATION"),
+        help="移动或重命名 Markdown 文件，并更新其它文档中的相对引用",
     )
     parser.add_argument(
         "--root",
@@ -1093,6 +1399,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         ignores = load_ignore_matcher(config["img_ignore"])
         if args.format_img:
             format_images(root, ignores)
+            return 0
+        if args.move_md:
+            move_markdown_file(root, ignores, args.move_md[0], args.move_md[1])
             return 0
         return clean_images(root, ignores, args)
     except (OSError, RuntimeError, ValueError) as error:

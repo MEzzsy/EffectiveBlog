@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>02 Android类从源码到运行时加载 · Mezzsy is here</title>
+        <title>01 Android类从源码到运行时加载 · Mezzsy is here</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -59,10 +59,10 @@
     <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="03 虚拟机.html" />
+    <link rel="next" href="02 虚拟机.html" />
     
     
-    <link rel="prev" href="01 Google Dynamic Feature插件.html" />
+    <link rel="prev" href="../06 新/01 Google DF插件.html" />
     
 
     </head>
@@ -2007,9 +2007,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.7.6" data-path="./">
+        <li class="chapter " data-level="1.7.6" data-path="../06 新/">
             
-                <a href="./">
+                <a href="../06 新/">
             
                     
                     06 新
@@ -2021,38 +2021,12 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.7.6.1" data-path="01 Google Dynamic Feature插件.html">
+        <li class="chapter " data-level="1.7.6.1" data-path="../06 新/01 Google DF插件.html">
             
-                <a href="01 Google Dynamic Feature插件.html">
-            
-                    
-                    01 Google Dynamic Feature插件
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter active" data-level="1.7.6.2" data-path="02 Android类从源码到运行时加载.html">
-            
-                <a href="02 Android类从源码到运行时加载.html">
+                <a href="../06 新/01 Google DF插件.html">
             
                     
-                    02 Android类从源码到运行时加载
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.7.6.3" data-path="03 虚拟机.html">
-            
-                <a href="03 虚拟机.html">
-            
-                    
-                    03 虚拟机
+                    01 Google DF插件
             
                 </a>
             
@@ -2062,6 +2036,45 @@
     
 
             </ul>
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.7.7" data-path="01 Android类从源码到运行时加载.html">
+            
+                <a href="01 Android类从源码到运行时加载.html">
+            
+                    
+                    01 Android类从源码到运行时加载
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.8" data-path="02 虚拟机.html">
+            
+                <a href="02 虚拟机.html">
+            
+                    
+                    02 虚拟机
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.9" data-path="../08 应用层/01 Android编译打包流程.html">
+            
+                <a href="../08 应用层/01 Android编译打包流程.html">
+            
+                    
+                    01 Android编译打包流程
+            
+                </a>
+            
+
             
         </li>
     
@@ -2940,7 +2953,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href="../.." >02 Android类从源码到运行时加载</a>
+        <a href="../.." >01 Android类从源码到运行时加载</a>
     </h1>
 </div>
 
@@ -2952,27 +2965,38 @@
                             
                                 <section class="normal markdown-section">
                                 
-                                <div id="anchor-navigation-ex-navbar"><i class="fa fa-navicon"></i><ul><li><span class="title-icon "></span><a href="#&#x5B8C;&#x6574;&#x94FE;&#x8DEF;"><b>1. </b>&#x5B8C;&#x6574;&#x94FE;&#x8DEF;</a></li><li><span class="title-icon "></span><a href="#&#x4ECE;&#x6E90;&#x7801;&#x5230;-jvm-&#x5B57;&#x8282;&#x7801;"><b>2. </b>&#x4ECE;&#x6E90;&#x7801;&#x5230; JVM &#x5B57;&#x8282;&#x7801;</a></li><li><span class="title-icon "></span><a href="#&#x4ECE;-class-&#x5230;-dex"><b>3. </b>&#x4ECE; class &#x5230; DEX</a></li><ul><li><span class="title-icon "></span><a href="#dex-&#x662F;&#x4EC0;&#x4E48;"><b>3.1. </b>DEX &#x662F;&#x4EC0;&#x4E48;</a></li><li><span class="title-icon "></span><a href="#desugaring"><b>3.2. </b>Desugaring</a></li><li><span class="title-icon "></span><a href="#d8-&#x7684;&#x804C;&#x8D23;"><b>3.3. </b>D8 &#x7684;&#x804C;&#x8D23;</a></li><li><span class="title-icon "></span><a href="#r8-&#x7684;&#x804C;&#x8D23;"><b>3.4. </b>R8 &#x7684;&#x804C;&#x8D23;</a></li><li><span class="title-icon "></span><a href="#&#x4E3A;&#x4EC0;&#x4E48;&#x4F1A;&#x6709;&#x591A;&#x4E2A;-dex"><b>3.5. </b>&#x4E3A;&#x4EC0;&#x4E48;&#x4F1A;&#x6709;&#x591A;&#x4E2A; DEX</a></li></ul><li><span class="title-icon "></span><a href="#dex-&#x5982;&#x4F55;&#x8FDB;&#x5165;-apk-&#x4E0E;-aab"><b>4. </b>DEX &#x5982;&#x4F55;&#x8FDB;&#x5165; APK &#x4E0E; AAB</a></li><ul><li><span class="title-icon "></span><a href="#apk-&#x4E2D;&#x7684;-dex"><b>4.1. </b>APK &#x4E2D;&#x7684; DEX</a></li><li><span class="title-icon "></span><a href="#aab-&#x4E2D;&#x7684;-dex"><b>4.2. </b>AAB &#x4E2D;&#x7684; DEX</a></li></ul><li><span class="title-icon "></span><a href="#&#x5B89;&#x88C5;&#x4E0E;-art-&#x7F16;&#x8BD1;&#x4EA7;&#x7269;"><b>5. </b>&#x5B89;&#x88C5;&#x4E0E; ART &#x7F16;&#x8BD1;&#x4EA7;&#x7269;</a></li><ul><li><span class="title-icon "></span><a href="#packagemanager-&#x767B;&#x8BB0;-apk-&#x8DEF;&#x5F84;"><b>5.1. </b>PackageManager &#x767B;&#x8BB0; APK &#x8DEF;&#x5F84;</a></li><li><span class="title-icon "></span><a href="#dex-&#x4F18;&#x5316;&#x4E0D;&#x7B49;&#x4E8E;&#x7C7B;&#x52A0;&#x8F7D;"><b>5.2. </b>DEX &#x4F18;&#x5316;&#x4E0D;&#x7B49;&#x4E8E;&#x7C7B;&#x52A0;&#x8F7D;</a></li></ul><li><span class="title-icon "></span><a href="#&#x5E94;&#x7528;&#x8FDB;&#x7A0B;&#x5982;&#x4F55;&#x5EFA;&#x7ACB;&#x7C7B;&#x8DEF;&#x5F84;"><b>6. </b>&#x5E94;&#x7528;&#x8FDB;&#x7A0B;&#x5982;&#x4F55;&#x5EFA;&#x7ACB;&#x7C7B;&#x8DEF;&#x5F84;</a></li><ul><li><span class="title-icon "></span><a href="#zygote-&#x4E0E;&#x6846;&#x67B6;&#x7C7B;"><b>6.1. </b>Zygote &#x4E0E;&#x6846;&#x67B6;&#x7C7B;</a></li><li><span class="title-icon "></span><a href="#&#x7CFB;&#x7EDF;&#x6536;&#x96C6;-base-&#x4E0E;-split-&#x8DEF;&#x5F84;"><b>6.2. </b>&#x7CFB;&#x7EDF;&#x6536;&#x96C6; Base &#x4E0E; split &#x8DEF;&#x5F84;</a></li><li><span class="title-icon "></span><a href="#&#x9ED8;&#x8BA4;&#x6A21;&#x5F0F;&#x4E0E;-isolated-split"><b>6.3. </b>&#x9ED8;&#x8BA4;&#x6A21;&#x5F0F;&#x4E0E; isolated split</a></li><ul><li><span class="title-icon "></span><a href="#&#x5E94;&#x7528;&#x573A;&#x666F;"><b>6.3.1. </b>&#x5E94;&#x7528;&#x573A;&#x666F;</a></li></ul><li><span class="title-icon "></span><a href="#&#x5E38;&#x89C1;-android-classloader"><b>6.4. </b>&#x5E38;&#x89C1; Android ClassLoader</a></li></ul><li><span class="title-icon "></span><a href="#classloader-&#x5185;&#x90E8;&#x5982;&#x4F55;&#x8868;&#x793A;-dex"><b>7. </b>ClassLoader &#x5185;&#x90E8;&#x5982;&#x4F55;&#x8868;&#x793A; DEX</a></li><ul><li><span class="title-icon "></span><a href="#&#x1F31F;&#x1F31F;&#x1F31F;&#x6574;&#x4F53;&#x4ECB;&#x7ECD;"><b>7.1. </b>&#x1F31F;&#x1F31F;&#x1F31F;&#x6574;&#x4F53;&#x4ECB;&#x7ECD;</a></li><li><span class="title-icon "></span><a href="#basedexclassloader"><b>7.2. </b>BaseDexClassLoader</a></li><li><span class="title-icon "></span><a href="#dexpathlist-&#x4E0E;-dexelements"><b>7.3. </b>DexPathList &#x4E0E; dexElements</a></li><li><span class="title-icon "></span><a href="#dexfile"><b>7.4. </b>DexFile</a></li></ul><li><span class="title-icon "></span><a href="#&#x4E00;&#x4E2A;&#x7C7B;&#x5728;&#x8FD0;&#x884C;&#x65F6;&#x5982;&#x4F55;&#x88AB;&#x52A0;&#x8F7D;"><b>8. </b>&#x4E00;&#x4E2A;&#x7C7B;&#x5728;&#x8FD0;&#x884C;&#x65F6;&#x5982;&#x4F55;&#x88AB;&#x52A0;&#x8F7D;</a></li><ul><li><span class="title-icon "></span><a href="#&#x4EC0;&#x4E48;&#x64CD;&#x4F5C;&#x4F1A;&#x89E6;&#x53D1;&#x7C7B;&#x52A0;&#x8F7D;"><b>8.1. </b>&#x4EC0;&#x4E48;&#x64CD;&#x4F5C;&#x4F1A;&#x89E6;&#x53D1;&#x7C7B;&#x52A0;&#x8F7D;</a></li><li><span class="title-icon "></span><a href="#loadclass-&#x7684;&#x53CC;&#x4EB2;&#x59D4;&#x6D3E;"><b>8.2. </b>loadClass &#x7684;&#x53CC;&#x4EB2;&#x59D4;&#x6D3E;</a></li><ul><li><span class="title-icon "></span><a href="#&#x53CC;&#x4EB2;&#x59D4;&#x6258;&#x6A21;&#x5F0F;"><b>8.2.1. </b>&#x53CC;&#x4EB2;&#x59D4;&#x6258;&#x6A21;&#x5F0F;</a></li></ul><li><span class="title-icon "></span><a href="#dex-&#x5185;&#x90E8;&#x67E5;&#x627E;"><b>8.3. </b>DEX &#x5185;&#x90E8;&#x67E5;&#x627E;</a></li><li><span class="title-icon "></span><a href="#&#x52A0;&#x8F7D;&#x3001;&#x94FE;&#x63A5;&#x548C;&#x521D;&#x59CB;&#x5316;"><b>8.4. </b>&#x52A0;&#x8F7D;&#x3001;&#x94FE;&#x63A5;&#x548C;&#x521D;&#x59CB;&#x5316;</a></li><li><span class="title-icon "></span><a href="#&#x7C7B;&#x4F55;&#x65F6;&#x771F;&#x6B63;&#x5360;&#x7528;&#x5185;&#x5B58;"><b>8.5. </b>&#x7C7B;&#x4F55;&#x65F6;&#x771F;&#x6B63;&#x5360;&#x7528;&#x5185;&#x5B58;</a></li><li><span class="title-icon "></span><a href="#&#x7C7B;&#x7684;&#x8EAB;&#x4EFD;&#x5305;&#x542B;-classloader"><b>8.6. </b>&#x7C7B;&#x7684;&#x8EAB;&#x4EFD;&#x5305;&#x542B; ClassLoader</a></li></ul><li><span class="title-icon "></span><a href="#&#x5E38;&#x89C1;&#x5F02;&#x5E38;&#x5BF9;&#x5E94;&#x94FE;&#x8DEF;&#x4E2D;&#x7684;&#x4F4D;&#x7F6E;"><b>9. </b>&#x5E38;&#x89C1;&#x5F02;&#x5E38;&#x5BF9;&#x5E94;&#x94FE;&#x8DEF;&#x4E2D;&#x7684;&#x4F4D;&#x7F6E;</a></li><li><span class="title-icon "></span><a href="#&#x52A8;&#x6001;&#x6269;&#x5C55;&#x7C7B;&#x8DEF;&#x5F84;"><b>10. </b>&#x52A8;&#x6001;&#x6269;&#x5C55;&#x7C7B;&#x8DEF;&#x5F84;</a></li><ul><li><span class="title-icon "></span><a href="#legacy-multidex"><b>10.1. </b>Legacy MultiDex</a></li><li><span class="title-icon "></span><a href="#dynamic-feature"><b>10.2. </b>Dynamic Feature</a></li><li><span class="title-icon "></span><a href="#&#x70ED;&#x4FEE;&#x590D;&#x4E0E;&#x63D2;&#x4EF6;&#x5316;"><b>10.3. </b>&#x70ED;&#x4FEE;&#x590D;&#x4E0E;&#x63D2;&#x4EF6;&#x5316;</a></li></ul><li><span class="title-icon "></span><a href="#&#x5982;&#x4F55;&#x89C2;&#x5BDF;&#x8FD9;&#x6761;&#x94FE;&#x8DEF;"><b>11. </b>&#x5982;&#x4F55;&#x89C2;&#x5BDF;&#x8FD9;&#x6761;&#x94FE;&#x8DEF;</a></li><ul><li><span class="title-icon "></span><a href="#&#x68C0;&#x67E5;&#x6784;&#x5EFA;&#x4EA7;&#x7269;&#x4E2D;&#x7684;-dex"><b>11.1. </b>&#x68C0;&#x67E5;&#x6784;&#x5EFA;&#x4EA7;&#x7269;&#x4E2D;&#x7684; DEX</a></li><li><span class="title-icon "></span><a href="#&#x68C0;&#x67E5;&#x8BBE;&#x5907;&#x4E0A;&#x7684;-apk-&#x8DEF;&#x5F84;"><b>11.2. </b>&#x68C0;&#x67E5;&#x8BBE;&#x5907;&#x4E0A;&#x7684; APK &#x8DEF;&#x5F84;</a></li><li><span class="title-icon "></span><a href="#&#x67E5;&#x770B;&#x7C7B;&#x4E0E;-classloader"><b>11.3. </b>&#x67E5;&#x770B;&#x7C7B;&#x4E0E; ClassLoader</a></li></ul><li><span class="title-icon "></span><a href="#&#x603B;&#x7ED3;"><b>12. </b>&#x603B;&#x7ED3;</a></li></ul></div><a href="#&#x5B8C;&#x6574;&#x94FE;&#x8DEF;" id="anchorNavigationExGoTop"><i class="fa fa-arrow-up"></i></a><blockquote>
+                                <div id="anchor-navigation-ex-navbar"><i class="fa fa-navicon"></i><ul><li><span class="title-icon "></span><a href="#&#x1F31F;&#x1F31F;&#x1F31F;&#x5B8C;&#x6574;&#x94FE;&#x8DEF;"><b>1. </b>&#x1F31F;&#x1F31F;&#x1F31F;&#x5B8C;&#x6574;&#x94FE;&#x8DEF;</a></li><ul><li><span class="title-icon "></span><a href="#&#x7C7B;&#x4ECE;&#x6E90;&#x7801;&#x5230;&#x8FD0;&#x884C;&#x65F6;"><b>1.1. </b>&#x7C7B;&#x4ECE;&#x6E90;&#x7801;&#x5230;&#x8FD0;&#x884C;&#x65F6;</a></li><li><span class="title-icon "></span><a href="#&#x7C7B;&#x5728;&#x8FD0;&#x884C;&#x65F6;&#x5982;&#x4F55;&#x88AB;&#x52A0;&#x8F7D;"><b>1.2. </b>&#x7C7B;&#x5728;&#x8FD0;&#x884C;&#x65F6;&#x5982;&#x4F55;&#x88AB;&#x52A0;&#x8F7D;</a></li></ul><li><span class="title-icon "></span><a href="#&#x4ECE;&#x6E90;&#x7801;&#x5230;-jvm-&#x5B57;&#x8282;&#x7801;"><b>2. </b>&#x4ECE;&#x6E90;&#x7801;&#x5230; JVM &#x5B57;&#x8282;&#x7801;</a></li><li><span class="title-icon "></span><a href="#&#x4ECE;-class-&#x5230;-dex"><b>3. </b>&#x4ECE; class &#x5230; DEX</a></li><ul><li><span class="title-icon "></span><a href="#dex-&#x662F;&#x4EC0;&#x4E48;"><b>3.1. </b>DEX &#x662F;&#x4EC0;&#x4E48;</a></li><li><span class="title-icon "></span><a href="#desugaring"><b>3.2. </b>Desugaring</a></li><li><span class="title-icon "></span><a href="#d8-&#x7684;&#x804C;&#x8D23;&#xFF08;&#x9762;&#x5411;debug&#xFF09;"><b>3.3. </b>D8 &#x7684;&#x804C;&#x8D23;&#xFF08;&#x9762;&#x5411;debug&#xFF09;</a></li><li><span class="title-icon "></span><a href="#r8-&#x7684;&#x804C;&#x8D23;&#xFF08;&#x9762;&#x5411;release&#xFF09;"><b>3.4. </b>R8 &#x7684;&#x804C;&#x8D23;&#xFF08;&#x9762;&#x5411;release&#xFF09;</a></li><li><span class="title-icon "></span><a href="#&#x4E3A;&#x4EC0;&#x4E48;&#x4F1A;&#x6709;&#x591A;&#x4E2A;-dex&#xFF08;64k&#x9650;&#x5236;&#xFF09;"><b>3.5. </b>&#x4E3A;&#x4EC0;&#x4E48;&#x4F1A;&#x6709;&#x591A;&#x4E2A; DEX&#xFF08;64K&#x9650;&#x5236;&#xFF09;</a></li></ul><li><span class="title-icon "></span><a href="#dex-&#x5982;&#x4F55;&#x8FDB;&#x5165;-apk-&#x4E0E;-aab"><b>4. </b>DEX &#x5982;&#x4F55;&#x8FDB;&#x5165; APK &#x4E0E; AAB</a></li><ul><li><span class="title-icon "></span><a href="#apk-&#x4E2D;&#x7684;-dex"><b>4.1. </b>APK &#x4E2D;&#x7684; DEX</a></li><li><span class="title-icon "></span><a href="#aab-&#x4E2D;&#x7684;-dex"><b>4.2. </b>AAB &#x4E2D;&#x7684; DEX</a></li></ul><li><span class="title-icon "></span><a href="#&#x5B89;&#x88C5;&#x4E0E;-art-&#x7F16;&#x8BD1;&#x4EA7;&#x7269;"><b>5. </b>&#x5B89;&#x88C5;&#x4E0E; ART &#x7F16;&#x8BD1;&#x4EA7;&#x7269;</a></li><ul><li><span class="title-icon "></span><a href="#packagemanager-&#x767B;&#x8BB0;-apk-&#x8DEF;&#x5F84;"><b>5.1. </b>PackageManager &#x767B;&#x8BB0; APK &#x8DEF;&#x5F84;</a></li><li><span class="title-icon "></span><a href="#dex-&#x4F18;&#x5316;&#x4E0D;&#x7B49;&#x4E8E;&#x7C7B;&#x52A0;&#x8F7D;"><b>5.2. </b>DEX &#x4F18;&#x5316;&#x4E0D;&#x7B49;&#x4E8E;&#x7C7B;&#x52A0;&#x8F7D;</a></li></ul><li><span class="title-icon "></span><a href="#&#x5E94;&#x7528;&#x8FDB;&#x7A0B;&#x5982;&#x4F55;&#x5EFA;&#x7ACB;&#x7C7B;&#x8DEF;&#x5F84;"><b>6. </b>&#x5E94;&#x7528;&#x8FDB;&#x7A0B;&#x5982;&#x4F55;&#x5EFA;&#x7ACB;&#x7C7B;&#x8DEF;&#x5F84;</a></li><ul><li><span class="title-icon "></span><a href="#zygote-&#x4E0E;&#x6846;&#x67B6;&#x7C7B;"><b>6.1. </b>Zygote &#x4E0E;&#x6846;&#x67B6;&#x7C7B;</a></li><li><span class="title-icon "></span><a href="#&#x1F31F;&#x7CFB;&#x7EDF;&#x6536;&#x96C6;-base-&#x4E0E;-split-&#x8DEF;&#x5F84;"><b>6.2. </b>&#x1F31F;&#x7CFB;&#x7EDF;&#x6536;&#x96C6; Base &#x4E0E; split &#x8DEF;&#x5F84;</a></li><li><span class="title-icon "></span><a href="#&#x9ED8;&#x8BA4;&#x6A21;&#x5F0F;&#x4E0E;-isolated-split"><b>6.3. </b>&#x9ED8;&#x8BA4;&#x6A21;&#x5F0F;&#x4E0E; isolated split</a></li><ul><li><span class="title-icon "></span><a href="#&#x5E94;&#x7528;&#x573A;&#x666F;"><b>6.3.1. </b>&#x5E94;&#x7528;&#x573A;&#x666F;</a></li></ul><li><span class="title-icon "></span><a href="#&#x5E38;&#x89C1;-android-classloader"><b>6.4. </b>&#x5E38;&#x89C1; Android ClassLoader</a></li></ul><li><span class="title-icon "></span><a href="#classloader-&#x5185;&#x90E8;&#x5982;&#x4F55;&#x8868;&#x793A;-dex"><b>7. </b>ClassLoader &#x5185;&#x90E8;&#x5982;&#x4F55;&#x8868;&#x793A; DEX</a></li><ul><li><span class="title-icon "></span><a href="#basedexclassloader"><b>7.1. </b>BaseDexClassLoader</a></li><li><span class="title-icon "></span><a href="#dexpathlist-&#x4E0E;-dexelements"><b>7.2. </b>DexPathList &#x4E0E; dexElements</a></li><li><span class="title-icon "></span><a href="#dexfile"><b>7.3. </b>DexFile</a></li></ul><li><span class="title-icon "></span><a href="#&#x4E00;&#x4E2A;&#x7C7B;&#x5728;&#x8FD0;&#x884C;&#x65F6;&#x5982;&#x4F55;&#x88AB;&#x52A0;&#x8F7D;"><b>8. </b>&#x4E00;&#x4E2A;&#x7C7B;&#x5728;&#x8FD0;&#x884C;&#x65F6;&#x5982;&#x4F55;&#x88AB;&#x52A0;&#x8F7D;</a></li><ul><li><span class="title-icon "></span><a href="#&#x4EC0;&#x4E48;&#x64CD;&#x4F5C;&#x4F1A;&#x89E6;&#x53D1;&#x7C7B;&#x52A0;&#x8F7D;"><b>8.1. </b>&#x4EC0;&#x4E48;&#x64CD;&#x4F5C;&#x4F1A;&#x89E6;&#x53D1;&#x7C7B;&#x52A0;&#x8F7D;</a></li><li><span class="title-icon "></span><a href="#loadclass-&#x7684;&#x53CC;&#x4EB2;&#x59D4;&#x6D3E;"><b>8.2. </b>loadClass &#x7684;&#x53CC;&#x4EB2;&#x59D4;&#x6D3E;</a></li><ul><li><span class="title-icon "></span><a href="#&#x53CC;&#x4EB2;&#x59D4;&#x6258;&#x6A21;&#x5F0F;"><b>8.2.1. </b>&#x53CC;&#x4EB2;&#x59D4;&#x6258;&#x6A21;&#x5F0F;</a></li></ul><li><span class="title-icon "></span><a href="#dex-&#x5185;&#x90E8;&#x67E5;&#x627E;"><b>8.3. </b>DEX &#x5185;&#x90E8;&#x67E5;&#x627E;</a></li><li><span class="title-icon "></span><a href="#&#x52A0;&#x8F7D;&#x3001;&#x94FE;&#x63A5;&#x548C;&#x521D;&#x59CB;&#x5316;"><b>8.4. </b>&#x52A0;&#x8F7D;&#x3001;&#x94FE;&#x63A5;&#x548C;&#x521D;&#x59CB;&#x5316;</a></li><li><span class="title-icon "></span><a href="#&#x7C7B;&#x4F55;&#x65F6;&#x771F;&#x6B63;&#x5360;&#x7528;&#x5185;&#x5B58;"><b>8.5. </b>&#x7C7B;&#x4F55;&#x65F6;&#x771F;&#x6B63;&#x5360;&#x7528;&#x5185;&#x5B58;</a></li><li><span class="title-icon "></span><a href="#&#x7C7B;&#x7684;&#x8EAB;&#x4EFD;&#x5305;&#x542B;-classloader"><b>8.6. </b>&#x7C7B;&#x7684;&#x8EAB;&#x4EFD;&#x5305;&#x542B; ClassLoader</a></li></ul><li><span class="title-icon "></span><a href="#&#x5E38;&#x89C1;&#x5F02;&#x5E38;&#x5BF9;&#x5E94;&#x94FE;&#x8DEF;&#x4E2D;&#x7684;&#x4F4D;&#x7F6E;"><b>9. </b>&#x5E38;&#x89C1;&#x5F02;&#x5E38;&#x5BF9;&#x5E94;&#x94FE;&#x8DEF;&#x4E2D;&#x7684;&#x4F4D;&#x7F6E;</a></li><li><span class="title-icon "></span><a href="#&#x52A8;&#x6001;&#x6269;&#x5C55;&#x7C7B;&#x8DEF;&#x5F84;"><b>10. </b>&#x52A8;&#x6001;&#x6269;&#x5C55;&#x7C7B;&#x8DEF;&#x5F84;</a></li><ul><li><span class="title-icon "></span><a href="#legacy-multidex"><b>10.1. </b>Legacy MultiDex</a></li><li><span class="title-icon "></span><a href="#dynamic-feature"><b>10.2. </b>Dynamic Feature</a></li><li><span class="title-icon "></span><a href="#&#x70ED;&#x4FEE;&#x590D;&#x4E0E;&#x63D2;&#x4EF6;&#x5316;"><b>10.3. </b>&#x70ED;&#x4FEE;&#x590D;&#x4E0E;&#x63D2;&#x4EF6;&#x5316;</a></li></ul><li><span class="title-icon "></span><a href="#&#x5982;&#x4F55;&#x89C2;&#x5BDF;&#x8FD9;&#x6761;&#x94FE;&#x8DEF;"><b>11. </b>&#x5982;&#x4F55;&#x89C2;&#x5BDF;&#x8FD9;&#x6761;&#x94FE;&#x8DEF;</a></li><ul><li><span class="title-icon "></span><a href="#&#x68C0;&#x67E5;&#x6784;&#x5EFA;&#x4EA7;&#x7269;&#x4E2D;&#x7684;-dex"><b>11.1. </b>&#x68C0;&#x67E5;&#x6784;&#x5EFA;&#x4EA7;&#x7269;&#x4E2D;&#x7684; DEX</a></li><li><span class="title-icon "></span><a href="#&#x68C0;&#x67E5;&#x8BBE;&#x5907;&#x4E0A;&#x7684;-apk-&#x8DEF;&#x5F84;"><b>11.2. </b>&#x68C0;&#x67E5;&#x8BBE;&#x5907;&#x4E0A;&#x7684; APK &#x8DEF;&#x5F84;</a></li><li><span class="title-icon "></span><a href="#&#x67E5;&#x770B;&#x7C7B;&#x4E0E;-classloader"><b>11.3. </b>&#x67E5;&#x770B;&#x7C7B;&#x4E0E; ClassLoader</a></li></ul><li><span class="title-icon "></span><a href="#&#x603B;&#x7ED3;"><b>12. </b>&#x603B;&#x7ED3;</a></li></ul></div><a href="#&#x1F31F;&#x1F31F;&#x1F31F;&#x5B8C;&#x6574;&#x94FE;&#x8DEF;" id="anchorNavigationExGoTop"><i class="fa fa-arrow-up"></i></a><blockquote>
 <p>&#x672C;&#x6587;&#x8BA8;&#x8BBA;&#x4E00;&#x6BB5;&#x4EE3;&#x7801;&#x5982;&#x4F55;&#x4ECE;&#x6E90;&#x7801;&#x53D8;&#x6210; DEX&#xFF0C;&#x5E76;&#x6700;&#x7EC8;&#x6210;&#x4E3A; ART &#x4E2D;&#x53EF;&#x4EE5;&#x6267;&#x884C;&#x7684;&#x7C7B;&#x3002;</p>
 </blockquote>
-<h1 id="&#x5B8C;&#x6574;&#x94FE;&#x8DEF;"><a name="&#x5B8C;&#x6574;&#x94FE;&#x8DEF;" class="anchor-navigation-ex-anchor" href="#&#x5B8C;&#x6574;&#x94FE;&#x8DEF;"><i class="fa fa-link" aria-hidden="true"></i></a>1. &#x5B8C;&#x6574;&#x94FE;&#x8DEF;</h1>
+<h1 id="&#x1F31F;&#x1F31F;&#x1F31F;&#x5B8C;&#x6574;&#x94FE;&#x8DEF;"><a name="&#x1F31F;&#x1F31F;&#x1F31F;&#x5B8C;&#x6574;&#x94FE;&#x8DEF;" class="anchor-navigation-ex-anchor" href="#&#x1F31F;&#x1F31F;&#x1F31F;&#x5B8C;&#x6574;&#x94FE;&#x8DEF;"><i class="fa fa-link" aria-hidden="true"></i></a>1. &#x1F31F;&#x1F31F;&#x1F31F;&#x5B8C;&#x6574;&#x94FE;&#x8DEF;</h1>
+<h2 id="&#x7C7B;&#x4ECE;&#x6E90;&#x7801;&#x5230;&#x8FD0;&#x884C;&#x65F6;"><a name="&#x7C7B;&#x4ECE;&#x6E90;&#x7801;&#x5230;&#x8FD0;&#x884C;&#x65F6;" class="anchor-navigation-ex-anchor" href="#&#x7C7B;&#x4ECE;&#x6E90;&#x7801;&#x5230;&#x8FD0;&#x884C;&#x65F6;"><i class="fa fa-link" aria-hidden="true"></i></a>1.1. &#x7C7B;&#x4ECE;&#x6E90;&#x7801;&#x5230;&#x8FD0;&#x884C;&#x65F6;</h2>
 <p>Android &#x7C7B;&#x4ECE;&#x6E90;&#x7801;&#x5230;&#x8FD0;&#x884C;&#x65F6;&#xFF0C;&#x5927;&#x81F4;&#x7ECF;&#x5386;&#x4E0B;&#x9762;&#x51E0;&#x4E2A;&#x9636;&#x6BB5;&#xFF1A;</p>
-<pre><code class="lang-text">Kotlin / Java &#x6E90;&#x7801;
-        &#x2193; Kotlin &#x7F16;&#x8BD1;&#x5668; / javac
-JVM &#x5B57;&#x8282;&#x7801;&#xFF08;.class&#xFF09;
-        &#x2193; D8&#xFF0C;&#x6216;&#x8005;&#x5F00;&#x542F;&#x538B;&#x7F29;&#x65F6;&#x7531; R8 &#x7EDF;&#x4E00;&#x5904;&#x7406;
-DEX &#x5B57;&#x8282;&#x7801;&#xFF08;classes.dex&#x3001;classes2.dex...&#xFF09;
-        &#x2193; Android Gradle Plugin &#x6253;&#x5305;
-APK&#xFF0C;&#x6216;&#x8005; AAB &#x4E2D;&#x5404;&#x6A21;&#x5757;&#x7684; DEX
-        &#x2193; &#x5B89;&#x88C5;
-Base APK / Split APK &#x88AB; PackageManager &#x767B;&#x8BB0;
-        &#x2193; &#x5E94;&#x7528;&#x8FDB;&#x7A0B;&#x542F;&#x52A8;
-&#x7CFB;&#x7EDF;&#x6839;&#x636E; APK &#x8DEF;&#x5F84;&#x521B;&#x5EFA;&#x5E94;&#x7528; ClassLoader
-        &#x2193; &#x67D0;&#x4E2A;&#x7C7B;&#x7B2C;&#x4E00;&#x6B21;&#x88AB;&#x4F7F;&#x7528;
-ClassLoader &#x67E5;&#x627E; DEX &#x2192; ART &#x5B9A;&#x4E49;&#x3001;&#x9A8C;&#x8BC1;&#x3001;&#x94FE;&#x63A5;&#x3001;&#x521D;&#x59CB;&#x5316;&#x7C7B;
-        &#x2193; &#x65B9;&#x6CD5;&#x88AB;&#x6267;&#x884C;
-&#x89E3;&#x91CA;&#x6267;&#x884C;&#xFF0C;&#x6216;&#x8005;&#x8FD0;&#x884C; AOT / JIT &#x7F16;&#x8BD1;&#x540E;&#x7684;&#x673A;&#x5668;&#x7801;
-</code></pre>
+<ol>
+<li>Kotlin &#x6216; Java &#x6E90;&#x7801;&#x7ECF;&#x8FC7; Kotlin &#x7F16;&#x8BD1;&#x5668;&#x6216; <code>javac</code> &#x7F16;&#x8BD1;&#xFF0C;&#x751F;&#x6210; JVM &#x5B57;&#x8282;&#x7801;&#xFF08;<code>.class</code>&#xFF09;&#x3002;</li>
+<li>D8 &#x5C06; <code>.class</code> &#x8F6C;&#x6362;&#x6210; DEX &#x5B57;&#x8282;&#x7801;&#xFF1B;&#x5F00;&#x542F;&#x4EE3;&#x7801;&#x538B;&#x7F29;&#x65F6;&#xFF0C;&#x7531; R8 &#x5B8C;&#x6210;&#x4F18;&#x5316;&#x5E76;&#x751F;&#x6210; DEX&#x3002;</li>
+<li>Android Gradle Plugin &#x5C06; DEX &#x6253;&#x5305;&#x8FDB; APK&#xFF0C;&#x6216;&#x8005;&#x653E;&#x5165; AAB &#x7684;&#x76F8;&#x5E94;&#x6A21;&#x5757;&#x3002;</li>
+<li>&#x5E94;&#x7528;&#x5B89;&#x88C5;&#x540E;&#xFF0C;PackageManager &#x767B;&#x8BB0; Base APK &#x548C; Split APK &#x7684;&#x8DEF;&#x5F84;&#x3002;</li>
+<li>&#x5E94;&#x7528;&#x8FDB;&#x7A0B;&#x542F;&#x52A8;&#x65F6;&#xFF0C;&#x7CFB;&#x7EDF;&#x6839;&#x636E; APK &#x8DEF;&#x5F84;&#x521B;&#x5EFA;&#x5E94;&#x7528; ClassLoader&#x3002;</li>
+<li>&#x8FD0;&#x884C;&#x65F6;&#x52A0;&#x8F7D;&#x7C7B;&#xFF08;&#x89C1;&#x4E0B;&#xFF09;</li>
+</ol>
+<h2 id="&#x7C7B;&#x5728;&#x8FD0;&#x884C;&#x65F6;&#x5982;&#x4F55;&#x88AB;&#x52A0;&#x8F7D;"><a name="&#x7C7B;&#x5728;&#x8FD0;&#x884C;&#x65F6;&#x5982;&#x4F55;&#x88AB;&#x52A0;&#x8F7D;" class="anchor-navigation-ex-anchor" href="#&#x7C7B;&#x5728;&#x8FD0;&#x884C;&#x65F6;&#x5982;&#x4F55;&#x88AB;&#x52A0;&#x8F7D;"><i class="fa fa-link" aria-hidden="true"></i></a>1.2. &#x7C7B;&#x5728;&#x8FD0;&#x884C;&#x65F6;&#x5982;&#x4F55;&#x88AB;&#x52A0;&#x8F7D;</h2>
+<blockquote>
+<ul>
+<li><code>dexElements</code>&#xFF1A;&#x6709;&#x5E8F;&#x7684;&#x4EE3;&#x7801;&#x8DEF;&#x5F84;&#x5217;&#x8868;&#xFF1B;</li>
+<li><code>Element</code>&#xFF1A;&#x5BF9;&#x4E00;&#x4E2A;&#x4EE3;&#x7801;&#x6765;&#x6E90;&#x7684;&#x5305;&#x88C5;&#xFF1B;</li>
+<li><code>DexFile</code>&#xFF1A;Element &#x5185;&#x90E8;&#x7528;&#x4E8E;&#x8BBF;&#x95EE; DEX &#x5185;&#x5BB9;&#x7684;&#x5BF9;&#x8C61;&#xFF1B;</li>
+<li><code>Class</code>&#xFF1A;ART &#x6839;&#x636E;&#x67D0;&#x4E2A;&#x7C7B;&#x5B9A;&#x4E49;&#x521B;&#x5EFA;&#x7684;&#x8FD0;&#x884C;&#x65F6;&#x5BF9;&#x8C61;&#x3002;</li>
+</ul>
+</blockquote>
+<p>&#x4E00;&#x4E2A;&#x7C7B;&#x8FDB;&#x5165;&#x8FD0;&#x884C;&#x65F6;&#x540E;&#xFF0C;&#x5927;&#x81F4;&#x6309;&#x7167;&#x4E0B;&#x9762;&#x7684;&#x987A;&#x5E8F;&#x88AB;&#x52A0;&#x8F7D;&#xFF1A;</p>
+<ol>
+<li>&#x7A0B;&#x5E8F;&#x9996;&#x6B21;&#x4F7F;&#x7528;&#x67D0;&#x4E2A;&#x7C7B;&#x65F6;&#xFF0C;&#x5411;&#x5F53;&#x524D; ClassLoader &#x53D1;&#x8D77;&#x52A0;&#x8F7D;&#x8BF7;&#x6C42;&#x3002;</li>
+<li><code>loadClass()</code> &#x5148;&#x68C0;&#x67E5;&#x8BE5;&#x7C7B;&#x662F;&#x5426;&#x5DF2;&#x7ECF;&#x52A0;&#x8F7D;&#xFF1B;&#x5982;&#x679C;&#x6CA1;&#x6709;&#xFF0C;&#x5219;&#x59D4;&#x6258; parent &#x67E5;&#x627E;&#x3002;</li>
+<li>parent &#x672A;&#x627E;&#x5230;&#x65F6;&#xFF0C;&#x5E94;&#x7528; <code>PathClassLoader</code> &#x6309;&#x987A;&#x5E8F;&#x904D;&#x5386; <code>dexElements</code>&#xFF0C;&#x5728;&#x5404;&#x4E2A; DEX &#x4E2D;&#x67E5;&#x627E;&#x7C7B;&#x5B9A;&#x4E49;&#x3002;</li>
+<li>&#x67D0;&#x4E2A; Element &#x547D;&#x4E2D;&#x76EE;&#x6807;&#x7C7B;&#x540E;&#xFF0C;&#x901A;&#x8FC7;&#x5BF9;&#x5E94;&#x7684; <code>DexFile</code> &#x5C06;&#x7C7B;&#x540D;&#x548C; defining ClassLoader &#x4EA4;&#x7ED9; ART&#x3002;</li>
+<li>ART &#x521B;&#x5EFA;&#x5BF9;&#x5E94;&#x7684; <code>Class</code> &#x5BF9;&#x8C61;&#xFF0C;&#x5E76;&#x5B8C;&#x6210;&#x9A8C;&#x8BC1;&#x548C;&#x94FE;&#x63A5;&#x3002;</li>
+<li>&#x9996;&#x6B21;&#x4E3B;&#x52A8;&#x4F7F;&#x7528;&#x8BE5;&#x7C7B;&#x65F6;&#xFF0C;ART &#x6267;&#x884C;&#x9759;&#x6001;&#x521D;&#x59CB;&#x5316;&#x903B;&#x8F91;&#xFF1B;&#x6B64;&#x540E;&#x5373;&#x53EF;&#x521B;&#x5EFA;&#x5BF9;&#x8C61;&#x6216;&#x8C03;&#x7528;&#x65B9;&#x6CD5;&#x3002;</li>
+</ol>
 <h1 id="&#x4ECE;&#x6E90;&#x7801;&#x5230;-jvm-&#x5B57;&#x8282;&#x7801;"><a name="&#x4ECE;&#x6E90;&#x7801;&#x5230;-jvm-&#x5B57;&#x8282;&#x7801;" class="anchor-navigation-ex-anchor" href="#&#x4ECE;&#x6E90;&#x7801;&#x5230;-jvm-&#x5B57;&#x8282;&#x7801;"><i class="fa fa-link" aria-hidden="true"></i></a>2. &#x4ECE;&#x6E90;&#x7801;&#x5230; JVM &#x5B57;&#x8282;&#x7801;</h1>
 <p>Android &#x9879;&#x76EE;&#x4E2D;&#x7684; Java &#x548C; Kotlin &#x6E90;&#x7801;&#x4F1A;&#x5148;&#x88AB;&#x5404;&#x81EA;&#x7684;&#x7F16;&#x8BD1;&#x5668;&#x7F16;&#x8BD1;&#x6210; JVM <code>.class</code> &#x6587;&#x4EF6;&#xFF0C;&#x5176;&#x4E2D;&#x5305;&#x542B;&#x7C7B;&#x7ED3;&#x6784;&#x3001;JVM &#x6307;&#x4EE4;&#x548C;&#x76F8;&#x5173;&#x5143;&#x6570;&#x636E;&#x3002;&#x8FD9;&#x4E9B; <code>.class</code> &#x662F;&#x540E;&#x7EED; D8 &#x6216; R8 &#x751F;&#x6210; DEX &#x7684;&#x8F93;&#x5165;&#xFF0C;&#x5E76;&#x4E0D;&#x4F1A;&#x76F4;&#x63A5;&#x7531; Android &#x8FD0;&#x884C;&#x65F6;&#x6267;&#x884C;&#x3002;</p>
 <p>&#x6E90;&#x7801;&#x6587;&#x4EF6;&#x4E0E; <code>.class</code> &#x4E0D;&#x662F;&#x4E00;&#x4E00;&#x5BF9;&#x5E94;&#x7684;&#x3002;&#x4F8B;&#x5982;&#xFF0C;Kotlin &#x7F16;&#x8BD1;&#x5668;&#x53EF;&#x80FD;&#x4E3A; lambda&#x3001;&#x534F;&#x7A0B;&#x6216;&#x533F;&#x540D;&#x5BF9;&#x8C61;&#x751F;&#x6210;&#x989D;&#x5916;&#x7684; <code>.class</code>&#x3002;</p>
@@ -2991,15 +3015,9 @@ ClassLoader &#x67E5;&#x627E; DEX &#x2192; ART &#x5B9A;&#x4E49;&#x3001;&#x9A8C;&#
 <p>&#x6E90;&#x7801;&#x53EF;&#x80FD;&#x4F7F;&#x7528;&#x4E86;&#x4F4E;&#x7248;&#x672C; Android &#x4E0D;&#x76F4;&#x63A5;&#x652F;&#x6301;&#x7684; Java &#x8BED;&#x8A00;&#x7279;&#x6027;&#x6216; Java API&#x3002;DEX &#x8F6C;&#x6362;&#x671F;&#x95F4;&#x4F1A;&#x8FDB;&#x884C; desugaring&#xFF0C;&#x5C06;&#x8FD9;&#x4E9B;&#x7528;&#x6CD5;&#x6539;&#x5199;&#x6210;&#x76EE;&#x6807; Android &#x7248;&#x672C;&#x80FD;&#x591F;&#x6267;&#x884C;&#x7684;&#x5F62;&#x5F0F;&#x3002;</p>
 <p>&#x4F8B;&#x5982;&#xFF0C;&#x67D0;&#x4E9B;&#x8BED;&#x8A00;&#x7279;&#x6027;&#x53EF;&#x4EE5;&#x88AB;&#x6539;&#x5199;&#x4E3A;&#x517C;&#x5BB9;&#x7684;&#x5B57;&#x8282;&#x7801;&#x7ED3;&#x6784;&#xFF1B;&#x542F;&#x7528; core library desugaring &#x540E;&#xFF0C;&#x90E8;&#x5206;&#x8F83;&#x65B0;&#x7684; Java API &#x8C03;&#x7528;&#x4E5F;&#x53EF;&#x4EE5;&#x88AB;&#x6539;&#x5199;&#x5230;&#x968F;&#x5E94;&#x7528;&#x6253;&#x5305;&#x7684;&#x517C;&#x5BB9;&#x5B9E;&#x73B0;&#x4E2D;&#x3002;</p>
 <p>Desugaring &#x6539;&#x53D8;&#x7684;&#x662F;&#x6700;&#x7EC8;&#x4EE3;&#x7801;&#x5F62;&#x6001;&#xFF0C;&#x5E76;&#x4E0D;&#x4F1A;&#x6539;&#x53D8;&#x4E1A;&#x52A1;&#x6E90;&#x7801;&#x8868;&#x8FBE;&#x7684;&#x4E3B;&#x8981;&#x8BED;&#x4E49;&#x3002;</p>
-<h2 id="d8-&#x7684;&#x804C;&#x8D23;"><a name="d8-&#x7684;&#x804C;&#x8D23;" class="anchor-navigation-ex-anchor" href="#d8-&#x7684;&#x804C;&#x8D23;"><i class="fa fa-link" aria-hidden="true"></i></a>3.3. D8 &#x7684;&#x804C;&#x8D23;</h2>
-<p>D8 &#x63A5;&#x6536;&#x9879;&#x76EE;&#x53CA;&#x4F9D;&#x8D56;&#x4E2D;&#x7684; JVM &#x5B57;&#x8282;&#x7801;&#xFF0C;&#x5B8C;&#x6210; desugaring&#xFF0C;&#x5E76;&#x751F;&#x6210; DEX &#x5B57;&#x8282;&#x7801;&#x3002;Android Gradle Plugin &#x4F1A;&#x66FF;&#x5E94;&#x7528;&#x7EC4;&#x7EC7;&#x8FD9;&#x4E9B;&#x8F93;&#x5165;&#xFF0C;&#x901A;&#x5E38;&#x4E0D;&#x9700;&#x8981;&#x76F4;&#x63A5;&#x8C03;&#x7528; D8&#x3002;<a href="https://developer.android.com/tools/d8" target="_blank">D8 &#x5B98;&#x65B9;&#x8BF4;&#x660E;</a></p>
-<p>&#x6982;&#x5FF5;&#x4E0A;&#x53EF;&#x4EE5;&#x8868;&#x793A;&#x4E3A;&#xFF1A;</p>
-<pre><code class="lang-text">.class / JAR &#x4E2D;&#x7684; .class
-          &#x2193; D8
-classes.dex&#x3001;classes2.dex...
-</code></pre>
-<p>Debug &#x6784;&#x5EFA;&#x901A;&#x5E38;&#x66F4;&#x91CD;&#x89C6;&#x6784;&#x5EFA;&#x901F;&#x5EA6;&#x548C;&#x8C03;&#x8BD5;&#x4FE1;&#x606F;&#xFF0C;Release &#x6784;&#x5EFA;&#x5219;&#x53EF;&#x80FD;&#x989D;&#x5916;&#x542F;&#x7528;&#x5B8C;&#x6574;&#x7684;&#x4EE3;&#x7801;&#x538B;&#x7F29;&#x548C;&#x4F18;&#x5316;&#x3002;</p>
-<h2 id="r8-&#x7684;&#x804C;&#x8D23;"><a name="r8-&#x7684;&#x804C;&#x8D23;" class="anchor-navigation-ex-anchor" href="#r8-&#x7684;&#x804C;&#x8D23;"><i class="fa fa-link" aria-hidden="true"></i></a>3.4. R8 &#x7684;&#x804C;&#x8D23;</h2>
+<h2 id="d8-&#x7684;&#x804C;&#x8D23;&#xFF08;&#x9762;&#x5411;debug&#xFF09;"><a name="d8-&#x7684;&#x804C;&#x8D23;&#xFF08;&#x9762;&#x5411;debug&#xFF09;" class="anchor-navigation-ex-anchor" href="#d8-&#x7684;&#x804C;&#x8D23;&#xFF08;&#x9762;&#x5411;debug&#xFF09;"><i class="fa fa-link" aria-hidden="true"></i></a>3.3. D8 &#x7684;&#x804C;&#x8D23;&#xFF08;&#x9762;&#x5411;debug&#xFF09;</h2>
+<p>D8 &#x63A5;&#x6536;&#x9879;&#x76EE;&#x53CA;&#x4F9D;&#x8D56;&#x4E2D;&#x7684; JVM &#x5B57;&#x8282;&#x7801;&#xFF0C;&#x5B8C;&#x6210; desugaring&#xFF0C;&#x5E76;&#x751F;&#x6210; DEX &#x5B57;&#x8282;&#x7801;&#x3002;Android Gradle Plugin &#x4F1A;&#x66FF;&#x5E94;&#x7528;&#x7EC4;&#x7EC7;&#x8FD9;&#x4E9B;&#x8F93;&#x5165;&#xFF0C;&#x901A;&#x5E38;&#x4E0D;&#x9700;&#x8981;&#x76F4;&#x63A5;&#x8C03;&#x7528; D8&#x3002;</p>
+<h2 id="r8-&#x7684;&#x804C;&#x8D23;&#xFF08;&#x9762;&#x5411;release&#xFF09;"><a name="r8-&#x7684;&#x804C;&#x8D23;&#xFF08;&#x9762;&#x5411;release&#xFF09;" class="anchor-navigation-ex-anchor" href="#r8-&#x7684;&#x804C;&#x8D23;&#xFF08;&#x9762;&#x5411;release&#xFF09;"><i class="fa fa-link" aria-hidden="true"></i></a>3.4. R8 &#x7684;&#x804C;&#x8D23;&#xFF08;&#x9762;&#x5411;release&#xFF09;</h2>
 <p>&#x5F00;&#x542F;&#x4EE3;&#x7801;&#x538B;&#x7F29;&#x540E;&#xFF0C;R8 &#x4F1A;&#x5206;&#x6790;&#x6574;&#x4E2A;&#x7A0B;&#x5E8F;&#xFF0C;&#x5E76;&#x5B8C;&#x6210;&#x591A;&#x9879;&#x5DE5;&#x4F5C;&#xFF1A;</p>
 <ul>
 <li>Shrinking&#xFF1A;&#x5220;&#x9664;&#x88AB;&#x5224;&#x65AD;&#x4E3A;&#x4E0D;&#x53EF;&#x8FBE;&#x7684;&#x7C7B;&#x3001;&#x5B57;&#x6BB5;&#x548C;&#x65B9;&#x6CD5;&#xFF1B;</li>
@@ -3014,7 +3032,7 @@ classes.dex&#x3001;classes2.dex...
 <li>&#x7C7B;&#x88AB;&#x6DF7;&#x6DC6;&#x540E;&#xFF0C;&#x539F;&#x59CB;&#x5B57;&#x7B26;&#x4E32;&#x7C7B;&#x540D;&#x53EF;&#x80FD;&#x4E0D;&#x518D;&#x6709;&#x6548;&#xFF1B;</li>
 <li>&#x53CD;&#x5C04;&#x3001;JNI&#x3001;&#x5E8F;&#x5217;&#x5316;&#x548C;&#x6846;&#x67B6;&#x56DE;&#x8C03;&#x7B49;&#x9690;&#x5F0F;&#x5165;&#x53E3;&#x9700;&#x8981;&#x6B63;&#x786E;&#x7684; keep &#x89C4;&#x5219;&#x3002;</li>
 </ul>
-<h2 id="&#x4E3A;&#x4EC0;&#x4E48;&#x4F1A;&#x6709;&#x591A;&#x4E2A;-dex"><a name="&#x4E3A;&#x4EC0;&#x4E48;&#x4F1A;&#x6709;&#x591A;&#x4E2A;-dex" class="anchor-navigation-ex-anchor" href="#&#x4E3A;&#x4EC0;&#x4E48;&#x4F1A;&#x6709;&#x591A;&#x4E2A;-dex"><i class="fa fa-link" aria-hidden="true"></i></a>3.5. &#x4E3A;&#x4EC0;&#x4E48;&#x4F1A;&#x6709;&#x591A;&#x4E2A; DEX</h2>
+<h2 id="&#x4E3A;&#x4EC0;&#x4E48;&#x4F1A;&#x6709;&#x591A;&#x4E2A;-dex&#xFF08;64k&#x9650;&#x5236;&#xFF09;"><a name="&#x4E3A;&#x4EC0;&#x4E48;&#x4F1A;&#x6709;&#x591A;&#x4E2A;-dex&#xFF08;64k&#x9650;&#x5236;&#xFF09;" class="anchor-navigation-ex-anchor" href="#&#x4E3A;&#x4EC0;&#x4E48;&#x4F1A;&#x6709;&#x591A;&#x4E2A;-dex&#xFF08;64k&#x9650;&#x5236;&#xFF09;"><i class="fa fa-link" aria-hidden="true"></i></a>3.5. &#x4E3A;&#x4EC0;&#x4E48;&#x4F1A;&#x6709;&#x591A;&#x4E2A; DEX&#xFF08;64K&#x9650;&#x5236;&#xFF09;</h2>
 <p>DEX &#x4E0D;&#x4F1A;&#x5728;&#x6BCF;&#x6761;&#x6307;&#x4EE4;&#x4E2D;&#x91CD;&#x590D;&#x4FDD;&#x5B58;&#x5B8C;&#x6574;&#x7684;&#x65B9;&#x6CD5;&#x540D;&#x3001;&#x7C7B;&#x578B;&#x548C;&#x53C2;&#x6570;&#xFF0C;&#x800C;&#x662F;&#x628A;&#x88AB;&#x5F15;&#x7528;&#x7684;&#x65B9;&#x6CD5;&#x96C6;&#x4E2D;&#x8BB0;&#x5F55;&#x5728; <code>method_ids</code> &#x7B49;&#x8868;&#x4E2D;&#xFF0C;&#x6307;&#x4EE4;&#x53EA;&#x4FDD;&#x5B58;&#x5BF9;&#x5E94;&#x7684;&#x7D22;&#x5F15;&#x3002;&#x8FD9;&#x6837;&#x53EF;&#x4EE5;&#x51CF;&#x5C0F;&#x6307;&#x4EE4;&#x4F53;&#x79EF;&#x5E76;&#x63D0;&#x9AD8;&#x67E5;&#x627E;&#x6548;&#x7387;&#xFF0C;&#x4F46;&#x7D22;&#x5F15;&#x4F4D;&#x6570;&#x662F;&#x6709;&#x9650;&#x7684;&#x3002;</p>
 <p>&#x65B9;&#x6CD5;&#x5F15;&#x7528;&#x7D22;&#x5F15;&#x4F7F;&#x7528; 16 &#x4F4D;&#x8868;&#x793A;&#xFF0C;&#x53D6;&#x503C;&#x8303;&#x56F4;&#x4E3A; <code>0x0000</code>&#xFF5E;<code>0xffff</code>&#xFF0C;&#x56E0;&#x6B64;&#x5355;&#x4E2A; DEX &#x6700;&#x591A;&#x53EA;&#x80FD;&#x5BB9;&#x7EB3; 65,536 &#x4E2A;&#x65B9;&#x6CD5;&#x5F15;&#x7528;&#xFF1A;</p>
 <pre><code class="lang-text">16 &#x4F4D;&#x7D22;&#x5F15; &#x2192; 2&#xB9;&#x2076; = 65,536 &#x4E2A;&#x53EF;&#x7528;&#x7F16;&#x53F7;
@@ -3063,7 +3081,7 @@ feature_checkout-master.apk  &#x2192; Feature DEX
 <h2 id="dex-&#x4F18;&#x5316;&#x4E0D;&#x7B49;&#x4E8E;&#x7C7B;&#x52A0;&#x8F7D;"><a name="dex-&#x4F18;&#x5316;&#x4E0D;&#x7B49;&#x4E8E;&#x7C7B;&#x52A0;&#x8F7D;" class="anchor-navigation-ex-anchor" href="#dex-&#x4F18;&#x5316;&#x4E0D;&#x7B49;&#x4E8E;&#x7C7B;&#x52A0;&#x8F7D;"><i class="fa fa-link" aria-hidden="true"></i></a>5.2. DEX &#x4F18;&#x5316;&#x4E0D;&#x7B49;&#x4E8E;&#x7C7B;&#x52A0;&#x8F7D;</h2>
 <p>&#x5B89;&#x88C5;&#x671F;&#x95F4;&#x6216;&#x5B89;&#x88C5;&#x540E;&#xFF0C;ART &#x53EF;&#x80FD;&#x9A8C;&#x8BC1; DEX&#xFF0C;&#x5E76;&#x901A;&#x8FC7; <code>dex2oat</code>&#x3001;&#x540E;&#x53F0;&#x7F16;&#x8BD1;&#x4EFB;&#x52A1;&#x548C; profile &#x751F;&#x6210;&#x4F18;&#x5316;&#x4EA7;&#x7269;&#x3002;Android 7.0 &#x4EE5;&#x540E;&#x901A;&#x5E38;&#x7EFC;&#x5408;&#x4F7F;&#x7528;&#xFF1A;</p>
 <blockquote>
-<p>&#x89C1; <a href="03%20&#x865A;&#x62DF;&#x673A;.md">03 &#x865A;&#x62DF;&#x673A;.md</a> </p>
+<p>&#x89C1; <a href="../../06%20&#x65B0;/03%20&#x865A;&#x62DF;&#x673A;.md">03 &#x865A;&#x62DF;&#x673A;.md</a></p>
 </blockquote>
 <ul>
 <li>&#x89E3;&#x91CA;&#x6267;&#x884C;&#xFF1B;</li>
@@ -3086,7 +3104,7 @@ feature_checkout-master.apk  &#x2192; Feature DEX
 &#x5E94;&#x7528; PathClassLoader
 </code></pre>
 <p>&#x8FD9;&#x8868;&#x793A;&#x5E94;&#x7528; ClassLoader &#x9047;&#x5230; <code>java.lang.String</code>&#x3001;<code>android.app.Activity</code> &#x7B49;&#x7C7B;&#x578B;&#x65F6;&#xFF0C;&#x4F1A;&#x4F18;&#x5148;&#x59D4;&#x6258;&#x7ED9;&#x80FD;&#x591F;&#x8BBF;&#x95EE;&#x7CFB;&#x7EDF;&#x7C7B;&#x7684;&#x7236;&#x52A0;&#x8F7D;&#x5668;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x4ECE;&#x5E94;&#x7528; DEX &#x4E2D;&#x5B9A;&#x4E49;&#x540C;&#x540D;&#x7C7B;&#x578B;&#x3002;</p>
-<h2 id="&#x7CFB;&#x7EDF;&#x6536;&#x96C6;-base-&#x4E0E;-split-&#x8DEF;&#x5F84;"><a name="&#x7CFB;&#x7EDF;&#x6536;&#x96C6;-base-&#x4E0E;-split-&#x8DEF;&#x5F84;" class="anchor-navigation-ex-anchor" href="#&#x7CFB;&#x7EDF;&#x6536;&#x96C6;-base-&#x4E0E;-split-&#x8DEF;&#x5F84;"><i class="fa fa-link" aria-hidden="true"></i></a>6.2. &#x7CFB;&#x7EDF;&#x6536;&#x96C6; Base &#x4E0E; split &#x8DEF;&#x5F84;</h2>
+<h2 id="&#x1F31F;&#x7CFB;&#x7EDF;&#x6536;&#x96C6;-base-&#x4E0E;-split-&#x8DEF;&#x5F84;"><a name="&#x1F31F;&#x7CFB;&#x7EDF;&#x6536;&#x96C6;-base-&#x4E0E;-split-&#x8DEF;&#x5F84;" class="anchor-navigation-ex-anchor" href="#&#x1F31F;&#x7CFB;&#x7EDF;&#x6536;&#x96C6;-base-&#x4E0E;-split-&#x8DEF;&#x5F84;"><i class="fa fa-link" aria-hidden="true"></i></a>6.2. &#x1F31F;&#x7CFB;&#x7EDF;&#x6536;&#x96C6; Base &#x4E0E; split &#x8DEF;&#x5F84;</h2>
 <p>&#x5E94;&#x7528;&#x542F;&#x52A8;&#x65F6;&#xFF0C;framework &#x4E2D;&#x7684; <code>LoadedApk</code> &#x6839;&#x636E; <code>ApplicationInfo.sourceDir</code> &#x4E0E; <code>splitSourceDirs</code> &#x7EC4;&#x7EC7;&#x4EE3;&#x7801;&#x8DEF;&#x5F84;&#xFF0C;&#x9ED8;&#x8BA4;&#x987A;&#x5E8F;&#x662F; Base &#x5728;&#x524D;&#x3001;split &#x5728;&#x540E;&#x3002;&#x968F;&#x540E; <code>ApplicationLoaders</code> &#x521B;&#x5EFA;&#x6216;&#x590D;&#x7528;&#x5E94;&#x7528; ClassLoader&#x3002;<a href="https://android.googlesource.com/platform/frameworks/base/+/refs/heads/main/core/java/android/app/LoadedApk.java" target="_blank">LoadedApk &#x6E90;&#x7801;</a></p>
 <pre><code class="lang-text">ApplicationInfo
 &#x251C;&#x2500;&#x2500; sourceDir = /data/app/.../base.apk
@@ -3140,22 +3158,14 @@ PathClassLoader
 </table>
 <p><code>PathClassLoader</code> &#x548C; <code>DexClassLoader</code> &#x90FD;&#x7EE7;&#x627F; <code>BaseDexClassLoader</code>&#x3002;&#x73B0;&#x4EE3; Android &#x4E2D;&#x4E0D;&#x5E94;&#x518D;&#x7B80;&#x5355;&#x5730;&#x628A;&#x4E8C;&#x8005;&#x89E3;&#x91CA;&#x6210;&#x201C;&#x5DF2;&#x5B89;&#x88C5; APK&#x201D;&#x548C;&#x201C;&#x672A;&#x5B89;&#x88C5; APK&#x201D;&#x7684;&#x7EDD;&#x5BF9;&#x533A;&#x522B;&#xFF1B;&#x5B83;&#x4EEC;&#x7684;&#x516C;&#x5F00;&#x6784;&#x9020;&#x65B9;&#x5F0F;&#x548C;&#x9002;&#x7528;&#x573A;&#x666F;&#x4E0D;&#x540C;&#xFF0C;&#x4F46;&#x5E95;&#x5C42;&#x90FD;&#x56F4;&#x7ED5; DEX &#x8DEF;&#x5F84;&#x5DE5;&#x4F5C;&#x3002;&#x5C24;&#x5176;&#x662F; <code>optimizedDirectory</code> &#x53C2;&#x6570;&#x4ECE; API 26 &#x8D77;&#x5DF2;&#x7ECF;&#x5E9F;&#x5F03;&#x4E14;&#x4E0D;&#x8D77;&#x4F5C;&#x7528;&#x3002;<a href="https://android.googlesource.com/platform/libcore/+/refs/heads/main/dalvik/src/main/java/dalvik/system/BaseDexClassLoader.java" target="_blank">BaseDexClassLoader &#x6E90;&#x7801;</a></p>
 <h1 id="classloader-&#x5185;&#x90E8;&#x5982;&#x4F55;&#x8868;&#x793A;-dex"><a name="classloader-&#x5185;&#x90E8;&#x5982;&#x4F55;&#x8868;&#x793A;-dex" class="anchor-navigation-ex-anchor" href="#classloader-&#x5185;&#x90E8;&#x5982;&#x4F55;&#x8868;&#x793A;-dex"><i class="fa fa-link" aria-hidden="true"></i></a>7. ClassLoader &#x5185;&#x90E8;&#x5982;&#x4F55;&#x8868;&#x793A; DEX</h1>
-<h2 id="&#x1F31F;&#x1F31F;&#x1F31F;&#x6574;&#x4F53;&#x4ECB;&#x7ECD;"><a name="&#x1F31F;&#x1F31F;&#x1F31F;&#x6574;&#x4F53;&#x4ECB;&#x7ECD;" class="anchor-navigation-ex-anchor" href="#&#x1F31F;&#x1F31F;&#x1F31F;&#x6574;&#x4F53;&#x4ECB;&#x7ECD;"><i class="fa fa-link" aria-hidden="true"></i></a>7.1. &#x1F31F;&#x1F31F;&#x1F31F;&#x6574;&#x4F53;&#x4ECB;&#x7ECD;</h2>
-<ol>
-<li>loadClass&#x52A0;&#x8F7D;&#x5E94;&#x7528;&#x7C7B;</li>
-<li>&#x4E00;&#x822C;&#x57FA;&#x4E8E;&#x53CC;&#x4EB2;&#x59D4;&#x6258;&#x6A21;&#x5F0F;&#x6700;&#x7EC8;&#x7531; PathClassLoader&#xFF08;&#x7EE7;&#x627F; BaseDexClassLoader&#xFF09; &#x52A0;&#x8F7D;&#x3002;</li>
-<li>BaseDexClassLoader&#x7684;pathList&#xFF08;DexPathList&#xFF09;&#x8D1F;&#x8D23;&#x7EF4;&#x62A4;&#x548C;&#x67E5;&#x627E; DEX&#x3001;&#x8D44;&#x6E90;&#x53CA; Native Library&#x3002;</li>
-<li>DexPathList&#x901A;&#x8FC7;&#x6709;&#x5E8F;&#x6570;&#x7EC4; <code>dexElements</code> &#x4FDD;&#x5B58;&#x5404;&#x4E2A; APK&#x3001;JAR &#x6216; DEX &#x5BB9;&#x5668;&#xFF0C;&#x67E5;&#x627E;&#x7C7B;&#x65F6;&#x6309;&#x6570;&#x7EC4;&#x987A;&#x5E8F;&#x4F9D;&#x6B21;&#x904D;&#x5386;&#x3002;</li>
-<li>&#x6BCF;&#x4E2A; <code>Element</code> &#x5185;&#x90E8;&#x901A;&#x5E38;&#x5173;&#x8054;&#x4E00;&#x4E2A; <code>DexFile</code>&#x3002;<code>DexFile</code> &#x8868;&#x793A; ART &#x5DF2;&#x6253;&#x5F00;&#x7684; DEX &#x6587;&#x4EF6;&#xFF0C;&#x8D1F;&#x8D23;&#x6839;&#x636E;&#x7C7B;&#x7684;&#x5B8C;&#x6574;&#x4E8C;&#x8FDB;&#x5236;&#x540D;&#x67E5;&#x627E;&#x5E76;&#x4EA4;&#x7531; ART &#x5B9A;&#x4E49;&#x7C7B;&#x3002;</li>
-</ol>
-<h2 id="basedexclassloader"><a name="basedexclassloader" class="anchor-navigation-ex-anchor" href="#basedexclassloader"><i class="fa fa-link" aria-hidden="true"></i></a>7.2. BaseDexClassLoader</h2>
+<h2 id="basedexclassloader"><a name="basedexclassloader" class="anchor-navigation-ex-anchor" href="#basedexclassloader"><i class="fa fa-link" aria-hidden="true"></i></a>7.1. BaseDexClassLoader</h2>
 <p>&#x5E94;&#x7528; <code>PathClassLoader</code> &#x7EE7;&#x627F;&#x81EA; <code>BaseDexClassLoader</code>&#x3002;&#x540E;&#x8005;&#x4FDD;&#x5B58;&#x6838;&#x5FC3;&#x5B57;&#x6BB5; <code>pathList</code>&#xFF1A;</p>
 <pre><code class="lang-text">PathClassLoader
 &#x2514;&#x2500;&#x2500; BaseDexClassLoader
     &#x2514;&#x2500;&#x2500; pathList: DexPathList
 </code></pre>
 <p><code>BaseDexClassLoader.findClass()</code> &#x81EA;&#x5DF1;&#x4E0D;&#x89E3;&#x6790; DEX&#xFF0C;&#x800C;&#x662F;&#x628A;&#x67E5;&#x627E;&#x4EA4;&#x7ED9; <code>pathList.findClass()</code>&#x3002;</p>
-<h2 id="dexpathlist-&#x4E0E;-dexelements"><a name="dexpathlist-&#x4E0E;-dexelements" class="anchor-navigation-ex-anchor" href="#dexpathlist-&#x4E0E;-dexelements"><i class="fa fa-link" aria-hidden="true"></i></a>7.3. DexPathList &#x4E0E; dexElements</h2>
+<h2 id="dexpathlist-&#x4E0E;-dexelements"><a name="dexpathlist-&#x4E0E;-dexelements" class="anchor-navigation-ex-anchor" href="#dexpathlist-&#x4E0E;-dexelements"><i class="fa fa-link" aria-hidden="true"></i></a>7.2. DexPathList &#x4E0E; dexElements</h2>
 <p><code>DexPathList</code> &#x628A;&#x6BCF;&#x4E2A; DEX&#x3001;APK &#x6216;&#x542B; DEX &#x7684;&#x5BB9;&#x5668;&#x8868;&#x793A;&#x6210;&#x4E00;&#x4E2A; <code>Element</code>&#xFF0C;&#x5E76;&#x4FDD;&#x5B58;&#x5728;&#x6709;&#x5E8F;&#x7684; <code>dexElements</code> &#x6570;&#x7EC4;&#x4E2D;&#xFF1A;</p>
 <pre><code class="lang-text">DexPathList
 &#x2514;&#x2500;&#x2500; dexElements: Element[]
@@ -3166,7 +3176,7 @@ PathClassLoader
 <p>&#x8FD9;&#x91CC;&#x7684; <code>Element</code> &#x4E0D;&#x662F;&#x4E00;&#x4E2A;&#x7C7B;&#xFF0C;&#x800C;&#x662F;&#x4E00;&#x4E2A;&#x4EE3;&#x7801;&#x5BB9;&#x5668;&#x3002;&#x4E00;&#x4E2A; Element &#x5BF9;&#x5E94;&#x7684; <code>DexFile</code> &#x4E2D;&#x53EF;&#x4EE5;&#x5305;&#x542B;&#x5927;&#x91CF;&#x7C7B;&#x3002;</p>
 <p><code>DexPathList.findClass()</code> &#x4F1A;&#x6309;&#x6570;&#x7EC4;&#x987A;&#x5E8F;&#x904D;&#x5386; Element&#xFF0C;&#x5E76;&#x8FD4;&#x56DE;&#x6700;&#x5148;&#x627E;&#x5230;&#x7684;&#x7C7B;&#x3002;AOSP &#x6E90;&#x7801;&#x660E;&#x786E;&#x628A;&#x5B83;&#x63CF;&#x8FF0;&#x4E3A;&#x201C;&#x5728;&#x6700;&#x65E9;&#x5217;&#x51FA;&#x7684; path element &#x4E2D;&#x547D;&#x4E2D;&#x201D;&#x3002;<a href="https://android.googlesource.com/platform/libcore/+/refs/heads/main/dalvik/src/main/java/dalvik/system/DexPathList.java" target="_blank">DexPathList &#x6E90;&#x7801;</a></p>
 <p>&#x8FD9;&#x4F1A;&#x4EA7;&#x751F;&#x4E00;&#x4E2A;&#x91CD;&#x8981;&#x7ED3;&#x679C;&#xFF1A;&#x5982;&#x679C;&#x4E0D;&#x540C; DEX &#x4E2D;&#x5B58;&#x5728;&#x76F8;&#x540C;&#x4E8C;&#x8FDB;&#x5236;&#x540D;&#x79F0;&#x7684;&#x7C7B;&#xFF0C;&#x6392;&#x5728;&#x524D;&#x9762;&#x7684; Element &#x4F18;&#x5148;&#x3002;&#x4F46;&#x5DF2;&#x7ECF;&#x5B9A;&#x4E49;&#x8FC7;&#x7684;&#x7C7B;&#x8FD8;&#x4F1A;&#x66F4;&#x65E9;&#x88AB; <code>findLoadedClass()</code> &#x547D;&#x4E2D;&#xFF0C;&#x6240;&#x4EE5;&#x4EC5;&#x4FEE;&#x6539; Element &#x987A;&#x5E8F;&#x4E5F;&#x65E0;&#x6CD5;&#x66FF;&#x6362;&#x5F53;&#x524D; ClassLoader &#x5DF2;&#x7ECF;&#x52A0;&#x8F7D;&#x7684;&#x7C7B;&#x3002;</p>
-<h2 id="dexfile"><a name="dexfile" class="anchor-navigation-ex-anchor" href="#dexfile"><i class="fa fa-link" aria-hidden="true"></i></a>7.4. DexFile</h2>
+<h2 id="dexfile"><a name="dexfile" class="anchor-navigation-ex-anchor" href="#dexfile"><i class="fa fa-link" aria-hidden="true"></i></a>7.3. DexFile</h2>
 <p>Element &#x5185;&#x90E8;&#x7684; <code>DexFile</code> &#x8868;&#x793A; ART &#x5DF2;&#x6253;&#x5F00;&#x7684; DEX&#x3002;&#x67E5;&#x627E;&#x547D;&#x4E2D;&#x540E;&#xFF0C;&#x8C03;&#x7528;&#x94FE;&#x53EF;&#x4EE5;&#x6982;&#x62EC;&#x4E3A;&#xFF1A;</p>
 <pre><code class="lang-text">BaseDexClassLoader.findClass(name)
         &#x2193;
@@ -3320,7 +3330,7 @@ APK &#x8DEF;&#x5F84;&#x662F;&#x5426;&#x8FDB;&#x5165;&#x5F53;&#x524D; ClassLoader
 <p>&#x8FD9;&#x4E0E; Dynamic Feature &#x7684;&#x5E95;&#x5C42;&#x95EE;&#x9898;&#x76F8;&#x4F3C;&#xFF1A;DEX &#x6587;&#x4EF6;&#x5DF2;&#x7ECF;&#x5B58;&#x5728;&#xFF0C;&#x4F46;&#x5F53;&#x524D; ClassLoader &#x8FD8;&#x4E0D;&#x77E5;&#x9053;&#x5B83;&#xFF0C;&#x9700;&#x8981;&#x6269;&#x5C55; <code>DexPathList</code>&#x3002;Android 5.0 &#x53CA;&#x4EE5;&#x4E0A;&#x5DF2;&#x7ECF;&#x539F;&#x751F;&#x652F;&#x6301; APK &#x5185;&#x7684; MultiDex&#xFF0C;&#x4E0D;&#x9700;&#x8981;&#x518D;&#x7531;&#x5E94;&#x7528;&#x5B8C;&#x6210;&#x8FD9;&#x4E00;&#x6B65;&#x3002;</p>
 <h2 id="dynamic-feature"><a name="dynamic-feature" class="anchor-navigation-ex-anchor" href="#dynamic-feature"><i class="fa fa-link" aria-hidden="true"></i></a>10.2. Dynamic Feature</h2>
 <p>Dynamic Feature &#x7684;&#x7C7B;&#x4E5F;&#x9075;&#x5FAA;&#x672C;&#x6587;&#x63CF;&#x8FF0;&#x7684;&#x5B8C;&#x6574;&#x94FE;&#x8DEF;&#xFF1A;&#x6E90;&#x7801;&#x5148;&#x53D8;&#x6210; Feature DEX&#xFF0C;&#x518D;&#x88AB;&#x6253;&#x5305;&#x8FDB; Feature Split APK&#x3002;&#x533A;&#x522B;&#x53EA;&#x5728;&#x4E8E;&#x6309;&#x9700;&#x6A21;&#x5757;&#x7684; split &#x53EF;&#x80FD;&#x5728;&#x5E94;&#x7528;&#x8FDB;&#x7A0B;&#x542F;&#x52A8;&#x540E;&#x624D;&#x5B89;&#x88C5;&#x3002;</p>
-<p>&#x9ED8;&#x8BA4;&#x5E94;&#x7528; ClassLoader &#x5DF2;&#x7ECF;&#x5EFA;&#x7ACB;&#x65F6;&#xFF0C;&#x65B0; Feature DEX &#x4E0D;&#x5728;&#x539F;&#x6709; <code>dexElements</code> &#x4E2D;&#x3002;Play Feature Delivery &#x7684;&#x517C;&#x5BB9;&#x5C42;&#x9700;&#x8981;&#x8BA9;&#x5F53;&#x524D;&#x8FDB;&#x7A0B;&#x8BA4;&#x8BC6;&#x65B0;&#x589E;&#x7684; split&#xFF0C;&#x540E;&#x7EED; <code>loadClass()</code> &#x624D;&#x80FD;&#x627E;&#x5230; Feature &#x7C7B;&#x3002;&#x5177;&#x4F53;&#x6CE8;&#x5165;&#x8FC7;&#x7A0B;&#x89C1; <a href="01%20Google%20Dynamic%20Feature&#x63D2;&#x4EF6;.md#dynamic-feature-&#x5B89;&#x88C5;&#x540E;&#x7684;&#x8FD0;&#x884C;&#x65F6;&#x52A0;&#x8F7D;&#x673A;&#x5236;">Google Dynamic Feature &#x63D2;&#x4EF6;</a>&#x3002;</p>
+<p>&#x9ED8;&#x8BA4;&#x5E94;&#x7528; ClassLoader &#x5DF2;&#x7ECF;&#x5EFA;&#x7ACB;&#x65F6;&#xFF0C;&#x65B0; Feature DEX &#x4E0D;&#x5728;&#x539F;&#x6709; <code>dexElements</code> &#x4E2D;&#x3002;Play Feature Delivery &#x7684;&#x517C;&#x5BB9;&#x5C42;&#x9700;&#x8981;&#x8BA9;&#x5F53;&#x524D;&#x8FDB;&#x7A0B;&#x8BA4;&#x8BC6;&#x65B0;&#x589E;&#x7684; split&#xFF0C;&#x540E;&#x7EED; <code>loadClass()</code> &#x624D;&#x80FD;&#x627E;&#x5230; Feature &#x7C7B;&#x3002;&#x5177;&#x4F53;&#x6CE8;&#x5165;&#x8FC7;&#x7A0B;&#x89C1; <a href="../../06%20&#x65B0;/01%20Google%20DF&#x63D2;&#x4EF6;.md#dynamic-feature-&#x5B89;&#x88C5;&#x540E;&#x7684;&#x8FD0;&#x884C;&#x65F6;&#x52A0;&#x8F7D;&#x673A;&#x5236;">Google Dynamic Feature &#x63D2;&#x4EF6;</a>&#x3002;</p>
 <h2 id="&#x70ED;&#x4FEE;&#x590D;&#x4E0E;&#x63D2;&#x4EF6;&#x5316;"><a name="&#x70ED;&#x4FEE;&#x590D;&#x4E0E;&#x63D2;&#x4EF6;&#x5316;" class="anchor-navigation-ex-anchor" href="#&#x70ED;&#x4FEE;&#x590D;&#x4E0E;&#x63D2;&#x4EF6;&#x5316;"><i class="fa fa-link" aria-hidden="true"></i></a>10.3. &#x70ED;&#x4FEE;&#x590D;&#x4E0E;&#x63D2;&#x4EF6;&#x5316;</h2>
 <p>&#x70ED;&#x4FEE;&#x590D;&#x548C;&#x63D2;&#x4EF6;&#x5316;&#x4E5F;&#x5E38;&#x4FEE;&#x6539; DEX &#x8DEF;&#x5F84;&#xFF0C;&#x4F46;&#x76EE;&#x6807;&#x4E0D;&#x540C;&#xFF1A;</p>
 <ul>
@@ -3376,12 +3386,12 @@ Log.d(<span class="hljs-string">&quot;ClassLoad&quot;</span>, applicationContext
 
             
                 
-                <a href="01 Google Dynamic Feature插件.html" class="navigation navigation-prev " aria-label="Previous page: 01 Google Dynamic Feature插件">
+                <a href="../06 新/01 Google DF插件.html" class="navigation navigation-prev " aria-label="Previous page: 01 Google DF插件">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="03 虚拟机.html" class="navigation navigation-next " aria-label="Next page: 03 虚拟机">
+                <a href="02 虚拟机.html" class="navigation navigation-next " aria-label="Next page: 02 虚拟机">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -3392,7 +3402,7 @@ Log.d(<span class="hljs-string">&quot;ClassLoad&quot;</span>, applicationContext
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"02 Android类从源码到运行时加载","level":"1.7.6.2","depth":3,"next":{"title":"03 虚拟机","level":"1.7.6.3","depth":3,"path":"05 Android/06 新/03 虚拟机.md","ref":"./05 Android/06 新/03 虚拟机.md","articles":[]},"previous":{"title":"01 Google Dynamic Feature插件","level":"1.7.6.1","depth":3,"path":"05 Android/06 新/01 Google Dynamic Feature插件.md","ref":"./05 Android/06 新/01 Google Dynamic Feature插件.md","articles":[]},"dir":"ltr"},"config":{"plugins":["highlight","-search","-lunr","livereload","splitter","expandable-chapters-small","anchors","anchor-navigation-ex"],"styles":{"website":"./styles/website.css"},"pluginsConfig":{"livereload":{},"splitter":{},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"anchor-navigation-ex":{"associatedWithSummary":true,"float":{"floatIcon":"fa fa-navicon","level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"mode":"float","multipleH1":true,"pageTop":{"level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"printLog":false,"showGoTop":true,"showLevel":true},"expandable-chapters-small":{},"sharing":{"all":["facebook","google","twitter","weibo","instapaper"],"facebook":true,"google":false,"instapaper":false,"twitter":true,"vk":false,"weibo":false},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"theme":"default","author":"Mezzsy","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Mezzsy is here","language":"zh-hans","gitbook":"3.2.3"},"file":{"path":"05 Android/06 新/02 Android类从源码到运行时加载.md","mtime":"2026-08-30T15:24:44.583Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2026-08-30T15:26:33.156Z"},"basePath":"../..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"01 Android类从源码到运行时加载","level":"1.7.7","depth":2,"next":{"title":"02 虚拟机","level":"1.7.8","depth":2,"path":"05 Android/07 Framework/02 虚拟机.md","ref":"./05 Android/07 Framework/02 虚拟机.md","articles":[]},"previous":{"title":"01 Google DF插件","level":"1.7.6.1","depth":3,"path":"05 Android/06 新/01 Google DF插件.md","ref":"./05 Android/06 新/01 Google DF插件.md","articles":[]},"dir":"ltr"},"config":{"plugins":["highlight","-search","-lunr","livereload","splitter","expandable-chapters-small","anchors","anchor-navigation-ex"],"styles":{"website":"./styles/website.css"},"pluginsConfig":{"livereload":{},"splitter":{},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"anchor-navigation-ex":{"associatedWithSummary":true,"float":{"floatIcon":"fa fa-navicon","level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"mode":"float","multipleH1":true,"pageTop":{"level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"printLog":false,"showGoTop":true,"showLevel":true},"expandable-chapters-small":{},"sharing":{"all":["facebook","google","twitter","weibo","instapaper"],"facebook":true,"google":false,"instapaper":false,"twitter":true,"vk":false,"weibo":false},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"theme":"default","author":"Mezzsy","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Mezzsy is here","language":"zh-hans","gitbook":"3.2.3"},"file":{"path":"05 Android/07 Framework/01 Android类从源码到运行时加载.md","mtime":"2026-08-31T17:02:21.674Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2026-09-01T01:02:40.121Z"},"basePath":"../..","book":{"language":""}});
         });
     </script>
 </div>

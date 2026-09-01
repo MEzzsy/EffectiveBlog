@@ -2,7 +2,7 @@
   "img_ignore": [
     "/_book/",
     "/docs/",
-    "/node_modules/",
+    "/node_modules/"
   ],
   "gen_ignore": [
     "_book",
@@ -16,6 +16,6 @@
     "eb_tool.py",
     "eb_config.json",
     "README.md",
-    "SUMMARY.md",
+    "SUMMARY.md"
   ]
 }
