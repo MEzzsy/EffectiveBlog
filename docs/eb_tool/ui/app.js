@@ -19,6 +19,7 @@ function titleWithoutNumber(name) {
 const nameCollator = new Intl.Collator("zh-CN", { numeric: true, sensitivity: "base" });
 function sortEntries(entries) {
   return [...entries].sort((a, b) => (a.kind === b.kind ? 0 : a.kind === "directory" ? -1 : 1)
+    || (Number.isFinite(a.sortOrder) && Number.isFinite(b.sortOrder) ? a.sortOrder - b.sortOrder : 0)
     || nameCollator.compare(a.name, b.name) || nameCollator.compare(a.path, b.path));
 }
 
@@ -41,7 +42,43 @@ function visibleRows(entries, parent, expanded, query = "") {
   return result;
 }
 
-if (typeof module !== "undefined") module.exports = { topLevelPaths, canMovePaths, titleWithoutNumber, visibleRows };
+function remapPath(path, mappings) {
+  if (path === null) return null;
+  const match = mappings.filter(item => path === item.from || path.startsWith(item.from + "/"))
+    .sort((a, b) => b.from.length - a.from.length)[0];
+  return match ? match.to + path.slice(match.from.length) : path;
+}
+
+function reorderProposal(entries, paths, anchor, position) {
+  const reference = entries.find(entry => entry.path === anchor);
+  const sources = topLevelPaths(paths);
+  const isNumbered = entry => entry && !(entry.kind === "file" && titleWithoutNumber(entry.name).toLowerCase() === "readme.md");
+  if (!isNumbered(reference) || !sources.length || sources.includes(anchor) || !["before", "after"].includes(position)) return null;
+  if (!sources.every(path => {
+    const entry = entries.find(item => item.path === path);
+    return isNumbered(entry) && entry.parent === reference.parent && entry.kind === reference.kind;
+  })) return null;
+  const siblings = sortEntries(entries.filter(entry => entry.parent === reference.parent && entry.kind === reference.kind && isNumbered(entry)))
+    .map(entry => entry.path);
+  const block = siblings.filter(path => sources.includes(path));
+  const remaining = siblings.filter(path => !sources.includes(path));
+  const index = remaining.indexOf(anchor) + (position === "after" ? 1 : 0);
+  const reordered = [...remaining.slice(0, index), ...block, ...remaining.slice(index)];
+  if (reordered.every((path, i) => path === siblings[i])) return null;
+  return { paths: block, anchor, position };
+}
+
+function rowDropIntent(entries, paths, anchor, fraction, allowReorder = true) {
+  const entry = entries.find(item => item.path === anchor);
+  if (!entry) return null;
+  if (entry.kind === "directory" && fraction >= 0.25 && fraction <= 0.75) {
+    return canMovePaths(paths, anchor) ? { action: "move", payload: { paths: topLevelPaths(paths), target: anchor } } : null;
+  }
+  const payload = allowReorder && reorderProposal(entries, paths, anchor, fraction < 0.5 ? "before" : "after");
+  return payload ? { action: "reorder", payload } : null;
+}
+
+if (typeof module !== "undefined") module.exports = { topLevelPaths, canMovePaths, titleWithoutNumber, visibleRows, remapPath, reorderProposal, rowDropIntent };
 if (typeof document !== "undefined") initializeApp();
 
 function initializeApp() {
@@ -53,9 +90,11 @@ function initializeApp() {
   let listExpanded = new Set();
   let toastTimeout = null;
   const dropTargets = new WeakMap();
-  let pointerDrag = null, highlightedDrop = null, suppressClick = false;
+  let pointerDrag = null, highlightedDrop = null, suppressClick = false, scrollFrame = null;
   const dragFeedback = element("div", "drag-feedback");
   dragFeedback.setAttribute("role", "status"); dragFeedback.hidden = true; document.body.append(dragFeedback);
+  const insertion = element("div", "drop-insertion");
+  insertion.hidden = true; insertion.setAttribute("aria-hidden", "true"); document.body.append(insertion);
 
   function element(tag, className, text) {
     const node = document.createElement(tag);
@@ -99,6 +138,13 @@ function initializeApp() {
     return data;
   }
   function acceptState(next, focus = false) {
+    if (next.pathMappings?.length) {
+      const mapped = path => remapPath(path, next.pathMappings);
+      current = mapped(current); anchor = mapped(anchor);
+      selected = new Set([...selected].map(mapped));
+      expanded = new Set([...expanded].map(mapped));
+      listExpanded = new Set([...listExpanded].map(mapped));
+    }
     state = next;
     selected = new Set([...selected].filter(path => byPath(path)));
     while (current && byPath(current)?.kind !== "directory") current = parentOf(current);
@@ -179,15 +225,58 @@ function initializeApp() {
   }
   function dropAt(x, y) {
     let node = document.elementFromPoint(x, y);
+    const row = node?.closest("#file-list tr");
+    if (row) {
+      const bounds = row.getBoundingClientRect();
+      const intent = rowDropIntent(state.entries, dragging, row.dataset.path, (y - bounds.top) / bounds.height, !query);
+      return intent ? { ...intent, node: row } : null;
+    }
     while (node && !dropTargets.has(node)) node = node.parentElement;
     if (!node) return null;
     const target = dropTargets.get(node)();
-    return target !== null && canMovePaths(dragging, target) ? { node, target } : null;
+    return target !== null && canMovePaths(dragging, target)
+      ? { node, action: "move", payload: { paths: [...dragging], target } } : null;
+  }
+  function showDrop(destination) {
+    if (highlightedDrop) highlightedDrop.classList.remove("drop-target");
+    highlightedDrop = null; insertion.hidden = true;
+    if (destination?.action === "reorder") {
+      const { anchor: reference, position } = destination.payload;
+      let edge = destination.node;
+      if (position === "after") {
+        while (edge.nextElementSibling?.dataset.path.startsWith(reference + "/")) edge = edge.nextElementSibling;
+      }
+      const bounds = edge.getBoundingClientRect(), surface = document.querySelector(".file-surface").getBoundingClientRect();
+      const top = position === "before" ? bounds.top : bounds.bottom;
+      const depth = rows.find(entry => entry.path === reference).depth;
+      insertion.style.left = (bounds.left + 16 + depth * 20) + "px";
+      insertion.style.width = Math.max(0, bounds.width - 26 - depth * 20) + "px";
+      insertion.style.top = (top - 1) + "px";
+      insertion.hidden = top < $("files").tHead.getBoundingClientRect().bottom || top > surface.bottom;
+      dragFeedback.textContent = "调整 " + dragging.length + " 项顺序：放到「" + byPath(reference).name + "」" + (position === "before" ? "之前" : "之后");
+    } else if (destination) {
+      highlightedDrop = destination.node; highlightedDrop.classList.add("drop-target");
+      dragFeedback.textContent = "移入目录：" + (destination.payload.target || state.rootName) + " · " + dragging.length + " 项";
+    } else {
+      dragFeedback.textContent = "同级同类项目拖到行间排序 · 拖到目录中间移入 · Esc 取消";
+    }
+  }
+  function scrollWhileDragging() {
+    scrollFrame = null;
+    if (!pointerDrag?.active) return;
+    const surface = document.querySelector(".file-surface"), bounds = surface.getBoundingClientRect();
+    const { lastX: x, lastY: y } = pointerDrag;
+    if (x >= bounds.left && x <= bounds.right && y >= bounds.top && y <= bounds.bottom) {
+      const step = y < bounds.top + 64 ? -9 : y > bounds.bottom - 32 ? 9 : 0;
+      if (step) { surface.scrollTop += step; showDrop(dropAt(x, y)); }
+    }
+    scrollFrame = requestAnimationFrame(scrollWhileDragging);
   }
   function finishDrag() {
     if (highlightedDrop) highlightedDrop.classList.remove("drop-target");
     pointerDrag = null; highlightedDrop = null; dragging = [];
-    dragFeedback.hidden = true; document.body.classList.remove("dragging");
+    cancelAnimationFrame(scrollFrame); scrollFrame = null;
+    insertion.hidden = true; dragFeedback.hidden = true; document.body.classList.remove("dragging");
   }
   document.addEventListener("pointerdown", () => { suppressClick = false; }, true);
   document.addEventListener("pointermove", event => {
@@ -197,21 +286,18 @@ function initializeApp() {
       if (!selected.has(pointerDrag.path)) { selected = new Set([pointerDrag.path]); updateSelection(); }
       dragging = topLevelPaths([...selected]); pointerDrag.active = true;
       dragFeedback.hidden = false; document.body.classList.add("dragging");
+      scrollFrame = requestAnimationFrame(scrollWhileDragging);
     }
-    const destination = dropAt(event.clientX, event.clientY);
-    if (highlightedDrop) highlightedDrop.classList.remove("drop-target");
-    highlightedDrop = destination?.node || null;
-    if (highlightedDrop) highlightedDrop.classList.add("drop-target");
-    dragFeedback.textContent = destination ? "移动 " + dragging.length + " 项到 " + (destination.target || state.rootName) : "将 " + dragging.length + " 个项目拖到目标目录 · Esc 取消";
+    pointerDrag.lastX = event.clientX; pointerDrag.lastY = event.clientY;
+    showDrop(dropAt(event.clientX, event.clientY));
   });
   document.addEventListener("pointerup", event => {
     if (!pointerDrag) return;
     const destination = pointerDrag.active ? dropAt(event.clientX, event.clientY) : null;
-    const paths = [...dragging];
     suppressClick = pointerDrag.active;
     if (pointerDrag.active) event.preventDefault();
     finishDrag();
-    if (destination && !busy) mutate("move", { paths, target: destination.target });
+    if (destination && !busy) mutate(destination.action, destination.payload);
   });
   document.addEventListener("pointercancel", finishDrag);
   window.addEventListener("blur", finishDrag);
@@ -460,6 +546,7 @@ function initializeApp() {
       ["eb_list_entries", "列出文档与目录", "读取当前仓库中可管理项目的相对路径及撤销状态。", null, {}],
       ["eb_rename_entry", "重命名项目", "重命名并将同级项目从 01 连续编号、维护链接。Markdown 名称须含 .md 扩展名。README.md 不编号。", "rename", { path: string, name: string }],
       ["eb_move_entries", "移动所选项目", "移动多个项目到目标末尾，源目录和目标目录分别从 01 连续编号并维护链接。README.md 不编号。target 为空字符串表示根目录。", "move", { paths: { type: "array", items: string, minItems: 1 }, target: string }],
+      ["eb_reorder_entries", "调整同级顺序", "将同目录、同类型的所选项目放到 anchor 项目之前或之后，再从 01 连续编号并维护链接。README.md 不参与排序。", "reorder", { paths: { type: "array", items: string, minItems: 1 }, anchor: string, position: { type: "string", enum: ["before", "after"] } }],
       ["eb_create_directory", "新建目录", "在 parent 下新建目录，内含空的 README.md，同级项目从 01 连续编号；parent 为空字符串表示根目录。", "mkdir", { parent: string, name: string }],
       ["eb_undo_last_operation", "撤销最近操作", "恢复最近一次成功操作的文件位置、引用和目录；外部修改可能使撤销失败。", "undo", {}]
     ];

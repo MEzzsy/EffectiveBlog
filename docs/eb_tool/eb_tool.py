@@ -1107,6 +1107,11 @@ def repository_argument_path(root: Path, path: Path) -> Path:
 NUMBERED_TITLE_RE = re.compile(r"^([0-9]{1,2})[ -]+(.*)$")
 
 
+def numbered_sort_key(name: str, path: str) -> tuple:
+    number = NUMBERED_TITLE_RE.match(name)
+    return (int(number[1]) if number else 100, name.casefold(), path)
+
+
 def unnumbered_name(name: str, kind: str) -> str:
     """提取标题，保留 Markdown 扩展名；README 是不编号的特殊名称。"""
     suffix = Path(name).suffix if kind == "file" else ""
@@ -1351,6 +1356,12 @@ class FileManager:
             for relative, value in sorted(snapshot.items())
             if self._visible(relative, value[0])
         ]
+        # 将相同的编号顺序交给前端，避免浏览器的中文排序与改号顺序不同。
+        ordered = sorted(entries, key=lambda entry: (
+            entry["kind"] != "directory", *numbered_sort_key(entry["name"], entry["path"]),
+        ))
+        for index, entry in enumerate(ordered):
+            entry["sortOrder"] = index
         return {
             "rootName": self.root.name, "rootPath": str(self.root), "entries": entries,
             "revision": self._revision(snapshot),
@@ -1443,6 +1454,7 @@ class FileManager:
             for relative, info in snapshot.items() if self._visible(relative, info[0])
         }
         affected = set()
+        reordering = None
         if action == "rename":
             source = self._path(payload.get("path"), snapshot)
             name = self._name(payload.get("name"))
@@ -1477,6 +1489,29 @@ class FileManager:
                 affected.update([source.parent, target])
             focus = sources
             label = f"移动 {len(sources)} 个项目"
+        elif action == "reorder":
+            values = payload.get("paths")
+            if not isinstance(values, list) or not values:
+                raise ValueError("请选择需要调整顺序的项目")
+            sources = set(self._path(value, snapshot) for value in values)
+            sources = {source for source in sources if not any(parent in sources for parent in source.parents)}
+            reference = self._path(payload.get("anchor"), snapshot)
+            position = payload.get("position")
+            if position not in ("before", "after"):
+                raise ValueError("排序位置必须是 before 或 after")
+            if reference in sources:
+                raise ValueError("排序参照项目不能同时被拖动")
+            kind = nodes[reference]["kind"]
+            if any(source.parent != reference.parent or nodes[source]["kind"] != kind for source in sources):
+                raise ValueError("只能调整同一目录下同类项目的顺序，文件和目录分别排序")
+            if kind == "file" and any(
+                unnumbered_name(path.name, kind) == "README.md" for path in [*sources, reference]
+            ):
+                raise ValueError("README.md 不参与编号排序")
+            reordering = (sources, reference, position)
+            affected.add(reference.parent)
+            focus = sorted(sources)
+            label = f"调整 {len(sources)} 项顺序"
         elif action == "mkdir":
             parent = self._path(payload.get("parent"), snapshot, allow_root=True)
             if not parent.is_dir():
@@ -1493,10 +1528,26 @@ class FileManager:
         def order(key):
             node = nodes[key]
             old_name = key.name if key is not None else node["name"]
-            number = NUMBERED_TITLE_RE.match(old_name)
             incoming = key is None or key.parent != node["parent"]
-            return (incoming, int(number[1]) if number else 100,
-                    old_name.casefold(), str(key))
+            return (incoming, *numbered_sort_key(old_name, str(key)))
+
+        ranks = {}
+        if reordering:
+            sources, reference, position = reordering
+            siblings = sorted(
+                [key for key, node in nodes.items()
+                 if node["parent"] == reference.parent and node["kind"] == nodes[reference]["kind"]
+                 and not (node["kind"] == "file" and unnumbered_name(node["name"], "file") == "README.md")],
+                key=order,
+            )
+            block = [key for key in siblings if key in sources]
+            remaining = [key for key in siblings if key not in sources]
+            index = remaining.index(reference) + (position == "after")
+            reordered = remaining[:index] + block + remaining[index:]
+            if reordered == siblings:
+                raise OperationConflict("顺序没有变化")
+            ranks = {key: index for index, key in enumerate(reordered)}
+            focus = block
 
         for parent in affected:
             for kind in ("directory", "file"):
@@ -1511,7 +1562,8 @@ class FileManager:
                         numbered.append((key, title))
                 if len(numbered) > 99:
                     raise ValueError("每个目录最多支持 99 个同类编号项目，请选择其他目录")
-                for number, (key, title) in enumerate(sorted(numbered, key=lambda item: order(item[0])), 1):
+                numbered.sort(key=lambda item: (ranks.get(item[0], 0), order(item[0])))
+                for number, (key, title) in enumerate(numbered, 1):
                     nodes[key]["name"] = f"{number:02d} {title}"
 
         final_paths = {self.root: self.root}
@@ -1789,6 +1841,9 @@ class FileManager:
             result = self._state(after["snapshot"])
             result.update({
                 "focusPaths": [path.relative_to(self.root).as_posix() for path in focus],
+                "pathMappings": [{"from": source.relative_to(self.root).as_posix(),
+                                  "to": destination.relative_to(self.root).as_posix()}
+                                 for source, destination in moves],
                 "summary": {"message": f"{label}完成", "updatedReferences": references,
                             "changedFiles": len(committed), "movedItems": len(originals) if not create else 0,
                             "renumberedItems": sum(source not in originals for source, _ in moves)},
@@ -1820,6 +1875,9 @@ class FileManager:
         result = self._state(after["snapshot"])
         result.update({
             "focusPaths": [path.relative_to(self.root).as_posix() for path in record.focus],
+            "pathMappings": [{"from": source.relative_to(self.root).as_posix(),
+                              "to": destination.relative_to(self.root).as_posix()}
+                             for source, destination in reverse],
             "summary": {"message": f"已撤销：{record.label}", "updatedReferences": 0,
                         "changedFiles": len(changes), "movedItems": len(reverse)},
         })
@@ -1900,7 +1958,7 @@ def create_ui_server(root: Path, config: dict[str, list[str]], port: int = 8765)
             if not self._authorized(api=True, write=True):
                 return
             path = urlsplit(self.path).path
-            if path not in {"/api/rename", "/api/move", "/api/mkdir", "/api/undo"}:
+            if path not in {"/api/rename", "/api/move", "/api/reorder", "/api/mkdir", "/api/undo"}:
                 self._json(404, {"error": "操作不存在"})
                 return
             try:

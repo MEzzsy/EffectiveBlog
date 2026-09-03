@@ -49,6 +49,162 @@ class FileManagerTests(unittest.TestCase):
     def operate(self, action, **payload):
         return self.manager.operate(action, {**payload, "revision": self.manager.state()["revision"]})
 
+    def test_reorder_files_updates_numbers_links_summary_and_undo(self):
+        before = self.contents()
+        result = self.operate("reorder", paths=["01 基础/02 同级.md"], anchor="01 基础/01 文档.md", position="before")
+        self.assertEqual(result["focusPaths"], ["01 基础/01 同级.md"])
+        self.assertEqual(self.read("01 基础/01 同级.md"), "[文档](<02 文档.md#章节>)\n")
+        self.assertIn('../01 基础/02 文档.md?view=1#章节> "标题"', self.read("03 引用/01 外部.md"))
+        self.assertEqual(self.read("01 基础/02 文档.md"), before["01 基础/01 文档.md"].decode())
+        summary = self.read("SUMMARY.md")
+        self.assertLess(summary.index("01 同级"), summary.index("02 文档"))
+        self.assertEqual(result["summary"]["updatedReferences"], 2)
+        mapping = {item["from"]: item["to"] for item in result["pathMappings"]}
+        self.assertEqual(mapping, {"01 基础/01 文档.md": "01 基础/02 文档.md", "01 基础/02 同级.md": "01 基础/01 同级.md"})
+        undone = self.operate("undo")
+        self.assertEqual({item["to"]: item["from"] for item in undone["pathMappings"]}, mapping)
+        self.assertEqual(before, self.contents())
+
+    def test_reorder_directories_keeps_assets_hidden_files_and_descendant_numbers(self):
+        self.put("01 基础/assets/local.png", b"local image")
+        self.put("01 基础/.note", "hidden")
+        self.put("01 基础/07 未整理.md", "![local](assets/local.png)\n")
+        self.put("02 目标/README.md", "")
+        self.put("03 引用/README.md", "")
+        self.put("03 引用/02 图片.md", "![local](../01 基础/assets/local.png)\n")
+        before = self.contents()
+        result = self.operate("reorder", paths=["01 基础", "01 基础/01 文档.md"], anchor="03 引用", position="after")
+        self.assertEqual(result["focusPaths"], ["03 基础"])
+        self.assertEqual((self.root / "03 基础/assets/local.png").read_bytes(), b"local image")
+        self.assertEqual(self.read("03 基础/.note"), "hidden")
+        self.assertEqual(self.read("03 基础/07 未整理.md"), "![local](assets/local.png)\n")
+        self.assertIn("../03 基础/01 文档.md", self.read("02 引用/01 外部.md"))
+        self.assertIn("../03 基础/assets/local.png", self.read("02 引用/02 图片.md"))
+        summary = self.read("SUMMARY.md")
+        self.assertLess(summary.index("01 目标"), summary.index("02 引用"))
+        self.assertLess(summary.index("02 引用"), summary.index("03 基础"))
+        self.operate("undo")
+        self.assertEqual(before, self.contents())
+
+    def test_reorder_multiple_files_as_block_preserves_original_relative_order(self):
+        self.put("01 基础/03 丙.md", "third")
+        self.put("01 基础/04 丁.md", "fourth")
+        before = self.contents()
+        for anchor, position, expected in [
+            ("01 基础/01 文档.md", "before", ["01 基础/01 同级.md", "01 基础/02 丁.md"]),
+            ("01 基础/03 丙.md", "after", ["01 基础/03 同级.md", "01 基础/04 丁.md"]),
+        ]:
+            with self.subTest(position=position):
+                result = self.operate("reorder", paths=["01 基础/04 丁.md", "01 基础/02 同级.md", "01 基础/04 丁.md"],
+                                      anchor=anchor, position=position)
+                self.assertEqual(result["focusPaths"], expected)
+                self.assertEqual(self.read(expected[1]), "fourth")
+                self.assertTrue((self.root / "01 基础/README.md").is_file())
+                self.operate("undo")
+                self.assertEqual(before, self.contents())
+
+    def test_reorder_same_titles_swaps_contents_without_overwrite(self):
+        self.put("02 目标/01 同名.md", "first\n[second](<02 同名.md#x>)\n")
+        self.put("02 目标/02 同名.md", "second\n[first](<01 同名.md#y>)\n")
+        before = self.contents()
+        self.operate("reorder", paths=["02 目标/01 同名.md"], anchor="02 目标/02 同名.md", position="after")
+        self.assertEqual(self.read("02 目标/01 同名.md"), "second\n[first](<02 同名.md#y>)\n")
+        self.assertEqual(self.read("02 目标/02 同名.md"), "first\n[second](<01 同名.md#x>)\n")
+        self.operate("undo")
+        self.assertEqual(before, self.contents())
+
+    def test_reorder_legacy_numbers_start_at_one_and_preserve_encoded_paths(self):
+        self.put("02 目标/07 甲 (示例).md", "first")
+        self.put("02 目标/9-乙.md", b"\xef\xbb\xbf" + "[first](07%20%E7%94%B2%20%28%E7%A4%BA%E4%BE%8B%29.md?x=1#title)\r\n".encode())
+        self.put("02 目标/未编号.md", "last")
+        before = self.contents()
+        self.operate("reorder", paths=["02 目标/未编号.md"], anchor="02 目标/07 甲 (示例).md", position="before")
+        self.assertEqual(self.read("02 目标/01 未编号.md"), "last")
+        self.assertEqual(self.read("02 目标/02 甲 (示例).md"), "first")
+        self.assertEqual((self.root / "02 目标/03 乙.md").read_bytes(),
+                         b"\xef\xbb\xbf[first](02%20%E7%94%B2%20%28%E7%A4%BA%E4%BE%8B%29.md?x=1#title)\r\n")
+        self.operate("undo")
+        self.assertEqual(before, self.contents())
+
+    def test_reorder_invalid_selection_and_no_change_rejected_before_writes(self):
+        before = self.contents()
+        for paths, anchor, position in [
+            (["01 基础/README.md"], "01 基础/01 文档.md", "before"),
+            (["01 基础/01 文档.md"], "01 基础/README.md", "after"),
+            (["01 基础/01 文档.md"], "03 引用/01 外部.md", "before"),
+            (["01 基础"], "01 基础/01 文档.md", "before"),
+            (["01 基础"], "01 基础", "after"),
+            (["01 基础/01 文档.md"], "01 基础/02 同级.md", "before"),
+            (["01 基础"], "02 目标", "invalid"),
+            (["../escape.md"], "02 目标", "before"),
+            (["missing.md"], "02 目标", "before"),
+            ([], "02 目标", "before"),
+        ]:
+            with self.subTest(paths=paths, anchor=anchor, position=position):
+                with self.assertRaises((ValueError, tool.OperationConflict)):
+                    self.operate("reorder", paths=paths, anchor=anchor, position=position)
+                self.assertEqual(before, self.contents())
+
+    def test_state_and_reorder_share_order_for_unnumbered_chinese_titles(self):
+        for name in ["阿.md", "波.md", "中.md"]:
+            self.put("02 目标/" + name, name)
+        before = self.contents()
+        def ordered_names(state):
+            return [entry["name"] for entry in sorted(state["entries"], key=lambda entry: entry["sortOrder"])
+                    if entry["parent"] == "02 目标"]
+        self.assertEqual(ordered_names(self.manager.state()), ["中.md", "波.md", "阿.md"])
+        result = self.operate("reorder", paths=["02 目标/阿.md"], anchor="02 目标/中.md", position="before")
+        self.assertEqual(ordered_names(result), ["01 阿.md", "02 中.md", "03 波.md"])
+        self.operate("undo")
+        self.assertEqual(before, self.contents())
+
+    def test_reorder_failures_roll_back_and_preserve_previous_undo(self):
+        original = self.contents()
+        self.operate("rename", path="01 基础/01 文档.md", name="笔记.md")
+        before = self.contents()
+        for failure in ("generation", "write"):
+            with self.subTest(failure=failure):
+                write, build, failed = self.manager._write_atomic, tool.build_summary_content, False
+                def fail_after_write(path, *args):
+                    nonlocal failed
+                    write(path, *args)
+                    if failure == "write" and not failed:
+                        failed = True
+                        raise OSError("injected write failure")
+                def fail_generation(*args):
+                    if failure == "generation":
+                        raise OSError("injected generation failure")
+                    return build(*args)
+                with mock.patch.object(self.manager, "_write_atomic", side_effect=fail_after_write), \
+                     mock.patch.object(tool, "build_summary_content", side_effect=fail_generation):
+                    with self.assertRaisesRegex(RuntimeError, "已回滚"):
+                        self.operate("reorder", paths=["01 基础/02 同级.md"], anchor="01 基础/01 笔记.md", position="before")
+                self.assertEqual(before, self.contents())
+                self.assertTrue(self.manager.state()["undo"]["available"])
+        self.operate("undo")
+        self.assertEqual(original, self.contents())
+
+    def test_reorder_stale_revision_symlink_and_external_edit_block_writes(self):
+        revision = self.manager.state()["revision"]
+        self.put("01 基础/01 文档.md", "external edit")
+        before = self.contents()
+        with self.assertRaises(tool.OperationConflict):
+            self.manager.operate("reorder", {"paths": ["01 基础/02 同级.md"], "anchor": "01 基础/01 文档.md",
+                                             "position": "before", "revision": revision})
+        self.assertEqual(before, self.contents())
+        link = self.root / "01 基础/hidden-link"
+        link.symlink_to(self.root / "assets/image.png")
+        with self.assertRaisesRegex(ValueError, "符号链接"):
+            self.operate("reorder", paths=["02 目标"], anchor="01 基础", position="before")
+        link.unlink()
+        self.assertEqual(before, self.contents())
+        self.operate("reorder", paths=["01 基础/02 同级.md"], anchor="01 基础/01 文档.md", position="before")
+        self.put("01 基础/02 文档.md", "edit after reorder")
+        after = self.contents()
+        with self.assertRaises(tool.OperationConflict):
+            self.operate("undo")
+        self.assertEqual(after, self.contents())
+
     def test_rename_updates_references_summary_and_undo_restores_exact_bytes(self):
         before = self.contents()
         result = self.operate("rename", path="01 基础/01 文档.md", name="01 新名称.md")
@@ -648,6 +804,23 @@ class HTTPTests(unittest.TestCase):
         no_origin.pop("Origin")
         self.assertEqual(self.request("POST", "/api/mkdir", {}, no_origin)[0], 403)
         self.assertFalse((self.root / "SUMMARY.md").exists())
+
+    def test_reorder_api_requires_session_and_returns_updated_order(self):
+        (self.root / "02 第二篇.md").write_text("second")
+        status, body = self.request("GET", "/api/state", headers=self.auth())
+        self.assertEqual(status, 200)
+        payload = {"paths": ["02 第二篇.md"], "anchor": "01 文档.md", "position": "before", "revision": json.loads(body)["revision"]}
+        self.assertEqual(self.request("POST", "/api/reorder", payload)[0], 403)
+        self.assertEqual(self.request("POST", "/api/reorder", payload, {**self.auth(), "Origin": "https://evil.example"})[0], 403)
+        status, body = self.request("POST", "/api/reorder", payload, self.auth())
+        self.assertEqual(status, 200, body)
+        state = json.loads(body)
+        self.assertEqual(state["focusPaths"], ["01 第二篇.md"])
+        self.assertEqual((self.root / "01 第二篇.md").read_text(), "second")
+        self.assertTrue((self.root / "02 文档.md").exists())
+        self.assertEqual(len(state["pathMappings"]), 2)
+        self.assertEqual(self.request("POST", "/api/undo", {"revision": state["revision"]}, self.auth())[0], 200)
+        self.assertEqual((self.root / "02 第二篇.md").read_text(), "second")
 
     def test_invalid_json_shape_and_stale_revision(self):
         self.assertEqual(self.request("POST", "/api/mkdir", [], self.auth())[0], 400)

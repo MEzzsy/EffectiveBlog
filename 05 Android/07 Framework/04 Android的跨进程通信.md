@@ -181,15 +181,71 @@ Binder 的接收缓冲区映射在接收方用户空间中，底层物理页由�
 
 ## 🌟最终总结
 
-Binder通信角色：Client 发起调用，Service 处理业务，ServiceManager 帮忙找服务，Driver 负责跨进程传递请求和结果。
+```mermaid
+sequenceDiagram
+    participant C as Client（用户态）
+    participant D as Driver（内核态）
+    participant M as ServiceManager（用户态）
+    participant S as Service（用户态）
+
+    Note over C,S: ① 注册服务
+    S->>D: 提交服务名和 Binder 对象引用
+    Note over D: 查找或创建 binder_node<br/>为 ServiceManager 建立或复用 binder_ref
+    D->>M: 交付注册事务
+    Note over M: 检查通过后<br/>保存“服务名 → Binder 引用”
+    M-->>D: 注册结果
+    D-->>S: 注册结果
+
+    Note over C,S: ② 查找服务
+    C->>D: 通过当前 Binder 上下文的 handle 0 查询服务名
+    D->>M: 转交查询请求
+    M-->>D: 服务存在且允许访问，将 Binder 引用写入回复 Parcel
+    Note over D: 为 Client 建立或复用 binder_ref<br/>指向同一个 binder_node<br/>将回复中的 handle 转换为 Client 的 handle
+    D-->>C: 交付回复（含 Client 中有效的 handle）
+    Note over C: 用户态运行库取得对应代理
+
+    Note over C,S: ③ 业务调用（以同步调用为例）
+    C->>D: 目标 handle + 方法编号 + 参数
+    Note over D: handle → binder_ref → binder_node<br/>找到目标进程
+    D->>S: 投递事务
+    Note over S: 分发请求，执行业务方法
+    S-->>D: 返回执行结果
+    D-->>C: 返回执行结果
+```
+
+
+
+| 概念          | 在哪里                     | 是什么                                                       |
+| ------------- | -------------------------- | ------------------------------------------------------------ |
+| `handle`      | 用户态代理持有，内核也记录 | 一个整数编号，用来查找当前进程对应的 `binder_ref`            |
+| `binder_ref`  | 内核空间                   | 记录某个进程对目标 Binder 对象的引用，指向对应的 `binder_node` |
+| `binder_node` | 内核空间                   | 代表一个 Binder 对象，记录对象所属进程、对象标识等信息       |
+
+
+
+Binder 的四个角色：Client 发起调用，Service 处理业务，ServiceManager 帮忙找服务，Driver 负责跨进程传递请求和结果。
+
+拿一个通过 ServiceManager 注册、供其他进程调用的系统服务来说，流程是这样的：
+
+**注册服务**
 
 1. Service 创建本地 Binder 对象，将服务名和 Binder 对象引用通过 Driver 传给 ServiceManager 注册。
-2. Driver 创建该对象对应的 `binder_node`，并为 ServiceManager 建立相应的引用。然后将名字和引用传递给ServiceManager。
+2. Driver 创建该对象对应的 `binder_node`，为 ServiceManager 建立相应的 `binder_ref`，然后交给 ServiceManager注册。
 3. ServiceManager 保存“服务名 → Binder 引用”的对应关系。
-4. Client 通过 0号引用 向 ServiceManager 发起查询，提供目标服务名。ServiceManager 返回对应的 Binder 引用。
-5. 驱动为 Client 建立或复用指向同一 `binder_node` 的 `binder_ref`，提供在 Client 中有效的 handle，用户态运行库据此取得代理。
-6. Client 获得代理后，通过驱动向 Service 发起业务调用，业务请求不再经过 ServiceManager。
 
+**查找服务**
+
+1. Client 通过 **handle 0** 向 ServiceManager 查询服务名。服务存在且允许访问时，ServiceManager 把对应的 Binder 引用写入回复 Parcel，其中携带的是 ServiceManager 使用的 handle。
+2. Driver 根据这个 handle 找到同一个 `binder_node`，为 Client 建立或复用 `binder_ref`，并将回复中的 handle 转换成 Client 可用的值。Client 的运行库读取回复后，据此取得代理。
+
+**业务调用**
+
+1. Client 获得代理后，通过 Driver 向 Service 发起业务调用，**业务请求不再经过 ServiceManager**。
+
+数据传输可以简单理解为：接收方先通过 `mmap()` 建立接收缓冲区的映射。普通 Binder 事务中，Driver 把发送方用户缓冲区的数据复制到接收方缓冲区的底层物理页，接收方再通过自己的用户空间地址读取这份数据。
+
+> 对这个服务对象来说，ServiceManager 和 Client 在内核中各有自己的 `binder_ref`，它们指向同一个 `binder_node`。
+>
 > Binder 引用也可以通过已有的调用继续传给其他进程，不一定要注册到 ServiceManager。
 
 # IPC 方式选择
