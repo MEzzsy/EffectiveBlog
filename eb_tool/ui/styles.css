@@ -120,6 +120,8 @@ table:not(.search-results) td:first-child { border-radius: 5px; }
 .empty p { font-size: 12px; margin: 0; line-height: 1.7; }
 .drop-target { outline: 2px solid #5fa9ef !important; outline-offset: -2px; border-radius: 5px; background: #245483 !important; }
 tr.drop-target td { background: #245483 !important; }
+.drop-insertion { position: fixed; height: 2px; background: #69b5ff; box-shadow: 0 0 3px #69b5ff80; pointer-events: none; z-index: 4; }
+.drop-insertion::before { content: ""; position: absolute; left: -4px; top: -3px; width: 6px; height: 6px; border: 1px solid #69b5ff; border-radius: 50%; background: var(--page); }
 .error-banner { display: flex; justify-content: space-between; align-items: center; gap: 14px; margin: 8px 12px; padding: 8px 12px; border: 1px solid #bc666942; border-radius: 5px; background: #533235; color: var(--danger); font-size: 12px; line-height: 1.5; }
 .error-banner button { background: none; color: inherit; font-size: 18px; }
 .toast { position: fixed; bottom: 70px; left: calc(50% + 103px); transform: translateX(-50%); display: flex; align-items: center; gap: 16px; padding: 12px 16px; max-width: min(720px, 90vw); background: #444c52f5; border: 1px solid #ffffff1f; border-radius: 9px; box-shadow: 0 8px 30px #0006; color: #f3f5f6; font-size: 12px; z-index: 5; }

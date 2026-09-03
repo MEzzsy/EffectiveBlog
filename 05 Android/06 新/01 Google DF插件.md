@@ -801,7 +801,7 @@ Feature Split APK
 业务代码开始运行
 ```
 
-此时代码集合在当前进程的生命周期内基本不变。某个类是否位于 DEX、某个资源是否位于资源表，通常在构建和启动阶段就已经确定。完整的普通类加载链路见 [Android 类从源码到运行时加载](<../07 Framework/01 Android类从源码到运行时加载.md>)。
+此时代码集合在当前进程的生命周期内基本不变。某个类是否位于 DEX、某个资源是否位于资源表，通常在构建和启动阶段就已经确定。完整的普通类加载链路见 [Android 类从源码到运行时加载](<../07 Framework/06 Android类从源码到运行时加载.md>)。
 
 运行时安装 Dynamic Feature 则改变了顺序：
 
@@ -872,7 +872,7 @@ Google 主要解决的是“如何可靠交付 split，以及如何让 Android �
 
 ## DEX 如何进入 ClassLoader
 
-Kotlin/Java 源码如何变成 DEX、系统如何在进程启动时创建应用 ClassLoader，以及 ART 如何完成类的加载、链接和初始化，见 [Android 类从源码到运行时加载](<../07 Framework/01 Android类从源码到运行时加载.md>)。这里仅说明 Dynamic Feature 相比普通启动流程多出的步骤。
+Kotlin/Java 源码如何变成 DEX、系统如何在进程启动时创建应用 ClassLoader，以及 ART 如何完成类的加载、链接和初始化，见 [Android 类从源码到运行时加载](<../07 Framework/06 Android类从源码到运行时加载.md>)。这里仅说明 Dynamic Feature 相比普通启动流程多出的步骤。
 
 应用启动后，默认 `PathClassLoader` 的 `DexPathList.dexElements` 已经确定。如果 Feature 在进程运行期间才安装，其 DEX 还不在这个数组中；SplitCompat 的工作就是把新 split 转换成可搜索的 Element 并追加进去。
 
