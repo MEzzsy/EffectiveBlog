@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="eb-token" content="__EB_SESSION_TOKEN__">
+  <meta name="color-scheme" content="dark">
+  <title>文档整理 · EffectiveBlog</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="workspace">
+    <aside class="sidebar" aria-label="目录导航">
+      <div class="brand"><span class="folder-icon" aria-hidden="true"></span><div><strong>EffectiveBlog</strong><span>文档管理</span></div></div>
+      <div class="sidebar-caption">位置 <span id="directory-count"></span></div>
+      <nav id="tree" class="tree" aria-label="文件夹"></nav>
+      <div class="sidebar-note"><span class="status-dot"></span>本地工作空间<small>自动编号 · 引用同步更新</small></div>
+    </aside>
+    <main>
+      <header class="topbar">
+        <button id="up" class="quiet up-button" aria-label="返回上级目录" title="返回上级目录" disabled>‹</button>
+        <div class="window-title"><h1 id="heading">全部文档</h1><p id="description">正在读取本地目录…</p></div>
+        <div class="search-box"><span aria-hidden="true"></span><input id="search" type="search" placeholder="搜索" aria-label="搜索名称或路径" autocomplete="off"><kbd>/</kbd></div>
+        <div class="top-actions">
+          <button id="refresh" class="quiet" title="刷新文件列表">刷新</button>
+          <button id="undo" class="quiet" disabled title="撤销最近一次操作 · ⌘/Ctrl Z">↶ 撤销</button>
+          <button id="mkdir" class="primary" disabled>＋ 新建目录</button>
+        </div>
+      </header>
+      <div class="content">
+        <div class="file-toolbar">
+          <div class="toolbar-status"><label class="select-all-label"><input id="select-all" type="checkbox" aria-label="全选当前列表">全选</label><strong id="selection-count">当前目录</strong><span id="item-count"></span></div>
+          <div class="toolbar-actions"><button id="rename" class="quiet" disabled>重命名 <kbd>F2</kbd></button><button id="move" class="quiet" disabled>移动到…</button></div>
+        </div>
+        <div id="error" class="error-banner" role="alert" hidden><span id="error-message"></span><button id="dismiss-error" aria-label="关闭错误提示">×</button></div>
+        <div class="file-surface">
+          <table id="files" role="treegrid" aria-label="文档和目录" aria-multiselectable="true">
+            <thead><tr><th scope="col">名称 <span class="sort-indicator" aria-hidden="true">⌃</span></th><th scope="col" class="path-column">所在位置</th></tr></thead>
+            <tbody id="file-list"></tbody>
+          </table>
+          <div id="empty" class="empty" hidden><span class="empty-symbol" aria-hidden="true">▱</span><h2 id="empty-title">目录里还没有文档</h2><p id="empty-description">可以将文档拖到这里，或新建一个目录。</p></div>
+        </div>
+        <nav id="breadcrumbs" class="breadcrumbs" aria-label="当前位置"></nav>
+        <footer class="list-footer"><span>方向键展开与选择 · F2 重命名 · ⌘ / Ctrl 多选</span><span id="connection-status"><span class="status-dot"></span>连接中</span></footer>
+      </div>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status" hidden><span id="toast-message"></span><button id="toast-undo">撤销</button><button id="dismiss-toast" aria-label="关闭提示">×</button></div>
+  <dialog id="name-dialog" aria-labelledby="name-title">
+    <form id="name-form">
+      <div class="dialog-heading"><div><h2 id="name-title">重命名</h2></div><button type="button" class="close-dialog" aria-label="关闭">×</button></div>
+      <p id="name-context" class="dialog-context"></p>
+      <label class="field-label" for="name-input">名称</label><div class="name-field"><input id="name-input" autocomplete="off" required maxlength="240"><span id="extension">.md</span></div>
+      <p id="number-hint" class="field-hint"></p>
+      <p class="field-hint">同级项目的序号会同步调整，相关链接会自动更新，支持整批撤销。</p>
+      <p id="name-error" class="form-error" role="alert" hidden></p>
+      <div class="dialog-actions"><button type="button" class="secondary close-dialog">取消</button><button id="name-submit" type="submit" class="primary">保存</button></div>
+    </form>
+  </dialog>
+  <dialog id="move-dialog" aria-labelledby="move-title">
+    <div class="dialog-heading"><div><h2 id="move-title">移动到</h2></div><button type="button" class="close-dialog" aria-label="关闭">×</button></div>
+    <p id="move-context" class="dialog-context"></p>
+    <input id="move-search" type="search" placeholder="查找目标目录…" aria-label="查找目标目录">
+    <div id="move-targets" class="move-targets" role="group" aria-label="目标目录"></div>
+    <p id="move-error" class="form-error" role="alert" hidden></p>
+    <div class="dialog-actions"><button class="secondary close-dialog">取消</button><button id="move-submit" class="primary" disabled>移动到此处</button></div>
+  </dialog>
+</body>
+</html>

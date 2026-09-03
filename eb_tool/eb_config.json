@@ -1,0 +1,21 @@
+{
+  "img_ignore": [
+    "/eb_tool/",
+    "/_book/",
+    "/docs/",
+    "/node_modules/"
+  ],
+  "gen_ignore": [
+    "_book",
+    "assets",
+    "img",
+    "node_modules",
+    "auto_pull.sh",
+    "docs",
+    "AGENTS.md",
+    "book.json",
+    "eb_tool",
+    "README.md",
+    "SUMMARY.md"
+  ]
+}
