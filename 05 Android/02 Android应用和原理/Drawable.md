@@ -1,1 +1,0 @@
-见`03 Android手册/视图/Drawable`
