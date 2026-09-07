@@ -311,7 +311,7 @@ public final boolean cancel(boolean mayInterruptIfRunning) {
 
 cancel方法需要传递一个参数，如果为true，会调用Thread的interrupt方法；如果会false，那么任务会执行完。最终都会执行完任务，并回调onCancel。
 
->   Thread的interrupt方法的效果见`/01 语言/02 Java/并发`，大致结论是这样的：如果当前调用了可中断的阻塞函数，那么调用interrupt方法会抛出异常；反之只是设置一下状态，不会中断线程。
+>   Thread的interrupt方法的效果见`/03 Java/04 语言/并发`，大致结论是这样的：如果当前调用了可中断的阻塞函数，那么调用interrupt方法会抛出异常；反之只是设置一下状态，不会中断线程。
 
 在AsyncTask的doInBackground里最好判断一下isCancelled，以感知当前AsyncTask是否被cancel。
 
