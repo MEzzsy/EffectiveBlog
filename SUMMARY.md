@@ -90,6 +90,7 @@
     - [02 Android编译产物基础](./06 Android/06 应用层/02 Android编译产物基础.md)
     - [03 Google DF插件](./06 Android/06 应用层/03 Google DF插件.md)
     - [04 SQLite原理与键值存储框架对比](./06 Android/06 应用层/04 SQLite原理与键值存储框架对比.md)
+    - [05 RecyclerView的使用与原理](./06 Android/06 应用层/05 RecyclerView的使用与原理.md)
   - [07 Hack](./06 Android/07 Hack/README.md)
     - [01 修改父类元数据实现 mH Hook](./06 Android/07 Hack/01 修改父类元数据实现 mH Hook.md)
 - [07 Ai](./07 Ai/README.md)
