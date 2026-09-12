@@ -3,7 +3,6 @@ site:
   title: Mezzsy is here
   structure:
     - type: space
-      # Keep this key stable after the first Git Sync import.
       key: effectiveblog
       title: EffectiveBlog
       path: effectiveblog
