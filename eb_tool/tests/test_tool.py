@@ -698,7 +698,7 @@ class FileManagerTests(unittest.TestCase):
         updated = self.read("03 引用/01 外部.md")
         self.assertIn("01 新 %28示例%29%23名称.md?x=1#标题", updated)
         self.assertIn("%E6%96%B0%20%28%E7%A4%BA%E4%BE%8B%29%23", updated)
-        self.assertIn("01 新 %28示例%29%23名称.md)", self.read("SUMMARY.md"))
+        self.assertIn("01 新 %28示例%29%23名称.md>)", self.read("SUMMARY.md"))
         for expected in [ticks + code + ticks, "    " + code, "[anchor](#标题)",
                          "[external](https://example.com/01 文档.md)",
                          "[[../01 基础/01 新 %28示例%29%23名称.md|别名]]"]:

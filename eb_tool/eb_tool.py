@@ -550,7 +550,8 @@ def escape_markdown_label(value: str) -> str:
 
 def summary_link(label: str, path: Path, root: Path) -> str:
     relative_path = path.relative_to(root).as_posix()
-    return f"[{escape_markdown_label(label)}](./{encode_local_path(relative_path)})"
+    # CommonMark 链接的裸地址不能包含空格；尖括号同时保留中文文件名的可读性。
+    return f"[{escape_markdown_label(label)}](<./{encode_local_path(relative_path)}>)"
 
 
 def collect_summary_entries(

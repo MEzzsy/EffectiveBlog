@@ -22,7 +22,7 @@ startActivity方法方法内部会获取AMS（运行在SystemServer进程）在�
 
 根Activity启动Intent的flag为`FLAG_ACTIVITY_NEW_TASK`，因此会创建一个新的TaskRecord，用来描述一个Activity任务栈。
 
-然后获取Activity的启动进程，如果不存在就创建（见[应用程序进程的创建](./02 应用进程启动过程.md)）。
+然后获取Activity的启动进程，如果不存在就创建（见[应用程序进程的创建](<./02 应用进程启动过程.md>)）。
 
 如果存在应用程序进程，就在应用程序进程中启动根Activity。
 

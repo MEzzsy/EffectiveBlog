@@ -169,7 +169,7 @@ Workflow
 > - ReAct 是边想边做，适合步骤不确定、需要不断看结果再决定下一步的任务。
 > - Plan-and-Execute 是先列计划再执行，适合流程较长、步骤依赖比较清楚的任务。
 > - 多 Agent 是让不同 Agent 分工，适合需要并行处理或多个专业角色的复杂任务，但成本和协作难度也更高。
-> - codex的工作模式是[Agent Loop](./01 Codex 型通用 Agent 的工作方式.md)
+> - codex的工作模式是[Agent Loop](<../01 Codex 型通用 Agent 的工作方式.md>)
 
 ### ReAct
 

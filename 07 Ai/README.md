@@ -1,7 +1,7 @@
 # 核心学习主线
 
-1.  [01 Codex 型通用 Agent 的工作方式](01 Codex 型通用 Agent 的工作方式.md) 
-2.  [02 上下文工程和 AGENTS](02 上下文工程和 AGENTS.md) 
+1.  [01 Codex 型通用 Agent 的工作方式](<01 Codex 型通用 Agent 的工作方式.md>)
+2.  [02 上下文工程和 AGENTS](<02 上下文工程和 AGENTS.md>)
 3. 工具调用、sandbox、approval 和安全边界
 4. Skills：把重复流程封装成可复用工作流
 5. MCP：让 agent 连接外部工具和真实工作环境

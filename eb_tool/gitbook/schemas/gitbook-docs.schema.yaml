@@ -1,0 +1,468 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://api.gitbook.com/gitbook-docs.yaml
+title: GitBook site gitbook-docs.yaml
+type: object
+description: |
+  Schema for a site `gitbook-docs.yaml` file — the canonical contract for what
+  can be authored in Git Sync to drive a site's structure.
+
+  The file lives at the root of the site's project directory in the synced
+  repository. It names the site and maps the repository's content directories
+  onto the site's navigation.
+properties:
+  $schema:
+    type: string
+    format: uri
+    description: URL of the schema used by editors to validate the site configuration.
+  version:
+    type: integer
+    description: |
+      Reserved for future use. When a breaking schema change ships, this
+      field lets the parser branch on the version; absence means v1.
+    enum:
+      - 1
+    default: 1
+  site:
+    type: object
+    additionalProperties: false
+    properties:
+      title:
+        type: string
+        description: Display title for the site.
+        minLength: 1
+      structure:
+        $ref: '#/$defs/GitSyncSiteStructure'
+    required:
+      - title
+      - structure
+required:
+  - site
+$defs:
+  Expression:
+    type: string
+    description: Expression to evaluate
+    minLength: 0
+    maxLength: 1024
+  GitSyncSiteStructure:
+    type: array
+    description: |
+      Hierarchical structure of a site in a Git Sync YAML. Each entry is one of
+      four node types: a section group, a section, a space, or an external link.
+
+      A **space** is a leaf holding content, pointed at a repository directory. A
+      **section** gathers spaces behind one top-level navigation entry. A
+      **section group** gathers sections. An **external link** is a leaf that
+      navigates away from the site to an absolute HTTP(S) URL — it may sit at the
+      root or under a section group, but never inside a section, and only exists
+      in a site that also has at least one section. A site either uses sections
+      (optionally alongside external links) or lists its spaces at the top level,
+      never both.
+
+      ```yaml
+      structure:
+        - type: space
+          key: space-guides
+          title: Guides
+          path: guides
+          default: true
+          content:
+            directory: ./guides
+        - type: space
+          key: space-api
+          title: API reference
+          path: api
+          content:
+            directory: ./api
+      ```
+
+      The same two spaces behind top-level navigation entries:
+
+      ```yaml
+      structure:
+        - type: section
+          key: section-product
+          title: Product
+          path: product
+          default: true
+          children:
+            - type: space
+              key: space-guides
+              title: Guides
+              path: guides
+              default: true
+              content:
+                directory: ./guides
+        - type: section
+          key: section-reference
+          title: Reference
+          path: reference
+          children:
+            - type: space
+              key: space-api
+              title: API reference
+              path: api
+              default: true
+              content:
+                directory: ./api
+      ```
+
+      Rules checked on import — a violation fails the sync, naming the offending
+      node:
+
+      - Every `key` is unique across the file, whatever the node type. Git Sync
+        recognises a node from one sync to the next by its key, so a reused key
+        leaves two nodes indistinguishable.
+      - Each section marks exactly one of its spaces `default: true`, and a site
+        without sections marks one among its top-level spaces. The default is the
+        space that opens when the site or the section is visited without a space
+        path of its own.
+      - A site declaring any section marks exactly one of those sections
+        `default: true`, and lists no space at the top level: once a section
+        exists, every space belongs inside one.
+      - Sections hold only spaces. Section groups hold only sections, nested
+        section groups (one further level), or external links — nothing nests
+        deeper than that.
+      - External links are only valid at the root or nested in a section group,
+        never inside a section. A site containing an external link must use
+        sections, with at least one section declared.
+      - Spaces pointed at the same `content.directory` declare the same
+        `content.language`. One directory is read once, so it cannot produce two
+        languages at the same time.
+    items:
+      $ref: '#/$defs/GitSyncSiteStructureNode'
+  GitSyncSiteStructureExternalLink:
+    type: object
+    additionalProperties: false
+    description: |
+      An external link — a leaf that navigates away from the site to an absolute
+      HTTP(S) URL. Discriminated by `type: external-link`.
+
+      An external link only exists in a section-based site structure: it may sit
+      at the root alongside sections and section groups, or nested under a
+      section group, but never inside a section.
+    properties:
+      type:
+        type: string
+        enum:
+          - external-link
+        description: Discriminator for an external link node.
+      key:
+        type: string
+        description: |
+          Stable identifier for this external link, used as the Git Sync key.
+          Must be unique amongst all other nodes of the site. For example:
+          `link-status` or `link-1`.
+        minLength: 1
+      title:
+        $ref: '#/$defs/SiteExternalLinkTitle'
+      localizedTitle:
+        $ref: '#/$defs/LocalizedString128'
+      description:
+        $ref: '#/$defs/SiteExternalLinkDescription'
+      localizedDescription:
+        $ref: '#/$defs/LocalizedString256'
+      icon:
+        $ref: '#/$defs/Icon'
+      url:
+        $ref: '#/$defs/URL'
+        description: Absolute HTTP or HTTPS URL opened by the external link.
+      draft:
+        type: boolean
+        description: Whether the external link is draft and not live.
+      condition:
+        $ref: '#/$defs/Expression'
+    required:
+      - type
+      - key
+      - title
+      - url
+  GitSyncSiteStructureNode:
+    description: |
+      A single node in a Git Sync site structure tree — a section group, a
+      section, a space, or an external link, discriminated by `type`.
+    oneOf:
+      - $ref: '#/$defs/GitSyncSiteStructureSectionGroup'
+      - $ref: '#/$defs/GitSyncSiteStructureSection'
+      - $ref: '#/$defs/GitSyncSiteStructureSpace'
+      - $ref: '#/$defs/GitSyncSiteStructureExternalLink'
+  GitSyncSiteStructureSection:
+    type: object
+    additionalProperties: false
+    description: |
+      A section — a group of spaces sharing a top-level navigation entry.
+      Discriminated by `type: section`.
+
+      Spaces inside a section are listed inline under `children`; a section holds
+      nothing else — nest sections under a section group instead. A site with
+      sections must mark exactly one section with `default: true`, and cannot also
+      list spaces at the top level of its structure.
+    properties:
+      type:
+        type: string
+        enum:
+          - section
+        description: Discriminator for a section node.
+      key:
+        type: string
+        description: |
+          Stable identifier for this section, used as the Git Sync key. Must be
+          unique amongst all other sections of the site. For example:
+          `section-guides` or `section-1`.
+        minLength: 1
+      title:
+        $ref: '#/$defs/SiteSectionTitle'
+      localizedTitle:
+        $ref: '#/$defs/LocalizedString128'
+      description:
+        $ref: '#/$defs/SiteSectionDescription'
+      localizedDescription:
+        $ref: '#/$defs/LocalizedString256'
+      icon:
+        $ref: '#/$defs/Icon'
+      default:
+        type: boolean
+        description: Whether this is the default section for the site.
+      path:
+        $ref: '#/$defs/SiteSectionPath'
+      condition:
+        $ref: '#/$defs/Expression'
+      children:
+        type: array
+        description: Space nodes nested under this section.
+        items:
+          $ref: '#/$defs/GitSyncSiteStructureSpace'
+    required:
+      - type
+      - key
+      - title
+      - path
+  GitSyncSiteStructureSectionGroup:
+    type: object
+    additionalProperties: false
+    description: |
+      A section group — a container that nests sections (and other section
+      groups). Discriminated by `type: section-group`. Up to one level of nested
+      section groups is allowed.
+    properties:
+      type:
+        type: string
+        enum:
+          - section-group
+        description: Discriminator for a section group node.
+      key:
+        type: string
+        description: >
+          Stable identifier for this section group, used as the Git Sync key.
+
+          Must be unique amongst all other section groups of the site. For
+
+          example: `section-group-product` or `section-group-1`.
+
+          You can nest section groups only one level deep. For example, `section-group-1` can have a
+          child section group `section-group-1-1`, but `section-group-1-1` cannot have a child
+          section group.
+        minLength: 1
+      title:
+        $ref: '#/$defs/SiteSectionGroupTitle'
+      localizedTitle:
+        $ref: '#/$defs/LocalizedString128'
+      icon:
+        $ref: '#/$defs/Icon'
+      draft:
+        type: boolean
+        description: Whether the section group is draft and not live.
+      children:
+        type: array
+        description: Section, section group, or external link nodes nested under this group.
+        items:
+          oneOf:
+            - $ref: '#/$defs/GitSyncSiteStructureSectionGroup'
+            - $ref: '#/$defs/GitSyncSiteStructureSection'
+            - $ref: '#/$defs/GitSyncSiteStructureExternalLink'
+    required:
+      - type
+      - key
+      - title
+  GitSyncSiteStructureSpace:
+    type: object
+    additionalProperties: false
+    description: |
+      A space — a single content unit in the site's navigation tree. Discriminated
+      by `type: space`.
+
+      The space's content either lives in the synced repository at the directory
+      pointed to by `content.directory`, or does not inherit the site's repository
+      when `content.directory` is `null`. Hierarchy comes from where the space
+      appears in the YAML (under a section, a section group, or at the root), not
+      from an explicit parent reference.
+
+      The directory is read as one book — the Markdown files it holds become the
+      pages of the space.
+    properties:
+      type:
+        type: string
+        enum:
+          - space
+        description: Discriminator for a space node.
+      key:
+        type: string
+        description: |
+          Stable identifier for this space, used as the Git Sync key. Must be
+          unique amongst all other spaces of the site. For example: `space-docs`
+          or `space-1`.
+        minLength: 1
+      title:
+        type: string
+        minLength: 1
+      localizedTitle:
+        $ref: '#/$defs/LocalizedString128'
+      path:
+        $ref: '#/$defs/SiteSpacePath'
+      default:
+        type: boolean
+        description: |
+          Whether this is the default space of its parent — the one opened when the
+          site or the section is visited without a space path. Exactly one space
+          among each set of siblings carries it.
+      hidden:
+        type: boolean
+        description: Whether the space is hidden from the site's navigation.
+      draft:
+        type: boolean
+        description: Whether the space is draft and not live.
+      condition:
+        $ref: '#/$defs/Expression'
+      content:
+        type: object
+        additionalProperties: false
+        description: Where the space's content is managed.
+        properties:
+          directory:
+            oneOf:
+              - type: string
+                description: |
+                  Directory holding this space's content, resolved from the site's
+                  project directory — `./guides` under a site rooted at `docs/`
+                  reads `docs/guides`. A leading slash escapes to the repository
+                  root instead, so `/guides` always reads `guides`. Parent-directory
+                  segments (`..`) are rejected.
+                minLength: 1
+              - type: 'null'
+                description: The space does not inherit the site's repository.
+          language:
+            $ref: '#/$defs/TranslationLanguage'
+        required:
+          - directory
+    required:
+      - type
+      - key
+      - title
+      - path
+      - content
+  Icon:
+    type: string
+    maxLength: 50
+    format: icon
+    description: Name of the icon
+    example: gear
+  LocalizedString128:
+    type: object
+    description: >-
+      Localized string value with a 128 character limit, keyed by locale. Contains overrides for
+      non-default languages only.
+    additionalProperties:
+      type: string
+      maxLength: 128
+    propertyNames:
+      $ref: '#/$defs/TranslationLanguage'
+  LocalizedString256:
+    type: object
+    description: >-
+      Localized string value with a 256 character limit, keyed by locale. Contains overrides for
+      non-default languages only.
+    additionalProperties:
+      type: string
+      maxLength: 256
+    propertyNames:
+      $ref: '#/$defs/TranslationLanguage'
+  SiteExternalLinkDescription:
+    type: string
+    description: Description of the external link
+    minLength: 0
+    maxLength: 256
+  SiteExternalLinkTitle:
+    type: string
+    description: Title of the external link
+    minLength: 2
+    maxLength: 128
+  SiteSectionDescription:
+    type: string
+    description: Description of the site section
+    minLength: 0
+    maxLength: 256
+  SiteSectionGroupTitle:
+    type: string
+    description: Title of the site section group
+    minLength: 1
+    maxLength: 100
+  SiteSectionPath:
+    type: string
+    description: Path to the section on the site
+    minLength: 1
+    maxLength: 100
+  SiteSectionTitle:
+    type: string
+    description: Title of the site section
+    minLength: 2
+    maxLength: 128
+  SiteSpacePath:
+    type: string
+    description: Path to the space on the site
+    minLength: 1
+    maxLength: 100
+  TranslationLanguage:
+    type: string
+    enum:
+      - en
+      - fr
+      - de
+      - es
+      - it
+      - pt
+      - pt-br
+      - ru
+      - ja
+      - zh
+      - zh-tw
+      - yue
+      - ko
+      - ar
+      - hi
+      - nl
+      - pl
+      - tr
+      - sv
+      - 'no'
+      - da
+      - fi
+      - el
+      - cs
+      - hu
+      - ro
+      - th
+      - vi
+      - id
+      - ms
+      - he
+      - uk
+      - sk
+      - bg
+      - hr
+      - lt
+      - lv
+      - et
+      - sl
+  URL:
+    type: string
+    format: uri
+    maxLength: 2048

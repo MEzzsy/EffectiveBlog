@@ -26,7 +26,7 @@ Context是一个抽象类，它的内部定义了很多方法以及静态常量�
 
 ## 创建过程
 
-这里涉及到[Activity启动过程](03 Activity启动过程.md)。
+这里涉及到[Activity启动过程](<03 Activity启动过程.md>)。
 
 启动Activity有个重要的方法：performLaunchActivity。
 
@@ -245,7 +245,7 @@ pending
 
 # 装饰模式
 
-见装饰模式笔记[装饰模式](../../../06 Android/07 设计模式/装饰模式.md)
+见装饰模式笔记[装饰模式](<../../../06 Android/07 设计模式/装饰模式.md>)
 
 # 获取系统服务
 

@@ -1,4 +1,15 @@
 *.DS_Store
-/_book
+__pycache__/
+*.py[cod]
+node_modules/
+
+# Legacy/local build output is not Git Sync content.
+/_book/
+/docs/
+/build/
+/dist/
 generateSummary.jar
 SUMMARY_temp.md
+
+# Local validation reports.
+/eb_tool/gitbook/reports/

@@ -22,7 +22,7 @@ AMS涉及了很多数据结构，如ActivityRecord、TaskRecord、ActivityStack�
 
 ## ActivityRecord
 
-ActivityRecord内部记录了Activity的所有信息，用来描述一个Activity。它是在启动Activity 时被创建的，见[Activity启动过程](03 Activity启动过程.md)。
+ActivityRecord内部记录了Activity的所有信息，用来描述一个Activity。它是在启动Activity 时被创建的，见[Activity启动过程](<03 Activity启动过程.md>)。
 
 **ActivityRecord的部分重要成员变量**
 

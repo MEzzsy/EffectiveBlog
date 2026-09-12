@@ -1,0 +1,6 @@
+# Git Sync reads Markdown sources directly from the repository root.
+root: ./
+
+structure:
+  readme: README.md
+  summary: SUMMARY.md

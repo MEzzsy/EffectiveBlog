@@ -2,7 +2,7 @@
 
 源码并不多，这里就全部复制进来。
 
-LruCache与LinkedHashMap息息相关，LinkedHashMap源码分析见[LinkedHashMap源码分析](LinkedHashMap源码分析.md)。
+LruCache与LinkedHashMap息息相关，LinkedHashMap源码分析见[LinkedHashMap源码分析](<../../03 Java/03 常用源码分析/05 LinkedHashMap源码分析.md>)。
 
 ```java
 public class LruCache<K, V> {

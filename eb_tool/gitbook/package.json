@@ -1,0 +1,17 @@
+{
+  "name": "effectiveblog-gitbook-check",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "check": "node check.mjs",
+    "test": "node --test check.test.mjs"
+  },
+  "dependencies": {
+    "ajv": "8.20.0",
+    "mdast-util-from-markdown": "2.0.3",
+    "yaml": "2.9.1"
+  }
+}

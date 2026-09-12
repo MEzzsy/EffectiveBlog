@@ -3,6 +3,8 @@
     "/eb_tool/",
     "/_book/",
     "/docs/",
+    "/build/",
+    "/dist/",
     "/node_modules/"
   ],
   "gen_ignore": [
@@ -10,10 +12,10 @@
     "assets",
     "img",
     "node_modules",
-    "auto_pull.sh",
     "docs",
+    "build",
+    "dist",
     "AGENTS.md",
-    "book.json",
     "eb_tool",
     "README.md",
     "SUMMARY.md"
