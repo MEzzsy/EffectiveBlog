@@ -1,22 +1,67 @@
+> 本文以 [OpenJDK 8u402，标签 jdk8u402-b06](https://github.com/openjdk/jdk8u/blob/jdk8u402-b06/jdk/src/share/classes/java/util/concurrent/ConcurrentHashMap.java) 为基准。源码片段调整了注释和排版；`tryPresize` 省略了一个不可达分支，具体见该节。不同 JDK 更新版本的细节可能不同。
+
 # 思想
 
-主要是CAS操作+Synchronized锁分段。
+JDK 8 的 `ConcurrentHashMap` 使用数组、链表和红黑树存储数据，通过 **CAS、桶级 `synchronized` 和 volatile 读写**协调并发访问。
+
+- 向空桶插入节点时，通过 CAS 竞争该数组位置。
+- 更新非空桶时，以桶头节点为锁对象；树桶的锁对象是 `TreeBin`。
+- 普通 `get` 不获取桶的 `synchronized` 锁，依靠节点和数组元素的可见性，以及特殊节点的查找逻辑读取数据。
+- 扩容时，多个线程可以领取不同的桶区间，共同完成迁移。
+
+JDK 7 的 `Segment` 分段锁与这里的桶级锁不同。JDK 8 虽然保留了用于序列化兼容的 `Segment` 类型，但常规读写不再依赖它。
 
 # 成员变量
 
-- table：默认为null，初始化发生在第一次插入操作，默认大小为16的数组，用来存储Node节点数据，扩容时大小总是2的幂次方。
-- nextTable：默认为null，扩容时新生成的数组，其大小为原数组的两倍。
-- sizeCtl ：默认为0，用来控制table的初始化和扩容操作，具体应用在后续会体现出来。 
-  -1 代表table正在初始化 
-  -(1+N) 表示有N个线程正在进行扩容操作 
-  其余情况： 
-  1、如果table未初始化，表示table需要初始化的大小。 
-  2、如果table初始化完成，表示table的容量，默认是table大小的0.75倍，居然用这个公式算0.75（n - (n >>> 2)）。
-- Node：保存key，value及key的hash值的数据结构。 
-  其中value和next都用volatile修饰，保证并发的可见性。
+## 主要字段和节点类型
 
-- ForwardingNode：一个特殊的Node节点，hash值为-1，其中存储nextTable的引用。 
-  只有table发生扩容的时候，ForwardingNode才会发挥作用，作为一个占位符放在table中表示当前节点为null或则已经被移动。
+| 字段或类型 | 含义 |
+| --- | --- |
+| `table` | volatile 数组引用，构造时通常为 `null`，实际分配延迟到插入或预分配路径。数组长度为 2 的幂；无参构造后首次普通 `put` 默认分配 16 个桶。 |
+| `nextTable` | 扩容中的新数组引用，每轮迁移分配的长度为旧数组的两倍；扩容提交后清空该字段。 |
+| `sizeCtl` | 初始化和扩容的控制状态，未扩容时也用来保存初始容量或扩容阈值。 |
+| `transferIndex` | 下一个可领取迁移区间的上界，通过 CAS 从数组尾部向前分配工作。 |
+| `baseCount`、`counterCells` | 元素计数由基础计数与各个 `CounterCell` 的计数共同组成，分散并发更新的竞争。 |
+| `cellsBusy` | 通过 CAS 获取的控制标记，用于协调 `counterCells` 的初始化、扩展和单元创建。 |
+| `Node` | 普通节点，`hash`、`key` 为 final，`val`、`next` 为 volatile。 |
+| `TreeNode`、`TreeBin` | `TreeNode` 是树中的数据节点；`TreeBin` 是放在桶位置的容器，保存树根、链表入口和树的读写协调状态，hash 为 `TREEBIN = -2`。 |
+| `ForwardingNode` | hash 为 `MOVED = -1`，保存新数组引用。放入旧桶后表示该桶已处理，包括原来为空的桶；后续访问可以转向新数组。 |
+| `ReservationNode` | hash 为 `RESERVED = -3`，用于 `computeIfAbsent`、`compute` 等方法计算映射时占位，不保存普通键值对。 |
+
+## sizeCtl 的状态含义
+
+| 状态 | 含义 |
+| --- | --- |
+| `0` 且数组未初始化 | 使用默认初始容量。 |
+| 正数且数组未初始化 | 待分配的数组长度。 |
+| 正数且数组已初始化、未扩容 | 下一次检查扩容时使用的元素数量阈值，通常通过 `n - (n >>> 2)` 计算。 |
+| `-1` | 一个线程获得了初始化资格。 |
+| 扩容编码的负数 | 高 16 位保存扩容戳，低 16 位在常规迁移阶段保存参与迁移的线程数加一。 |
+
+设旧数组长度为 `n`，记 `R = resizeStamp(n) << RESIZE_STAMP_SHIFT`，其中 `RESIZE_STAMP_SHIFT = 16`。扩容发起者通过 CAS 将 `sizeCtl` 从阈值改成 `R + 2`；后续线程成功加入时加一，退出时减一。
+
+例如，旧数组长度为 16 时，`resizeStamp(16) = 0x801b`，`R = 0x801b0000`，作为 Java 的有符号 int 是负数：
+
+```text
+12（扩容阈值）
+  → R + 2（1 个迁移线程）
+  → R + 3（2 个迁移线程）
+  → R + 2（一个线程退出）
+  → R + 1（最后一个线程执行收尾扫描，禁止新线程加入）
+  → 24（新数组长度为 32，恢复扩容阈值）
+```
+
+因此，不能直接用 `-(1 + N)` 解释整个 `sizeCtl`；收尾扫描阶段也不能再把低位减一当成仍在执行代码的线程数。原源码字段注释中的简化说法应结合实际位编码理解。
+
+## 数组元素的可见性
+
+`table` 是 volatile 引用，不等于 `table[i]` 自动具有 volatile 语义。JDK 8 使用 `Unsafe` 为数组元素提供相应的访问方式：
+
+| 方法 | 底层操作 | 用途 |
+| --- | --- | --- |
+| `tabAt` | `getObjectVolatile` | 以 volatile 语义读取桶头节点。 |
+| `casTabAt` | `compareAndSwapObject` | 原子比较并替换桶头，例如向空桶插入节点。 |
+| `setTabAt` | `putObjectVolatile` | 以 volatile 语义发布桶头，例如发布树桶或转发节点。 |
 
 # 构造方法
 
@@ -25,7 +70,7 @@ public ConcurrentHashMap() {
 }
 ```
 
-无参构造方法，所有的值都是默认值
+无参构造方法不分配数组，`table` 为 `null`，`sizeCtl` 为 0。首次普通 `put` 初始化时使用默认数组长度 16。
 
 ```java
 public ConcurrentHashMap(int initialCapacity) {
@@ -38,7 +83,9 @@ public ConcurrentHashMap(int initialCapacity) {
 }
 ```
 
-指定初始table大小，会将其扩充为2的幂次方。默认为16。
+`initialCapacity` 表示预期容纳的元素数量，不是直接指定数组长度。构造方法先计算 `initialCapacity + (initialCapacity >>> 1) + 1`，再通过 `tableSizeFor` 向上取整为 2 的幂，并保存到 `sizeCtl`。
+
+例如，`new ConcurrentHashMap<>(16)` 会将 `sizeCtl` 设为 32，首次普通插入时分配 32 个桶；这与无参构造的默认 16 个桶不同。
 
 ```java
 public ConcurrentHashMap(int initialCapacity, float loadFactor) {
@@ -60,11 +107,15 @@ public ConcurrentHashMap(int initialCapacity,
 }
 ```
 
-指定初始table大小，加载因子，和并发的线程数。
+这组构造方法根据预期元素数量、负载因子和预估并发度计算初始容量：
+
+- `concurrencyLevel` 在这里是容量估算提示，通过提高 `initialCapacity` 的下限发挥作用，不会创建对应数量的锁，也不限制实际线程数。
+- `loadFactor` 只参与初始容量计算，不会作为实例字段保存。后续初始化和扩容完成后的阈值仍由源码中的固定公式计算。
+- 这些构造方法同样只设置 `sizeCtl`，不会立即分配 `table`。
 
 # put方法
 
-put方法放入键值对，返回旧值。
+`put` 放入键值对。键已存在时替换并返回旧值；新增映射时返回 `null`。
 
 ```java
 public V put(K key, V value) {
@@ -72,28 +123,30 @@ public V put(K key, V value) {
 }
 ```
 
-真正的实现在putVal方法中。为了方便查看，将解析写在注释中。
+真正的实现在 `putVal` 中。`onlyIfAbsent` 为 true 时保留已有值，`putIfAbsent` 复用的就是这条路径。`spread` 将 hash 的高 16 位混入低位并清除符号位，随后通过 `(n - 1) & hash` 定位桶。
 
 ```java
 final V putVal(K key, V value, boolean onlyIfAbsent) {
-    // 与HashMap不同，不能传入null的键或值。
+    // 禁止 null 键和值；普通 hash 通过 spread 清除符号位。
     if (key == null || value == null) throw new NullPointerException();
     int hash = spread(key.hashCode());
     int binCount = 0;
     for (Node<K,V>[] tab = table;;) {
         Node<K,V> f; int n, i, fh;
         if (tab == null || (n = tab.length) == 0)
-            tab = initTable();// 如果是第一次put，则初始化table。
+            tab = initTable();
         else if ((f = tabAt(tab, i = (n - 1) & hash)) == null) {
-            // 如果桶的位置没有节点，那么就新建一个节点并放入。
-            if (casTabAt(tab, i, null, new Node<K,V>(hash, key, value, null)))
-                break;                   
+            if (casTabAt(tab, i, null,
+                         new Node<K,V>(hash, key, value, null)))
+                break;                   // no lock when adding to empty bin
         }
-        else if ((fh = f.hash) == MOVED)// 当前正在扩容
+        // 旧桶已处理，尝试协助迁移并转向新表。
+        else if ((fh = f.hash) == MOVED)
             tab = helpTransfer(tab, f);
-        else { // 代码3
+        else {
             V oldVal = null;
             synchronized (f) {
+                // 等待锁期间桶头可能变化，必须重新验证。
                 if (tabAt(tab, i) == f) {
                     if (fh >= 0) {
                         binCount = 1;
@@ -125,11 +178,10 @@ final V putVal(K key, V value, boolean onlyIfAbsent) {
                                 p.val = value;
                         }
                     }
-                    else if (f instanceof ReservationNode)
-                        throw new IllegalStateException("Recursive update");
                 }
             }
-            if (binCount != 0) { // 代码4
+            // 更新已有键时也会经过这里；具体含义见下文。
+            if (binCount != 0) {
                 if (binCount >= TREEIFY_THRESHOLD)
                     treeifyBin(tab, i);
                 if (oldVal != null)
@@ -138,26 +190,28 @@ final V putVal(K key, V value, boolean onlyIfAbsent) {
             }
         }
     }
+    // 只有新增映射才会到达这里。
     addCount(1L, binCount);
     return null;
 }
 ```
 
-**小结**
+## 执行流程
 
-1.   与HashMap不同，不能传入null的键或值。
+1. 拒绝 `null` 键和 `null` 值；如果数组未初始化，调用 `initTable`。
+2. 桶为空时尝试 CAS 插入。CAS 失败说明该位置发生了竞争，回到循环重新读取，不会覆盖其他线程的节点。
+3. 桶头为 `ForwardingNode` 时，调用 `helpTransfer` 尝试参与迁移，并取得新数组继续操作。
+4. 对普通非空桶执行 `synchronized (f)`，获取锁后再验证 `tabAt(tab, i) == f`。等待锁期间桶头可能已被删除、树化或替换为转发节点，验证失败就重试。
+5. 链表中找到键就按 `onlyIfAbsent` 决定是否更新，否则在尾部插入；树桶通过 `TreeBin.putTreeVal` 查找或插入。
+6. 满足条件时调用 `treeifyBin`。覆盖旧值直接返回，只有新增映射才执行 `addCount(1L, binCount)`。
 
-2.   如果是第一次put，则初始化table。（见initTable）
+## binCount 与树化阈值
 
-3.   如果桶的位置没有节点，那么就新建一个节点并放入。注意，table是volatile的，但是它内部的元素并不是volatile的，所以`tabAt`和`casTabAt`以cas的方式将Node放入桶中。
+`binCount` 不总是桶内节点总数：在链表尾部新增节点时，它等于插入前的链表长度；找到已有键时，它等于遍历到该节点的计数；树桶路径直接赋值为 2。
 
-4.   如果桶的头节点的hash为MOVED，表示当前正在扩容，那么调用helpTransfer方法。（见helpTransfer）
+源码判断是 `binCount >= TREEIFY_THRESHOLD`，阈值为 8。因此在这里的普通链表 `put` 路径中，向已有 8 个节点的链表插入第 9 个节点时会请求树化。实际转成树还要求数组长度至少为 64，否则优先尝试扩容。
 
-5.   如果产生Hash冲突，那么锁住当前分段（table的第i个位置）。
-
-     代码3：然后和HashMap相似，如果当前位置的类型是链表，如果有这个键那么更新值，否则放入链表的最后节点。如果当前位置的类型是树，那么就放入树中。
-
-     代码4：如果此时是新增而不是更新，那么binCount表示table当前位置的节点数量。如果binCount大于树化阈值（TREEIFY_THRESHOLD = 8），会调用treeifyBin方法进行树化。
+`treeifyBin` 的调用发生在返回旧值之前，因此不能概括为“只有新增才检查树化”。
 
 # initTable
 
@@ -166,7 +220,7 @@ private final Node<K,V>[] initTable() {
     Node<K,V>[] tab; int sc;
     while ((tab = table) == null || tab.length == 0) {
         if ((sc = sizeCtl) < 0)
-            Thread.yield(); // lost initialization race; just spin（进行自旋）
+            Thread.yield(); // 提示调度器让出执行机会，然后循环检查
         else if (U.compareAndSwapInt(this, SIZECTL, sc, -1)) {
             try {
                 if ((tab = table) == null || tab.length == 0) {
@@ -186,46 +240,25 @@ private final Node<K,V>[] initTable() {
 }
 ```
 
-table的初始化被延迟到了第一次put前。如果sizeCtl为负，表示其他线程正在初始化，那么次线程就不需要进行初始化，让出CPU。如果当前线程获取到了CPU时间，那么进入下一个循环，再次判断，直到初始化完成（自旋）。
+数组未初始化且 `sizeCtl` 为负时，当前线程调用 `Thread.yield()`，再回到循环检查状态。[`yield` 的 API 文档](https://docs.oracle.com/javase/8/docs/api/java/lang/Thread.html#yield--)明确说明，这只是向调度器提示愿意让出执行机会，调度器可以忽略，不保证切换到其他线程。
 
-> Thread.yield()
->
-> 就是说当一个线程使用了这个方法之后，它就会把自己CPU执行的时间让掉，让自己或者其它线程运行。
+`sizeCtl` 非负时，线程通过 CAS 尝试将其改为 -1，以获得初始化资格。成功后再次检查数组是否仍需初始化，完成分配后在 `finally` 中发布阈值 `n - (n >>> 2)`。对于通常的数组容量，该值为容量的 0.75 倍；很小的容量以整数公式的结果为准，例如 `n = 2` 时阈值为 2。
 
-如果sizeCtl不为负，一般此时为默认值0（除非用户指定了初始容量），会用CAS操作将其变为-1，防止其他线程初始化。初始化完成后，sizeCtl变为table大小的0.75，也就是扩容阈值。
+这里的 `compareAndSwapInt(this, SIZECTL, sc, -1)` 操作的是当前 map 的 `sizeCtl`：只有实际值仍等于预期的 `sc` 时，才原子地写入 -1 并返回 true。它与 `AtomicInteger` 的字段无关。
 
-> public final native boolean compareAndSwapInt(Object o, long offset, int expected, int x);
->
-> 第一个参数是需要改变的对象，第二个是该成员变量的偏移，第三个是预期值，第四个是置换值。
->
-> 每次循环调本地方法时，传最新的预期值，和符合修改值。由本地方法中硬件层具体实现，如果预期值和最新值相同，将AtomicInteger对象的value值改为符合修改值。
+## 为什么延迟初始化
 
-**为什么要延迟初始化？**
-
-官方文档这么说：
-
-```java
-/**
-* Lazy table initialization minimizes footprint until first use,
-* and also avoids resizings when the first operation is from a
-* putAll, constructor with map argument, or deserialization.
-* These cases attempt to override the initial capacity settings,
-* but harmlessly fail to take effect in cases of races.
-**/
-```
-
-如果一开始就设定容量，那么第一次操作如果是putAll这类的，会导致扩容，效率低下。
+延迟分配可以减少尚未使用的 map 的内存开销。`putAll`、传入 Map 的构造方法和反序列化还可以根据元素规模安排容量，减少先按较小默认容量分配、随后再扩容的开销。
 
 # treeifyBin树化
 
 ```java
 private final void treeifyBin(Node<K,V>[] tab, int index) {
-    Node<K,V> b; int n;
+    Node<K,V> b; int n, sc;
     if (tab != null) {
-        // 如果table长度小于最小树化能力（64），那么不进行树化，而是选择扩容。
+        // 数组过小时先尝试扩容，本次不树化。
         if ((n = tab.length) < MIN_TREEIFY_CAPACITY)
             tryPresize(n << 1);
-      	// 锁住当前位置，并将当前位置的链表变为树结构。
         else if ((b = tabAt(tab, index)) != null && b.hash >= 0) {
             synchronized (b) {
                 if (tabAt(tab, index) == b) {
@@ -240,6 +273,7 @@ private final void treeifyBin(Node<K,V>[] tab, int index) {
                             tl.next = p;
                         tl = p;
                     }
+                    // 构建新的树桶后发布，原普通链表仍可供读线程遍历。
                     setTabAt(tab, index, new TreeBin<K,V>(hd));
                 }
             }
@@ -248,10 +282,16 @@ private final void treeifyBin(Node<K,V>[] tab, int index) {
 }
 ```
 
-1.   如果table长度小于最小树化能力（MIN_TREEIFY_CAPACITY = 64），那么不进行树化，而是选择扩容。
-2.   锁住当前位置，并将当前位置的链表变为树结构。
+1. 数组长度小于 `MIN_TREEIFY_CAPACITY = 64` 时调用 `tryPresize(n << 1)`，尝试通过扩容分散冲突；本次调用不执行树化。
+2. 数组足够大时，锁住桶头并重新验证，复制链表节点生成 `TreeNode` 链表，再创建 `TreeBin` 并发布到桶位置。
+
+原普通链表的 `next` 不会因为树化而被改写，已经拿到旧链表的读取线程可以继续遍历；后来读取桶头的线程则通过 `TreeBin` 查找。
 
 # tryPresize扩容
+
+`tryPresize(size)` 尝试预分配容量或推动扩容，参数是估算的元素数量。
+
+以下保留该版本的有效执行路径，省略原实现内层 `if (sc < 0)` 分支：外层循环已保证局部变量 `sc >= 0`，进入该分支前也没有重新给 `sc` 赋负值，因此它不可达。其他线程修改的是字段 `sizeCtl`，不会改变当前线程已经读取的局部变量 `sc`；并发变化由后续 CAS 校验。
 
 ```java
 private final void tryPresize(int size) {
@@ -278,19 +318,28 @@ private final void tryPresize(int size) {
         else if (c <= sc || n >= MAXIMUM_CAPACITY)
             break;
         else if (tab == table) {
-            int rs = resizeStamp(n);//此处暂不理解为什么要获取一个邮票
+            // 先获得扩容戳，再移入 sizeCtl 的高位。
+            int rs = resizeStamp(n);
             if (U.compareAndSwapInt(this, SIZECTL, sc,
-                                    (rs << RESIZE_STAMP_SHIFT) + 2))
+                                   (rs << RESIZE_STAMP_SHIFT) + 2))
                 transfer(tab, null);
         }
     }
 }
 ```
 
-1.   首先将传入的size变为2倍，为超过了MAXIMUM_CAPACITY，就另其等于MAXIMUM_CAPACITY 。
-2.   然后如果没有初始化就初始化table，这点与上面initTable相似。
-3.   如果扩容后的大小c比阈值sizeCtl小或者已经到达最大容量，则不进行扩容。
-4.   反之进行真正的扩容（transfer）。
+1. 未触及最大容量限制时，先计算 `size + (size >>> 1) + 1`，再向上取整为 2 的幂得到 `c`，并非直接将 `size` 翻倍。
+2. 如果数组未初始化，通过 CAS 获得初始化资格，按 `max(sizeCtl, c)` 分配数组。
+3. 如果 `c <= sizeCtl`，或者数组已达到最大容量，结束尝试。这里比较的是 `c` 与扩容阈值，不能直接把 `c` 当作最终数组长度。
+4. 否则计算扩容戳，通过 CAS 将 `sizeCtl` 改为扩容状态，调用 `transfer(tab, null)` 发起迁移。一次 `transfer` 将数组长度翻倍；外层循环可能继续发起下一轮扩容。
+
+如果循环读取到负的 `sizeCtl`，本方法直接结束；协助已有扩容的路径主要在 `helpTransfer` 和 `addCount` 中。
+
+## resizeStamp 的作用
+
+`resizeStamp(n)` 根据旧数组长度生成扩容戳，计算公式是 `Integer.numberOfLeadingZeros(n) | (1 << 15)`。同一容量对应同一戳，容量变化后戳也变化；左移 16 位后，其最高位为 1，使扩容状态表现为负数。
+
+高位的戳用于区分不同容量对应的扩容，低位用于线程计数。结合 `table`、`nextTable` 的身份校验和 CAS，线程才能围绕同一次迁移协调工作。
 
 # helpTransfer帮助扩容
 
@@ -299,11 +348,12 @@ final Node<K,V>[] helpTransfer(Node<K,V>[] tab, Node<K,V> f) {
     Node<K,V>[] nextTab; int sc;
     if (tab != null && (f instanceof ForwardingNode) &&
         (nextTab = ((ForwardingNode<K,V>)f).nextTable) != null) {
-        int rs = resizeStamp(tab.length);
+        // rs 已左移，可以与完整的 sizeCtl 编码比较。
+        int rs = resizeStamp(tab.length) << RESIZE_STAMP_SHIFT;
         while (nextTab == nextTable && table == tab &&
                (sc = sizeCtl) < 0) {
-            if ((sc >>> RESIZE_STAMP_SHIFT) != rs || sc == rs + 1 ||
-                sc == rs + MAX_RESIZERS || transferIndex <= 0)
+            if (sc == rs + MAX_RESIZERS || sc == rs + 1 ||
+                transferIndex <= 0)
                 break;
             if (U.compareAndSwapInt(this, SIZECTL, sc, sc + 1)) {
                 transfer(tab, nextTab);
@@ -316,28 +366,28 @@ final Node<K,V>[] helpTransfer(Node<K,V>[] tab, Node<K,V> f) {
 }
 ```
 
-如果当前桶位置的头节点的hash是MOVED，表示其它线程正在扩容。那么就调用transfer方法帮助扩容。这也是方法名称叫helpTransfer的原因。
+遇到 `ForwardingNode` 表示当前旧桶已经处理，可以通过节点中保存的 `nextTable` 转向新数组，但不代表整个扩容已完成。
+
+当前线程只有在旧表、新表仍匹配本次扩容、状态允许加入且还有待领取区间时，才通过 CAS 将 `sizeCtl` 加一，随后调用 `transfer` 帮忙。`transferIndex <= 0` 只表示区间已分配完，其他线程可能仍在迁移已经领取的桶。
+
+即使不能加入迁移，只要取得了该转发节点的新表引用，也会返回它，让调用方继续操作。`get` 则直接调用 `ForwardingNode.find` 查找，不走帮助扩容的路径。
+
+这里 `rs` 已经是左移后的扩容戳，`rs + 1` 表示收尾状态，`rs + MAX_RESIZERS` 表示已达编码允许的加入上限。旧片段中以未左移的 `rs` 与完整的负数 `sizeCtl` 比较不匹配；阅读不同版本时，需要同时检查 `rs` 的定义和使用位置。
 
 # transfer真正的扩容
 
 ```java
 private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
     int n = tab.length, stride;
-  	// stride为此次需要迁移的桶的数目
-  	// NCPU为当前主机CPU数目
-    // MIN_TRANSFER_STRIDE为每个线程最小处理的组数目
-    // 1. 在多核中stride为当前容量的1/8对CPU数目取整,例如容量为16时,CPU为2时结果是1
-   	// 2. 在单核中stride为n就为当前数组容量
- 		// stride最小为16，被限定死。
+    // 每次领取区间的目标长度，下限为 16；剩余区间可能更短。
     if ((stride = (NCPU > 1) ? (n >>> 3) / NCPU : n) < MIN_TRANSFER_STRIDE)
-        stride = MIN_TRANSFER_STRIDE; // subdivide range
-  	// 创建一个大小为原来2倍的table
-    if (nextTab == null) {            // initiating
+        stride = MIN_TRANSFER_STRIDE; // 按区间分配迁移工作
+    if (nextTab == null) {            // 发起者创建新表，帮助者复用传入的新表
         try {
             @SuppressWarnings("unchecked")
             Node<K,V>[] nt = (Node<K,V>[])new Node<?,?>[n << 1];
             nextTab = nt;
-        } catch (Throwable ex) {      // try to cope with OOME
+        } catch (Throwable ex) {      // 分配失败时停止后续常规扩容尝试
             sizeCtl = Integer.MAX_VALUE;
             return;
         }
@@ -346,29 +396,19 @@ private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
     }
     int nextn = nextTab.length;
     ForwardingNode<K,V> fwd = new ForwardingNode<K,V>(nextTab);
-  
-  	//上面是数据准备，以下为具体的逻辑
     boolean advance = true;
-    boolean finishing = false; 
+    boolean finishing = false; // 提交新表前再扫描一遍旧表
     for (int i = 0, bound = 0;;) {
         Node<K,V> f; int fh;
-      	// 该while代码块根据if的顺序功能分别是
-        // --i: 负责迁移区域的向前推荐，i为桶下标
-        // nextIndex: 在没有获取负责区域时，检查是否还需要扩容
-        // CAS: 负责获取此次for循环的区域，每次都为stride个桶
+        // 当前区间处理完后，通过 CAS 领取 [nextBound, nextIndex)。
         while (advance) {
             int nextIndex, nextBound;
-          	// 这个--i每次都会进行,每次都会向前推进一个位置
             if (--i >= bound || finishing)
                 advance = false;
-          	// 因此如果当transferIndex<=0时,表示扩容的区域分配完
             else if ((nextIndex = transferIndex) <= 0) {
                 i = -1;
                 advance = false;
             }
-          	// CAS替换transferIndex的值，新值为旧值减去分到的stride
-            // stride就表示此次的迁移区域，nextIndex就代表了下次起点
-            // 从这里可以看出扩容是从数组末尾开始向前推进的
             else if (U.compareAndSwapInt
                      (this, TRANSFERINDEX, nextIndex,
                       nextBound = (nextIndex > stride ?
@@ -378,10 +418,7 @@ private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
                 advance = false;
             }
         }
-      	// 1. 此if判定扩容的结果,中间是三种异常值
-        // 1). i < 0的情况时上面第二个if跳出的线程
-        // 2). i > 旧数组的长度
-        // 3). i+n大于新数组的长度
+        // 当前区间处理完且无区间可领，进入退出或收尾流程。
         if (i < 0 || i >= n || i + n >= nextn) {
             int sc;
             if (finishing) {
@@ -391,27 +428,25 @@ private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
                 return;
             }
             if (U.compareAndSwapInt(this, SIZECTL, sc = sizeCtl, sc - 1)) {
+                // sc 是减一前的状态，R + 2 对应最后一个常规迁移线程。
                 if ((sc - 2) != resizeStamp(n) << RESIZE_STAMP_SHIFT)
                     return;
                 finishing = advance = true;
-                i = n; // recheck before commit
+                i = n; // 最后一个线程从尾部重新扫描
             }
         }
-      	// 2. 扩容时发现负责的区域有空的桶直接使用ForwardingNode填充
-        // ForwardingNode持有nextTable的引用
+        // 空桶也发布转发节点，防止后续写入留在旧表。
         else if ((f = tabAt(tab, i)) == null)
             advance = casTabAt(tab, i, null, fwd);
-      	//3. 表示处理完毕
         else if ((fh = f.hash) == MOVED)
-            advance = true;
-      	// 4. 迁移桶的操作
+            advance = true; // 此桶已处理
         else {
+            // 锁住旧桶头，并在获得锁后验证它仍是当前桶头。
             synchronized (f) {
-              	// 进入synchronized之后重新判断,保证数据的正确性没有在中间被修改
-              	//与HashMap中的相似
                 if (tabAt(tab, i) == f) {
                     Node<K,V> ln, hn;
                     if (fh >= 0) {
+                        // 找到最后一段分组位相同的连续后缀，供新链表复用。
                         int runBit = fh & n;
                         Node<K,V> lastRun = f;
                         for (Node<K,V> p = f.next; p != null; p = p.next) {
@@ -429,6 +464,7 @@ private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
                             hn = lastRun;
                             ln = null;
                         }
+                        // 只复制 lastRun 之前的节点，不改写旧链表的 next。
                         for (Node<K,V> p = f; p != lastRun; p = p.next) {
                             int ph = p.hash; K pk = p.key; V pv = p.val;
                             if ((ph & n) == 0)
@@ -436,12 +472,12 @@ private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
                             else
                                 hn = new Node<K,V>(ph, pk, pv, hn);
                         }
+                        // 先发布新表两侧桶，再将旧桶替换为转发节点。
                         setTabAt(nextTab, i, ln);
                         setTabAt(nextTab, i + n, hn);
                         setTabAt(tab, i, fwd);
                         advance = true;
                     }
-                  	// 树的桶迁移操作
                     else if (f instanceof TreeBin) {
                         TreeBin<K,V> t = (TreeBin<K,V>)f;
                         TreeNode<K,V> lo = null, loTail = null;
@@ -468,10 +504,12 @@ private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
                                 ++hc;
                             }
                         }
+                        // 树桶拆分后，小的一侧转回链表；未分裂的大树可复用。
                         ln = (lc <= UNTREEIFY_THRESHOLD) ? untreeify(lo) :
                             (hc != 0) ? new TreeBin<K,V>(lo) : t;
                         hn = (hc <= UNTREEIFY_THRESHOLD) ? untreeify(hi) :
                             (lc != 0) ? new TreeBin<K,V>(hi) : t;
+                        // 先发布新表两侧桶，再将旧桶替换为转发节点。
                         setTabAt(nextTab, i, ln);
                         setTabAt(nextTab, i + n, hn);
                         setTabAt(tab, i, fwd);
@@ -484,33 +522,53 @@ private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
 }
 ```
 
-几个变量的含义：
+## 领取迁移区间
 
-1.   stride：stride表示步长。如果一个线程发现正在扩容，那么会调用helpTransfer帮助扩容。每个线程会负责一块区域，每个区域的大小就是stride。
-2.   ForwardingNode：`ForwardingNode<K,V> fwd = new ForwardingNode<K,V>(nextTab);`。ForwardingNode的官方注释：A node inserted at head of bins during transfer operations.
-     表示当前桶的位置在进行扩容。
+扩容发起者创建长度为 `2n` 的新数组，并设置 `nextTable` 和 `transferIndex = n`；帮助迁移的线程复用这个数组。
 
-**小结**
+`stride` 是每次领取区间的目标长度，按 CPU 数和数组长度计算，下限为 16，但最后剩余区间可以不足 16 个桶。线程用 CAS 把 `transferIndex` 从 `nextIndex` 减至 `nextBound`，获得区间 `[nextBound, nextIndex)`，再从后向前处理。
 
-1.   先创建一个大小为原来2倍的table，为nextTab。
-2.   扩容时，tab下标i从后往前移动。bound表示边界。
-3.   如果tabAt(tab, i)是null，该位置没有节点，不需要移到nextTab里，就先填入fwd。其它线程put时发现当前位置时fwd，就helpTransfer帮助扩容。
-4.   如果tabAt(tab, i)是fwd，表示已经处理了，跳过。
-5.   否则，锁住当前桶，像HashMap一样处理。把当前桶的Node分成两部分（low和high，具体可以见HashMap，和HashMap有不同，HashMap是将一条list分成两条list，即更改节点。ConcurrentHashMap是新建两条list，即new Node），放到nextTable的相应位置。最后在原table的i位置填入fwd。
-6.   前面提到了bound，也就是扩容时是一段段扩容的。一个线程负责一段区域的扩容，另一个发现需要扩容时会扩容另一段区域。
+`i` 是当前桶下标，`bound` 是当前区间的下界。处理完一个区间后，线程可以继续领取，不是每个线程固定只处理一段。领取区间的先后有序，不代表不同线程完成各桶迁移的顺序也有序。
 
->   一开始看代码的时候，我很疑惑区域的意义，因为下标会从后往前移动，肯定会到头，为什么还需要bound？
->
->   但是想到多线程操作时，分段可以让各个线程参与扩容，提高效率。难怪叫helpTransfer
->
->   我感叹到，设计ConcurrentHashMap的人真聪明。
+## 迁移一个桶
+
+1. 空桶：CAS 发布 `ForwardingNode`，将后续访问引向新表。如果 CAS 失败，重新处理这个位置。
+2. 已是 `ForwardingNode`：说明这个桶已经处理，跳过。
+3. 普通链表或树桶：锁住旧桶头 `f`，重新验证桶头身份后迁移。锁住的是旧桶的节点，不是新数组中的某个位置。
+4. 节点按 `hash & n` 分组：为 0 的放在新数组 `i`，非 0 的放在 `i + n`，无需重新调用 key 的 `hashCode()`。
+5. 先通过 `setTabAt` 发布新表的两个桶，再把旧桶替换为 `ForwardingNode`。观察到转发节点的读线程可以读取已经发布的新桶。
+
+树桶拆分时分别统计两侧数量，某侧节点数 `<= UNTREEIFY_THRESHOLD = 6` 就将该侧转回链表；仍需树结构且发生两侧拆分时创建新 `TreeBin`。如果全部节点都落在同一侧且无需转回链表，则复用原 `TreeBin`。
+
+## lastRun 如何复用链表尾部
+
+迁移普通链表时，源码先寻找最后一段 `hash & n` 相同的连续节点，`lastRun` 指向这段后缀的开头。这些节点在新表中仍属于同一个桶，而且 `next` 无需变化，因此可以整段复用；`lastRun` 之前的节点则复制并通过头插法分别接入两条新链表。
+
+例如，旧桶中各节点的 `hash & n` 如下，带撇号表示新创建的节点：
+
+```text
+旧链表：
+A(0) → B(n) → C(0) → D(n) → E(n)
+                     ↑ lastRun
+
+新表 i：    C′ → A′
+新表 i+n：  B′ → D → E
+```
+
+`D → E` 被复用，`A`、`B`、`C` 被复制。整个迁移过程不改写旧普通节点的 `next`，所以已经持有旧链表引用的读线程仍能沿旧链表查找。不能将这段逻辑概括为“全部新建两条链表”，也不能说它像 `HashMap` 一样直接重连所有旧节点。
+
+## 最后一个线程如何提交扩容
+
+没有剩余区间可领取时，迁移线程通过 CAS 将 `sizeCtl` 减一。判断使用的是 CAS 前的 `sc`：只有 `sc - 2 == R`，当前线程才是最后退出常规迁移阶段的线程。
+
+它将 `finishing` 设为 true，重新扫描旧数组，确认各桶均已处理，然后清空 `nextTable`、将 `table` 指向新数组，并将 `sizeCtl` 恢复为新容量对应的阈值。在收尾期间，其他线程仍可以通过旧桶的转发节点访问新表。
 
 # addCount方法
 
 ```java
 private final void addCount(long x, int check) {
     CounterCell[] as; long b, s;
-  	//利用CAS方法更新baseCount的值
+    // 无计数单元时先尝试基础计数，否则转入单元更新。
     if ((as = counterCells) != null ||
         !U.compareAndSwapLong(this, BASECOUNT, b = baseCount, s = b + x)) {
         CounterCell a; long v; int m;
@@ -519,6 +577,7 @@ private final void addCount(long x, int check) {
             (a = as[ThreadLocalRandom.getProbe() & m]) == null ||
             !(uncontended =
               U.compareAndSwapLong(a, CELLVALUE, v = a.value, v + x))) {
+            // 该路径完成计数后直接返回，本次不检查扩容。
             fullAddCount(x, uncontended);
             return;
         }
@@ -526,24 +585,21 @@ private final void addCount(long x, int check) {
             return;
         s = sumCount();
     }
-  	//如果check值大于等于0 则需要检验是否需要进行扩容操作
+    // 只有未提前返回且 check 非负时，才执行扩容检查。
     if (check >= 0) {
         Node<K,V>[] tab, nt; int n, sc;
         while (s >= (long)(sc = sizeCtl) && (tab = table) != null &&
                (n = tab.length) < MAXIMUM_CAPACITY) {
-            int rs = resizeStamp(n);
+            // 使用已左移的扩容戳。
+            int rs = resizeStamp(n) << RESIZE_STAMP_SHIFT;
             if (sc < 0) {
-                if ((sc >>> RESIZE_STAMP_SHIFT) != rs || sc == rs + 1 ||
-                    sc == rs + MAX_RESIZERS || (nt = nextTable) == null ||
-                    transferIndex <= 0)
+                if (sc == rs + MAX_RESIZERS || sc == rs + 1 ||
+                    (nt = nextTable) == null || transferIndex <= 0)
                     break;
-              	//如果已经有其他线程在执行扩容操作
                 if (U.compareAndSwapInt(this, SIZECTL, sc, sc + 1))
                     transfer(tab, nt);
             }
-          	//当前线程是唯一的或是第一个发起扩容的线程  此时nextTable=null
-            else if (U.compareAndSwapInt(this, SIZECTL, sc,
-                                         (rs << RESIZE_STAMP_SHIFT) + 2))
+            else if (U.compareAndSwapInt(this, SIZECTL, sc, rs + 2))
                 transfer(tab, null);
             s = sumCount();
         }
@@ -551,7 +607,23 @@ private final void addCount(long x, int check) {
 }
 ```
 
-把当前ConcurrentHashMap的元素个数+1。这个方法一共做了两件事：更新baseCount的值，检测是否进行扩容。
+## 更新计数
+
+`addCount(x, check)` 按 `x` 增减元素计数：普通新增传入 1，删除传入 -1，`clear` 也可以传入累计的负增量。它不是固定“元素个数加一”。
+
+没有 `counterCells` 时，先尝试 CAS 更新 `baseCount`；如果已有计数单元，或者更新基础计数失败，则根据线程探针定位到一个 `CounterCell` 并尝试更新。单元不存在或仍有竞争时，交给 `fullAddCount` 完成初始化、重试或扩展等工作。
+
+计数汇总相当于 `baseCount + 各 CounterCell.value 之和`。这是类似 `LongAdder` 的分散计数思路，可以减少线程争用同一个计数器。`sumCount()` 逐项读取，没有锁住整个 map，因此并发修改时得到的是瞬时汇总，不保证是某一时刻的精确快照。
+
+## 检查扩容
+
+`check` 控制是否尝试检查扩容，但非负不代表一定执行到检查代码：
+
+- 走到 `fullAddCount` 后直接返回，本次不再检查扩容。
+- CAS 更新 `CounterCell` 成功后，如果 `check <= 1`，直接返回。
+- 未提前返回且 `check >= 0` 时，才执行扩容检查；例如删除使用 `check = -1`，跳过检查，也不会因此缩容。
+
+达到阈值且当前没有扩容时，通过 CAS 将 `sizeCtl` 改为 `R + 2` 并发起迁移。如果已在扩容且仍允许加入，则尝试增加参与线程计数并帮助迁移。迁移返回后重新汇总计数，必要时继续下一轮检查。
 
 # get方法
 
@@ -561,60 +633,74 @@ public V get(Object key) {
     int h = spread(key.hashCode());
     if ((tab = table) != null && (n = tab.length) > 0 &&
         (e = tabAt(tab, (n - 1) & h)) != null) {
-        if ((eh = e.hash) == h) {//如果table当前位置的节点正好是key，则返回值。
+        if ((eh = e.hash) == h) {
             if ((ek = e.key) == key || (ek != null && key.equals(ek)))
                 return e.val;
         }
-      	//代码1
+        // 特殊节点分别转向新表、树桶或占位节点的查找逻辑。
         else if (eh < 0)
             return (p = e.find(h, key)) != null ? p.val : null;
-        while ((e = e.next) != null) {//遍历链表获取需要的键值对
+        while ((e = e.next) != null) {
             if (e.hash == h &&
                 ((ek = e.key) == key || (ek != null && key.equals(ek))))
                 return e.val;
         }
     }
-    return null;//找不到就返回null。
+    return null;
 }
 ```
 
-**代码1**
+先检查桶头是否匹配，再处理特殊节点，否则沿普通链表的 `next` 查找。`spread` 会清除普通 hash 的符号位，因此负 hash 可以作为特殊节点的标记。`get(null)` 会在调用 `key.hashCode()` 时抛出 `NullPointerException`。
 
-hash<0有这么几种情况：
+## ForwardingNode.find
 
-1. hash=-1：Node的实际类型是ForwardingNode，会调用Node的实际类型是ForwardingNode的find方法，从nextTable方法中查找。
+`hash = -1` 时，调用 `ForwardingNode.find`，使用节点里保存的 `nextTable` 定位目标桶。如果在新表中又遇到转发节点，会继续转向下一张表，以处理连续扩容的情况。
 
-    如果原来桶的位置时null，扩容时会在该位置放置fwd，那么在nextTable也有可能返回null。
+该方法只查找，不帮助迁移，也不等待全表扩容完成。新表目标桶为空或没有对应键时，返回 `null`。
 
-    如果原来桶的位置非null，扩容时会锁住nextTable某处，所以即使get，也不用担心线程问题。扩容完会在原来的位置放置fwd。
-2. hash=-2：Node的实际类型是TreeBin，调用TreeBin的find方法遍历红黑树，由于红黑树有可能正在旋转变色，所以find里会有读写锁。
+## TreeBin.find
+
+`hash = -2` 时调用 `TreeBin.find`。`TreeBin` 同时保存红黑树结构和以 `first` 为入口的链表，因此查找有两条路径：
+
+| 观察到的状态 | 查找方式 |
+| --- | --- |
+| `lockState` 中有 `WRITER` 或 `WAITER` | 有线程持有或等待树结构写锁，当前读线程先沿 `first/next` 链表查找，不阻塞等待写锁。 |
+| 没有上述标记，且 CAS 增加 `READER` 成功 | 从 `root` 查树，结束后释放读计数，必要时唤醒等待中的写线程。 |
+| CAS 增加读计数失败 | 重新读取状态并尝试。 |
+
+链表查找过程中，每次循环都会重新观察锁状态，所以状态允许时也可能转入树查找。这里是 `TreeBin` 内部的读写协调机制，并非直接使用 `ReentrantReadWriteLock`。
+
+树写操作先获取桶的 `synchronized` 锁，以串行化同桶更新；对需要与树读者互斥的旋转、平衡等操作，再通过 `lockState` 协调。因此“`get` 不获取桶锁”不等于“树读取完全没有同步操作”。
+
+## ReservationNode.find
+
+`hash = -3` 时遇到的是计算映射时的占位节点，其 `find` 返回 `null`。计算尚未发布映射时，并发 `get` 可以观察到该键当前没有值。
 
 # 如何保证线程安全
 
 ## 一个线程put另一个线程也put
 
-如果两个线程put不是同一个桶，那么各自put各自的。如果是同一个桶，那么会有一个线程先锁住，另一个线程等待。
+不同非空桶使用不同的桶头锁，同桶的更新则通过同一个锁串行化。对空桶的竞争由 CAS 决定胜者，失败者回到循环重试。
 
-类似的，如果一个线程在扩容，也会锁住，另一个线程需要等待。
+即使暂时只有一个线程更新，只要走到这里的普通非空桶路径，也会执行 `synchronized`，不能概括为“没有实际线程冲突就不加锁”。获取锁后还需重新检查桶头身份。
+
+扩容线程迁移非空桶时也锁住旧桶头。写线程若先读到了这个旧桶头，可能等待该锁；若已经读到转发节点，则尝试帮助迁移并转向新表。初始化和计数更新还分别通过 `sizeCtl` 和计数相关的 CAS 协调。
 
 ## 一个线程put另一线程get
 
-```java
-class Node<K,V> implements Map.Entry<K,V> {
-    final int hash;
-    final K key;
-    volatile V val;
-    volatile Node<K,V> next;
-}
-```
+可见性需要结合整个发布和访问过程理解：桶头通过带 volatile 语义的数组操作读取和发布，节点的 `hash`、`key` 为 final，`val` 和 `next` 为 volatile，写入已构造节点后，读线程才能安全取得其内容。
 
-这种情况和单例模式中的DCL类似，通过volatile来保证修改可见性。Node的val和next是volatile的。
+更新已有映射时写入 `val`，链表追加时写入前驱的 `next`，`get` 使用相应的可见性保证读取。这不意味着与 `put` 同时进行的 `get` 必须返回新值；并发重叠时可能观察到旧值或新值。对于某个键，更新与报告该更新结果的非空读取之间具有 happens-before 关系，具体语义见 [ConcurrentHashMap API](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ConcurrentHashMap.html)。
 
 ## 在扩容或者树化的过程中get
 
-具体见上面hash=-1的分析。
+扩容时，如果读线程拿到的是普通旧桶，就继续查旧链表；迁移不会重连这条旧链表。如果读到的是 `ForwardingNode`，则沿它转向已发布的新桶。安全性来自发布顺序、可见性和旧结构仍可遍历，不是因为 `get` 获取了迁移线程的锁。
 
-扩容是把tab的节点移到nextTab上。如果当前位置还未被移动，那么就在当前位置寻找。如果当前位置已经移动了，那么在nextTab上找。
+树化会创建新树结构并替换桶头，已经拿到原链表的读线程仍能继续查找；读到 `TreeBin` 的线程使用上节介绍的树或链表查找路径。
+
+## 线程安全的边界
+
+单次映射操作的线程安全不等于多次调用组合后仍然原子。例如 `get` 后自行加一再 `put` 可能丢失其他线程的更新，需要根据语义使用 `merge`、`compute` 等原子复合操作。map 也不会自动保证 value 对象内部字段的并发修改安全。
 
 # remove方法
 
@@ -629,14 +715,13 @@ final V replaceNode(Object key, V value, Object cv) {
     int hash = spread(key.hashCode());
     for (Node<K,V>[] tab = table;;) {
         Node<K,V> f; int n, i, fh;
-      	//1.异常情况，此时返回null
+        // 数组或桶不存在，正常返回未找到。
         if (tab == null || (n = tab.length) == 0 ||
             (f = tabAt(tab, i = (n - 1) & hash)) == null)
             break;
-      	//2.hash=MOVED(-1)表示此时正在扩容，这里返回扩容后的table，并进入下一个循环
+        // 返回新表继续操作，不要求整个扩容已经完成。
         else if ((fh = f.hash) == MOVED)
             tab = helpTransfer(tab, f);
-      	//见代码3
         else {
             V oldVal = null;
             boolean validated = false;
@@ -684,8 +769,6 @@ final V replaceNode(Object key, V value, Object cv) {
                             }
                         }
                     }
-                    else if (f instanceof ReservationNode)
-                        throw new IllegalStateException("Recursive update");
                 }
             }
             if (validated) {
@@ -702,65 +785,82 @@ final V replaceNode(Object key, V value, Object cv) {
 }
 ```
 
-与put类似，略。
+`replaceNode` 同时供删除和替换操作复用：`value = null` 表示删除，非 null 表示替换；`cv` 非 null 时要求当前值与预期值匹配，用于带条件的删除或替换。
+
+1. 数组或目标桶不存在时直接返回，属于正常的未找到情况。
+2. 遇到转发节点时，尝试帮助迁移并转向新数组。
+3. 锁住桶头并验证身份。链表删除通过修改前驱的 `next` 或桶头完成；树桶删除调用 `removeTreeNode`，必要时转回链表。
+4. 实际删除成功才调用 `addCount(-1L, -1)`，减少计数并跳过扩容检查；普通 `remove(key)` 返回被删除的旧值，未找到则返回 `null`。
+
+这里的 `removeTreeNode` 根据树的结构判断是否转回链表，不能直接套用“节点数不超过 6 就退化”的规则；明确按数量比较 `UNTREEIFY_THRESHOLD` 的是扩容拆分树桶的路径。
 
 # 总结
 
-ConcurrentHashMap的设计很巧妙，基本思想是分段锁+CAS操作+volatile。
+| 场景 | 关键机制 |
+| --- | --- |
+| 初始化 | CAS 将 `sizeCtl` 设为 -1，获得资格后再次检查数组。 |
+| 向空桶插入 | CAS 竞争桶位置，失败后重试。 |
+| 更新非空桶 | 桶头 `synchronized` 加锁并重新验证身份。 |
+| 普通读取 | volatile 数组元素访问和节点字段可见性，不获取桶锁。 |
+| 树桶读取 | 使用读计数查树，遇到树写入或等待状态时沿链表查找。 |
+| 扩容 | 多线程领取区间，桶级迁移；复用可保留的节点，通过转发节点连接新旧表。 |
+| 元素计数 | `baseCount` 与 `CounterCell` 分散更新，并按路径选择是否检查扩容。 |
 
-如果多个线程的操作没有线程冲突，那么就不需要加锁。如果存在冲突，就尽可能细化锁的范围，即分段锁。
-
-具体可以看put、get、transfer的小结。
+理解这些机制时，应把桶内互斥、读线程可见性和全表扩容协调分开分析，再结合起来解释一次完整操作。
 
 # CAS的简单使用
 
+CAS 的含义是：仅当当前值仍等于预期值时，原子地替换为新值。下面用 `AtomicInteger` 演示相同的比较并更新语义，避免通过反射修改 map 内部用于协调扩容的字段。
+
 ```java
-/**
- * 使用CAS
- * 通过CAS来改变成员变量的值
- */
-private static void test22() throws Throwable {
-    Field field = ConcurrentHashMap.class.getDeclaredField("U");
-    field.setAccessible(true);
-    final sun.misc.Unsafe U = (Unsafe) field.get(null);
+import java.util.concurrent.atomic.AtomicInteger;
 
-    field = ConcurrentHashMap.class.getDeclaredField("TRANSFERINDEX");
-    field.setAccessible(true);
-    final long TRANSFERINDEX = field.getLong(null);
+public class CasDemo {
+    public static void main(String[] args) {
+        AtomicInteger count = new AtomicInteger(0);
 
-    field = ConcurrentHashMap.class.getDeclaredField("transferIndex");
-    field.setAccessible(true);
+        System.out.println(count.compareAndSet(0, 100));
+        System.out.println(count.get());
 
-    ConcurrentHashMap<String, String> map = new ConcurrentHashMap<>();
-    int transferIndex = field.getInt(map);
-    System.out.println(transferIndex);
-    // 通过CAS修改transferIndex
-    U.compareAndSwapInt(map, TRANSFERINDEX, transferIndex, 100);
-    transferIndex = field.getInt(map);
-    System.out.println(transferIndex);
-    // 再次修改
-    U.compareAndSwapInt(map, TRANSFERINDEX, transferIndex, 200);
-    transferIndex = field.getInt(map);
-    System.out.println(transferIndex);
+        // 当前值已是 100，预期值 0 不匹配，更新失败。
+        System.out.println(count.compareAndSet(0, 200));
+        System.out.println(count.get());
+
+        // 预期值匹配，更新成功。
+        System.out.println(count.compareAndSet(100, 200));
+        System.out.println(count.get());
+    }
 }
 ```
 
-```
-0
+输出：
+
+```text
+true
 100
+false
+100
+true
 200
 ```
 
-
+在并发环境中，读取预期值与执行 CAS 之间可能发生其他更新，所以 CAS 失败是正常的竞争结果。是否重试、是否重新读取其他状态，取决于具体算法；例如 `putVal` 会回到循环重新判断桶的状态。API 语义见 [`AtomicInteger.compareAndSet`](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/AtomicInteger.html#compareAndSet-int-int-)。
 
 # 参考
 
-（CAS方法）https://coding.imooc.com/learn/questiondetail/49806.html
+## 源码与官方文档
 
-（Java Thread.yield详解）https://blog.csdn.net/dabing69221/article/details/17426953
+- [ConcurrentHashMap 源码：OpenJDK 8u402，jdk8u402-b06](https://github.com/openjdk/jdk8u/blob/jdk8u402-b06/jdk/src/share/classes/java/util/concurrent/ConcurrentHashMap.java)
+- [ConcurrentHashMap：Java 8 API](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ConcurrentHashMap.html)
+- [Thread.yield：Java 8 API](https://docs.oracle.com/javase/8/docs/api/java/lang/Thread.html#yield--)
+- [AtomicInteger.compareAndSet：Java 8 API](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/AtomicInteger.html#compareAndSet-int-int-)
 
-（ConcurrentHashMap源码分析（JDK8版本））https://blog.csdn.net/programmer_at/article/details/79715177
+## 原文延伸阅读
 
-（深度剖析 JDK7 ConcurrentHashMap 中的知识点）https://www.jianshu.com/p/464065e4a043
+以下保留原文参考链接；涉及实现细节时，应以本文标注的源码版本为准。
 
-（ConcurrentHashMap源码阅读）https://juejin.im/post/5c40a1fa51882525ed5c4ac2#heading-11
+- [CAS 方法讨论](https://coding.imooc.com/learn/questiondetail/49806.html)
+- [Java Thread.yield 详解](https://blog.csdn.net/dabing69221/article/details/17426953)
+- [ConcurrentHashMap 源码分析：JDK 8 版本](https://blog.csdn.net/programmer_at/article/details/79715177)
+- [深度剖析 JDK 7 ConcurrentHashMap 中的知识点](https://www.jianshu.com/p/464065e4a043)
+- [ConcurrentHashMap 源码阅读](https://juejin.im/post/5c40a1fa51882525ed5c4ac2#heading-11)
