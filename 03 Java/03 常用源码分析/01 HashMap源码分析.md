@@ -1,22 +1,27 @@
 # 知识点总结
 
-1.   HashMap内部采用数组+链表/红黑树。在放置的时候，会基于key的hash计算出在数组中的位置，由于多个key可能存在冲突，那么使用链表/红黑树解决冲突。其中数组的每个元素是单链表的头结点。
-2.   HashMap有两个重要的参数：初始容量和加载因子。
-     初始容量是hash数组的长度，当前加载因子=当前hash数组元素/hash数组长度，最大加载因子为最大能容纳的数组元素个数（默认最大加载因子为0.75，最大值为Integer.MAX_VALUE）。当hash数组中的元素个数超出了最大加载因子和容量的乘积时，要对hashMap进行扩容，扩容过程存在于hashmap的put方法中，扩容过程始终以2次方增长。
-3.   HashMap是泛型类，key和value可以为任何类型，包括null类型。key为null的键值对永远都放在以table[0]为头结点的链表中。
+1. HashMap 使用数组和链表/红黑树存储键值对。数组中的一个位置称为一个桶，桶入口为 `null` 或该桶的首节点。多个 key 定位到同一个桶时，通过链表或红黑树组织节点。
+2. `capacity` 是桶数组 `table` 的长度，`size` 是整个 Map 的键值对数量。
+3. `loadFactor` 是构造时设置的加载因子，默认值为 `0.75`，可以大于 `1`。它与当前装载程度 `size / capacity` 是两个概念。数组初始化后，扩容阈值 `threshold` 通常按 `(int)(capacity * loadFactor)` 计算；普通 `put` 新增键值对后，如果 `size > threshold`，会调用 `resize()`。
+4. 已分配的桶数组长度是 2 的幂，最大为 `1 << 30`。普通扩容将容量翻倍；到达最大容量后不再扩大数组，并将 `threshold` 设为 `Integer.MAX_VALUE`。这个值是扩容阈值的特殊取值，不是加载因子的最大值。
+5. `HashMap<K, V>` 的泛型参数使用引用类型，基本类型需要装箱。HashMap 允许一个 `null` key 和多个 `null` value。`hash(null)` 返回 `0`，因此 null key 位于第 0 个桶；该桶也可能树化，null key 不一定是首节点。
+6. HashMap 不保证遍历顺序，也不提供线程安全保证。线程安全和迭代器的 fail-fast 是不同的问题，见后面的面试题。
 
-## 常量介绍
+## 常量与成员变量
 
-1. static final int DEFAULT_INITIAL_CAPACITY = 1 << 4; -> 数组默认初始容量：16
-2. static final int MAXIMUM_CAPACITY = 1 << 30; -> 数组最大容量2 ^ 30 次方
-3. static final float DEFAULT_LOAD_FACTOR = 0.75f; -> 默认负载因子的大小：0.75
-4. static final int MIN_TREEIFY_CAPACITY = 64; -> 树形最小容量：哈希表的最小树形化容量，超过此值允许表中桶(Node)转化成红黑树
-5. static final int TREEIFY_THRESHOLD = 8; -> 树形阈值：当链表长度达到8时，将链表转化为红黑树
-6. static final int UNTREEIFY_THRESHOLD = 6; -> 树形阈值：当链表长度小于6时，将红黑树转化为链表
-7. int threshold; -> 可存储key-value 键值对的临界值 需要扩充时;值 = 容量 * 加载因子
-8. transient int size; 已存储key-value 键值对数量
-9. final float loadFactor; -> 负载因子
-10. transient Node< K,V>[] table; -> 链表数组（用于存储hashmap的数据）
+| 名称 | 类型及取值 | 含义 |
+| --- | --- | --- |
+| `DEFAULT_INITIAL_CAPACITY` | `static final int`，`1 << 4` | 默认初始容量为 16；无参构造时尚未分配数组 |
+| `MAXIMUM_CAPACITY` | `static final int`，`1 << 30` | 桶数组最大容量为 2³⁰ |
+| `DEFAULT_LOAD_FACTOR` | `static final float`，`0.75f` | 默认加载因子 |
+| `MIN_TREEIFY_CAPACITY` | `static final int`，`64` | 允许树化的最小数组长度；小于 64 时优先扩容 |
+| `TREEIFY_THRESHOLD` | `static final int`，`8` | 树化阈值；普通 `put` 向已有至少 8 个节点的链表追加新节点时尝试树化 |
+| `UNTREEIFY_THRESHOLD` | `static final int`，`6` | 扩容拆分树桶时，某侧节点数不超过 6，则将该侧转回普通链表 |
+| `threshold` | `int` | 数组分配前暂存目标初始容量；分配后通常为扩容阈值 |
+| `size` | `transient int` | 已存储的键值对数量 |
+| `loadFactor` | `final float` | 当前实例设置的加载因子 |
+| `table` | `transient Node<K,V>[]` | 桶数组，每个位置保存桶的首节点引用 |
+| `modCount` | `transient int` | 结构修改计数，供迭代器等执行 fail-fast 检查 |
 
 ## 部分方法解析
 
@@ -49,119 +54,189 @@ static final int tableSizeFor(int cap) {
 }
 ```
 
-如果初始容量
+指定初始容量的构造方法只检查参数、设置加载因子，并把 `tableSizeFor(initialCapacity)` 存入 `threshold`，此时 `table` 仍为 `null`。以随后调用普通 `put` 为例，第一次插入时才通过 `resize()` 分配数组。
+
+`tableSizeFor` 将容量向上调整到 2 的幂，结果限制在 `1` 到 `MAXIMUM_CAPACITY` 之间。先执行 `cap - 1`，是为了让已经为 2 的幂的输入保持不变；连续的右移和按位或将最高有效位以下填成 `1`，最后加 `1` 得到目标容量。
+
+例如，`new HashMap<>(10)` 使用默认加载因子，其状态变化如下：
+
+| 阶段 | `table` | `threshold` | `size` |
+| --- | --- | --- | --- |
+| 构造完成 | `null` | `16`，暂存目标初始容量 | `0` |
+| 第一次 `put` 完成 | 长度为 `16` 的数组 | `12`，即 `16 × 0.75` | `1` |
+
+无参构造只设置默认加载因子，`threshold` 初始为 `0`，第一次普通 `put` 时使用容量 `16`、阈值 `12`。因此，构造参数表示初始桶容量，不是承诺无需扩容即可容纳的键值对数量。
 
 ### hash
 
 ```java
-// HashMap计算hash的方式
+// HashMap 计算扰动后的 hash
 static final int hash(Object key) {
     int h;
     return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
 }
-// HashMap计算index的方式，n为当前table的len
-i = (n - 1) & hash
+// 下面是下标计算表达式，n 为已初始化的 table.length
+// int index = (n - 1) & hash;
 ```
 
-hash方法使用异或运算的目的是为了让哈希码的高位和低位都参与到哈希值的计算中，从而减少哈希冲突的可能性。具体来说，异或运算可以将哈希码的高16位和低16位进行混合，从而增加哈希值的随机性，减少哈希冲突的概率。
+当数组长度为 2 的幂时，`(n - 1) & hash` 只使用 hash 的低若干位。如果 key 的原始哈希码只在高位不同，它们可能被分到同一个桶。
+
+`h ^ (h >>> 16)` 将高 16 位的信息混入低 16 位，使高位差异也有机会影响桶下标。它是确定性的位混合，不能保证消除冲突；原本 `hashCode()` 相同的 key，扰动后的 hash 仍然相同。
 
 ### put
 
-1.   计算hash，然后根据hash计算在table中的index。
-2.   如果当前位置没有key，那么将键值对放入。
-3.   如果有冲突：
-     如果是同一个key，那么更新value。
-     如果是数组中的节点是红黑树节点，那么就放入树中。
-     如果是链表节点，那么放入单链表中的最后一个：
-     如果链表的长度超过树化阈值（8），如果数组长度小于64，那么扩容，否则将此链表转化为红黑树。
-4.   放入键值对后，如果当前键值对数量超过阈值，那么resize。
+`put(key, value)` 先计算 hash，再调用 `putVal`，主要流程如下：
+
+1. 如果 `table` 尚未初始化，先调用 `resize()` 分配数组，再根据 `(n - 1) & hash` 计算桶下标。
+2. 如果桶为空，直接创建普通节点放入。
+3. 如果桶非空，先检查首节点。匹配要求 hash 相同，并且 key 满足以下任一条件：引用相同；传入的 key 非 null，且 `key.equals(节点的 key)` 为 `true`。
+4. 首节点不匹配时，如果是树桶，调用 `putTreeVal` 查找或插入；如果是普通链表，则遍历查找，未找到才在尾部追加节点。
+5. 向已有至少 8 个节点的链表追加新节点后，调用 `treeifyBin`。数组长度小于 64 时扩容，否则将该桶树化。
+6. 如果找到已有 key，只更新 value 并返回旧值，不增加 `size` 或 `modCount`，也不会因为此次覆盖进入末尾的扩容检查。
+7. 如果新增了键值对，则增加 `modCount` 和 `size`；若 `size > threshold`，调用 `resize()`，最后返回 `null`。
+
+桶冲突和 key 相等是两回事：桶下标相同不代表 hash 相同，hash 相同也不代表 key 相等。
 
 ### resize
 
-1.   首先创建新的数组，长度为原来的2倍，阈值也变为原来的2倍。
-2.   然后对原数组的每一个位置进行遍历，如果有链表，那么会把链表分为2份。
+`resize()` 同时承担数组初始化和扩容，不能一概理解为“容量和阈值翻倍”：
 
-> 这里分为2份的原理是，具体代码见下面的源码部分：
->
-> 比如之前的长度10000（16），一个key为1111，一个key为11111，那么根据
-> [hash&(n-1)]，它们放在同一个位置。
->
-> 扩容后的长度100000。在扩容的方法中利用的是[hash&oldcap]（oldcap为原来的长度）来区分。那么，1111的是0，11111的不为0，这里就分出了2个链表。
->
-> 如果有多个key，情况也是如此，最终会分为2个链表，一个low，一个high，low的位置为[原来的坐标]，high的坐标为[原来的坐标+oldcap]。
+1. 数组尚未分配时，使用 `threshold` 暂存的初始容量，或者使用默认容量。
+2. 已有数组且未达到容量上限时，将数组长度翻倍。通常也将阈值翻倍；对于小容量或接近上限等情况，源码会重新计算或设置特殊阈值。
+3. 已达到 `MAXIMUM_CAPACITY` 时，将 `threshold` 设为 `Integer.MAX_VALUE`，直接返回旧数组。
 
-3.   如果是红黑树（TreeNode不仅表示树节点，也可以表示链表节点），把红黑树当成链表处理，将链表一分为二，一个low，一个high。如果分割后的链表小于阈值，那么保持链表的状态，如果大于阈值，则转为红黑树。
+真正扩容时，先创建新数组，再逐桶迁移：单节点直接计算新下标；普通链表按 `hash & oldCap` 拆成 low、high 两组，保留各组内部的相对顺序；树桶调用 `TreeNode.split()`。
 
-### 树化（treeifyBin方法）
+由于容量翻倍后，下标掩码只增加一个有效位，因此旧桶下标为 `j` 的节点只有两个去向：
 
-1.   先将单链表节点转为红黑树节点，再转为红黑树。红黑树节点的数据结构不仅能表示树节点，也能表示双向链表节点，所以HashMap的红黑树不仅能表示成树，也能表示成链表。
+| 判断条件 | 分组 | 新桶下标 |
+| --- | --- | --- |
+| `(hash & oldCap) == 0` | low | `j` |
+| `(hash & oldCap) != 0` | high | `j + oldCap` |
 
-**什么时候树化？**
+例如，旧容量为 `16`（二进制 `10000`），两个节点保存的 hash 分别为 `15`（`01111`）和 `31`（`11111`）。它们在旧数组中都位于下标 `15`；扩容到 `32` 后，分别位于下标 `15` 和 `31`。这里参与运算的是节点保存的 hash，不是 key 本身，迁移时也不需要重新调用 key 的 `hashCode()`。
 
-桶为数组中的一个节点，size为HashMap中键值对数量，capacity为数组长度。MIN_TREEIFY_CAPACITY(64)树形最小容量，TREEIFY_THRESHOLD(8)树形阈值，UNTREEIFY_THRESHOLD(6)，threshold阈值。
+树桶同样沿节点的 `next` 链拆分，并统计两侧节点数。某侧非空且节点数 `<= 6` 时，将该侧转换为普通链表；超过 6 时保留树节点。如果两侧都有节点，需要为保留树形的一侧重建树；若全部节点都留在同一侧且仍超过 6，则可沿用原树结构。
 
-1.   当单链表中的长度>TREEIFY_THRESHOLD，但是capacity<MIN_TREEIFY_CAPACITY，不会变成红黑树，会进行扩容。
-2.   当单链表中的长度>TREEIFY_THRESHOLD，而且capacity>=MIN_TREEIFY_CAPACITY，将此单链表转为红黑树。
-3.   只要size>threshold，就会进行扩容。
-4.   在扩容的时候，桶中元素个数小于非树化阈值（6），就会把树形的桶元素还原为单链表结构。
+### 树化与退化
 
-> 为什么单链表要转为红黑树？
->
-> 红黑树所有的操作最坏情况都是O（log（n））的。
-> 红黑树的平均查找长度是log(n)，长度为8，查找长度为log(8)=3。
-> 链表的平均查找长度为n/2，当长度为8时，平均查找长度为8/2=4，这才有转换成树的必要。链表长度如果是小于等于6，6/2=3，虽然速度也很快的，但是转化为树结构和生成树的时间并不会太短。
+`treeifyBin` 先检查数组长度：小于 `MIN_TREEIFY_CAPACITY`（64）时调用 `resize()`，否则把普通 `Node` 替换为 `TreeNode`，再建立红黑树。树节点同时维护 `parent/left/right` 等树指针和 `prev/next` 链接，因此树桶既能按树查找，也能沿链遍历。
+
+在 JDK 8 的普通 `put` 路径中，`binCount` 从 `0` 开始，追加节点时检查 `binCount >= TREEIFY_THRESHOLD - 1`。链表原有 8 个节点时，走到尾节点的 `binCount` 为 7，因此插入第 9 个节点才触发树化尝试。实际树化还要求数组长度 `>= 64`。
+
+这个“第 9 个”的结论针对 `putVal`。JDK 8 的 `computeIfAbsent`、`compute`、`merge` 有各自的遍历计数与插入逻辑，不能把同一个节点数结论直接套到所有写入方法。
+
+扩容拆分树桶时，某侧节点数 `<= UNTREEIFY_THRESHOLD`（6）会退化；普通 `remove` 则根据树的结构判断是否过小，并不是直接统计剩余节点数后与 6 比较。
+
+树化用于改善长链表的查找成本。红黑树高度为 `O(log n)`，但 HashMap 的树桶查找还取决于 key 的比较方式：hash 能区分，或 hash 相同但 key 可以有效比较排序时，能够沿树查找；若大量 key 的 hash 相同且无法有效比较排序，查找可能搜索多个分支，最坏仍可达到 `O(n)`。这里的 `n` 是桶内节点数。
+
+阈值 8 和 6 是时间、空间和转换成本之间的折中。源码注释指出，树节点占用的空间大约是普通节点的两倍，哈希分布良好时长桶又很少出现；树化与退化采用不同阈值，也有助于避免频繁转换。不能通过 `log₂8 = 3` 与 `8 / 2 = 4` 的比较推导这些阈值。参见 [HashMap 源码的实现说明和 TreeNode 方法](https://github.com/openjdk/jdk8u/blob/master/jdk/src/share/classes/java/util/HashMap.java)。
 
 ### remove
 
-1.   根据key的hash值和数组长度得出key在数组中的位置。
-2.   如果当前位置有key，而且key就是要删除的那个key，那么移除。
-3.   否则，要么从红黑树中找到那个节点或者从单链表中找到那个节点，然后移除。
+1. 根据 key 的 hash 和数组长度定位桶；若数组未初始化或桶为空，直接返回 `null`。
+2. 按 hash 和 key 相等条件检查首节点，再按桶类型搜索红黑树或链表。找不到 key 时，不修改 Map。
+3. 找到后，普通链表通过调整桶入口或前驱节点的 `next` 移除节点；树桶调用 `removeTreeNode`，维护链关系和树结构，必要时转回普通链表。
+4. 成功删除后，增加 `modCount`、减少 `size`，返回旧 value。删除不存在的 key 不改变这两个计数。
 
-移除：
-
-1.   如果是红黑树，按照红黑树的移除操作。（注意，如果红黑树节点个数较少，即使移除后数量小于阈值，也不一定变为链表）
-2.   如果是单链表的头部，那么头部变为节点的下一个。
-3.   如果是单链表的中间，那么前一个节点的next变为当前结点的下一个。
+普通 `remove` 不会缩小桶数组。树桶退化为链表也不意味着 `table` 容量变小。另外，返回 `null` 既可能表示 key 不存在，也可能表示被删除的旧 value 本来就是 `null`。
 
 ## 感悟
 
-Java的HashMap实现的方式很巧妙，首先保证table的长度是2的次方，也就是1 << n。在此基础下，当Map扩容时，链表可以一分为二，而且可以保证2个链表放置的位置不会被其他index的链表干扰。
+HashMap 把容量保持为 2 的幂，使桶定位可以使用 `(n - 1) & hash`，扩容时可以用 `hash & oldCap` 判断节点是否移动。一次遍历就能拆分链表，并保留两组各自的相对顺序。
 
-如果table的长度是任意长度，就做不到这么快扩容。
+不过，“翻倍后只有两个去向”并非位运算独有。对非负整数 hash，若使用取模定位，设旧下标 `j = hash % n`，则 `hash = q * n + j`，所以 `hash % (2 * n)` 仍只可能为 `j` 或 `j + n`，与 `q` 的奇偶性有关，即使 `n` 不是 2 的幂也成立。
 
-如果kv放置的方式是hash % len，虽然也能保证不越界，但是在扩容时，原链表节点可能会散落在新table各个index上。
+2 的幂使上述定位与拆分可以直接通过位运算实现。如果新容量不是旧容量的两倍，则不能套用这套 low/high 拆分规则。Java 的 `%` 对负数可能得到负余数，直接用 `hash % len` 还需要处理负下标。
 
-# 几个问题
+# 面试题
 
-## HashMap和Hashtable区别？
+## 🌟🌟 HashMap 和 Hashtable 有什么区别？
 
-简单总结有几点：
+| 对比项 | HashMap | Hashtable |
+| --- | --- | --- |
+| null 支持 | 允许 null key 和 null value | key 和 value 均不允许 null |
+| 线程安全 | 不提供同步保证 | `get`、`put`、`remove` 等方法通过对象锁同步 |
+| 默认初始容量 | 16，无参构造时延迟分配数组 | 11，构造时分配数组 |
+| 常规扩容 | 原容量的 2 倍 | `2 * 原容量 + 1`，另有容量上限处理 |
+| 指定初始容量 | 调整到 2 的幂并受最大容量限制，延迟分配 | 正数直接使用；传入 0 时按 1 分配 |
+| 继承关系 | 继承 `AbstractMap` | 继承 `Dictionary` |
 
-1.  HashMap支持null Key和null Value；Hashtable不允许。这是因为HashMap对null进行了特殊处理，将null的hashCode值定为了0，从而将其存放在哈希表的第0个bucket。
+HashMap 对 null key 的处理是 `hash(null) == 0`，并不是调用 null 的 `hashCode()`。Hashtable 的构造、扩容和同步方式见 [OpenJDK 8u Hashtable 源码](https://github.com/openjdk/jdk8u/blob/master/jdk/src/share/classes/java/util/Hashtable.java)。
 
-2.  HashMap是非线程安全，HashMap实现线程安全方法为`Map map = Collections.synchronziedMap(new HashMap())；`
-    Hashtable是线程安全。
+需要同步包装时，可以使用：
 
-3.  HashMap默认长度是16，扩容是原先的2倍
-    Hashtable默认长度是11，扩容是原先的2n+1
+```java
+Map<String, Integer> map = Collections.synchronizedMap(new HashMap<>());
 
-4.  HashMap继承AbstractMap
-    Hashtable继承了Dictionary
+// 遍历集合视图时，需要在返回的 map 对象上同步
+synchronized (map) {
+    for (Map.Entry<String, Integer> entry : map.entrySet()) {
+        System.out.println(entry);
+    }
+}
+```
 
-5.  如果在创建时给定了初始化大小，那么HashTable会直接使用给定的大小，而HashMap会将其扩充为2的幂次方大小。 
+所有并发访问都应经过包装后的 Map。多个独立方法调用组成的复合操作，也需要额外同步或使用合适的原子方法；单个方法线程安全不代表整个操作序列原子化。参见 [Collections.synchronizedMap 文档](https://docs.oracle.com/javase/8/docs/api/java/util/Collections.html#synchronizedMap-java.util.Map-)。
 
-## ConcurrentHashMap和Hashtable的区别
+## 🌟🌟 ConcurrentHashMap 和 Hashtable 有什么区别？
 
-都可以用于多线程的环境，但是当Hashtable的大小增加到一定的时候，性能会急剧下降，因为迭代时需要被锁定很长的时间。因为ConcurrentHashMap引入了分割(segmentation)，不论它变得多么大，仅仅需要锁定map的某个部分，而其它的线程不需要等到迭代完成才能访问map。**简而言之，在迭代的过程中，ConcurrentHashMap仅仅锁定map的某个部分，而Hashtable则会锁定整个map。**
+两者均支持并发访问，并且都不允许 null key 和 null value，但同步方式不同。
 
-## HashMap、SparseArray、ArrayMap的区别
+1. Hashtable 的 `get`、`put`、`remove` 等方法使用同一个对象锁，多线程调用这些方法时会竞争该锁。
+2. JDK 8 的 ConcurrentHashMap 不再使用 Segment 作为主要存储和分段锁结构。以普通 `put` 为例，空桶插入使用 CAS，非空桶更新通常在桶首节点上使用 `synchronized`；`get` 通常不加锁。具体流程见 [ConcurrentHashMap 源码](https://github.com/openjdk/jdk8u/blob/master/jdk/src/share/classes/java/util/concurrent/ConcurrentHashMap.java)。
+3. ConcurrentHashMap 的迭代器具有弱一致性，可以与更新并发执行，不保证得到某一时刻的完整快照，也不会因并发修改抛出 `ConcurrentModificationException`。不能将其描述为“迭代时锁住某个部分”。参见 [ConcurrentHashMap 文档](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ConcurrentHashMap.html)。
+4. Hashtable 的集合视图迭代器是 fail-fast，并不会自动为整个迭代过程持有对象锁。如果需要防止遍历期间被其他线程修改，应显式在 Hashtable 对象上同步整个遍历过程。其 `keys()`、`elements()` 返回的 Enumeration 不属于 fail-fast 迭代器。参见 [Hashtable 文档](https://docs.oracle.com/javase/8/docs/api/java/util/Hashtable.html)。
 
-1.  在数据量小的时候一般认为1000以下，当key为int的时候，使用SparseArray确实是一个很不错的选择，内存大概能节省30%，相比用HashMap，因为key值不需要装箱，所以时间性能平均来看也优于HashMap。
-2.  ArrayMap相对于SparseArray，特点就是key值类型不受限，任何情况下都可以取代HashMap，但是通过研究和测试发现，ArrayMap的内存节省并不明显。并且AS会提示使用SparseArray，但是不会提示使用ArrayMap。
+ConcurrentHashMap 更细的同步粒度有利于并发访问，但实际性能还取决于竞争程度、key 分布和操作类型，不能概括成“Hashtable 大到一定程度就必然急剧变慢”。
 
-## 如何检测HashMap存在线程安全问题？
+## 🌟 HashMap、SparseArray、ArrayMap 有什么区别？
 
-HashMap每次操作都会`++modCount`，在迭代期间，如果发现modCount发生了变化，那么就抛出ConcurrentModificationException异常。这意味着在单线程的`for-each`中也不能操作（put）。
+SparseArray 和 ArrayMap 是 Android 提供的容器，重点是减少内存开销。
+
+| 对比项 | HashMap | SparseArray | ArrayMap |
+| --- | --- | --- | --- |
+| key 类型 | 引用类型，基本类型需要装箱 | `int`，无需为 key 装箱 | 引用类型，基本类型需要装箱 |
+| 主要结构 | 桶数组和节点 | 有序 int key 数组和 value 数组 | 有序 hash 数组和 key/value 数组 |
+| 查找方式 | hash 定位后搜索桶 | 对 key 二分查找 | 对 hash 二分查找，再比较 key |
+| 内存特点 | 每个键值对需要节点对象 | 不需要独立节点或装箱 key | 不需要为每个键值对创建独立节点 |
+| 使用考虑 | 通用映射容器 | 较小规模的 int key 映射 | 较小规模、重视内存占用的通用 key 映射 |
+
+Android 官方文档说明，SparseArray 和 ArrayMap 通常比 HashMap 慢，因为查找需要二分搜索，插入和删除涉及数组处理；它们不适合不加区分地替换大规模 HashMap。SparseArray 还通过删除标记延迟整理数组。参见 [SparseArray 文档](https://developer.android.com/reference/android/util/SparseArray)和 [ArrayMap 文档](https://developer.android.com/reference/android/util/ArrayMap)。
+
+是否值得替换，应结合数据规模、读写比例和设备上的测量结果判断。不能把“1000 以下”“节省 30%”或 IDE 是否提示替换当作普遍保证。
+
+## 🌟🌟🌟 fail-fast 能检测 HashMap 的线程安全问题吗？
+
+不能可靠检测。fail-fast 用于尽力发现迭代期间的结构修改，不提供同步、可见性或原子性保证；即使没有抛出异常，也不能说明并发访问安全。参见 [HashMap 官方文档](https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html)。
+
+HashMap 迭代器创建时将 `modCount` 保存为 `expectedModCount`。后续执行 `next()`、迭代器的 `remove()` 等操作时，如果两个计数不一致，就会抛出 `ConcurrentModificationException`。检查不是持续发生的，`hasNext()` 也不会执行这项检查。
+
+| 操作 | 对 `modCount` 的影响 |
+| --- | --- |
+| `get`、覆盖已有 key 的 value、`Map.Entry.setValue` | 不增加 |
+| `put` 新增 key | 增加 |
+| `remove` 成功删除 key | 增加；删除不存在的 key 不增加 |
+| `clear` | 增加，JDK 8 中即使 Map 已为空也会增加 |
+| 当前迭代器自己的 `remove()` | 增加，并更新该迭代器的 `expectedModCount` |
+
+因此，单线程 `for-each` 中直接新增 key 或删除已有 key，也可能在后续迭代检查时抛出异常；只覆盖已有 key 的 value 不会因此触发 fail-fast。需要边遍历边删除时，使用显式迭代器的 `remove()`：
+
+```java
+Map<String, Integer> map = new HashMap<>();
+map.put("keep", 1);
+map.put("remove", 0);
+
+Iterator<Map.Entry<String, Integer>> iterator = map.entrySet().iterator();
+while (iterator.hasNext()) {
+    Map.Entry<String, Integer> entry = iterator.next();
+    if (Integer.valueOf(0).equals(entry.getValue())) {
+        iterator.remove();
+    }
+}
+```
+
+这是单线程迭代删除的正确用法，不会使 HashMap 自动变得线程安全。并发修改时仍需要外部同步，或者使用 ConcurrentHashMap 等并发容器。
 
 # 源码
 
@@ -194,7 +269,7 @@ final Node<K,V>[] resize() {
                   (int)ft : Integer.MAX_VALUE);
     }
     threshold = newThr;
-    // 以上代码是计算新的table容量
+    // 以上代码计算新的 table 容量和扩容阈值
     Node<K,V>[] newTab = (Node<K,V>[])new Node[newCap];
     table = newTab;
     // 将旧的kv移到新的table里
