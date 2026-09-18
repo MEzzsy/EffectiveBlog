@@ -519,7 +519,7 @@ Android 5.0 以下的运行时默认只认识主 DEX。AndroidX MultiDex 的核�
 
 Dynamic Feature 的类也遵循本文描述的完整链路：源码先变成 Feature DEX，再被打包进 Feature Split APK。区别只在于按需模块的 split 可能在应用进程启动后才安装。
 
-默认应用 ClassLoader 已经建立时，新 Feature DEX 不在原有 `dexElements` 中。Play Feature Delivery 的兼容层需要让当前进程认识新增的 split，后续 `loadClass()` 才能找到 Feature 类。具体注入过程见 [Google Dynamic Feature 插件](<../06 应用层/03 Google DF插件.md#dynamic-feature-安装后的运行时加载机制>)。
+默认应用 ClassLoader 已经建立时，新 Feature DEX 不在原有 `dexElements` 中。Play Feature Delivery 的兼容层需要让当前进程认识新增的 split，后续 `loadClass()` 才能找到 Feature 类。具体注入过程见 [Google Dynamic Feature 插件](<../02 应用层/03 Google DF插件.md#dynamic-feature-安装后的运行时加载机制>)。
 
 ## 热修复与插件化
 

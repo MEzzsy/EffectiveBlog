@@ -100,6 +100,26 @@ test("目录边缘排序、中间移入，搜索和跨目录文件行不触发�
     { action: "reorder", payload: { paths: ["01 目录/01 甲.md"], anchor: "01 目录/04 丁.md", position: "after" } });
 });
 
+test("子目录按整棵子树排序，父子多选折叠且不能跨层级插入", () => {
+  const parent = "01 目录", first = parent + "/01 子目录", second = parent + "/02 子目录", third = parent + "/03 子目录";
+  const child = first + "/01 笔记.md";
+  const entries = [...outlineEntries, ...[second, third].map(path => ({
+    path, parent, name: path.split("/").at(-1), kind: "directory"
+  }))];
+  assert.deepEqual(rowDropIntent(entries, [first, child], third, 0.9),
+    { action: "reorder", payload: { paths: [first], anchor: third, position: "after" } });
+  assert.deepEqual(rowDropIntent(entries, [third, second], first, 0.1),
+    { action: "reorder", payload: { paths: [second, third], anchor: first, position: "before" } });
+  // 无效的行间落点不能退化为移入；目录中间仍可用于跨目录移动。
+  assert.equal(rowDropIntent(entries, [first], "02 目录", 0.1), null);
+  assert.deepEqual(rowDropIntent(entries, [first], "02 目录", 0.5),
+    { action: "move", payload: { paths: [first], target: "02 目录" } });
+  assert.equal(rowDropIntent(entries, [parent], first, 0.5), null);
+  assert.equal(rowDropIntent(entries, [first], first, 0.9), null);
+  assert.equal(rowDropIntent(entries, [first], second, 0.1), null);
+  assert.equal(rowDropIntent(entries, [first], "", 0.1), null);
+});
+
 test("编号互换只映射一次，按最长原路径匹配以保留展开目录和焦点", () => {
   const mapping = [
     { from: "01 目录", to: "02 目录" }, { from: "02 目录", to: "01 目录" },

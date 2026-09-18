@@ -225,8 +225,8 @@ function initializeApp() {
   }
   function dropAt(x, y) {
     let node = document.elementFromPoint(x, y);
-    const row = node?.closest("#file-list tr");
-    if (row) {
+    const row = node?.closest("#file-list tr, #tree .tree-row");
+    if (row?.dataset.path) {
       const bounds = row.getBoundingClientRect();
       const intent = rowDropIntent(state.entries, dragging, row.dataset.path, (y - bounds.top) / bounds.height, !query);
       return intent ? { ...intent, node: row } : null;
@@ -242,17 +242,24 @@ function initializeApp() {
     highlightedDrop = null; insertion.hidden = true;
     if (destination?.action === "reorder") {
       const { anchor: reference, position } = destination.payload;
+      const inTree = destination.node.classList.contains("tree-row");
       let edge = destination.node;
       if (position === "after") {
-        while (edge.nextElementSibling?.dataset.path.startsWith(reference + "/")) edge = edge.nextElementSibling;
+        if (inTree) {
+          if (edge.nextElementSibling?.classList.contains("tree-branch")) edge = edge.nextElementSibling;
+        } else {
+          while (edge.nextElementSibling?.dataset.path?.startsWith(reference + "/")) edge = edge.nextElementSibling;
+        }
       }
-      const bounds = edge.getBoundingClientRect(), surface = document.querySelector(".file-surface").getBoundingClientRect();
-      const top = position === "before" ? bounds.top : bounds.bottom;
-      const depth = rows.find(entry => entry.path === reference).depth;
-      insertion.style.left = (bounds.left + 16 + depth * 20) + "px";
-      insertion.style.width = Math.max(0, bounds.width - 26 - depth * 20) + "px";
+      const bounds = destination.node.getBoundingClientRect();
+      const surface = (inTree ? $("tree") : document.querySelector(".file-surface")).getBoundingClientRect();
+      const top = position === "before" ? bounds.top : edge.getBoundingClientRect().bottom;
+      const indent = inTree ? 17 : 16 + rows.find(entry => entry.path === reference).depth * 20;
+      const left = Math.max(bounds.left + indent, surface.left + 4), right = Math.min(bounds.right - 10, surface.right - 4);
+      insertion.style.left = left + "px";
+      insertion.style.width = Math.max(0, right - left) + "px";
       insertion.style.top = (top - 1) + "px";
-      insertion.hidden = top < $("files").tHead.getBoundingClientRect().bottom || top > surface.bottom;
+      insertion.hidden = top < (inTree ? surface.top : $("files").tHead.getBoundingClientRect().bottom) || top > surface.bottom;
       dragFeedback.textContent = "调整 " + dragging.length + " 项顺序：放到「" + byPath(reference).name + "」" + (position === "before" ? "之前" : "之后");
     } else if (destination) {
       highlightedDrop = destination.node; highlightedDrop.classList.add("drop-target");
@@ -264,11 +271,13 @@ function initializeApp() {
   function scrollWhileDragging() {
     scrollFrame = null;
     if (!pointerDrag?.active) return;
-    const surface = document.querySelector(".file-surface"), bounds = surface.getBoundingClientRect();
     const { lastX: x, lastY: y } = pointerDrag;
-    if (x >= bounds.left && x <= bounds.right && y >= bounds.top && y <= bounds.bottom) {
-      const step = y < bounds.top + 64 ? -9 : y > bounds.bottom - 32 ? 9 : 0;
-      if (step) { surface.scrollTop += step; showDrop(dropAt(x, y)); }
+    for (const surface of [$("tree"), document.querySelector(".file-surface")]) {
+      const bounds = surface.getBoundingClientRect();
+      if (x >= bounds.left && x <= bounds.right && y >= bounds.top && y <= bounds.bottom) {
+        const step = y < bounds.top + (surface === $("tree") ? 32 : 64) ? -9 : y > bounds.bottom - 32 ? 9 : 0;
+        if (step) { surface.scrollTop += step; showDrop(dropAt(x, y)); }
+      }
     }
     scrollFrame = requestAnimationFrame(scrollWhileDragging);
   }
@@ -308,6 +317,7 @@ function initializeApp() {
     const tree = $("tree"); tree.replaceChildren();
     function branch(path, name, container) {
       const row = element("div", "tree-row" + (!query && current === path ? " active" : ""));
+      row.dataset.path = path;
       const directories = children(path).filter(entry => entry.kind === "directory");
       const toggle = element("button", "tree-toggle", expanded.has(path) ? "▾" : "▸");
       toggle.disabled = !directories.length;
