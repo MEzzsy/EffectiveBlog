@@ -574,7 +574,7 @@ bundletool dump manifest \
 
 ## 与普通 App 类加载相比多了什么问题
 
-普通 App 启动前，Base APK 及安装时 split 已经由 PackageManager 登记。此时代码集合在当前进程的生命周期内基本不变。某个类是否位于 DEX、某个资源是否位于资源表，通常在构建和启动阶段就已经确定。完整的普通类加载链路见 [Android 类从源码到运行时加载](<../01 Framework/06 Android类从源码到运行时加载.md>)。
+普通 App 启动前，Base APK 及安装时 split 已经由 PackageManager 登记。此时代码集合在当前进程的生命周期内基本不变。某个类是否位于 DEX、某个资源是否位于资源表，通常在构建和启动阶段就已经确定。完整的普通类加载链路见 [Android 类从源码到运行时加载](<../../01 Framework/06 Android类从源码到运行时加载.md>)。
 
 运行时安装 Dynamic Feature 则改变了顺序：
 
