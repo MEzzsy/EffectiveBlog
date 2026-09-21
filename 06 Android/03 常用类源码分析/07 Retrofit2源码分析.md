@@ -1,3 +1,15 @@
+# 总结
+
+Retrofit2以动态代理的方式进行网络请求。
+
+用户通过代理对象进行网络请求。
+
+代理对象通过实现InvocationHandler的invoke方法，对每一次网络请求拦截并调用invoke方法。具体实现是ServiceMethod的invoke。
+
+ServiceMethod在缓存中，如果没有就新建，主要是封装了参数。
+
+真正执行网络请求的还是OkHttp。
+
 # 基本使用
 
 ```java
@@ -399,15 +411,3 @@ HttpServiceMethod主要是将请求参数和一些在Retrofit中配置的Adapter
 ## 小结
 
 ServiceMethod对象的创建和一般的初始化差不多，就是封装了一些参数，便于之后的使用。
-
-# 总结
-
-Retrofit2以动态代理的方式进行网络请求。
-
-用户通过代理对象进行网络请求。
-
-代理对象通过实现InvocationHandler的invoke方法，对每一次网络请求拦截并调用invoke方法。具体实现是ServiceMethod的invoke。
-
-ServiceMethod在缓存中，如果没有就新建，主要是封装了参数。
-
-真正执行网络请求的还是OkHttp。
