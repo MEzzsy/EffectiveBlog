@@ -44,6 +44,8 @@ CONFIG_FILE_NAME = "eb_config.json"
 TOOL_DIRECTORY = Path(__file__).resolve().parent
 DEFAULT_ROOT = TOOL_DIRECTORY.parent
 SUMMARY_FILE_NAME = "SUMMARY.md"
+README_TOC_START = "<!-- eb_tool:toc:start -->"
+README_TOC_END = "<!-- eb_tool:toc:end -->"
 FORMATTED_IMAGE_RE = re.compile(
     r"^eb_(\d{5})(\.(?:avif|bmp|gif|heic|heif|ico|jpe?g|png|svg|tiff?|webp))$",
     re.IGNORECASE,
@@ -554,26 +556,19 @@ def summary_link(label: str, path: Path, root: Path) -> str:
     return f"[{escape_markdown_label(label)}](<./{encode_local_path(relative_path)}>)"
 
 
-def collect_summary_entries(
-    root: Path,
-    directory: Path,
-    ignored_names: set[str],
-    depth: int,
-) -> list[str]:
-    """按名称排序生成一个目录中的 SUMMARY 条目。"""
+def summary_children(directory: Path, ignored_names: set[str]) -> list[tuple[Path, bool]]:
+    """SUMMARY 与章节 README 共用相同的排序、忽略和符号链接规则。"""
     try:
         entries = sorted(os.scandir(directory), key=lambda entry: entry.name)
     except OSError as error:
         raise RuntimeError(f"无法遍历目录 {directory}：{error}") from error
 
-    lines: list[str] = []
+    children = []
     for entry in entries:
-        if entry.name in ignored_names or entry.name in {
-            ".git",
-            ".hg",
-            ".svn",
+        if entry.name.startswith(".") or entry.name in ignored_names or entry.name in {
             "__pycache__",
             SUMMARY_FILE_NAME,
+            "README.md",
         }:
             continue
 
@@ -584,26 +579,68 @@ def collect_summary_entries(
         except OSError as error:
             raise RuntimeError(f"无法检查路径 {path}：{error}") from error
 
+        if is_directory or (is_file and path.suffix.casefold() == ".md"):
+            children.append((path, is_directory))
+    return children
+
+
+def collect_summary_entries(
+    root: Path,
+    directory: Path,
+    ignored_names: set[str],
+    depth: int,
+    planned_readmes: set[Path] | None = None,
+) -> list[str]:
+    """按名称排序生成目录条目；README 中的链接相对于其所在目录。"""
+    lines: list[str] = []
+    for path, is_directory in summary_children(directory, ignored_names):
         if is_directory:
             readme = path / "README.md"
-            has_readme = readme.is_file() and not readme.is_symlink()
+            has_readme = (planned_readmes is not None and readme in planned_readmes) or (
+                readme.is_file() and not readme.is_symlink()
+            )
             if has_readme:
                 lines.append(
-                    f"{'  ' * depth}- {summary_link(entry.name, readme, root)}"
+                    f"{'  ' * depth}- {summary_link(path.name, readme, root)}"
                 )
             child_depth = depth + 1 if has_readme else depth
             lines.extend(
-                collect_summary_entries(root, path, ignored_names, child_depth)
+                collect_summary_entries(root, path, ignored_names, child_depth, planned_readmes)
             )
-        elif (
-            is_file
-            and path.suffix.casefold() == ".md"
-            and entry.name != "README.md"
-        ):
+        else:
             lines.append(
                 f"{'  ' * depth}- {summary_link(path.stem, path, root)}"
             )
     return lines
+
+
+def collect_chapter_readmes(root: Path, ignored_names: set[str]) -> list[Path]:
+    readmes = []
+    for path, is_directory in summary_children(root, ignored_names):
+        if is_directory:
+            readmes.append(path / "README.md")
+            readmes.extend(collect_chapter_readmes(path, ignored_names))
+    return readmes
+
+
+def update_readme_toc(original: bytes | None, lines: list[str]) -> bytes:
+    """只替换自动目录区块，保留手写正文、BOM 和原有换行。"""
+    original = original or b""
+    markdown = original.decode("utf-8-sig")
+    newline = "\r\n" if b"\r\n" in original else "\n"
+    block = newline.join([README_TOC_START, "", *(lines or ["暂无文档。"]), "", README_TOC_END])
+    if README_TOC_START in markdown or README_TOC_END in markdown:
+        start, end = markdown.find(README_TOC_START), markdown.find(README_TOC_END)
+        if markdown.count(README_TOC_START) != 1 or markdown.count(README_TOC_END) != 1 or end < start:
+            raise ValueError("README 自动目录标记不完整或重复，请先修复标记")
+        markdown = markdown[:start] + block + markdown[end + len(README_TOC_END):]
+    else:
+        separator = "" if not markdown or markdown.endswith(newline * 2) else (
+            newline if markdown.endswith(newline) else newline * 2
+        )
+        markdown += separator + "# 章节目录" + newline * 2 + block + newline
+    prefix = b"\xef\xbb\xbf" if original.startswith(b"\xef\xbb\xbf") else b""
+    return prefix + markdown.encode("utf-8")
 
 
 def build_summary_content(root: Path, configured_ignores: Iterable[str]) -> str:
@@ -618,15 +655,17 @@ def build_summary_content(root: Path, configured_ignores: Iterable[str]) -> str:
 
 
 def generate_summary(root: Path, configured_ignores: Iterable[str]) -> None:
-    content = build_summary_content(root, configured_ignores)
-
-    summary_file = root / SUMMARY_FILE_NAME
-    try:
-        summary_file.write_text(content, encoding="utf-8")
-    except OSError as error:
-        raise RuntimeError(f"无法写入 {summary_file}：{error}") from error
+    ignored_names = list(configured_ignores)
+    manager = FileManager(root, {
+        "gen_ignore": ignored_names,
+        "img_ignore": [f"{name}/" for name in ignored_names if name],
+    })
+    changes, _ = manager._commit([], {})
+    summary_file = manager.root / SUMMARY_FILE_NAME
+    content = summary_file.read_text(encoding="utf-8-sig")
     entry_count = sum(1 for line in content.splitlines() if line.lstrip().startswith("- "))
-    print(f"已生成 {summary_file}，共 {entry_count} 个条目。")
+    readme_count = sum(path.name == "README.md" for path in changes)
+    print(f"已生成 {summary_file}，共 {entry_count} 个条目；更新 {readme_count} 个章节 README。")
 
 
 def fenced_code_ranges(markdown: str) -> list[tuple[int, int]]:
@@ -1420,6 +1459,7 @@ class FileManager:
     def _validate_moves(
         self, moves: list, create: Path | None = None, remove: Path | None = None,
         snapshot: dict | None = None,
+        remove_files: dict[Path, bytes] | None = None,
     ) -> None:
         destinations = set()
         for source, destination in [*moves, *([(None, create)] if create else [])]:
@@ -1432,7 +1472,8 @@ class FileManager:
             if source is not None:
                 self._assert_regular_tree(source)
             # 已占用的路径只有在本批操作中会腾出、或由撤销移除时才可使用。
-            if os.path.lexists(destination) and destination != source and destination != remove:
+            if (os.path.lexists(destination) and destination != source and destination != remove
+                    and destination not in (remove_files or {})):
                 if map_moved_path(destination, moves) == destination and not (
                     source is not None and self._case_alias(source, destination)
                 ):
@@ -1440,7 +1481,8 @@ class FileManager:
         sources = {source for source, _ in moves}
         for relative in snapshot or {}:
             original = self.root / relative
-            if original in sources or (remove and (original == remove or remove in original.parents)):
+            if (original in sources or original in (remove_files or {})
+                    or (remove and (original == remove or remove in original.parents))):
                 continue
             # 目录整体移动携带的后代也会占用最终路径，需在写入前一起预检。
             destination = map_moved_path(original, moves)
@@ -1673,14 +1715,33 @@ class FileManager:
         prefix = b"\xef\xbb\xbf" if original and original.startswith(b"\xef\xbb\xbf") else b""
         return prefix + content.encode("utf-8")
 
+    def _prepare_readmes(self, changes: dict) -> None:
+        ignored_names = set(self.config["gen_ignore"])
+        readmes = collect_chapter_readmes(self.root, ignored_names)
+        planned_readmes = set(readmes)
+        for path in readmes:
+            if path in changes:
+                original, current = changes[path]
+            else:
+                original = current = self._read_optional(path)
+            lines = collect_summary_entries(path.parent, path.parent, ignored_names, 0, planned_readmes)
+            try:
+                updated = update_readme_toc(current, lines)
+            except (UnicodeError, ValueError) as error:
+                raise ValueError(f"无法生成 {path.relative_to(self.root)}：{error}") from error
+            if updated != original:
+                changes[path] = (original, updated)
+            else:
+                changes.pop(path, None)
+
     def _commit(
         self, moves: list[tuple[Path, Path]],
         changes: dict[Path, tuple[bytes | None, bytes | None]],
         create: Path | None = None, remove: Path | None = None,
         regenerate: bool = True,
+        remove_files: dict[Path, bytes] | None = None,
     ) -> tuple[dict, dict]:
         journal = []
-        written = set()
         changes = dict(changes)
         undo_was_valid = self._record_unchanged(self.undo_record)
         summary_path = self.root / SUMMARY_FILE_NAME
@@ -1688,7 +1749,6 @@ class FileManager:
 
         def write(path, original, updated):
             journal.append(("write", path, (original, updated)))
-            written.add(path)
             self._write_atomic(path, original, updated)
 
         def relocate(source, destination):
@@ -1697,11 +1757,11 @@ class FileManager:
 
         staging = None
         try:
+            # 先删除本次补建的文件，避免其占用撤销重命名时要恢复的路径。
+            for path, content in (remove_files or {}).items():
+                write(path, content, None)
             # 撤销新建目录时先腾出位置；该位置可能正是旧编号要恢复的位置。
             if remove:
-                readme = remove / "README.md"
-                original, updated = changes[readme]
-                write(readme, original, updated)
                 remove.rmdir()
                 journal.append(("rmdir", remove, None))
             if moves:
@@ -1721,16 +1781,17 @@ class FileManager:
                 journal.append(("mkdir", create, None))
                 readme = create / "README.md"
                 changes[readme] = (None, b"")
-                write(readme, None, b"")
+            if regenerate:
+                self._prepare_readmes(changes)
+            for path, (original, updated) in changes.items():
+                write(path, original, updated)
             if regenerate:
                 generated = self._summary_bytes(
                     build_summary_content(self.root, self.config["gen_ignore"]), original_summary,
                 )
                 if generated != original_summary:
                     changes[summary_path] = (original_summary, generated)
-            for path, (original, updated) in changes.items():
-                if path not in written:
-                    write(path, original, updated)
+                    write(summary_path, original_summary, generated)
             after = self._snapshot()
             signatures = {
                 str(path): self._tree_signature(path)
@@ -1863,15 +1924,18 @@ class FileManager:
             if self._read_optional(path) != expected:
                 raise OperationConflict(f"文件已被外部修改，无法撤销：{path.relative_to(self.root)}")
         reverse = [(destination, source) for source, destination in reversed(record.moves)]
-        self._validate_moves(reverse, remove=record.created_directory, snapshot=before)
-        readme = record.created_directory / "README.md" if record.created_directory else None
+        remove_files = {path: updated for path, (original, updated) in record.changes.items()
+                        if original is None}
+        self._validate_moves(reverse, remove=record.created_directory, snapshot=before, remove_files=remove_files)
         changes = {
-            (path if path == readme else map_moved_path(path, reverse)): (updated, original)
+            map_moved_path(path, reverse): (updated, original)
             for path, (original, updated) in record.changes.items()
+            if original is not None
         }
         if self._snapshot() != before:
             raise OperationConflict("准备撤销期间文件发生变化，请刷新后重试")
-        _, after = self._commit(reverse, changes, remove=record.created_directory, regenerate=False)
+        _, after = self._commit(reverse, changes, remove=record.created_directory, regenerate=False,
+                                remove_files=remove_files)
         self.undo_record = None
         result = self._state(after["snapshot"])
         result.update({
@@ -1880,7 +1944,7 @@ class FileManager:
                               "to": destination.relative_to(self.root).as_posix()}
                              for source, destination in reverse],
             "summary": {"message": f"已撤销：{record.label}", "updatedReferences": 0,
-                        "changedFiles": len(changes), "movedItems": len(reverse)},
+                        "changedFiles": len(changes) + len(remove_files), "movedItems": len(reverse)},
         })
         return result
 
@@ -2036,7 +2100,7 @@ def build_argument_parser() -> argparse.ArgumentParser:
     actions.add_argument(
         "--gen",
         action="store_true",
-        help="递归生成根目录中的 SUMMARY.md",
+        help="递归生成 SUMMARY.md 和各章节 README.md 中的目录",
     )
     actions.add_argument(
         "--format_img",

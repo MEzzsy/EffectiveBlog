@@ -489,7 +489,7 @@ function initializeApp() {
     $("extension").textContent = entry?.kind === "file" ? entry.name.slice(-3) : ".md";
     $("name-submit").textContent = action === "rename" ? "保存名称" : "创建目录";
     $("number-hint").textContent = action === "mkdir"
-      ? "每个目录内从 01 连续编号，新目录排在末尾，内含空的 README.md。只需填写标题。"
+      ? "每个目录内从 01 连续编号，新目录排在末尾，自动创建章节目录 README.md。只需填写标题。"
       : "只需填写标题。同级文件和子目录分别从 01 连续编号，README.md 不编号。";
     $("name-error").hidden = true;
     $("name-dialog").showModal(); $("name-input").focus(); $("name-input").select();
@@ -557,7 +557,7 @@ function initializeApp() {
       ["eb_rename_entry", "重命名项目", "重命名并将同级项目从 01 连续编号、维护链接。Markdown 名称须含 .md 扩展名。README.md 不编号。", "rename", { path: string, name: string }],
       ["eb_move_entries", "移动所选项目", "移动多个项目到目标末尾，源目录和目标目录分别从 01 连续编号并维护链接。README.md 不编号。target 为空字符串表示根目录。", "move", { paths: { type: "array", items: string, minItems: 1 }, target: string }],
       ["eb_reorder_entries", "调整同级顺序", "将同目录、同类型的所选项目放到 anchor 项目之前或之后，再从 01 连续编号并维护链接。README.md 不参与排序。", "reorder", { paths: { type: "array", items: string, minItems: 1 }, anchor: string, position: { type: "string", enum: ["before", "after"] } }],
-      ["eb_create_directory", "新建目录", "在 parent 下新建目录，内含空的 README.md，同级项目从 01 连续编号；parent 为空字符串表示根目录。", "mkdir", { parent: string, name: string }],
+      ["eb_create_directory", "新建目录", "在 parent 下新建目录，自动创建章节目录 README.md，同级项目从 01 连续编号；parent 为空字符串表示根目录。", "mkdir", { parent: string, name: string }],
       ["eb_undo_last_operation", "撤销最近操作", "恢复最近一次成功操作的文件位置、引用和目录；外部修改可能使撤销失败。", "undo", {}]
     ];
     for (const [name, title, description, action, properties] of definitions) {

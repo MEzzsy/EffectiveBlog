@@ -49,6 +49,117 @@ class FileManagerTests(unittest.TestCase):
     def operate(self, action, **payload):
         return self.manager.operate(action, {**payload, "revision": self.manager.state()["revision"]})
 
+    def generate(self):
+        with contextlib.redirect_stdout(io.StringIO()):
+            tool.generate_summary(self.root, self.config["gen_ignore"])
+
+    def test_generate_readmes_recursively_with_relative_links_and_ignores(self):
+        self.put("01 基础/03 深层/01 [示例] #1.md", "# 正文\n")
+        for directory in ["assets", "img", "eb_tool", "docs", "build", "dist", "node_modules", ".hidden",
+                          "01 基础/assets", "01 基础/node_modules", "01 基础/.hidden"]:
+            self.put(directory + "/01 隐藏.md", "ignored")
+        self.put("01 基础/AGENTS.md", "# Rules\n")
+        (self.root / "04 链接").symlink_to(self.root / "01 基础", target_is_directory=True)
+        (self.root / "01 基础/04 链接.md").symlink_to(self.root / "01 基础/01 文档.md")
+        root_readme = (self.root / "README.md").read_bytes()
+        self.generate()
+        readme = self.read("01 基础/README.md")
+        self.assertTrue(readme.startswith("# 基础\n\n# 章节目录\n"))
+        self.assertIn("- [01 文档](<./01 文档.md>)", readme)
+        self.assertIn("- [03 深层](<./03 深层/README.md>)", readme)
+        self.assertIn("  - [01 \\[示例\\] #1](<./03 深层/01 [示例] %231.md>)", readme)
+        self.assertIn("(<./01 [示例] %231.md>)", self.read("01 基础/03 深层/README.md"))
+        self.assertIn("暂无文档。", self.read("02 目标/README.md"))
+        self.assertIn("- [03 引用](<./03 引用/README.md>)\n  - [01 外部]", self.read("SUMMARY.md"))
+        self.assertEqual((self.root / "README.md").read_bytes(), root_readme)
+        for directory in ["assets", "img", "eb_tool", "docs", "build", "dist", "node_modules", ".hidden",
+                          "01 基础/assets", "01 基础/node_modules", "01 基础/.hidden"]:
+            self.assertFalse((self.root / directory / "README.md").exists())
+        for excluded in ["隐藏", "AGENTS", "04 链接", ".eb-"]:
+            self.assertNotIn(excluded, readme + self.read("SUMMARY.md"))
+
+    def test_generation_is_idempotent_and_preserves_manual_text_bom_and_crlf(self):
+        manual = b"\xef\xbb\xbf" + "说明  \r\n\r\n# 手写目录\r\n\r\n- 保留这一项\r\n".encode()
+        readme = self.put("01 基础/README.md", manual)
+        self.generate()
+        first = readme.read_bytes()
+        self.assertTrue(first.startswith(manual))
+        self.assertNotIn(b"\n", first.replace(b"\r\n", b""))
+        before = self.contents()
+        times = {path: path.stat().st_mtime_ns for path in self.root.rglob("*.md")}
+        self.generate()
+        self.assertEqual(before, self.contents())
+        self.assertEqual(times, {path: path.stat().st_mtime_ns for path in times})
+        suffix = "\r\n# 补充说明\r\n\r\n保留尾部  ".encode()
+        readme.write_bytes(first + suffix)
+        (self.root / "01 基础/02 同级.md").unlink()
+        self.generate()
+        updated = readme.read_bytes()
+        self.assertTrue(updated.startswith(manual))
+        self.assertTrue(updated.endswith(suffix))
+        self.assertNotIn("02 同级".encode(), updated)
+        self.assertEqual(updated.count(tool.README_TOC_START.encode()), 1)
+
+    def test_generated_readmes_follow_rename_and_directory_move_and_undo(self):
+        self.put("01 基础/README.md", "# 说明\n\n[手写链接](<01 文档.md#章节>)\n")
+        self.generate()
+        before = self.contents()
+        self.operate("rename", path="01 基础/01 文档.md", name="新标题.md")
+        readme = self.read("01 基础/README.md")
+        self.assertIn("[手写链接](<01 新标题.md#章节>)", readme)
+        self.assertIn("[01 新标题](<./01 新标题.md>)", readme)
+        self.assertNotIn("01 文档", readme)
+        self.operate("undo")
+        self.assertEqual(before, self.contents())
+        self.operate("move", paths=["01 基础"], target="02 目标")
+        parent = self.read("01 目标/README.md")
+        child = self.read("01 目标/01 基础/README.md")
+        self.assertIn("[01 基础](<./01 基础/README.md>)", parent)
+        self.assertIn("  - [01 文档](<./01 基础/01 文档.md>)", parent)
+        self.assertIn("[01 文档](<./01 文档.md>)", child)
+        self.assertNotIn(".eb-stage-", parent + child)
+        self.operate("undo")
+        self.assertEqual(before, self.contents())
+
+    def test_existing_readme_edit_blocks_undo_without_losing_edit(self):
+        self.operate("rename", path="01 基础/01 文档.md", name="新标题.md")
+        self.put("01 基础/README.md", self.read("01 基础/README.md") + "\n外部说明\n")
+        before = self.contents()
+        with self.assertRaises(tool.OperationConflict):
+            self.operate("undo")
+        self.assertEqual(before, self.contents())
+
+    def test_cli_generation_failure_rolls_back_readmes_and_summary(self):
+        before = self.contents()
+        with mock.patch.object(tool, "build_summary_content", side_effect=OSError("summary failed")):
+            with self.assertRaisesRegex(RuntimeError, "已回滚"):
+                self.generate()
+        self.assertEqual(before, self.contents())
+
+    def test_invalid_readme_aborts_generation_without_partial_writes(self):
+        for content in [b"\xff", tool.README_TOC_START, tool.README_TOC_END,
+                        tool.README_TOC_END + tool.README_TOC_START,
+                        tool.README_TOC_START * 2 + tool.README_TOC_END]:
+            with self.subTest(content=content):
+                self.put("03 引用/README.md", content)
+                before = self.contents()
+                with self.assertRaisesRegex(RuntimeError, "无法生成 03 引用/README.md"):
+                    self.generate()
+                self.assertEqual(before, self.contents())
+
+    def test_readme_symlink_or_directory_is_not_overwritten(self):
+        readme = self.root / "03 引用/README.md"
+        readme.symlink_to(self.root / "README.md")
+        for kind in ["符号链接", "普通文件"]:
+            with self.subTest(kind=kind):
+                before = self.contents()
+                with self.assertRaisesRegex(RuntimeError, kind):
+                    self.generate()
+                self.assertEqual(before, self.contents())
+            if readme.is_symlink():
+                readme.unlink()
+                readme.mkdir()
+
     def test_reorder_files_updates_numbers_links_summary_and_undo(self):
         before = self.contents()
         result = self.operate("reorder", paths=["01 基础/02 同级.md"], anchor="01 基础/01 文档.md", position="before")
@@ -154,7 +265,7 @@ class FileManagerTests(unittest.TestCase):
                     if entry["parent"] == "02 目标"]
         self.assertEqual(ordered_names(self.manager.state()), ["中.md", "波.md", "阿.md"])
         result = self.operate("reorder", paths=["02 目标/阿.md"], anchor="02 目标/中.md", position="before")
-        self.assertEqual(ordered_names(result), ["01 阿.md", "02 中.md", "03 波.md"])
+        self.assertEqual(ordered_names(result), ["01 阿.md", "02 中.md", "03 波.md", "README.md"])
         self.operate("undo")
         self.assertEqual(before, self.contents())
 
@@ -297,8 +408,8 @@ class FileManagerTests(unittest.TestCase):
         self.put("02 目标/02 归档/README.md", "existing README")
         before = self.contents()
         self.operate("mkdir", parent="02 目标", name="归档")
-        self.assertEqual(self.read("02 目标/01 归档/README.md"), "existing README")
-        self.assertEqual(self.read("02 目标/02 归档/README.md"), "")
+        self.assertTrue(self.read("02 目标/01 归档/README.md").startswith("existing README\n\n# 章节目录\n"))
+        self.assertIn("暂无文档。", self.read("02 目标/02 归档/README.md"))
         self.operate("undo")
         self.assertEqual(before, self.contents())
 
@@ -338,13 +449,13 @@ class FileManagerTests(unittest.TestCase):
                         self.operate("move", paths=["01 基础/01 文档.md"], target="02 目标")
                 self.assertEqual(before, self.contents())
 
-    def test_directory_creation_adds_empty_readme_summary_and_is_undoable(self):
+    def test_directory_creation_adds_readme_toc_summary_and_is_undoable(self):
         before = self.contents()
         result = self.operate("mkdir", parent="02 目标", name="新目录")
         self.assertEqual(result["focusPaths"], ["02 目标/01 新目录"])
         directory = self.root / result["focusPaths"][0]
         self.assertEqual([path.name for path in directory.iterdir()], ["README.md"])
-        self.assertEqual((directory / "README.md").read_bytes(), b"")
+        self.assertIn("暂无文档。", (directory / "README.md").read_text())
         self.assertIn("02 目标/01 新目录/README.md", self.read("SUMMARY.md"))
         self.operate("undo")
         self.assertEqual(before, self.contents())
@@ -406,7 +517,7 @@ class FileManagerTests(unittest.TestCase):
         before = self.contents()
         result = self.operate("mkdir", parent="", name="01-新目录")
         self.assertEqual(result["focusPaths"], ["04 新目录"])
-        self.assertEqual(self.read("04 新目录/README.md"), "")
+        self.assertIn("暂无文档。", self.read("04 新目录/README.md"))
         self.assertEqual(self.read("01 高序号文档.md"), "file")
         self.operate("undo")
         self.assertEqual(before, self.contents())
@@ -788,7 +899,7 @@ class HTTPTests(unittest.TestCase):
             self.assertEqual(status, 200, body)
             state = json.loads(body)
         self.assertTrue((self.root / "01 新文档.md").is_file())
-        self.assertEqual((self.root / "01 目录/README.md").read_bytes(), b"")
+        self.assertIn("暂无文档。", (self.root / "01 目录/README.md").read_text())
         for path in ["/eb_config.json", "/eb_tool.py", "/../eb_tool.py", "/01%20test.md"]:
             self.assertEqual(self.request("GET", path)[0], 404)
         for path in ["/app.js", "/styles.css"]:
