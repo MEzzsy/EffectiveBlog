@@ -4,12 +4,6 @@ Android结构梳理主要是梳理Android整体的知识体系，以及整体的
 
 <!-- eb_tool:toc:start -->
 
-- [03 Activity启动过程](<./03 Activity启动过程.md>)
-- [04 其它组件启动过程](<./04 其它组件启动过程.md>)
-- [05 Context总结](<./05 Context总结.md>)
-- [06 AMS](<./06 AMS.md>)
-- [07 WM](<./07 WM.md>)
-- [08 WMS](<./08 WMS.md>)
 - [10 JNI](<./10 JNI.md>)
 - [13 ClassLoader](<./13 ClassLoader.md>)
 - [14 热修复](<./14 热修复.md>)

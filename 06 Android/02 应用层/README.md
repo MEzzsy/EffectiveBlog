@@ -11,8 +11,8 @@
 
 - [01 SQLite原理与键值存储框架对比](<./01 SQLite原理与键值存储框架对比.md>)
 - [01 四大组件](<./01 四大组件/README.md>)
-  - [01 Android生命周期](<./01 四大组件/01 Android生命周期.md>)
-  - [02 Android启动模式研究](<./01 四大组件/02 Android启动模式研究.md>)
+  - [01 \[测试日志\] Android生命周期](<./01 四大组件/01 [测试日志] Android生命周期.md>)
+  - [02 \[测试日志\] Android启动模式研究](<./01 四大组件/02 [测试日志] Android启动模式研究.md>)
   - [03 Broadcast](<./01 四大组件/03 Broadcast.md>)
 - [02 Android编译打包](<./02 Android编译打包/README.md>)
   - [01 Android编译打包流程](<./02 Android编译打包/01 Android编译打包流程.md>)

@@ -41,7 +41,9 @@ Android 构建工具通过 AAPT2 编译、链接资源，并生成资源表及�
 | `res/` 下的文件 | 保存编译后的布局 XML、图片等文件资源 |
 | `assets/` 下的文件 | 保存按路径访问的原始文件，不生成 `R` 资源 ID |
 
-`R.string.app_name` 本质上是整数标识，不是字符串本身，也不是文件路径。`res/values/strings.xml` 中的字符串会进入资源表相关数据，运行时不需要重新解析源码中的 `strings.xml`；布局 XML 则通常编译成二进制 XML，作为文件保存在 APK 中。
+- `R.string.app_name` 本质上是整数标识，不是字符串本身，也不是文件路径
+- `res/values/strings.xml` 中的字符串会进入资源表相关数据，运行时不需要重新解析源码中的 `strings.xml`
+- 布局 XML 则通常编译成二进制 XML，作为文件保存在 APK 中
 
 
 
@@ -54,39 +56,6 @@ Android 构建工具通过 AAPT2 编译、链接资源，并生成资源表及�
 | **复杂资源及引用** | style 的属性集合、数组、对其他资源 ID 的引用               |
 | **文件路径**       | 图片、布局等资源在 APK 内的路径                            |
 | **配置信息**       | 语言、屏幕密度、横竖屏、夜间模式等配置下的不同版本         |
-
-上述结构可见 [AOSP 资源表定义](https://android.googlesource.com/platform/frameworks/base/+/refs/heads/main/libs/androidfw/include/androidfw/ResourceTypes.h)。
-
-例如：**字符串文本可以直接保存在表中；PNG 图片和布局 XML 的文件内容保存在 APK 的 `res/` 中，表中记录它们的路径。**
-
-# 运行时：谁负责加载资源
-
-应用创建 Context 等运行环境时，Framework 会根据 APK 路径和配置准备资源对象。应用自身的资源可以来自 Base APK 和相关 Split APK，系统资源也会纳入资源访问体系。
-
-| 类 | 主要职责 |
-| --- | --- |
-| `Context` | 提供 `getResources()`、`getString()` 等访问入口 |
-| `ResourcesManager` | 进程内管理资源对象，根据资源路径、显示信息和配置创建或复用对象 |
-| `Resources` | 对应用提供 `getString()`、`getLayout()` 等资源 API |
-| `ResourcesImpl` | 承担资源加载实现、配置管理及部分缓存，持有 `AssetManager` |
-| `AssetManager` | 通过底层实现访问 APK 中的资源表和文件，完成资源查询 |
-
-这张表表示职责分工，并不意味着每个 API 都严格逐层调用。例如字符串读取可以通过 `ResourcesImpl.getAssets()` 取得 `AssetManager`，直接查询文本。`AssetManager` 也不只负责 `assets/`，它同样参与 `res/` 资源的加载。
-
-# 以字符串加载为例
-
-```kotlin
-val name = context.getString(R.string.app_name)
-```
-
-主要过程如下：
-
-1. `Context` 取得对应的 `Resources`，调用 `getString()`。
-2. `Resources.getString()` 通过 `getText()`，交给 `AssetManager.getResourceText()` 查询。
-3. 底层根据资源 ID 定位资源条目，并结合当前语言等配置选择对应的值；如果是资源引用，还需要继续解析。
-4. 从字符串池等数据中取得文本，最终返回 `String`。
-
-因此，资源加载通常是**查资源表并读取对应内容**，并不是每次都遍历 APK 目录寻找同名文件。
 
 # 同一个 ID 如何适配不同设备
 
@@ -105,9 +74,115 @@ res/drawable-xhdpi/icon.png   → xhdpi 图片
 
 例如，`getString(R.string.app_name)` 在中文环境下可以返回中文，在其他语言环境下使用默认字符串。图片密度匹配还可能涉及缩放，不能简单理解为“没有完全相同的目录就加载失败”。通常应提供默认资源，避免某些配置下没有可用内容。
 
-# 布局、图片和 assets 的区别
+# 运行时：谁负责加载资源
 
-## 布局：读取 XML 后还要创建 View
+应用创建 Context 等运行环境时，Framework 会根据 APK 路径和配置准备资源对象。应用自身的资源可以来自 Base APK 和相关 Split APK，系统资源也会纳入资源访问体系。
+
+| 类 | 主要职责 |
+| --- | --- |
+| `Context` | 提供 `getResources()`、`getString()` 等访问入口 |
+| `ResourcesManager` | 进程内管理资源对象，根据资源路径、显示信息和配置创建或复用对象 |
+| `Resources` | 对应用提供 `getString()`、`getLayout()` 等资源 API |
+| `ResourcesImpl` | 承担资源加载实现、配置管理及部分缓存，持有 `AssetManager` |
+| `AssetManager` | 通过底层实现访问 APK 中的资源表和文件，完成资源查询 |
+
+## TypedValue：承接带类型的资源值
+
+`TypedValue` 是一个**保存“值、类型及来源信息”的容器**，用于承接资源查询或主题属性解析的结果。`AssetManager` 查表后将结果填入它，上层再按类型处理。
+
+| 常见字段 | 作用 |
+| --- | --- |
+| `type` | 值的类型，例如字符串、整数、颜色、尺寸、资源引用 |
+| `data` | 原始数据，含义由 `type` 决定；可以是整数、颜色值、资源引用 ID 或字符串池索引等 |
+| `string` | 字符串内容；对于布局、图片等文件资源，通常保存文件路径 |
+| `resourceId` | 值来自资源时，对应的资源 ID |
+| `assetCookie` | 字符串或文件路径所在资源来源的标识，用于定位对应 APK 等来源 |
+| `density` | 资源对应的密度信息，用于后续尺寸换算或图片缩放 |
+
+```kotlin
+val value = TypedValue()
+context.resources.getValue(R.string.app_name, value, true)
+// type = TYPE_STRING，string 是应用名称文本
+
+context.resources.getValue(R.drawable.icon, value, true) // 假设 icon 是 PNG
+// type 同样是 TYPE_STRING，string 则是 APK 内的图片路径
+```
+
+这里 `true` 表示继续解析资源引用。**`TYPE_STRING` 既可能表示文字，也可能表示文件路径**；查到图片路径后，还需要打开文件并解码，`TypedValue` 本身不保存 Bitmap。上面复用同一个容器，第二次查询会覆盖第一次的结果。
+
+# 字符串加载
+
+```kotlin
+val name = context.getString(R.string.app_name)
+```
+
+主要过程如下：
+
+1. `Context` 取得对应的 `Resources`，调用 `getString()`。
+2. `Resources.getString()` 通过 `getText()`，交给 `AssetManager.getResourceText()` 查询。
+3. 底层根据资源 ID 定位资源条目，并结合当前语言等配置选择对应的值；如果是资源引用，还需要继续解析。
+4. 从字符串池等数据中取得文本，最终返回 `String`。
+
+因此，资源加载通常是**查资源表并读取对应内容**，并不是每次都遍历 APK 目录寻找同名文件。
+
+```text
+Context.getString(id)
+ → Resources.getString(id) → getText(id)
+ → ResourcesImpl.getAssets() → AssetManager.getResourceText(id)
+ → getResourceValue() → nativeGetResourceValue()
+ → 按当前配置查表、解析引用 → 从字符串池取得文本
+ → 返回 CharSequence → 转成 String
+```
+
+源码
+
+```java
+// Context.java
+public final String getString(int id) {
+    return getResources().getString(id);
+}
+
+// Resources.java
+public String getString(int id) {
+    return getText(id).toString();
+}
+
+public CharSequence getText(int id) {
+    CharSequence text = mResourcesImpl.getAssets().getResourceText(id);
+    if (text != null) return text;
+    throw new NotFoundException("String resource ID #" + id);
+}
+```
+
+真正的查表由 `AssetManager` 进入 Native 完成，再由 Java 层取得字符串池中的文本。
+
+```java
+// AssetManager.java
+CharSequence getResourceText(int id) {
+    TypedValue value = mValue; // 实际源码在同步块中复用临时对象
+    return getResourceValue(id, 0, value, true)
+            ? value.coerceToString() : null;
+}
+
+boolean getResourceValue(int id, int density, TypedValue out, boolean resolveRefs) {
+    int cookie = nativeGetResourceValue(
+            mObject, id, (short) density, out, resolveRefs);
+    if (cookie <= 0) return false;
+
+    // TYPE_STRING 的 data 是字符串池索引
+    if (out.type == TypedValue.TYPE_STRING) {
+        out.string = getPooledStringForCookie(cookie, out.data);
+        if (out.string == null) return false;
+    }
+    return true;
+}
+```
+
+`getText()` 可以保留样式信息，而 `getString()` 的 `toString()` 返回普通字符串。
+
+# 布局加载
+
+## 加载流程
 
 ```kotlin
 val view = LayoutInflater.from(context)
@@ -118,11 +193,67 @@ val view = LayoutInflater.from(context)
 
 布局中的 `@string/title` 会继续走资源查找；`?attr/...` 则需要结合当前 Context 的 Theme 解析，因此加载页面布局时通常使用对应 Activity 的 Context。
 
-## Drawable：查找资源后解码或解析
+```text
+LayoutInflater.inflate(layoutId, parent, attachToRoot)
+ → Resources.getLayout(layoutId)
+ → ResourcesImpl.getValue() → AssetManager.getResourceValue()
+ → 查表得到布局文件路径和 assetCookie
+ → ResourcesImpl.loadXmlResourceParser()
+     ├── 命中 XmlBlock 缓存 → newParser()
+     └── 未命中 → AssetManager.openXmlBlockAsset() → 缓存 → newParser()
+ → 回到 LayoutInflater.inflate(parser, ...)
+ → 创建根 View → 递归创建子 View → 按 attachToRoot 决定是否挂到 parent
+```
+
+## 源码
+
+`getLayout()` 返回的是解析器。下面将 `Resources` 的中间转发方法内联，并只保留有效布局 ID 的分支。
+
+```java
+// Resources.java：getLayout() → loadXmlResourceParser(id, "layout")
+public XmlResourceParser getLayout(int id) {
+    TypedValue value = obtainTempTypedValue();
+    try {
+        // 内部调用 AssetManager.getResourceValue() 查表、解析引用
+        mResourcesImpl.getValue(id, value, true);
+        return mResourcesImpl.loadXmlResourceParser(
+                value.string.toString(), id, value.assetCookie, "layout");
+    } finally {
+        releaseTempTypedValue(value);
+    }
+}
+```
+
+`ResourcesImpl` 按“来源 cookie + 文件路径”查 XML 数据块缓存，命中后仍创建新的解析器。下面保留成功分支，将缓存写入过程以注释缩略。
+
+```java
+// ResourcesImpl.java
+XmlResourceParser loadXmlResourceParser(String file, int id, int cookie, String type) {
+    for (int i = 0; i < mCachedXmlBlockFiles.length; i++) {
+        if (mCachedXmlBlockCookies[i] == cookie
+                && file.equals(mCachedXmlBlockFiles[i])) {
+            return mCachedXmlBlocks[i].newParser(id);
+        }
+    }
+
+    XmlBlock block = mAssets.openXmlBlockAsset(cookie, file);
+    // 实际源码：检查 block，将其写入容量为 4 的循环缓存，并关闭被替换的旧块
+    return block.newParser(id);
+}
+```
+
+# Drawable加载
 
 Drawable 是“可以被绘制的内容”的抽象，既可以表示位图，也可以表示矢量图、形状或多种状态的组合，并不一定对应一张图片。
 
-### 调用入口
+## 🌟小结
+
+**资源 ID → `AssetManager` 查表得到 `TypedValue` → `ResourcesImpl` 检查缓存：**
+
+- **命中**：通过 `ConstantState` 创建 Drawable。
+- **未命中**：读取文件，解码图片或解析 XML，按需应用主题、缓存状态，再返回 Drawable。
+
+## 调用入口
 
 ```kotlin
 val drawable = context.getDrawable(R.drawable.icon)
@@ -149,7 +280,7 @@ ResourcesImpl.loadDrawable()
 
 这里 density 参数为 `0` 表示使用当前资源配置的密度，不表示忽略密度。
 
-### 先查资源表，确定读取什么
+## 先查资源表，确定读取什么
 
 `AssetManager` 根据资源 ID 和当前配置选择资源，将结果写入 `TypedValue`。对于文件资源，关键字段包括：
 
@@ -157,9 +288,9 @@ ResourcesImpl.loadDrawable()
 - `assetCookie`：标识资源来自哪个已加载的 APK 等资源来源。
 - `density`：选中资源的密度信息，用于后续尺寸换算或缩放。
 
-**资源表负责定位，图片内容仍保存在 APK 的文件条目中。** 系统可以直接打开 APK 内的资源，不需要先把图片完整解压到应用私有目录。
+**资源表负责定位，图片内容仍保存在 APK 的文件条目中。** 
 
-### 再检查缓存，按类型加载
+## 再检查缓存，按类型加载
 
 `loadDrawable()` 先检查可用的 Drawable 缓存及系统预加载状态；未命中时，按资源类型处理：
 
@@ -176,7 +307,86 @@ ResourcesImpl.loadDrawable()
 
 对于 XML，框架取得二进制 XML 解析器，通过 `Drawable.createFromXmlForDensity()` 根据标签创建对象；遇到其他资源引用时继续加载。完成后，对支持主题的 Drawable 按需应用当前 Theme。因此，加载 Drawable 并不总会解码 Bitmap，也不是由 `LayoutInflater` 创建这些对象。
 
-### 缓存与最终绘制
+## 源码：查表与缓存
+
+`Context.getDrawable(id)` 将当前 Theme 传给 `Resources.getDrawable(id, theme)`，后者进入 `getDrawableForDensity(id, 0, theme)`。这里先查资源表，再按查询结果加载 Drawable；下面内联了 `Resources.loadDrawable()` 的转发。
+
+```java
+// Resources.java
+public Drawable getDrawableForDensity(int id, int density, Theme theme) {
+    TypedValue value = obtainTempTypedValue();
+    try {
+        // 内部调用 AssetManager.getResourceValue()
+        mResourcesImpl.getValueForDensity(id, density, value, true);
+        return mResourcesImpl.loadDrawable(this, value, id, density, theme);
+    } finally {
+        releaseTempTypedValue(value);
+    }
+}
+```
+
+下面的 `loadDrawable()` **只保留默认密度参数（`density == 0`）、非预加载阶段、普通文件 Drawable 的路径**；省略直接颜色值、系统预加载缓存、特殊密度和 DrawableContainer 等分支。
+
+```java
+// ResourcesImpl.java：上述限定场景下的缩略逻辑
+Drawable loadDrawable(Resources res, TypedValue value, int id, int density,
+        Resources.Theme theme) {
+    long key = ((long) value.assetCookie << 32) | value.data;
+    DrawableCache cache = mDrawableCache;
+    int generation = cache.getGeneration();
+
+    // 缓存内部由 ConstantState.newDrawable(res, theme) 创建实例
+    Drawable drawable = cache.getInstance(key, res, theme);
+    if (drawable != null) return drawable;
+
+    drawable = loadDrawableForCookie(res, value, id, density);
+    if (drawable == null) return null;
+
+    boolean usesTheme = drawable.canApplyTheme();
+    if (usesTheme && theme != null) {
+        drawable = drawable.mutate();
+        drawable.applyTheme(theme);
+        drawable.clearMutated();
+    }
+    drawable.setChangingConfigurations(value.changingConfigurations);
+    cacheDrawable(value, false, cache, theme, usesTheme, key, drawable, generation);
+    return drawable;
+}
+```
+
+其中 `value.data` 对文件资源通常是路径在字符串池中的索引，因此缓存 key 结合了资源来源与路径索引，主题由缓存内部另行区分。`cacheDrawable()` 保存可用的 `ConstantState`，不是直接缓存这个返回给 View 的 Drawable 实例。
+
+## 源码：打开文件并解码或解析
+
+未命中缓存后，普通 APK 文件资源进入以下两条分支。这里把 `loadXmlDrawable()`、`decodeImageDrawable()` 的关键逻辑内联，省略颜色 XML、特殊资源来源及异常处理。
+
+```java
+// ResourcesImpl.java
+private Drawable loadDrawableForCookie(Resources res, TypedValue value,
+        int id, int density) {
+    String file = value.string.toString();
+
+    if (file.endsWith(".xml")) {
+        try (XmlResourceParser parser = loadXmlResourceParser(
+                file, id, value.assetCookie, "drawable")) {
+            // 根据 vector、shape、selector 等标签创建对应 Drawable
+            return Drawable.createFromXmlForDensity(res, parser, density, null);
+        }
+    }
+
+    AssetInputStream stream = (AssetInputStream) mAssets.openNonAsset(
+            value.assetCookie, file, AssetManager.ACCESS_STREAMING);
+    ImageDecoder.Source source = new ImageDecoder.AssetInputStreamSource(
+            stream, res, value);
+    return ImageDecoder.decodeDrawable(source, (decoder, info, src) -> {
+        decoder.setAllocator(ImageDecoder.ALLOCATOR_SOFTWARE);
+    });
+}
+```
+
+这里先以空 Theme 创建 XML Drawable，未解析的主题属性由上一段 `loadDrawable()` 按需处理；图片流则交由这条解码路径管理关闭。普通静态图片通常得到 `BitmapDrawable`，随后才由 View 在绘制阶段使用它。
+
+## 缓存与最终绘制
 
 Drawable 缓存主要保存 `Drawable.ConstantState`，命中时通过 `newDrawable()` 创建实例，使多个 Drawable 能共享底层位图等数据，减少重复读取和解码。缓存还要考虑主题和配置变化，并不是仅按资源 ID 永久保存。
 
@@ -196,7 +406,7 @@ imageView.setImageDrawable(drawable)
 
 读取完成得到的是 Drawable 对象。设置到 ImageView 后，界面绘制阶段才会调用其 `draw(Canvas)`，根据边界和状态绘制内容。
 
-## assets：直接按路径打开
+# assets：直接按路径打开
 
 ```kotlin
 val json = context.assets.open("config/settings.json")
