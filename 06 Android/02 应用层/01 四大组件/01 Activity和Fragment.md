@@ -1,35 +1,31 @@
-# Activity
-
-## 生命周期
+# 生命周期
 
 基本使用：`onCreate(xxx)`初始化，`onResume()`注册、拉取数据，`onPause()`反注册，`onDestroy()`释放资源
 
 1. onCreate
-    在活动第一次被创建的时候调用。完成Activity的初始化，比如加载布局，绑定事件。
+   在活动第一次被创建的时候调用。完成Activity的初始化，比如加载布局，绑定事件。
 2. onStart
-    该方法回调表示Activity正在启动，此时Activity处于可见状态，只是还没有在前台显示，因此用户也无法交互。可以简单理解为Activity已显示却无法被用户看见。
+   该方法回调表示Activity正在启动，此时Activity处于可见状态，只是还没有在前台显示，因此用户也无法交互。可以简单理解为Activity已显示却无法被用户看见。
 3. onResume
-    此方法回调时，Activity已在在屏幕上显示UI并允许用户操作了。从流程图可见，当Activity停止后（onPause、onStop方法被调用），重新回到前台时也会调用onResume方法。可以在onResume方法中初始化一些资源，比如打开相机或开启动画。
+   此方法回调时，Activity已在在屏幕上显示UI并允许用户操作了。从流程图可见，当Activity停止后（onPause、onStop方法被调用），重新回到前台时也会调用onResume方法。可以在onResume方法中初始化一些资源，比如打开相机或开启动画。
 4. onPause
-    表示`activity`正在停止，此时可以做一些存储数据，停止动画等工作，注意不能太耗时，因为这会影响到新`activity`的显示，`onPause`必须先执行完，新的`activity`的`onResume`才会执行。
+   表示`activity`正在停止，此时可以做一些存储数据，停止动画等工作，注意不能太耗时，因为这会影响到新`activity`的显示，`onPause`必须先执行完，新的`activity`的`onResume`才会执行。
 5. onStop
-    此方法回调时，Activity即将停止或者完全被覆盖（Stopped形态），此时Activity不可见，仅在后台运行。同样地，在onStop方法可以做一些资源释放的操作，不能太耗时。 
+   此方法回调时，Activity即将停止或者完全被覆盖（Stopped形态），此时Activity不可见，仅在后台运行。同样地，在onStop方法可以做一些资源释放的操作，不能太耗时。 
 6. onDestroy
-    这个方法在活动被销毁前调用，之后的活动变为销毁状态。
+   这个方法在活动被销毁前调用，之后的活动变为销毁状态。
 7. onRestart
-    这个方法在活动由停止状态（onStop）变为运行状态（onStart）之前调用，也就是活动被重新启动了。
+   这个方法在活动由停止状态（onStop）变为运行状态（onStart）之前调用，也就是活动被重新启动了。
 
-![264](../../assets/eb_00113.png)
+# 常见生命周期情况
 
-## 常见生命周期情况
+ [03 [测试日志] Android生命周期.md](03 [测试日志] Android生命周期.md) 
 
- [Android生命周期](<../02 Android应用手册/四大组件/Android生命周期.md>)
+# Activity启动模式
 
-## Activity启动模式
+ [04 [测试日志] Android启动模式研究.md](04 [测试日志] Android启动模式研究.md) 
 
- [Android启动模式研究](<../02 Android应用手册/四大组件/Android启动模式研究.md>)
-
-### 启动模式
+## 启动模式
 
 > 使用命令**adb shell dumpsys activity activities**可进行查看任务栈情况。
 
@@ -43,19 +39,24 @@
 目前有四种启动模式：
 
 1. **standard**，标准模式，系统默认的模式。
-    每次启动Activity都会重新创建一个新的实例，不管这个实例是否存在。注意：如果用ApplicationContext去启动Activity会报错，因为标准模式的Activity会默认进入启动它的Activity的任务栈，而ApplicationContext没有任务栈，所以会有问题。解决办法就是指定FLAG—ACTIVITY—NEW—TASK标记位，这样启动的时候就会为它创建一个新的任务栈，而此时启动模式实际上是singleTask。
-2. **singleTop**，栈顶复用模式。
-    如果新的Activity已经位于任务栈的栈顶，那么此Activity不会被创建，同时它的onNewIntent方法会被回调，这个时候onCreate和onStart不会被调用，因为没有发生改变，**onResume会被回调**。如果新Activity已经存在但是不是位于栈顶仍然会被创建。
-    **standard和singleTop启动模式都是在原任务栈中新建Activity实例，不会启动新的Task，即使你指定了taskAffinity属性。自己实验显示确实如此，而且taskAffinity的值是自己设的值。**
-3. **singleTask**，栈内复用模式。
-    如果Activity在一个栈中存在，那么启动此Activity不会创建实例，和singleTop一样会调用其onNewIntent方法。**app首页基本是用这个**，几个例子：
+   每次启动Activity都会重新创建一个新的实例，不管这个实例是否存在。注意：如果用ApplicationContext去启动Activity会报错，因为标准模式的Activity会默认进入启动它的Activity的任务栈，而ApplicationContext没有任务栈，所以会有问题。解决办法就是指定FLAG—ACTIVITY—NEW—TASK标记位，这样启动的时候就会为它创建一个新的任务栈，而此时启动模式实际上是singleTask。
 
-- A以singleTask的模式启动，而其所需的任务栈是s1，s1和A都没有，那么就会先创建s1然后创建A再压入s1中。
-- 如果s1已经存在，而A不存在，那么创建A再将A压入s1中。
-- 如果s1和A都存在，且s1的情况为DABC，那么A不会被创建，而是调用栈顶并调用onNewIntent方法，同时singleTask默认有clearTop的效果，会清除A上面的Activity，此时栈情况为DA。
+2. **singleTop**，栈顶复用模式。
+   如果新的Activity已经位于任务栈的栈顶，那么此Activity不会被创建，同时它的onNewIntent方法会被回调，这个时候onCreate和onStart不会被调用，因为没有发生改变，onResume会被回调。
+   如果新Activity已经存在但是不是位于栈顶仍然会被创建。
+   **standard和singleTop启动模式都是在原任务栈中新建Activity实例，不会启动新的Task，即使你指定了taskAffinity属性。自己实验显示确实如此，而且taskAffinity的值是自己设的值。**
+
+3. **singleTask**，栈内复用模式。
+   如果Activity在一个栈中存在，那么启动此Activity不会创建实例，和singleTop一样会调用其onNewIntent方法。**app首页基本是用这个**，几个例子：
+
+   - A以singleTask的模式启动，而其所需的任务栈是s1，s1和A都没有，那么就会先创建s1然后创建A再压入s1中。
+
+   - 如果s1已经存在，而A不存在，那么创建A再将A压入s1中。
+
+   - 如果s1和A都存在，且s1的情况为DABC，那么A不会被创建，而是调用栈顶并调用onNewIntent方法，同时singleTask默认有clearTop的效果，会清除A上面的Activity，此时栈情况为DA。
 
 4. **singleInstance**，单实例模式。
-    一种加强的singleTask模式，除了具有singleTask的特性，还加强了一点，就是此模式下的Activity只能单独位于一个栈中。
+   一种加强的singleTask模式，除了具有singleTask的特性，还加强了一点，就是此模式下的Activity只能单独位于一个栈中。
 
 ### 启动的Flags
 
@@ -89,7 +90,7 @@ taskAffinity介绍：
 - 在概念上，具有相同的affinity的activity（即设置了相同taskAffinity属性的activity）属于同一个任务
 - 为一个activity的taskAffinity设置一个空字符串，表明这个activity不属于任何task
 
-### 启动模式和任务栈总结
+### 🌟启动模式和任务栈总结
 
 1.   启动模式的效果在上面已经说明。
 2.   taskAffinity标识了一个Activity的任务栈，一个任务栈对应任务管理器的一个卡片。
@@ -109,243 +110,42 @@ C的启动模式为SingleTask。
 >
 > 自己实践发现：在手机的任务管理器，一个任务栈对应一个任务。通过任务管理器切换可以回到CActivity。
 
-**ActivityA的启动模式为SingleTask，离开ActivityA后再次回到ActivityA，在ActivityA的onResume方法里面调用getIntent方法，能不能获取到最新的intent？**
-
-能，再次返回时先回调onNewIntent，再回调onResume
-
-# Service
-
-## 本地服务（LocalService）
-
-> 调用者和service在同一个进程里，所以运行在主进程的main线程中。所以不能进行耗时操作，可以采用在service里面**创建一个Thread**来执行任务。service影响的是**进程**的生命周期，讨论与Thread的区别没有意义。
->
-> **任何 Activity 都可以控制同一Service，而系统也只会创建一个对应 Service 的实例**。
-
-1. **onCreate**，创建服务。
-2. **onStartCommand**，如果调用了startService方法就会回调这个方法。
-3. **onBind**，如果调用了bindService方法就会回调这个方法。
-4. **onDestroy**，如果调用了stopService或者unbindService就会回调这个方法。
-
-服务(Service)是Android中实现程序后台运行的解决方案，它非常适合去执行那些不需要和用户交互而且还要求长期运行的任务。服务的运行不依赖于任何用户界面，即使程序被切换到后台，或者用户打开了另外一个应用程序，服务仍然能够保持正常运行。
-
-不过需要注意的是，服务并不是运行在一个独立的进程当中的，而是依赖于创建服务时所在的应用程序进程。当某个应用程序进程被杀掉时，所有依赖于该进程的服务也会停止运行。
-
-另外，也不要被服务的后台概念所迷惑，实际上服务并不会自动开启线程，所有的代码都是默认运行在主线程当中的。也就是说，需要在服务的内部手动创建子线程，并在这里执行具体的任务，否则就有可能出现主线程被阻塞住的情况。
-
-### 启动和停止Service
-
-**Context的方法**
-
-```java
-startService(intent);
-stopService(intent);
-bindService(Intent service， ServiceConnection conn ， int flags);
-unbindService(ServiceConnection conn);
-```
-
-> 在Service中声明一个binder，onBind返回此binder。
->
-> 在Activity中声明一个ServiceConnection，就可以调用binder中的方法。
-
-**Service的方法**
-
-```
-stopSelf();
-```
-
-### IntentService
-
-IntentService是一个抽象类，继承了Service。IntentService内部含有HandlerThread和Handler，所以它可以执行耗时操作，另外Looper将消息按顺序插入队列中，使用IntentService是顺序执行。
-
-首先要提供个无参的构造函数，并且必须在其内部调用父类的有参构造函数。
-然后要在子类中去实现onHandleIntent()这个抽象方法，在这个方法中可以去处理一些具体的逻辑，而且不用担心ANR的问题，因为这个方法已经是在子线程中运行的了。
-
-```java
-public class TestIntentService extends IntentService {
-    private static final String TAG = "TestIntentService";
-    
-    public TestIntentService() {
-        super("TestIntentService");
-    }
-
-    @Override
-    protected void onHandleIntent(Intent intent) {
-        Log.i(TAG, "onHandleIntent: ");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.i(TAG, "onDestroy: ");
-    }
-}
-```
-
-startService后：
-
-```
-I/TestIntentService: onHandleIntent: 
-I/TestIntentService: onDestroy: 
-```
-
-```java
-private final class ServiceHandler extends Handler {
-    public ServiceHandler(Looper looper) {
-        super(looper);
-    }
-
-    @Override
-    public void handleMessage(Message msg) {
-        onHandleIntent((Intent)msg.obj);
-        stopSelf(msg.arg1);
-    }
-}
-```
-
-IntentService在运行完onHandleIntent后会自己停止。
-
-IntentService特征:
-
-- 会创建独立的worker线程来处理所有的Intent请求；
-- 会创建独立的worker线程来处理onHandleIntent()方法实现的代码，无需处理多线程问题；
-- 所有请求处理完成后，IntentService会自动停止，无需调用stopSelf()方法停止Service；
-- 为Service的onBind()提供默认实现，返回null；
-- 为Service的onStartCommand提供默认实现，将请求Intent添加到队列中；
-
-### 后台服务
-
-创建的服务一般是后台的。
-
-### 前台服务
-
-前台服务会一直有一个正在运行的图标在系统的状态栏显示，非常类似于通知的效果。
-
-由于后台服务优先级相对比较低，当系统出现内存不足的情况下，它就有可能会被回收掉，所以前台服务就是来弥补这个缺点的，它可以一直保持运行状态而不被系统回收。
-
-**创建服务类**
-
-前台服务创建很简单，其实就在Service的基础上创建一个Notification，然后使用Service的startForeground()方法即可启动为前台服务。
-
-```java
-public final void startForeground(int id, Notification notification)
-```
-
-### 远程服务
-
-> 调用者和service不在同一个进程中，service在单独的进程中的main线程，是一种垮进程通信方式。
-
-具体见IPC机制。
-
-# BroadcastReceiver
-
-详细见[Broadcast](<../02 Android应用手册/四大组件/Broadcast.md>)
-
-### 广播类型
-
--   标准广播（Normal broadcasts）是一种完全异步执行的广播，在广播发出之后，所有的广播接收器几乎都会在同一时刻接收到这条广播消息，因此它们之间没有任何先后顺序可言。这种广播的效率会比较高，但同时也意味着它是无法被截断的。
-    
--   有序广播（Ordered broadcasts）则是一种同步执行的广播，在广播发出之后，同一时刻只会有一个广播接收器能够收到这条广播消息，当这个广播接收器中的逻辑执行完毕后，广播才会继续传递。所以此时的广播接收器是有先后顺序的，优先级高的广播接收器就可以先收到广播消息，并且前面的广播接收器还可以截断正在传递的广播，这样后面的广播接收器就无法收到广播消息了。
-    （声明在intent-filter元素的android:priority属性中，数越大优先级别越高，取值范围：-1000到1000。也可以调用IntentFilter对象的setPriority()进行设置）
-    
-
-### 注册Receiver
-
-注册广播的方式一般有两种，在代码中注册和在AndroidManifest.xml中注册，其中前者也被称为动态注册，后者也被称为静态注册。
-
--   **动态注册**
-    动态注册的广播接收器可以自由地控制注册与注销，在灵活性方面有很大的优势，但是它也存在着一个缺点，即必须要在程序启动之后才能接收到广播。
-
--   **静态注册**
-    在AndroidManifest.xml中注册的广播接收器，不需要手动注册和注销。（从8.0开始，系统对静态注册的广播会有所限制，无法使用清单为大多数隐式广播声明接收方）
-
-**静态注册和动态注册区别**
-
-- 动态注册广播不是常驻型广播，也就是说广播跟随activity的生命周期。
-    静态注册是常驻型，也就是说当应用程序关闭后，如果有广播来，程序也会被系统调用自动运行。
-- 当广播为有序广播时：
-    1 优先级高的先接收
-    2 同优先级的广播接收器，动态优先于静态
-    3 同优先级的同类广播接收器，静态：先扫描的优先于后扫描的，动态：先注册的优先于后注册的。
-- 当广播为普通广播时：
-    1 无视优先级，动态广播接收器优先于静态广播接收器
-    2 同优先级的同类广播接收器，静态：先扫描的优先于后扫描的，动态：先注册的优先于后注册的。
-
-### 本地广播
-
-系统全局广播，即发出的广播可以被其他任何应用程序接收到，并且也可以接收来自于其他任何应用程序的广播，这样就很容易引起安全性的问题。
-
-为了能够简单地解决广播的安全性问题，Android引入了一套本地广播机制，使用这个机制发出的广播只能够在应用程序的内部进行传递，并且广播接收器也只能接收来自本应用程序发出的广播，这样所有的安全性问题就都不存在了。
-
-本地广播的用法并不复杂，主要就是使用了一个LocalBroadcastManager来对广播进行管理，并提供了发送广播和注册广播接收器的方法。
-
-**本地广播和全局广播有什么差别？**
-
-- 全局广播：发出的广播可以被其他任何应用程序接收到，并且也可以接收来自于其他任何应用程序的广播。这样容易引起安全性问题。
-- 本地广播：发出的广播只能在应用程序的内部进行传递，并且BroadcastReceiver也只能接收本应用程序的广播。
-- BroadcastReceiver只会接收全局广播，LocalBroadcastReceiver只会接收本地广播。
-
-### 对BroadcastReceiver的理解
-
-**广播使用的方式和场景**
-
-当需要App应用内通信时，优先选择观察者或者Eventbus，当需要进程间通信或者监听系统广播事件时，选择Broadcast。
-
-# ContentProvider
-
-它主要的作用就是将程序的内部的数据和外部进行共享，为数据提供外部访问接口，被访问的数据主要以数据库的形式存在，而且还可以选择共享哪一部分的数据。这样一来，对于程序当中的隐私数据可以不共享，从而更加安全。contentprovider是android中一种跨程序共享数据的重要组件。
-
-**ContentProvider、ContentResolver、ContentObserver 之间的关系**
-
-- ContentProvider来提供内容给别的应用来操作。
-- ContentResolver来操作别的应用数据，当然在自己的应用中也可以。 
-- ContentObserver——内容观察者，目的是观察(捕捉)特定Uri引起的数据库的变化，继而做一些相应的处理，每次通过insert、delete、update改变数据库内容时，都会调用ContentObserver的onChange方法，因此，可以在这个方法内做出针对数据库变化的反应，比如更新UI等。
-
-## 奇妙的用法
-
-```xml
-<provider
-    android:name=".basic.provider.TestContentProvider"
-    android:authorities="mezzsy.test.provider"
-    android:enabled="true"
-    android:exported="true"></provider>
-```
-
-```
-I/TestContentProvider: onCreate: 
-I/MyApplication: onCreate: 
-```
-
-注册一个provider，在应用启动时，TestContentProvider的onCreate会比Application的onCreate要早，基于这个性质，第三方库可以通过注册provider省去手动调用init的代码
-
 # IntentFilter的匹配规则
 
-IntentFilter一般用在隐式调用上。
+本节讨论通过 `startActivity()` 隐式启动 Activity 的场景。
 
-IntentFilter的过滤信息有action、category、data。只有一个Intent同时匹配action、category、data才算完全匹配。一个Activity可以有多个intent-filter，一个Intent只要匹配任何一组就可以启动Activity。
+IntentFilter 从 `action`、`category`、`data` 三个方面匹配 Intent。三项必须在**同一个** `<intent-filter>` 中全部通过，不能分别匹配不同过滤器后拼凑结果。一个 Activity 可以声明多个过滤器，通过任意一个即可成为候选 Activity；
 
 ## action匹配规则
 
-1. 和action的字符串值完全一样
-2. 可以有多个action，只要和其中一个相同即可匹配成功
-3. action区分大小写
+1. Intent 显式指定的 action 必须与过滤器中的某个 `<action>` 字符串完全一致，区分大小写。
+2. 一个过滤器可以声明多个 action，Intent 的 action 匹配其中任意一个即可。
+3. 一个 Intent 同时只有一个 action 值，但可以多次调用 `setAction()`；后一次会覆盖前一次。
 
-Intent中如果没有指定action，那么匹配失败。
+例如：
 
 ```java
+Intent intent = new Intent();
+intent.setAction("com.mezzsy.test.intentfilter.OLD_ACTION");
+// 覆盖旧值，最终 action 为 ACTION。
 intent.setAction("com.mezzsy.test.intentfilter.ACTION");
 ```
 
-从接口的名称set可以看出，对于intent来说，action只能设置一次。
+允许未指定 action 的 Intent 在过滤器至少包含一个 action 时通过这一项测试。
 
 ## category匹配规则
 
-1. 如果Intent中有category，那么要求所有出现的category必须和过滤规则中的其中一个category相同
+1. Intent 中的每一个 category 都必须出现在同一个过滤器中，字符串匹配区分大小写。
+2. 过滤器可以声明 Intent 没有携带的 category，不影响匹配。即 Intent 的 category 集合必须是过滤器 category 集合的子集。
+3. Intent 没有 category 时，基础 category 测试可以通过；但隐式启动 Activity 还有下面的 `DEFAULT` 要求。
 
-Intent中可以没有category，Intent会自己加DEFAULT。
+`startActivity()` 解析隐式 Intent 时使用 `MATCH_DEFAULT_ONLY`，只考虑包含 `android.intent.category.DEFAULT` 的过滤器。因此，**用于接收这类隐式启动的 `<intent-filter>` 必须声明 `DEFAULT`**，自定义 category 不能替代它。调用方不必手动执行 `addCategory(Intent.CATEGORY_DEFAULT)`，这也不表示系统会修改 Intent 对象、往其 categories 中加入 `DEFAULT`。[官方 API 说明](https://developer.android.com/reference/android/content/pm/PackageManager#MATCH_DEFAULT_ONLY)
 
 ## data匹配规则
 
-和action类似，语法如下
+data 匹配同时考虑 **URI 和 MIME 类型**。两者都可以为空，是否需要提供取决于过滤器的声明；`putExtra()` 传入的附加参数不参与这项匹配。
+
+`<data>` 的常用属性如下，并不要求全部填写：
 
 ```xml
 <data
@@ -358,32 +158,78 @@ Intent中可以没有category，Intent会自己加DEFAULT。
     android:mimeType="string"/>
 ```
 
-data由两部分组成，mimeType和URI，mimeType指定媒体类型，可以表示图片、文本、视频等。
+`mimeType` 表示媒体类型，如 `image/png`、`text/plain`；过滤器也可以使用 `image/*`、`*/*` 等通配类型。
 
-URI的结构：
+### URI及其匹配属性
 
+常见的带主机名的 URI 可以写成下面的形式，方括号表示可选部分：
+
+```text
+scheme://host[:port][/path][?query][#fragment]
 ```
-<scheme>://<host>:<port>/[<path>|<pathPattern>|<pathPrefix>]
+
+这不是所有 URI 的必备结构。例如 `tel:12345`、`mailto:user@example.com` 都没有 host，仍是合法 URI；没有 scheme 的相对 URI 引用也不能一概判为无效。
+
+| 属性 | 匹配含义 |
+| --- | --- |
+| `scheme` | 协议或方案，如 `http`、`content`、`tel` |
+| `host` | 主机名，如 `www.example.com` |
+| `port` | 端口号；未声明时不限制端口 |
+| `path` | 精确匹配完整路径，如 `/articles/123` |
+| `pathPrefix` | 匹配路径前缀，如 `/articles/` |
+| `pathPattern` | 使用简单模式匹配完整路径 |
+
+这些 URI 匹配属性存在依赖：过滤器未声明 `scheme` 时，`host`、`port`、路径属性不起作用；未声明 `host` 时，`port` 和路径属性不起作用。只声明 `scheme="http"`，就只检查 URI 的 scheme，不限制 host 和 path。Android 的 scheme、host 及 MIME 类型匹配区分大小写，建议统一使用小写。
+
+`pathPattern` 使用简单 glob 规则，不支持完整正则表达式：`.` 表示任意单个字符，`*` 表示前一个字符重复零次或多次，`.*` 表示任意长度的字符序列。不能把单独的 `*` 理解为任意字符串，也不要套用正则表达式的分组、选择或回溯规则。XML 中匹配字面量 `*` 写作 `\\*`，匹配字面量反斜杠写作 `\\\\`；例如匹配 `/articles/` 下的路径可以使用 `android:pathPattern="/articles/.*"`。[官方属性说明](https://developer.android.com/guide/topics/manifest/data-element)
+
+### URI与MIME类型的组合规则
+
+下表按 Intent 的内容区分常见情况；其中 MIME 类型包含显式设置的类型，以及系统从 `content:` URI 的 ContentProvider 推断出的类型。
+
+| Intent 的内容 | 通过 data 匹配的条件 |
+| --- | --- |
+| URI 和 MIME 类型都为空 | 过滤器也未声明 URI 和 MIME 类型 |
+| 只有 URI，没有 MIME 类型 | URI 满足过滤器的 URI 条件，且过滤器未声明 MIME 类型 |
+| 只有 MIME 类型，没有 URI | 类型匹配，且过滤器未声明 URI scheme 条件 |
+| URI 和 MIME 类型都有 | 类型必须匹配；URI 也必须满足过滤器的 URI 条件。如果过滤器只声明 MIME 类型、未声明 scheme，还可接受 `content:` 或 `file:` URI |
+
+因此，“Intent 必须有 data”是错误的；同样，过滤器未声明 data，也不是接受任意 URI 或 MIME 类型，而是要求两者都为空。[官方 data 匹配规则](https://developer.android.com/guide/components/intents-filters#DataTest)
+
+设置数据时，`setData()` 会清除已有的 MIME 类型，`setType()` 会清除已有的 URI。需要同时设置两者时使用 `setDataAndType()`：
+
+```java
+intent.setDataAndType(Uri.parse("content://com.example.provider/images/1"), "image/png");
 ```
 
-1. Scheme：URI的模式、比如http、file、content等。没有scheme，那么URI是无效的
-2. Host:URI的主机名，比如www.baidu.com。没有Host，那么URI是无效的
-3. Port: URI的端口号，比如80
-4. path：路径完整信息
-5. pathPattern：路径完整信息，但是可以有通配符“\*”，根据正则表达式规范，如果想表达真实的字符串，那么\*要写成\\\\*，\要写成\\\\\\\
-6. pathPrefix：路径的前缀信息
+这里假设 URI 指向有效的 ContentProvider 数据；示例只展示设置方式。[Intent API 说明](https://developer.android.com/reference/android/content/Intent#setDataAndType(android.net.Uri,%20java.lang.String))
 
-### 规则
+### 多个data元素共同组成过滤条件
 
-1. Intent必须有data，并且和过滤规则中的某一个data匹配
+同一个 `<intent-filter>` 下的多个 `<data>` 会共同组成一个过滤器，不能理解为“完整匹配某一行 `<data>` 就行”。例如：
+
+```xml
+<intent-filter>
+    <action android:name="com.mezzsy.test.intentfilter.ACTION" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <data android:scheme="http" android:host="a.example.com" />
+    <data android:scheme="https" android:host="b.example.com" />
+</intent-filter>
+```
+
+这里的 scheme 集合是 `http`、`https`，host 集合是 `a.example.com`、`b.example.com`，所以 `http://b.example.com`、`https://a.example.com` 也能通过 URI 匹配。如果只想接受 `http://a.example.com` 和 `https://b.example.com` 两种组合，应拆成两个独立的 `<intent-filter>`，各自声明 action、`DEFAULT` 和对应 data。[官方合并规则](https://developer.android.com/guide/topics/manifest/data-element)
 
 ## 例子1
 
+以下示例由同一应用内的 Activity 发起调用。过滤器只要求 HTTP URI，没有声明 MIME 类型。
+
 ```xml
-<activity android:name=".basic.activity.intentfilter.SimpleIntentFilterActivity">
+<activity
+    android:name=".basic.activity.intentfilter.SimpleIntentFilterActivity"
+    android:exported="false">
     <intent-filter>
         <action android:name="com.mezzsy.test.intentfilter.ACTION" />
-        <!-- 一定要加DEFAULT，因为Intent会自己加DEFAULT -->
+        <!-- 隐式启动 Activity 时，只考虑包含 DEFAULT 的过滤器。 -->
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="com.mezzsy.test.intentfilter.category" />
 
@@ -401,7 +247,7 @@ public void onClick(View v) {
     intent.setData(Uri.parse("http://www.baidu.com"));
     try {
         startActivity(intent);
-    } catch (Exception e) {
+    } catch (ActivityNotFoundException e) {
         Log.i(TAG, "onClick: no such activity.");
     }
 }
@@ -412,11 +258,13 @@ I/隐式启动: onClick:
 I/隐式启动: onCreate: 
 ```
 
-可以看到，data不需要完整匹配
+这里能启动，是因为 action 相同、Intent 携带的 category 已在过滤器中声明、过滤器包含 `DEFAULT`，并且 URI 的 scheme 为 `http`、MIME 类型为空。过滤器没有约束 host 和 path，因此 `www.baidu.com` 可以通过；这不代表已经声明的 URI 条件可以不匹配。
+
+`android:exported="false"` 允许同应用内调用。若要接收其他应用的调用，需要按用途设置为 `true`。对于 targetSdkVersion >= 31 的应用，带 `<intent-filter>` 的 Activity 必须显式声明 `android:exported`。[Android 12 变更说明](https://developer.android.com/about/versions/12/behavior-changes-12#exported)
 
 ## 例子2
 
-和例子1相比，多了一个Category
+沿用例子1的过滤器，只在 Intent 中多添加一个 category：
 
 ```java
 public void onClick(View v) {
@@ -428,7 +276,7 @@ public void onClick(View v) {
     intent.setData(Uri.parse("http://www.baidu.com"));
     try {
         startActivity(intent);
-    } catch (Exception e) {
+    } catch (ActivityNotFoundException e) {
         Log.i(TAG, "onClick: no such activity.");
     }
 }
@@ -439,7 +287,31 @@ I/隐式启动: onClick:
 I/隐式启动: onClick: no such activity.
 ```
 
-启动失败
+该过滤器没有声明 `com.mezzsy.test.intentfilter.category2`，因此 category 匹配失败，不能解析到示例 Activity。假设没有其他可处理这个 Intent 的 Activity，`startActivity()` 会抛出 `ActivityNotFoundException`，得到上面的日志。
+
+## 不携带data的例子
+
+只声明 action 和 `DEFAULT`，不声明 `<data>`：
+
+```xml
+<activity
+    android:name=".basic.activity.intentfilter.SimpleIntentFilterActivity"
+    android:exported="false">
+    <intent-filter>
+        <action android:name="com.mezzsy.test.intentfilter.OPEN" />
+        <category android:name="android.intent.category.DEFAULT" />
+    </intent-filter>
+</activity>
+```
+
+同应用内可以这样隐式启动，不需要调用 `setData()` 或 `setType()`：
+
+```java
+Intent intent = new Intent("com.mezzsy.test.intentfilter.OPEN");
+startActivity(intent);
+```
+
+双方都没有 URI 和 MIME 类型，data 测试通过。如果反而给这个 Intent 设置了 URI 或 MIME 类型，就无法匹配这个过滤器。
 
 # Fragment
 
@@ -461,7 +333,7 @@ I/隐式启动: onClick: no such activity.
 
 可见与获取焦点相关的生命周期与Fragment无关，只与其Activty有关。
 
-### Activity和Fragment一起的生命周期
+### 【测试日志】Activity和Fragment一起的生命周期
 
 在Activity中添加Fragment
 
@@ -512,7 +384,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 
 fragment的添加是有个post操作的，并不是立即生效。
 
-### AB两个Fragment
+### 【测试日志】AB两个Fragment
 
 ```
 2023-04-19 22:17:27.256 25739-25739/? I/firstFragment: onAttach: 
@@ -549,7 +421,7 @@ supportFragmentManager
         .commit()
 ```
 
-### AB两个Fragment addToBackStack(null)
+### 【测试日志】AB两个Fragment addToBackStack(null)
 
 ```
 2023-04-19 22:30:56.452 29263-29263/? I/firstFragment: onAttach: 
@@ -610,6 +482,13 @@ findViewById<Button>(R.id.btn_replace_fragment).setOnClickListener {
 - EventBus等等观察者模式
 
 ## Fragment解析
+
+### 小结
+
+1. 通过fragmentManager开启一个事务记录操作并提交事务
+2. 初始化 Fragment：`FragmentManager` 执行事务，关联宿主 Activity，回调 `onAttach()` → `onCreate()`。
+3. 创建并挂载 View：通过 `onCreateView()` 创建视图，将其加入指定容器，再回调 `onViewCreated()`。
+4. 推进生命周期：根据宿主状态和事务限制，继续执行 `onStart()`、`onResume()`。
 
 ### Transaction的开启
 
@@ -1051,33 +930,67 @@ static final int RESUMED = 4;          // Created started and resumed.
 
 并没有pause或者stop的字段，是因为pause复用了STARTED，stop复用了STARTED，destroy复用了INITIALIZING。
 
-### 参考
+## Activity和Fragment的区别
 
-1.  https://www.jianshu.com/p/180d2cc0feb5
+1. 生命周期：
+   Activity的生命周期：**onCreate**、**onStart**、**onResume**、**onPause**、**onStop**、**onDestroy**、**onRestart**。
+   Fragment的生命周期：**onAttach**、**onCreate**、**onCreateView**、**onActivityCreated**、**onStart**、**onResume**、**onPause**、**onStop**、**onDestroyView**、**onDestroy**、**onDetach**。
 
-### 一些思考
+2. 灵活性：
+   Activity是四大组件之一，Fragment的显示要依赖于Activity。
+   1. Fragment相比较与Activity来说更加灵活，可以在XML文件中直接进行写入，也可以在Activity中动态添加。
+   2. 可以使用show()/hide()或者replace()随时对Fragment进行切换，并且切换的时候不会出现明显的效果，用户体验会好；Activity虽然也可以进行切换，但是Activity之间切换会有明显的翻页或者其他的效果，在小部分内容的切换上给用户的感觉不是很好。
 
-Fragment是怎样管理View的？
+## FragmentActivity和Activity的区别
 
-回退是如何实现的？
+fragment是3.0以后的东西，为了在低版本中使用fragment就要用到android-support-v4.jar兼容包，而fragmentActivity就是这个兼容包里面的，它提供了操作fragment的一些方法，其功能跟3.0及以后的版本的Activity的功能一样。
 
-# 四大组件的工作过程
+1. fragmentactivity继承自activity，用来解决android3.0之前没有fragment的api，所以在使用的时候需要导入support包，同时继承fragmentActivity，这样在activity中就能嵌入fragment来实现你想要的布局效果。 
 
-创建应用进程的方式：
+2. 当然3.0之后你就可以直接继承自Activity，并且在其中嵌入使用fragment了。 
 
-1.   AMS在启动应用程序的时候会检查对应的进程是否存在，如果不存在就会请求Zygote进程启动需要的应用程序进程。
-2.   在Zygote进程中会有一个名为zygote的Socket，这个Socket用来等待AMS请求Zygote来创建新的应用程序进程。
-3.   Zygote进程通过fock自身创建应用程序进程，这样应用程序进程就会获得Zygote进程在启动时创建的虚拟机实例副本。除此之外，还做了这些事情：
-     1 创建Binder线程池。
-     2 通过抛异常的方式来清空设置过程的堆栈帧。
-     3 调用ActivityThread的main方法。
-4.   Zygote创建完应用进程后会调用ActivityThread的main方法。ActivityThread主要用来管理主线程，main方法内部会创建H类对象，继承自Handler，用于处理主线程的消息循环。然后通过`Looper.loop()`开启消息循环。
+3. 获得Manager的方式也不同
 
-## Activity
+   3.0以下：getSupportFragmentManager() 
+   3.0以上：getFragmentManager()
 
-1.   通过IPC，通知AMS startActivity。
-2.   然后获取Activity的启动进程，如果不存在就创建。如果存在应用程序进程，就在应用程序进程中启动根Activity。
-3.   AMS通知应用进程创建Activity。AMS也需要一个本地代理来与目标进程交互，这个对象就是ActivityThread的内部类ApplicationThread，它继承了IApplicationThread.Stub。
-     ApplicationThread将启动Activity的参数进行封装，并通知H消息管理类发送处理启动Activity的逻辑（因为ApplicationThread是一个Binder，方法运行在Binder池中，所以需要Handler将逻辑回调到主线程）。
-4.   然后根据参数创建Context对象，Activity对象和Application对象。
-5.   接着初始化Activity，并回调onCreate生命周期。
+## Fragment状态保存
+
+实际上，fragment的状态保存和恢复机制和activity是完全一致的。说明解决方案之前，我们首先应该弄清楚下边的几个问题：
+
+1. 什么时候保存状态，什么时候恢复状态
+2. 保存和恢复什么状态（fragment的状态还是view的状态？）
+3. setRetainInstance(true)
+
+
+
+什么时候保存状态，什么时候恢复状态？
+
+当系统认为你的fragment存在被销毁的可能时（不包括用户主动退出fragment导致其被销毁，比如按BACK键后fragment被主动销毁）， onSaveInstanceState 就会被调用，给你一个机会来保存状态。以下几种情况可能导致fragment被异常销毁；
+
+1. 按HOME键返回桌面时
+2. 按菜单键回到系统后台，并选择了其他应用时
+3. 按电源键时
+4. 屏幕方向切换时
+
+这四种情况中，前三种情况都是因为应用处于后台，根据Android系统的缓存机制，为了保持系统的流畅运行，处于后台的应用有很大的可能被清除，既然应用已经不在了，fragment自然也被销毁了；最后一种情况是由于屏幕方向切换导致配置改变，activity被销毁，fragment也随之被销毁了。 
+
+在这些情况下，我们就可以通过 onSaveInstanceState 方法将数据保存到它的参数bundle对象中了。以上触发onSaveInstanceState 的状况和activity完全一致。 
+
+有了保存，就应该有恢复。和activity不同的是，fragment没有onRestoreInstanceState方法，但是我们可以**在onActivityCreated中恢复数据**，它的参数中的bundle对象包含了在异常销毁前保存的数据。
+
+## fragment之间传递数据的方式？
+
+1. 在创建Fragment的需要添加tag(标签)，然后在发送数据的fragment中根据tag找到接收数据的fragment
+
+```java
+Bundle bundle = new Bundle();
+bundle.putString("data"，"改变图片了");
+FragmentRight fragmentRight = (FragmentRight) getActivity()
+                        .getFragmentManager()
+                        .findFragmentByTag("fRight");
+fragmentRight.setData(bundle);
+```
+
+2. 接口
+3. EventBus

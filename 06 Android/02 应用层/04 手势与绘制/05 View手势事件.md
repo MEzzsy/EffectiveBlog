@@ -1,3 +1,52 @@
+# 🌟总结
+
+View的手势事件分发主要是dispatchTouchEvent、onInterceptTouchEvent、onTouchEvent。
+
+## ViewRootImpl事件分发
+
+ViewRootImpl除了负责绘制流程，还是手势事件的中转站。
+
+手势事件先到达ViewRootImpl的WindowInputEventReceiver，ViewRootImpl最终会调用DecorView的dispatchPointerEvent，而DecorView通过WindowCallback传给Activity的dispatchTouchEvent，这样手势事件进入Activity。
+
+## Activity事件分发
+
+Activity通过Window将手势事件传给DecorView，DecorView通过dispatchTouchEvent来分发。这样手势事件进入View体系。
+
+## dispatchTouchEvent
+
+dispatchTouchEvent用于分发事件，返回值表示是否消费此次事件。
+
+当事件为ACTION_DOWN时，会遍历子View分发该事件，如果有子View消费了该事件，那么将子View加入到TouchTarget。如果没有子View消费该事件（TouchTarget为空），那么调用ViewGroup自身的onTouchEvent。
+
+其余事件，会遍历TouchTarget来分发。
+
+## onInterceptTouchEvent
+
+onInterceptTouchEvent用于拦截事件，只有ViewGroup才有。
+
+当事件为ACTION_DOWN或者TouchTarget不为空时才会判断，在此基础上，还会判断FLAG_DISALLOW_INTERCEPT标记是否被设置，这个标记位是通过`requestDisallowInterceptTouchEvent()`方法来设置的。这个标记位一旦设置后，ViewGroup就无法拦截除ACTION_DOWN以外的其他点击事件（因为在ACTION_DOWN时，mGroupFlags会被重置，所以disallowIntercept默认是false）。
+
+如果选择拦截：
+
+1.   如果没有TouchTarget，那么调用ViewGroup自身的onTouchEvent。
+2.   如果有TouchTarget，那么会转为ACTION_CANCEL事件分发给该子View，并移除该TouchTarget。注意此次事件期间，ViewGroup不会调用自身的onTouchEvent。后续的事件才会。
+
+## onTouchEvent
+
+处理手势逻辑。
+
+1.   存在OnTouchListener，调用OnTouchListener中的onTouch方法。
+2.   如果onTouch返回false，则调用View的onTouchEvent方法。如果返回true，那么onTouchEvent方法将不会被调用。
+3.   在onTouchEvent方法中，如果当前设置的有OnClickListener，那么它的onClick方法会被
+     调用。
+
+由此可见，给View设置的OnTouchListener，其优先级比onTouchEvent要高。OnClickListener，其优先级最低，即处于事件传递的尾端。
+
+如果一个View的onTouchEvent（ACTION_DOWN）返回false，那么它的父容器的onTouchEvent将会被调用，依此类推。如果所有的元素都不处理这个事件，那么这个事件将会最终传递给Activity处理。
+
+如果一个View的非ACTION_DOWN返回了false，那么父容器不会调用自己的onTouchEvent，最终是由Activity处理。
+注意，这条和拦截有点区别。后续的事件还会传到子View中，子View并没有从TouchTarget中移除。（见例子10）
+
 # 基础
 
 点击事件即是MotionEvent，由三个方法构成：dispatchTouchEvent、onInterceptTouchEvent、onTouchEvent。
@@ -607,55 +656,6 @@ public boolean dispatchTouchEvent(MotionEvent ev) {
 
 另外，如果一个View的onTouchEvent（ACTION_DOWN）返回false，那么它的父容器的onTouchEvent将会被调用，依此类推。如果所有的元素都不处理这个事件，那么这个事件将会最终传递给Activity处理。
 如果非ACTION_DOWN返回了false，那么父容器不会调用自己的onTouchEvent，最终是由Activity处理。
-
-# 总结
-
-View的手势事件分发主要是dispatchTouchEvent、onInterceptTouchEvent、onTouchEvent。
-
-## ViewRootImpl事件分发
-
-ViewRootImpl除了负责绘制流程，还是手势事件的中转站。
-
-手势事件先到达ViewRootImpl的WindowInputEventReceiver，ViewRootImpl最终会调用DecorView的dispatchPointerEvent，而DecorView通过WindowCallback传给Activity的dispatchTouchEvent，这样手势事件进入Activity。
-
-## Activity事件分发
-
-Activity通过Window将手势事件传给DecorView，DecorView通过dispatchTouchEvent来分发。这样手势事件进入View体系。
-
-## dispatchTouchEvent
-
-dispatchTouchEvent用于分发事件，返回值表示是否消费此次事件。
-
-当事件为ACTION_DOWN时，会遍历子View分发该事件，如果有子View消费了该事件，那么将子View加入到TouchTarget。如果没有子View消费该事件（TouchTarget为空），那么调用ViewGroup自身的onTouchEvent。
-
-其余事件，会遍历TouchTarget来分发。
-
-## onInterceptTouchEvent
-
-onInterceptTouchEvent用于拦截事件，只有ViewGroup才有。
-
-当事件为ACTION_DOWN或者TouchTarget不为空时才会判断，在此基础上，还会判断FLAG_DISALLOW_INTERCEPT标记是否被设置，这个标记位是通过`requestDisallowInterceptTouchEvent()`方法来设置的。这个标记位一旦设置后，ViewGroup就无法拦截除ACTION_DOWN以外的其他点击事件（因为在ACTION_DOWN时，mGroupFlags会被重置，所以disallowIntercept默认是false）。
-
-如果选择拦截：
-
-1.   如果没有TouchTarget，那么调用ViewGroup自身的onTouchEvent。
-2.   如果有TouchTarget，那么会转为ACTION_CANCEL事件分发给该子View，并移除该TouchTarget。注意此次事件期间，ViewGroup不会调用自身的onTouchEvent。后续的事件才会。
-
-## onTouchEvent
-
-处理手势逻辑。
-
-1.   存在OnTouchListener，调用OnTouchListener中的onTouch方法。
-2.   如果onTouch返回false，则调用View的onTouchEvent方法。如果返回true，那么onTouchEvent方法将不会被调用。
-3.   在onTouchEvent方法中，如果当前设置的有OnClickListener，那么它的onClick方法会被
-     调用。
-
-由此可见，给View设置的OnTouchListener，其优先级比onTouchEvent要高。OnClickListener，其优先级最低，即处于事件传递的尾端。
-
-如果一个View的onTouchEvent（ACTION_DOWN）返回false，那么它的父容器的onTouchEvent将会被调用，依此类推。如果所有的元素都不处理这个事件，那么这个事件将会最终传递给Activity处理。
-
-如果一个View的非ACTION_DOWN返回了false，那么父容器不会调用自己的onTouchEvent，最终是由Activity处理。
-注意，这条和拦截有点区别。后续的事件还会传到子View中，子View并没有从TouchTarget中移除。（见例子10）
 
 # 几个结论
 

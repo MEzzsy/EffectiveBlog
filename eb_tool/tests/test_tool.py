@@ -71,12 +71,98 @@ class FileManagerTests(unittest.TestCase):
         self.assertIn("(<./01 [示例] %231.md>)", self.read("01 基础/03 深层/README.md"))
         self.assertIn("暂无文档。", self.read("02 目标/README.md"))
         self.assertIn("- [03 引用](<./03 引用/README.md>)\n  - [01 外部]", self.read("SUMMARY.md"))
-        self.assertEqual((self.root / "README.md").read_bytes(), root_readme)
+        self.assertEqual((self.root / "README.md").read_bytes(), root_readme + "\n总字数：32\n".encode())
         for directory in ["assets", "img", "eb_tool", "docs", "build", "dist", "node_modules", ".hidden",
                           "01 基础/assets", "01 基础/node_modules", "01 基础/.hidden"]:
             self.assertFalse((self.root / directory / "README.md").exists())
         for excluded in ["隐藏", "AGENTS", "04 链接", ".eb-"]:
             self.assertNotIn(excluded, readme + self.read("SUMMARY.md"))
+
+    def test_word_count_includes_code_and_tracks_document_edits_and_removals(self):
+        self.put("01 基础/01 文档.md", "中文 English42 123，。\n```python\n变量 = 42\n```\n")
+        self.put("01 基础/02 同级.md", b"\xef\xbb\xbf" + "𠀀𰀀漢字 camelCase HTTP2 2026-09-27\n".encode())
+        self.put("03 引用/01 外部.md", "")
+        self.put("01 根文档.MD", "# 标题\n")
+        self.put("01 基础/notes.txt", "不统计")
+        self.put("01 基础/.hidden.md", "不统计")
+        self.put("01 基础/03 自定义忽略/01 笔记.md", "不统计")
+        self.config["gen_ignore"].append("03 自定义忽略")
+        self.generate()
+        self.assertEqual(self.read("README.md"), "# 介绍\n\n总字数：19\n")
+        self.put("01 基础/01 文档.md", "新正文")
+        (self.root / "01 根文档.MD").unlink()
+        self.generate()
+        self.assertEqual(self.read("README.md"), "# 介绍\n\n总字数：12\n")
+
+    def test_word_count_preserves_root_readme_text_bom_crlf_and_missing_final_newline(self):
+        original = b"\xef\xbb\xbf" + "说明  \r\n\r\n总字数：999,999  \r\n\r\n# 补充\r\n保留尾部  ".encode()
+        readme = self.put("README.md", original)
+        self.generate()
+        self.assertEqual(readme.read_bytes(), original.replace(b"999,999", b"30"))
+
+    def test_ui_word_count_uses_rewritten_links_and_is_restored_by_undo(self):
+        self.put("01 基础/01 文档.md", "正文")
+        self.put("01 基础/02 同级.md", "[文档](<01 文档.md>)")
+        self.put("03 引用/01 外部.md", "")
+        self.generate()
+        self.assertIn("总字数：8\n", self.read("README.md"))
+        before = self.contents()
+        self.operate("rename", path="01 基础/01 文档.md", name="名称变长.md")
+        self.assertIn("总字数：10\n", self.read("README.md"))
+        self.operate("undo")
+        self.assertEqual(before, self.contents())
+
+    def test_empty_repository_creates_root_word_count_and_summary_home_link(self):
+        with tempfile.TemporaryDirectory(prefix="eb-empty-") as directory:
+            root = Path(directory)
+            with contextlib.redirect_stdout(io.StringIO()):
+                tool.generate_summary(root, self.config["gen_ignore"])
+            self.assertEqual((root / "README.md").read_text(), "总字数：0\n")
+            self.assertIn("[00 介绍](<./README.md>)", (root / "SUMMARY.md").read_text())
+
+    def test_word_count_formats_thousands_and_appends_to_readme_without_count(self):
+        self.put("01 基础/01 文档.md", "字" * 1000)
+        self.put("01 基础/02 同级.md", "")
+        self.put("03 引用/01 外部.md", "")
+        for original in [b"", b"\xef\xbb\xbf", b"Intro", b"Intro\n", b"Intro\n\n", b"Intro\r\n"]:
+            with self.subTest(original=original):
+                readme = self.put("README.md", original)
+                self.generate()
+                updated = readme.read_bytes()
+                self.assertTrue(updated.startswith(original))
+                self.assertEqual(updated.count("总字数：1,000".encode()), 1)
+                if b"\r\n" in original:
+                    self.assertNotIn(b"\n", updated.replace(b"\r\n", b""))
+                self.generate()
+                self.assertEqual(readme.read_bytes(), updated)
+
+    def test_invalid_document_or_root_readme_aborts_generation_without_partial_writes(self):
+        for name in ["01 基础/01 文档.md", "README.md"]:
+            with self.subTest(name=name):
+                path = self.root / name
+                original = path.read_bytes()
+                path.write_bytes(b"\xff")
+                before = self.contents()
+                with self.assertRaisesRegex(RuntimeError, "已回滚"):
+                    self.generate()
+                self.assertEqual(before, self.contents())
+                path.write_bytes(original)
+
+    def test_root_readme_write_failure_rolls_back_all_generated_files(self):
+        before = self.contents()
+        write = tool.FileManager._write_atomic
+        failed = False
+        def fail_after_root_write(manager, path, *args):
+            nonlocal failed
+            write(manager, path, *args)
+            if path == self.root / "README.md" and not failed:
+                failed = True
+                raise OSError("word count write failed")
+        with mock.patch.object(tool.FileManager, "_write_atomic", new=fail_after_root_write):
+            with self.assertRaisesRegex(RuntimeError, "已回滚"):
+                self.generate()
+        self.assertTrue(failed)
+        self.assertEqual(before, self.contents())
 
     def test_generation_is_idempotent_and_preserves_manual_text_bom_and_crlf(self):
         manual = b"\xef\xbb\xbf" + "说明  \r\n\r\n# 手写目录\r\n\r\n- 保留这一项\r\n".encode()
@@ -150,6 +236,20 @@ class FileManagerTests(unittest.TestCase):
     def test_readme_symlink_or_directory_is_not_overwritten(self):
         readme = self.root / "03 引用/README.md"
         readme.symlink_to(self.root / "README.md")
+        for kind in ["符号链接", "普通文件"]:
+            with self.subTest(kind=kind):
+                before = self.contents()
+                with self.assertRaisesRegex(RuntimeError, kind):
+                    self.generate()
+                self.assertEqual(before, self.contents())
+            if readme.is_symlink():
+                readme.unlink()
+                readme.mkdir()
+
+    def test_root_readme_symlink_or_directory_is_not_overwritten(self):
+        readme = self.root / "README.md"
+        readme.unlink()
+        readme.symlink_to(self.root / "01 基础/01 文档.md")
         for kind in ["符号链接", "普通文件"]:
             with self.subTest(kind=kind):
                 before = self.contents()
@@ -400,7 +500,7 @@ class FileManagerTests(unittest.TestCase):
         self.assertEqual(result["focusPaths"], ["02 目标/03 同名.md"])
         for number, label in [(1, "first"), (2, "second"), (3, "third")]:
             self.assertEqual(self.read(f"02 目标/{number:02d} 同名.md"), label)
-        self.assertEqual(self.read("README.md"), "[a](<02 目标/01 同名.md>) [b](<02 目标/02 同名.md>) [c](<02 目标/03 同名.md>)")
+        self.assertEqual(self.read("README.md"), "[a](<02 目标/01 同名.md>) [b](<02 目标/02 同名.md>) [c](<02 目标/03 同名.md>)\n\n总字数：33\n")
         self.operate("undo")
         self.assertEqual(before, self.contents())
 

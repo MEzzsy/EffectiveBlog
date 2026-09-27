@@ -46,6 +46,13 @@ DEFAULT_ROOT = TOOL_DIRECTORY.parent
 SUMMARY_FILE_NAME = "SUMMARY.md"
 README_TOC_START = "<!-- eb_tool:toc:start -->"
 README_TOC_END = "<!-- eb_tool:toc:end -->"
+DOCUMENT_WORD_RE = re.compile(
+    r"[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff"
+    r"\U00020000-\U0002fa1f\U00030000-\U000323af]|[A-Za-z0-9]+"
+)
+README_WORD_COUNT_RE = re.compile(
+    r"^([ \t]*总字数[：:][ \t]*)[0-9][0-9,]*([ \t]*)(?=\r?$)", re.MULTILINE,
+)
 FORMATTED_IMAGE_RE = re.compile(
     r"^eb_(\d{5})(\.(?:avif|bmp|gif|heic|heif|ico|jpe?g|png|svg|tiff?|webp))$",
     re.IGNORECASE,
@@ -643,6 +650,44 @@ def update_readme_toc(original: bytes | None, lines: list[str]) -> bytes:
     return prefix + markdown.encode("utf-8")
 
 
+def count_document_words(
+    root: Path,
+    ignored_names: set[str],
+    pending_changes: dict[Path, tuple[bytes | None, bytes | None]] | None = None,
+) -> int:
+    """统计目录生成范围内的 Markdown 源文本，汉字逐字、连续英文数字按词。"""
+    pending_changes = pending_changes or {}
+    total = 0
+    for path, is_directory in summary_children(root, ignored_names):
+        if is_directory:
+            total += count_document_words(path, ignored_names, pending_changes)
+            continue
+        try:
+            content = pending_changes[path][1] if path in pending_changes else path.read_bytes()
+            markdown = (content or b"").decode("utf-8-sig")
+        except (OSError, UnicodeError) as error:
+            raise ValueError(f"无法统计文档字数 {path}：{error}") from error
+        total += sum(1 for _ in DOCUMENT_WORD_RE.finditer(markdown))
+    return total
+
+
+def update_readme_word_count(original: bytes | None, total: int) -> bytes:
+    """更新已有总字数行，缺少时追加；保留其他正文、BOM 和换行。"""
+    original = original or b""
+    markdown = original.decode("utf-8-sig")
+    newline = "\r\n" if b"\r\n" in original else "\n"
+    markdown, replacements = README_WORD_COUNT_RE.subn(
+        lambda match: f"{match.group(1)}{total:,}{match.group(2)}", markdown,
+    )
+    if not replacements:
+        separator = "" if not markdown or markdown.endswith(newline * 2) else (
+            newline if markdown.endswith(newline) else newline * 2
+        )
+        markdown += separator + f"总字数：{total:,}" + newline
+    prefix = b"\xef\xbb\xbf" if original.startswith(b"\xef\xbb\xbf") else b""
+    return prefix + markdown.encode("utf-8")
+
+
 def build_summary_content(root: Path, configured_ignores: Iterable[str]) -> str:
     ignored_names = {name for name in configured_ignores if name}
     lines = ["# Summary", ""]
@@ -664,8 +709,8 @@ def generate_summary(root: Path, configured_ignores: Iterable[str]) -> None:
     summary_file = manager.root / SUMMARY_FILE_NAME
     content = summary_file.read_text(encoding="utf-8-sig")
     entry_count = sum(1 for line in content.splitlines() if line.lstrip().startswith("- "))
-    readme_count = sum(path.name == "README.md" for path in changes)
-    print(f"已生成 {summary_file}，共 {entry_count} 个条目；更新 {readme_count} 个章节 README。")
+    readme_count = sum(path.name == "README.md" and path.parent != manager.root for path in changes)
+    print(f"已生成 {summary_file}，共 {entry_count} 个条目；更新 {readme_count} 个章节 README，已同步根 README 总字数。")
 
 
 def fenced_code_ranges(markdown: str) -> list[tuple[int, int]]:
@@ -1734,6 +1779,21 @@ class FileManager:
             else:
                 changes.pop(path, None)
 
+        path = self.root / "README.md"
+        if path in changes:
+            original, current = changes[path]
+        else:
+            original = current = self._read_optional(path)
+        total = count_document_words(self.root, ignored_names, changes)
+        try:
+            updated = update_readme_word_count(current, total)
+        except UnicodeError as error:
+            raise ValueError(f"无法生成 README.md：{error}") from error
+        if updated != original:
+            changes[path] = (original, updated)
+        else:
+            changes.pop(path, None)
+
     def _commit(
         self, moves: list[tuple[Path, Path]],
         changes: dict[Path, tuple[bytes | None, bytes | None]],
@@ -2100,7 +2160,7 @@ def build_argument_parser() -> argparse.ArgumentParser:
     actions.add_argument(
         "--gen",
         action="store_true",
-        help="递归生成 SUMMARY.md 和各章节 README.md 中的目录",
+        help="递归生成 SUMMARY.md 和各章节 README.md 中的目录，并更新根 README.md 的总字数",
     )
     actions.add_argument(
         "--format_img",

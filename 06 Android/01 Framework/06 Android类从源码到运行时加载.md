@@ -291,6 +291,70 @@ ART native runtime 定义类
 
 编译期能解析某个类型，只说明编译器当时能在依赖中找到它；运行时是否能加载，还要看目标类是否保留在最终 DEX 中，以及对应 DEX 是否位于当前 ClassLoader 的查找范围。
 
+
+
+| 方式                         | 从哪里进入加载流程                                           |
+| ---------------------------- | ------------------------------------------------------------ |
+| `new X()`、`X.class`         | 由 **ART 解析 DEX 中的类型引用**，需要时查找、加载 `X`。     |
+| `Class.forName("X")`         | Java API 内部通过 native 方法，**直接进入 ART 的 `ClassLinker::FindClass()`**，不是先调用 Java 的 `loadClass()`。 |
+| `classLoader.loadClass("X")` | **从 Java 层的 `loadClass()` 方法开始**，过程中通过 native 方法进入 ART。 |
+
+## ART 是如何加载类的
+
+ART 中主要由 native 层的 **`ClassLinker`** 负责：**结合类描述符和 ClassLoader 查找类，必要时读取 DEX 中的类定义，建立 `Class` 对象及字段、方法等运行时结构。**
+
+### 🌟总结
+
+以下以标准 `PathClassLoader`、`DexClassLoader` 为例，假设目标普通类尚未加载，且最终能从 DEX 成功加载。
+
+1. `Class.forName("X")` 通过 native 方法进入 ART 的 `FindClass()`；`new X()`、`X.class` 在解析目标类型时，也会进入该查找流程。ART 在 native 层遵循父加载器优先的规则，父加载器找不到时，再查找当前加载器自己的 DEX。
+2. `classLoader.loadClass("X")` 先在 Java 层执行双亲委派。轮到应用加载器查找自己的 DEX 时，通过 `DexFile.defineClassNative()` 找到类定义并直接调用 `DefineClass()`，这一步不会再为目标类重复执行双亲委派。但不能据此认为整个 `loadClass()` 流程都不会调用 `FindClass()`，例如委派到 `BootClassLoader` 时仍会进入它。
+3. 两条路径最终都会通过 `DefineClass()`，将 DEX 类定义转换为运行时结构。`DefineClass()` 成功返回后，就有了完成必要链接的 `Class` 对象，但不代表已经完成静态初始化。
+
+下图展示父加载器未找到 `X`、最终从当前应用加载器的 DEX 定义 `X` 的主流程：
+
+```mermaid
+flowchart TB
+    subgraph java_entry["入口一：Java loadClass"]
+        J0["classLoader.loadClass(X)"] --> J1["Java 层执行双亲委派"]
+        J1 -->|父加载器未找到| J2["当前加载器 findClass()<br/>DexPathList 遍历 dexElements"]
+        J2 --> J3["DexFile.defineClassNative()<br/>进入 native 层"]
+        J3 --> J4["查找传入 DEX 集合中的 ClassDef<br/>此处不再重复执行委派"]
+    end
+
+    subgraph art_entry["入口二：直接进入 ART"]
+        A0["Class.forName(X)<br/>或 new X() / X.class 的类型解析"] --> A1["ClassLinker::FindClass()"]
+        A1 --> A2["native 层按 parent 优先查找"]
+        A2 -->|父加载器未找到| A3["查找当前加载器 DEX 中的 ClassDef"]
+    end
+
+    J4 -->|找到类定义| D["ClassLinker::DefineClass()"]
+    A3 -->|找到类定义| D
+    D --> C["分配 Class 对象<br/>建立字段、方法等元数据<br/>加载父类和接口，完成必要链接"]
+    C --> R["成功返回 Class 对象"]
+    R -.->|主动使用或明确要求初始化时| I["完成静态初始化<br/>存在 clinit 时执行 clinit"]
+```
+
+### 进入 ART 的两条常见路径
+
+1. 显式调用 Java 的 `ClassLoader.loadClass()`。
+2. ART 自己解析类型引用，或通过 `Class.forName()` 进入。
+
+### FindClass：先查已加载类，再按加载器规则寻找定义
+
+`ClassLinker::FindClass()` 的主要工作如下：
+
+1. **查询已加载类表。** 通过 `LookupClass()`，在对应 ClassLoader 的类表中按描述符查找；命中后通过 `EnsureResolved()` 确保类已完成必要的链接。如果其他线程正在定义这个类，可能需要等待。
+2. **查找系统类。** 对引导加载器，从 boot class path 中寻找定义；ART 内部通常用空 ClassLoader 引用表示引导加载器。
+3. **查找应用类。** 对能识别的 `PathClassLoader`、`DexClassLoader` 等加载器，ART 可以直接在 native 层遍历加载器关系和 DEX。普通应用加载器仍按 parent 优先的规则查找，还会处理配置的共享库加载器。
+4. **必要时回调 Java。** 遇到不能识别的自定义加载器时，调用其 Java `loadClass()`，让自定义逻辑决定如何加载；部分查找失败路径也会回到 Java。
+
+所以，**没有经过 Java `loadClass()` 方法体，不代表跳过了 ClassLoader 的查找范围和委派规则**。ART 可以直接实现已知加载器的查找流程。
+
+### DefineClass：把 DEX 类定义变成运行时结构
+
+`DefineClass()` 成功返回后，就有对应的 `Class` 对象了，并且已经完成必要的链接。
+
 # loadClass 的双亲委派
 
 `ClassLoader.loadClass(name)` 的默认查找过程可以概括为：

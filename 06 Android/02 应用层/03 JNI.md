@@ -1,7 +1,3 @@
-1.  加载so库原理
-2.  native方法调用原理
-3.  JNI中的引用
-
 # JavaVM和JNIEnv
 
 -   JavaVM：它代表Java虚拟机。每一个Java进程有一个全局唯一的JavaVM对象。
@@ -9,15 +5,51 @@
 
 JavaVM和JNIEnv是jni.h里定义的数据结构，里边包含的都是函数指针成员变量。所以，这两个数据结构有些类似Java中的interface。不同虚拟机实现都会从它们派生出实际的实现类。
 
+# so打包到apk
+
+在打包与签名阶段，构建工具将 DEX、资源、Manifest、assets 和 so 库等内容组合为 APK。
+
+具体见： [01 Android编译打包流程.md](02 Android编译打包/01 Android编译打包流程.md) 
+
+# 安装apk时的so
+
+安装 APK 时，系统选择匹配设备 ABI 的 so，分两种情况：
+
+- **需要提取**：将 APK 中 `lib/<ABI>/` 下的 so 提取到应用的原生库目录，可通过 `ApplicationInfo.nativeLibraryDir` 获取。
+- **不需要提取**（`extractNativeLibs=false`）：so 保留在 APK 内，运行时直接从 APK 加载；要求 so 未压缩并正确对齐。
+
+
+
+`android:extractNativeLibs` 控制**安装 APK 时是否提取 so 库**：
+
+- **`true`**：安装时将 so 提取到应用的原生库目录，运行时从该目录加载。
+- **`false`**：不提取，运行时直接从 APK 加载；so 必须未压缩且正确对齐，可以减少安装占用空间。
+
+它配置在 Manifest 的 `<application>` 标签上。
+
+> 这里的 so 压缩指 APK 内的 ZIP 压缩。APK 本质上是 ZIP 文件：
+>
+> - 压缩存储：将 so 压缩后放进 APK，减小 APK 体积，加载前需要解压。
+> - 未压缩存储：将 so 原样放进 APK，满足对齐要求时，可以直接映射到内存加载。
+>
+> 压缩是无损的，解压后的 so 与压缩前相同。
+
 # 加载so库原理
 
-//TODO
+## 🌟加载so库总结
 
-1. so库是如何打到apk包的？
-2. 安装apk包是如何放置so库的？
-3. 打开App是如何读取so库的？
+1. **Java 层确定路径**：`System.load` 直接接收绝对路径；`System.loadLibrary` 接收库名，通过 ClassLoader 等机制找到 so 路径。
+2. **ART 检查加载记录**：经 `Runtime.doLoad → nativeLoad → Runtime_nativeLoad → JVM_NativeLoad` 进入 `JavaVMExt::LoadNativeLibrary`，检查该路径是否已加载、ClassLoader 是否匹配，以及此前初始化是否成功。
+3. **调用动态加载接口**：尚未加载时，ART 调用 `OpenNativeLibrary`。在本文的 Android 8.0 实现中，普通应用通常调用 `android_dlopen_ext`，携带 ClassLoader 对应的链接器命名空间；引导加载上下文则调用 `dlopen`。两者都将实际加载交给动态链接器。
+4. **链接器加载 so**：映射 ELF 段、加载依赖库、解析符号并完成重定位，执行原生初始化函数，成功后返回库句柄。
+5. **ART 执行 JNI 初始化**：保存句柄，通过符号查找（普通场景使用 `dlsym`）寻找 `JNI_OnLoad`；若存在则调用，并校验其返回的 JNI 版本。`JNI_OnLoad` 可用于动态注册 native 方法等初始化工作。
+6. **返回 Java 层**：保存加载结果；正常成功时调用返回，加载或初始化失败时通常抛出 `UnsatisfiedLinkError`。
 
-加载so主要用到了System类的load和loadLibarary方法，如下所示：
+其中，`dlopen` 是 POSIX 动态加载接口，`dlsym` 用于按名称查找符号，Android 提供 `libdl` 入口；`android_dlopen_ext` 是 Android 扩展的动态加载接口。
+
+## 加载方法
+
+Java 层通过 `System.load` 或 `System.loadLibrary` 发起 so 加载，由 ClassLoader 提供加载上下文，ART 管理加载记录，再交给动态链接器完成实际加载。
 
 ```java
 public final class System {
@@ -35,29 +67,16 @@ public final class System {
 }
 ```
 
->   上面的代码块中获取调用Class或者ClassLoader，是用VMStack.getStackClass1()和VMStack.getCallingClassLoader()，在其它版本用的是Reflection.getCallerClass()。
->
->   在自己使用Reflection.getCallerClass()方法时遇到了一些问题，然后查了资料，仅作参考：
->
->   **权限**
->
->   Reflection.getCallerClass()的调用者必须有权限，需要什么样的权限呢？
->
->   -   由bootstrap class loader加载的类可以调用
->   -   由extension class loader加载的类可以调用
->   -   都知道用户路径的类加载都是由 application class loader进行加载的，换句话说就是用户自定义的一些类中无法调用此方法
->
->   **作用**
->
->   `Reflection.getCallerClass()`方法调用所在的方法必须用@CallerSensitive进行注解，通过此方法获取class时会跳过链路上所有的有@CallerSensitive注解的方法的类，直到遇到第一个未使用该注解的类，避免了用`Reflection.getCallerClass(int n)` 这个过时方法来自己做判断。
->
->   小结：总而言之，Reflection.getCallerClass()不建议在开发中使用。
+这里通过 `VMStack` 获取调用者的类或 ClassLoader，使库与正确的加载上下文关联。
 
-System的load方法传入的参数是so在磁盘的完整路径，用于加载指定路径的so。
+| 方法 | 传入参数 | 示例 |
+| --- | --- | --- |
+| `System.load` | 目标 so 的绝对路径 | `System.load(new File(context.getFilesDir(), "libxxx.so").getAbsolutePath())`，前提是文件已存在且可加载 |
+| `System.loadLibrary` | 不带 `lib` 前缀和 `.so` 后缀的库名 | `System.loadLibrary("xxx")`，通常查找 `libxxx.so` |
 
-System的loadLibrary方法传入的参数是so的名称，用于加载App安装后自动从apk包中复制到`/data/data/packagename/lib`下的so。
+`loadLibrary` 根据 ClassLoader 的原生库搜索路径定位目标，不固定从 `/data/data/包名/lib` 加载。目标可以是安装时提取出的 so，也可以是 APK 内未压缩且正确对齐的 so；
 
-目前so的修复都是基于这两个方法。
+这两个方法触发加载，不会自动用新文件替换进程中已经加载的库；同一路径的成功加载记录通常会被复用。
 
 ## System的load方法
 
@@ -70,7 +89,7 @@ public final class System {
 }
 ```
 
-Runtime.getRuntime()会得到当前Java应用程序的运行环境Runtime，Runtime的load()方法如下所示：
+`Runtime.getRuntime()` 获取当前进程的 `Runtime` 实例，随后调用 `load0`。该方法检查绝对路径，并将路径和调用者的 ClassLoader 交给 `doLoad`。源码见 [Runtime.java](https://android.googlesource.com/platform/libcore/+/refs/tags/android-8.0.0_r1/ojluni/src/main/java/java/lang/Runtime.java)：
 
 ```java
 synchronized void load0(Class<?> fromClass, String filename) {
@@ -101,7 +120,7 @@ private String doLoad(String name, ClassLoader loader) {
 }
 ```
 
-doLoad方法会调用native方法nativeLoad。
+`doLoad` 最终调用 native 方法 `nativeLoad`。这里的 `name` 已经是目标路径；`librarySearchPath` 是从 `BaseDexClassLoader` 获取的搜索路径，传给原生加载层使用，影响库的加载环境及其依赖解析。
 
 ## System的loadLibrary方法
 
@@ -155,13 +174,14 @@ synchronized void loadLibrary0(ClassLoader loader, String libname) {
 }
 ```
 
-loadLibrary0方法分为两个部分，一个是传入的ClassLoader不为null的部分，另一个是ClassLoader为null的部分。
+该版本的 `loadLibrary0` 分为两条分支：
 
-先来看ClassLoader 为null 的部分。 在**注释3**处遍历getLibPaths方法，这个方法会返回`java.library.path`选项配置的路径数组。 在**注释4**处拼接出so路径并传入**注释5**处调用的doLoad方法中。（TODO 为什么会有null情况）
+- **ClassLoader 不为 `null`**：普通应用通常走此分支。在注释1处调用 `loader.findLibrary` 获取目标路径，再在注释2处传给 `doLoad`；找不到时抛出 `UnsatisfiedLinkError`。
+- **ClassLoader 为 `null`**：例如调用者由引导类加载器加载，或附加的原生线程没有相应 Java 调用者时，`VMStack.getCallingClassLoader()` 可以返回 `null`。该分支先用 `System.mapLibraryName` 将 `xxx` 映射为 `libxxx.so`，再遍历 `java.library.path` 指定的目录，拼接候选路径并尝试加载。参考：[VMStack 实现](https://android.googlesource.com/platform/art/+/refs/tags/android-8.0.0_r1/runtime/native/dalvik_system_VMStack.cc)。
 
-当ClassLoader不为null时。 在**注释2**处同样调用了doLoad方法，其中第一个参数是通过**注释1**处的ClassLoader的findLibrary方法来得到的。（具体分析见热修复原理，findLibrary方法内部可实现so库的替换）
+应用常用的 `BaseDexClassLoader.findLibrary` 会委托给 `DexPathList.findLibrary`，后者将库名映射为文件名，然后遍历 `nativeLibraryPathElements`。搜索项既可以是文件系统目录，也可以是 APK 内的目录，因此返回值可能是独立 so 路径，也可能是 `安装目录/base.apk!/lib/arm64-v8a/libxxx.so` 这样的 APK 内路径。APK 内的库需要满足未压缩和对齐要求。参考：[BaseDexClassLoader.java](https://android.googlesource.com/platform/libcore/+/refs/tags/android-8.0.0_r1/dalvik/src/main/java/dalvik/system/BaseDexClassLoader.java)、[DexPathList.java](https://android.googlesource.com/platform/libcore/+/refs/tags/android-8.0.0_r1/dalvik/src/main/java/dalvik/system/DexPathList.java)。
 
-System的load方法和loadLibrary方法在Java FrameWork层最终调用的都是nativeLoad方法。
+`findLibrary` 负责定位库，实际加载发生在后续原生层。`System.load` 和 `System.loadLibrary` 最终都会经 `doLoad` 调用 `nativeLoad`：
 
 ```java
 private static native String nativeLoad(String filename, ClassLoader loader,
@@ -170,7 +190,7 @@ private static native String nativeLoad(String filename, ClassLoader loader,
 
 ## nativeLoad方法分析
 
-**Runtime.c#Runtime_nativeLoad**
+`nativeLoad` 通过 JNI 注册到 [Runtime.c 中的 Runtime_nativeLoad](https://android.googlesource.com/platform/libcore/+/refs/tags/android-8.0.0_r1/ojluni/src/main/native/Runtime.c)：
 
 ```c
 JNIEXPORT jstring JNICALL
@@ -181,14 +201,14 @@ Runtime_nativeLoad(JNIEnv* env, jclass ignored, jstring javaFilename,
 }
 ```
 
-在Runtime_nativeLoad函数中调用了JVM_NativeLoad函数：
+`Runtime_nativeLoad` 调用 [OpenjdkJvm.cc 中的 JVM_NativeLoad](https://android.googlesource.com/platform/art/+/refs/tags/android-8.0.0_r1/runtime/openjdkjvm/OpenjdkJvm.cc)：
 
-```c
+```cpp
 JNIEXPORT jstring JVM_NativeLoad(JNIEnv* env,
                                  jstring javaFilename,
                                  jobject javaLoader,
                                  jstring javaLibrarySearchPath) {
-  //将so的文件名转换为ScopeUtfChars
+  // 将 Java 路径字符串转换为原生层可访问的 UTF 字符串
   ScopedUtfChars filename(env, javaFilename);
   if (filename.c_str() == NULL) {
     return NULL;
@@ -217,27 +237,29 @@ JNIEXPORT jstring JVM_NativeLoad(JNIEnv* env,
 
 ## LoadNativeLibrary分析
 
-加载成功会返回true，加载失败返回false，同时JNI返回错误String。
+`JavaVMExt::LoadNativeLibrary` 成功时返回 `true`，失败时返回 `false`，并通过 `error_msg` 提供错误原因。上一层 `JVM_NativeLoad` 在正常成功时返回 `null`，加载失败时将错误信息转换为 Java 字符串；`Runtime` 再将该错误字符串转换为 `UnsatisfiedLinkError`。字符串转换等 JNI 操作本身也可能产生异常。
 
-**java_vm_ext.cc#LoadNativeLibrary**
+源码见 [java_vm_ext.cc 中的 LoadNativeLibrary](https://android.googlesource.com/platform/art/+/refs/tags/android-8.0.0_r1/runtime/java_vm_ext.cc)。下面分段展示关键逻辑，各片段中的省略部分仍属于同一个函数。
 
-```c
+```cpp
 bool JavaVMExt::LoadNativeLibrary(JNIEnv* env,
                                   const std::string& path,
                                   jobject class_loader,
                                   jstring library_path,
-                                  std::string* error_msg)
+                                  std::string* error_msg);
 ```
 
-path：代表目标动态库的文件名，不包含路径信息。Java层通过`System.loadLibrary`加载动态库时，只需指定动态库的名称(比如libxxx)，不包含路径和后缀名。
+`path`：目标库的路径，由 `System.load` 的参数或 `findLibrary` 等查找结果传入，通常包含路径和 `libxxx.so` 文件名，也可以是 APK 内路径。它与 Java 层 `System.loadLibrary("xxx")` 传入的简短库名不同。
 
-class_loader：根据JNI规范，目标动态库必须和一个ClassLoader对象相关联，同一个目标动态库不能由不同的ClassLoader对象加载。
+`class_loader`：发起加载的 ClassLoader 上下文；引导类加载器在原生层可用 `null` 表示。同一 JNI 库不能同时归属于不同 ClassLoader。
 
-library_path：动态库文件搜索路径。将在这个路径下搜索path对应的动态库文件。
+`library_path`：来自 ClassLoader 的原生库搜索路径。`libnativeloader` 在需要创建 linker namespace（链接器命名空间）时使用它，影响依赖库的查找；目标库本身已经由 `path` 指定。
 
-**第一部分**
+### 检查加载记录
 
-```c
+该版本先按 `path` 查找已有记录，再检查 ClassLoader 是否一致以及初始化是否成功。`CheckOnLoadResult` 必要时会等待其他线程完成 `JNI_OnLoad`。这里的 ART 记录以路径字符串为键，不能简单理解为只按 so 文件名去重。
+
+```cpp
 bool JavaVMExt::LoadNativeLibrary(JNIEnv* env,
                                   const std::string& path,
                                   jobject class_loader,
@@ -248,9 +270,9 @@ bool JavaVMExt::LoadNativeLibrary(JNIEnv* env,
   Thread* self = Thread::Current();
   {
     MutexLock mu(self, *Locks::jni_libraries_lock_);
-    library = libraries_->Get(path);//根据so的名称从libraries中获取对应的SharedLibrary类型指针library
+    library = libraries_->Get(path); // 按目标路径查询加载记录
   }
-  //...
+  // 省略 ClassLoader 规范化及 class_loader_allocator 的获取
   if (library != nullptr) {//如果满足此处的条件就说明此前加载过该so
     
     if (library->GetClassLoaderAllocator() != class_loader_allocator) {//如果此前加载用的ClassLoader和当前传入的ClassLoader不相同的话，就会返回false
@@ -261,7 +283,7 @@ bool JavaVMExt::LoadNativeLibrary(JNIEnv* env,
     }
     //。。。
     
-    if (!library->CheckOnLoadResult()) {//判断上次加载so的结果，如果有异常也会返回false，中断so加载。
+    if (!library->CheckOnLoadResult()) { // 必要时等待初始化完成，若此前初始化失败则返回 false
       StringAppendF(error_msg, "JNI_OnLoad failed on a previous attempt to load \"%s\"", path.c_str());
       return false;
     }
@@ -273,9 +295,13 @@ bool JavaVMExt::LoadNativeLibrary(JNIEnv* env,
 }
 ```
 
-**第二部分**
+### 打开动态库并记录句柄
 
-```c
+`OpenNativeLibrary` 位于 [libnativeloader/native_loader.cpp](https://android.googlesource.com/platform/system/core/+/refs/tags/android-8.0.0_r1/libnativeloader/native_loader.cpp)。普通 Android 应用通常通过 ClassLoader 对应的 linker namespace 调用 `android_dlopen_ext`；引导加载上下文可直接调用 `dlopen`，Native Bridge 场景则走相应桥接接口。命名空间用于控制库的搜索范围和可见性。
+
+动态链接器负责映射 ELF 段、加载依赖、解析符号和重定位，并执行原生初始化函数，然后返回句柄。这些原生初始化函数与后续 ART 调用的 `JNI_OnLoad` 是不同步骤。参考：[Bionic linker.cpp](https://android.googlesource.com/platform/bionic/+/refs/tags/android-8.0.0_r1/linker/linker.cpp)。
+
+```cpp
 bool JavaVMExt::LoadNativeLibrary(JNIEnv* env,
                                   const std::string& path,
                                   jobject class_loader,
@@ -286,7 +312,7 @@ bool JavaVMExt::LoadNativeLibrary(JNIEnv* env,
   const char* path_str = path.empty() ? nullptr : path.c_str();
   bool needs_native_bridge = false;
   
-  //加载动态库，打开路径path_str的so库，得到so句柄handle。Linux平台是利用dlopen，但Android系统进行了相关定制，主要是出于安全考虑。如：一个应用不能加载另外一个应用的动态库。
+  // 在对应的原生库加载上下文中打开目标路径，获取动态库句柄
   void* handle = android::OpenNativeLibrary(env,
                                             runtime_->GetTargetSdkVersion(),
                                             path_str,
@@ -318,15 +344,28 @@ bool JavaVMExt::LoadNativeLibrary(JNIEnv* env,
                           class_loader_allocator));
 
     MutexLock mu(self, *Locks::jni_libraries_lock_);
-    library = libraries_->Get(path);//获取传入path对应的library，如果library为空指针，就将新创建的SharedLibrary赋值给library，并将library存储到libraries中。
-    
-    //。。。
+    library = libraries_->Get(path);
+    if (library == nullptr) {
+      library = new_library.release();
+      libraries_->Put(path, library);
+      created_library = true;
+    }
+  }
+  if (!created_library) {
+    // 其他线程已建立记录，复用并检查其初始化结果
+    return library->CheckOnLoadResult();
+  }
+  // 后续查找并调用 JNI_OnLoad，见下一段
 }
 ```
 
-**第三部分**
+### 查找并调用 JNI_OnLoad
 
-```c
+`JNI_OnLoad` 是可选的 JNI 初始化回调，可用于动态注册 native 方法、缓存类引用等，不只用于动态注册。库未导出它时也可以加载成功；这不保证之后调用的每个 native 方法都能找到对应实现。
+
+找到该函数后，ART 设置 ClassLoader 上下文并调用它，使其中的 `FindClass` 能使用加载该库的 ClassLoader。调用完成后恢复原上下文，并检查返回的 JNI 版本：`JNI_ERR` 或不支持的版本表示初始化失败。参考：[Android JNI 库加载说明](https://developer.android.com/ndk/guides/jni-tips#native-libraries)。
+
+```cpp
 bool JavaVMExt::LoadNativeLibrary(JNIEnv* env,
                                   const std::string& path,
                                   jobject class_loader,
@@ -335,8 +374,8 @@ bool JavaVMExt::LoadNativeLibrary(JNIEnv* env,
   //。。。
   
   bool was_successful = false;
-  void* sym = library->FindSymbol("JNI_OnLoad", nullptr);//查找JNI_OnLoad函数的指针并赋值给空指针sym，JNI_OnLoad函数用于native方法的动态注册。
-  if (sym == nullptr) {//如果没有找到JNI_OnLoad函数就将was_successful赋值为true, 说明已经加载成功。没有找到JNI_OnLoad函数也算加载成功，这是因为并不是所有so都定义了JNI_OnLoad函数，因为native方法除了动态注册，还有静态注册。
+  void* sym = library->FindSymbol("JNI_OnLoad", nullptr); // 查找可选的 JNI 初始化回调
+  if (sym == nullptr) { // 未导出该回调也可加载成功
     
     VLOG(jni) << "[No JNI_OnLoad found in \"" << path << "\"]";
     was_successful = true;
@@ -346,9 +385,10 @@ bool JavaVMExt::LoadNativeLibrary(JNIEnv* env,
     VLOG(jni) << "[Calling JNI_OnLoad in \"" << path << "\"]";
     typedef int (*JNI_OnLoadFn)(JavaVM*, void*);
     JNI_OnLoadFn jni_on_load = reinterpret_cast<JNI_OnLoadFn>(sym);
-    int version = (*jni_on_load)(this, nullptr);//如果找到了JNI_OnLoad函数，就在注释3处执行JNI_OnLoad函数并将结果赋值给version。
+    int version = (*jni_on_load)(this, nullptr); // 调用回调并获取 JNI 版本
 
-    //。。。
+    // 省略旧 targetSdk 的信号处理兼容逻辑
+    self->SetClassLoaderOverride(old_class_loader.get());
 
     if (version == JNI_ERR) {//如果version为JNI_ERR或者Bad JNI version，说明没有执行成功，was_successful的值仍旧为默认的false，否则就将was_successful赋值为true，最终会返回该was_successful。
       
@@ -368,20 +408,24 @@ bool JavaVMExt::LoadNativeLibrary(JNIEnv* env,
 
 ### 小结
 
-LoadNativeLibrary函数主要做了如下3方面工作。
+`LoadNativeLibrary` 主要完成以下工作：
 
-1. 判断so是否被加载过，两次ClassLoader是否是同一个，避免so重复加载。
-2. 打开so并得到so句柄，如果so句柄获取失败，就返回false。创建新的SharedLibrary，如果传入path对应的library为空指针，就将新创建的SharedLibrary赋值给library，并将library存储到libraries中。
-3. 查找JNI_OnLoad的函数指针，根据不同情况设置was_successful的值，最终返回该was_successful。
-
-## 加载so库总结
-
-1.  Java层调用System的load或者loadLibrary方法，内部会寻找so文件的路径。
-2.  将搜索路径传给JNI函数，函数内部判断so是否被加载过，避免so重复加载。
-3.  根据搜索路径，创建SharedLibrary，并存储。
-4.  查找JNI_OnLoad的函数指针，如果存在就调用。根据不同情况设置was_successful的值，最终返回该was_successful。
+1. 按路径检查加载记录，并校验 ClassLoader 和此前的初始化结果。
+2. 委托原生加载层打开库，获取句柄并建立 `SharedLibrary` 记录，处理并发加载。
+3. 调用可选的 `JNI_OnLoad`，检查其返回值，保存并返回初始化结果。
 
 # Native方法调用
+
+**Native 方法调用，就是 ART 通过 JNI，执行 so 中对应的 C/C++ 函数。**
+
+普通 JNI 调用可以分为四步：
+
+1. **找到函数**：静态注册按 JNI 命名规则查找；动态注册通过 `RegisterNatives` 提前建立方法与函数指针的映射。
+2. **准备参数**：除 Java 方法参数外，还传入当前线程的 `JNIEnv*`，以及实例对象 `jobject`（静态方法则是 `jclass`）。
+3. **执行函数**：通过函数指针，在当前线程进入 C/C++ 代码执行，不会自动创建新线程。
+4. **返回 Java**：传回结果，清理本次调用的局部引用，并将待处理的 Java 异常交回 Java 层。
+
+调用链可概括为：`Java native 方法 → JNI 调用桥接 → C/C++ 函数 → 返回 Java`。
 
 # Native方法注册
 
@@ -540,60 +584,3 @@ if ((*env)->IsSameObject(env, weak_global_ref, NULL) == JNI_TRUE)
 3.  全局引用和局部引用可以阻止Java虚拟机回收其指向的对象。
 4.  弱全局引用必须要通过[NewWeakGlobalRef](http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#NewWeakGlobalRef)创建，通过[DeleteWeakGlobalRef](http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#DeleteWeakGlobalRef)销毁。可以在多线程之间共享其指向的对象。在C语言中通过静态变量和全局变量来保持弱全局引用。弱全局引用指向的对象随时都可能会被Java虚拟机回收，所以使用的时候需要时刻注意检查其有效性。弱全局引用经常用来缓存 jclass 对象。
 5.  全局引用和弱全局引用可以在多线程中共享其指向对象，但是在多线程编程中需要注意多线程同步。强烈建议在[JNI_OnLoad](http://download.oracle.com/javase/1.5.0/docs/guide/jni/spec/invocation.html#JNI_OnLoad)初始化 全局引用 和 弱全局引用 ，然后在多线程中进行读全局引用和弱全局引用，这样不需要对全局引用和弱全局引用同步（只有读操作不会出现不一致情况）。
-
-# NDK相关错误
-
-编译C++文件时会遇到一个错误：
-
-```
-undefined symbol: XXX
-```
-
-可能的原因如下：
-
-1.  没有实现cpp
-
-2.  没有导入头文件对应的so文件。
-
-3.  导入的so文件在cmake编译时加入了flag：-fvisibility=hidden，导致函数不可见，在需要的函数头上加上`__attribute__((visibility("default")))`，如：
-
-    ```cpp
-    __attribute__((visibility("default"))) int app_main(void)
-    ```
-
-# NDK开发工具
-
-## addr2line
-
-在运行时遇到问题，native的奔溃栈和Java的不同，只提供了地址，需要根据地址进行反解。
-
-`addr2line`能够将地址转换为文件名和行号。给定一个可执行文件的地址或者一个可重定位目标的目标偏移，addr2line 就会利用 debug 信息来计算出与该地址关联的文件名和行号。
-
-```
-addr2line -f -e xxx.so 123 456 789
-```
-
--   -f表示显示函数名称
--   -e表示输入文件名称
--   xxx.so表示相应的so文件
--   123 456 789表示地址，可以有多个
-
-具体可见-h。
-
-位置在`sdk/ndk/20.0.5594570/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/bin/arm-linux-androideabi-addr2line`
-
-## objdump
-
-objdump 是 gcc 工具，用来查看编译后目标文件的组成。
-
-位置：
-
--   32位：toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin/arm-linux-androideabi-objdump
--   64位：toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin/aarch64-linux-android-objdump
-
-一般使用：
-
-```
-arm-linux-androideabi-objdump -d 库文件 > 输出文件
-```
-
