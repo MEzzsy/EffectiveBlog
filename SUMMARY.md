@@ -67,6 +67,7 @@
     - [03 视图组件](<./06 Android/02 应用层/03 视图组件/README.md>)
       - [01 RecyclerView的使用与原理](<./06 Android/02 应用层/03 视图组件/01 RecyclerView的使用与原理.md>)
       - [02 Android弹窗的使用与原理](<./06 Android/02 应用层/03 视图组件/02 Android弹窗的使用与原理.md>)
+    - [04 TextView的Span使用与原理](<./06 Android/02 应用层/04 TextView的Span使用与原理.md>)
     - [04 手势与绘制](<./06 Android/02 应用层/04 手势与绘制/README.md>)
       - [01 绘制流程-生产者](<./06 Android/02 应用层/04 手势与绘制/01 绘制流程-生产者.md>)
       - [02 绘制流程-消费者](<./06 Android/02 应用层/04 手势与绘制/02 绘制流程-消费者.md>)

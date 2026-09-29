@@ -4,6 +4,7 @@
 - [Android编译产物基础](<02 Android编译打包/02 Android编译产物基础.md>)
 - [SQLite原理与键值存储框架对比](<../05 其它/02 SQLite原理与键值存储框架对比.md>)
 - [RecyclerView的使用与原理](<03 视图组件/01 RecyclerView的使用与原理.md>)
+- [TextView的Span使用与原理](<04 TextView的Span使用与原理.md>)
 
 # 章节目录
 
@@ -26,6 +27,7 @@
 - [03 视图组件](<./03 视图组件/README.md>)
   - [01 RecyclerView的使用与原理](<./03 视图组件/01 RecyclerView的使用与原理.md>)
   - [02 Android弹窗的使用与原理](<./03 视图组件/02 Android弹窗的使用与原理.md>)
+- [04 TextView的Span使用与原理](<./04 TextView的Span使用与原理.md>)
 - [04 手势与绘制](<./04 手势与绘制/README.md>)
   - [01 绘制流程-生产者](<./04 手势与绘制/01 绘制流程-生产者.md>)
   - [02 绘制流程-消费者](<./04 手势与绘制/02 绘制流程-消费者.md>)
