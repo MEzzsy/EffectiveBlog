@@ -1,3 +1,74 @@
+# 🌟总结
+
+1.   Android消息机制主要是指Handler + Looper + MessageQueue。
+2.   线程是默认没有Looper，如果需要使用Handler需要创建Looper。Looper创建时会创建MessageQueue。
+3.   MessageQueue内部用单链表存储Message。
+
+## Looper
+
+1.  线程是默认没有Looper，通过Looper.prepare创建一个Looper对象，并放入当前线程的ThreadLocal中。
+2.  创建Looper时，会创建一个MessageQueue。
+
+## 消息循环
+
+1.   Handler post一个runnable或send一个message（post最终是通过send完成的）。
+2.   这个message会带上当前的时间戳，如果是delay消息，则加上delay。
+3.   调用MessageQueue的enqueueMessage方法将消息放入消息队列中，msg是按照时间戳（when）排序的。
+4.   在Looper.loop方法中，不断调用MessageQueue的next获取一个消息，并通过msg对应的Handler来处理此msg。
+5.   如果msg有callback，那么执行callback。如果没有callback，但是Handler设置了callback，那么交给callback的handleMessage来处理。如果callback的handleMessage返回false，那么Handler自己处理（handleMessage）。
+
+### 消息获取
+
+MessageQueue.next也是一个循环
+
+1. 在MessageQueue.next方法中，先调用nativePollOnce并传入一个时间参数（nextPollTimeoutMillis，含义见下），让当前 Looper 线程处理 Native 事件。
+   - 初始时间参数为0。不阻塞等待，处理已经就绪的 Native 事件后返回；没有native消息就立即返回。
+2. 寻找下一个Java消息
+   1. 如果队头是同步屏障，则寻找屏障后的第一条异步消息。
+      - 同步屏障是`Message.target == null`的消息。通过 `postSyncBarrier()` 插入，会把消息同步屏障放在消息队列头部。设置了同步屏障，要对应的移除掉它，否则同步消息再也不会被处理。
+   2. 有候选消息但没有到期，那么设置时间参数为`now - msg.when`。
+   3. 有候选消息且到期，那么返回给Looper。
+   4. 没有候选msg，那么设置时间参数为 `-1`。
+      - 如果有IdleHandler且本次尚未执行过 IdleHandler 时，先执行回调，再把时间参数重置为0
+      - 如果没有IdleHandler，那么进入下一轮。
+
+## 细节
+
+1.   创建一个Message。用obtain方法是为了复用Message，因为Handler的消息循环是很频繁的。
+2.   Handler的sendMessage系列方法和post系列方法（post内部创建一个msg，然后将runnable设置给msg），最终调用enqueueMessage方法调给messageQueue。
+3.   如果当前MessageQueue阻塞了，并且这个msg被放在MessageQueue的开头，那么就唤醒当前线程（nativeWake）。
+4.   Looper内部是一个死循环，通过MessageQueue的next方法找到新msg，交给由Handler的dispatchMessage方法来处理。
+     如果头msg还没到执行时间（now < when），那么就阻塞当前线程一段时间（nativePollOnce）。
+5.   如果这个message内部有个runnable，就执行runnable。
+     如果Handler有Callback，就执行Callback的handleMessage方法，这个方法有个boolean返回值，如果返回false，就执行Handler中的handleMessage方法，如果为true，那么消息处理完毕。
+
+```java
+public void dispatchMessage(@NonNull Message msg) {
+    if (msg.callback != null) {
+        handleCallback(msg);
+    } else {
+        if (mCallback != null) {
+            if (mCallback.handleMessage(msg)) {
+                return;
+            }
+        }
+        handleMessage(msg);
+    }
+}
+```
+
+## IdleHandler**总结**
+
+1.   如果MessageQueue注册了IdleHandler，那么在没有msg执行的空档期会回调IdleHandler的queueIdle方法。如果返回false，则该IdleHandler被移除出MessageQueue；如果返回true，则继续保留该IdleHandler。一个next方法只会回调一次IdleHandler。如果回调完IdleHandler还没到msg的执行时间，那么依然调用nativePollOnce进行阻塞。
+
+## 异步消息总结
+
+1.   异步消息常见用途：ViewRootImpl在进行view的刷新时，放置了一个Barrier，紧接着post了一个异步消息，该消息用于主线程渲染。
+2.   Barrier消息入列时，如果Barrier是第一个消息，那么会唤醒线程。
+3.   消息队列循环时，当首个消息为Barrier时，会去寻找第一个异步消息。
+4.   异步消息必须结合Barrier使用，如果没有设置Barrier，也是没效果的。
+5.   设置了Barrier，要对应的移除掉它，否则同步消息再也不会被处理。
+
 # Looper
 
 官方的使用例子：
@@ -211,7 +282,7 @@ Message next() {
             Binder.flushPendingCommands();
         }
 
-        // 调用这个nativePollOnce会等待wake，如果超过nextPollTimeoutMillis时间，则不管有没有被唤醒都会返回。
+        // 按超时参数进行 Native 轮询：0 不等待，-1 不设置超时，正数设置等待超时。
         nativePollOnce(ptr, nextPollTimeoutMillis);
 
         synchronized (this) {
@@ -294,7 +365,32 @@ Message next() {
 小结：
 
 1.   找到下一个Msg并return。
-2.   如果下一个消息还没到执行时间，就调用nativePollOnce等待nextPollTimeoutMillis时间。或者在下次enqueueMessage并且msg的when符合执行要求的时候，调用nativeWake进行唤醒。
+2.   如果下一个消息还没到执行时间，先计算等待超时，再在下一轮调用nativePollOnce。符合唤醒条件的新消息入队时，可以通过nativeWake使线程提前结束等待，重新检查队列。
+
+### nativePollOnce
+
+Java 层在 `MessageQueue.next()` 中调用 `nativePollOnce(ptr, nextPollTimeoutMillis)`，让当前 Looper 线程处理 Native 事件，并在暂时没有可执行的 Java 消息时等待。`ptr` 对应关联的 NativeMessageQueue，`nextPollTimeoutMillis` 控制本次轮询是否等待：
+
+| 参数值 | 含义 |
+| --- | --- |
+| `0` | 不阻塞等待，处理已经就绪的 Native 事件后继续检查 Java 队列 |
+| 正数 | 设置等待超时；事件就绪或唤醒可以使等待提前结束 |
+| `-1` | 不指定等待超时，等待事件或唤醒；Native 层仍可能根据自己的消息调整超时 |
+
+按上面的单链表版 `next()` 实现，一次调用的流程如下：
+
+1. **先进行一次非阻塞轮询**：`nextPollTimeoutMillis` 初始为 `0`，所以即使 Java 队列中已有到期消息，也会先调用一次 `nativePollOnce()`。它返回后，Java 层才进入 `synchronized (this)` 检查队列。
+2. **寻找下一条候选消息**：通常检查队头；如果队头是同步屏障，则寻找屏障后的第一条异步消息。候选消息已经到期时，将其从队列移除并 `return` 给 Looper，由 Looper 调用 Handler 分发。
+3. **没有到期消息时，计算下一轮的等待参数**：候选消息尚未到期，设置为 `min(msg.when - now, Integer.MAX_VALUE)`；没有候选消息，设置为 `-1`。后者既可能是队列为空，也可能是同步屏障后没有异步消息。这里使用 `SystemClock.uptimeMillis()` 计算时间。
+4. **按需执行 IdleHandler，再进入下一轮**：满足空闲条件且本次尚未执行过 IdleHandler 时，先执行回调，随后将超时重置为 `0`，立即重新检查，因为回调期间可能产生新消息。如果没有需要执行的 IdleHandler，则设置 `mBlocked = true` 并进入下一轮，使用刚计算的超时调用 `nativePollOnce()`。队列需要退出时则返回 `null`，结束消息循环。
+
+因此，Java 层的过程是“**轮询 → 检查消息 → 确定等待参数 → 再次轮询**”。`nativePollOnce()` 返回只表示本轮 Native 轮询结束，Java 层还要重新读取时间和检查队列，才能判断有没有消息可执行。
+
+**等待期间的新消息处理**：`nativePollOnce()` 位于 `synchronized (this)` 外，等待时不会占用 Java 队列锁，其他线程仍能入队。队列正在等待时，如果新消息成为队头，或者队头有屏障且新消息成为其后的第一条异步消息，`enqueueMessage()` 会调用 `nativeWake()`，让轮询提前返回并重新计算等待时间。
+
+例如，原本正在等待一条 10 秒后执行的消息，此时插入一条 1 秒后执行的消息，就需要立即唤醒、重新计算等待时间；并不要求新消息已经到期。唤醒也不会打断正在执行的 Handler 回调。
+
+另外，准备以非零超时进入 Native 轮询前，代码会先调用 `Binder.flushPendingCommands()`，将当前线程待提交的 Binder 命令发送到驱动。Native 层如何通过 epoll 等待和通过 eventfd 唤醒，见后面的「Native层的消息循环」。
 
 ## enqueueMessage
 
@@ -357,88 +453,55 @@ boolean enqueueMessage(Message msg, long when) {
 1.   Message的链表顺序按照when（运行时间，delay的原理就是delay加上当前时间得到最终的运行时间）来的。
      如果有个Message enqueue，那么遍历链表，比较when，将该msg放置在合适的位置。
 
-## nativePollOnce
-
->   nativePollOnce(ptr, nextPollTimeoutMillis)我之前一直以为是等nextPollTimeoutMillis时间，虽然从效果上来看，确实等了nextPollTimeoutMillis时间，但是从函数名称上看不出等的逻辑，这次看了native层的代码，发现nativePollOnce和native的MessageQueue有关。
-
-见Native MessageQueue部分
-
 # Native层的消息循环
 
 >   文档：https://developer.android.com/ndk/reference/group/looper
 
-## Native层消息循环
+## 实现方式
 
 Native层消息循环的大致实现方式（线程之间的消息通信）：
 
-1.   通过ALooper_acquire获取Native Looper对象。
+1.   通过ALooper_acquire增加已有 Looper 的引用。
 2.   通过eventfd创建一个fd，并通过ALooper_addFd来注册这个fd。
 3.   其它线程需要给目标线程发送消息时，用write(fd)的方式来通知。
-4.   ALooper_addFd调用时，需要设置一个callback，当其它线程通知时，这个callback会执行，并且是在目标线程执行的。
+4.   ALooper_addFd调用时，设置一个callback，当其它线程通知时，这个callback会执行，并且是在目标线程执行的。
 5.   通过ALooper_release释放资源。
 
-## 原理
+## ALooper原理
 
-Native层的消息循环实现的核心是epoll，epoll的简单实用方式见demo。
+Native层的消息循环实现的核心是epoll。
 
-## 注册fd
-
-```cpp
-int Looper::addFd(int fd, int ident, int events, const sp<LooperCallback>& callback, void* data) {
-	// ...
-
-    { // acquire lock
-        AutoMutex _l(mLock);
-        // ...
-        // 该fd的序号
-        const SequenceNumber seq = mNextRequestSeq++;
-
-        Request request;
-        request.fd = fd;
-        request.ident = ident;
-        request.events = events;
-        request.callback = callback;
-        request.data = data;
-
-        epoll_event eventItem = createEpollEvent(request.getEpollEvents(), seq);
-        auto seq_it = mSequenceNumberByFd.find(fd);
-        if (seq_it == mSequenceNumberByFd.end()) {
-            int epollResult = epoll_ctl(mEpollFd.get(), EPOLL_CTL_ADD, fd, &eventItem);
-            if (epollResult < 0) {
-                ALOGE("Error adding epoll events for fd %d: %s", fd, strerror(errno));
-                return -1;
-            }
-            mRequests.emplace(seq, request);
-            mSequenceNumberByFd.emplace(fd, seq);
-        } else {
-            int epollResult = epoll_ctl(mEpollFd.get(), EPOLL_CTL_MOD, fd, &eventItem);
-            if (epollResult < 0) {
-                if (errno == ENOENT) {
-                    epollResult = epoll_ctl(mEpollFd.get(), EPOLL_CTL_ADD, fd, &eventItem);
-                    if (epollResult < 0) {
-                        ALOGE("Error modifying or adding epoll events for fd %d: %s",
-                                fd, strerror(errno));
-                        return -1;
-                    }
-                    scheduleEpollRebuildLocked();
-                } else {
-                    ALOGE("Error modifying epoll events for fd %d: %s", fd, strerror(errno));
-                    return -1;
-                }
-            }
-            const SequenceNumber oldSeq = seq_it->second;
-            mRequests.erase(oldSeq);
-            mRequests.emplace(seq, request);
-            seq_it->second = seq;
-        }
-    } // release lock
-    return 1;
-}
-```
+### ALooper_addFd
 
 注册fd也就是通过epoll_ctl来add一个新的epoll event，该fd对应一个新的序号SequenceNumber，并赋值给epoll event。
 
-## write fd
+epoll 是 Linux 提供的 I/O 事件通知机制，让一个线程同时等待多个 fd（文件描述符）上的事件。 比如 socket 有数据可读、管道收到数据、eventfd 收到通知。
+
+它主要有三个 API：
+
+| API               | 作用                                 |
+| ----------------- | ------------------------------------ |
+| `epoll_create1()` | 创建一个 epoll 实例                  |
+| `epoll_ctl()`     | 添加、修改或删除监听的 fd 和事件类型 |
+| `epoll_wait()`    | 等待事件，并返回哪些 fd 已经就绪     |
+
+可以理解成：先告诉内核“帮我关注这些 fd”，然后等待内核告诉你“哪些可以处理了”。 没有事件时，线程可以阻塞休眠；出现事件或等待超时后，再继续执行，无需持续占用 CPU 反复查询。
+
+结合 Android Looper，唤醒过程是：
+
+```
+Looper 线程在 epoll_wait() 中等待
+             ↑
+其他线程调用 nativeWake()
+             ↓
+向 Looper 内部的 eventfd 写入通知
+             ↓
+eventfd 变为可读，epoll_wait() 返回
+             ↓
+Looper 消费通知，继续检查消息队列
+```
+
+### write fd
 
 write fd需要其它线程调用。如果write了，那么epoll_wait是会返回对应的event的。
 
@@ -709,6 +772,15 @@ private boolean enqueueMessage(@NonNull MessageQueue queue, @NonNull Message msg
 
 # IdleHandler
 
+`IdleHandler` 是 `MessageQueue` 提供的空闲回调接口，适合执行不紧急、耗时很短的任务。
+
+- **注册与移除**：通过 `MessageQueue.addIdleHandler()` 注册，通过 `removeIdleHandler()` 主动移除。
+- **触发条件**：按本文的 `next()` 实现，队列为空，或者队头消息尚未到执行时间时，会回调 `queueIdle()`。所以队列里有延迟消息时，也可能触发空闲回调。
+- **返回值**：`queueIdle()` 返回 `false`，表示本次执行后移除；返回 `true`，表示保留，之后再次满足空闲条件时还可以执行。一次 `next()` 调用最多执行一轮已注册的 IdleHandler，不会因为返回 `true` 就在同一次空闲等待中反复回调。
+- **执行线程**：回调在该队列所属的 Looper 线程执行。主线程的 IdleHandler 仍然运行在主线程，耗时操作会延迟后续消息处理；队列持续繁忙时，回调也可能迟迟不执行，因此不适合有严格时限的任务。
+
+下面的示例注册两个 IdleHandler，并发送一条延迟消息，观察不同返回值的效果。
+
 ```java
 public class TestHandlerActivity extends BaseDemoActivity {
     private static final String TAG = "TestHandlerActivity";
@@ -764,6 +836,19 @@ TestHandlerActivity: queueIdle: 29127918
 TestHandlerActivity: handleMessage: 1
 TestHandlerActivity: queueIdle: 29127918
 ```
+
+开始循环时，延迟消息尚未到期，两个 IdleHandler 都会执行；返回 `false` 的随后被移除。延迟消息处理完、队列再次空闲后，只会再次执行返回 `true` 的那个。
+
+## 使用场景
+
+IdleHandler 适合“可以晚点做、单次执行很短、允许等待空闲”的任务，常见场景有：
+
+1. **延后非关键初始化**：例如暂时用不到的功能模块的轻量初始化、非关键监听器注册。这些工作不能是首屏展示或首次交互的必要依赖。
+2. **小批量对象预创建**：提前创建少量后续可能使用的对象，减少真正使用时的开销。每次只处理少量工作，避免一次性加载大量布局或执行复杂计算。
+3. **轻量内存维护**：例如清理少量失效的内存缓存项、整理临时状态、汇总少量统计数据。
+4. **延后提交后台任务**：在空闲回调里向线程池提交可以推迟的预热任务，真正耗时的工作由后台线程完成，回调本身只负责提交。
+
+**注意**：队列空闲不代表首帧已经绘制完成，也不保证接下来有足够长的空闲时间。IdleHandler 不能作为首帧完成通知或定时器；主线程回调中不应直接执行网络请求、磁盘 I/O、数据库查询等耗时工作。有明确完成时限的任务，也不应依赖空闲回调触发。
 
 # 异步消息
 
@@ -918,64 +1003,6 @@ private int postSyncBarrier(long when) {
 2.   异步消息相当于高优msg，当存在Barrier且存在异步消息时，异步消息会被处理。
 3.   异步消息必须结合Barrier使用，如果没有设置Barrier，也是没效果的。
 4.   设置了Barrier，要对应的移除掉它，否则同步消息再也不会被处理。
-
-# 总结
-
-1.   Handler对应Android的消息机制。
-2.   Android消息机制主要是指Handler + Looper + MessageQueue。
-3.   线程是默认没有Looper，如果需要使用Handler需要创建Looper。Looper创建时会创建MessageQueue。
-4.   MessageQueue内部用单链表存储Message。
-
-## 消息循环准备
-
-1.  通过Looper.prepare创建一个Looper对象，并放入当前线程的ThreadLocal中。
-2.  创建Looper时，会创建一个MessageQueue。
-3.  调用Looper.loop开启消息循环，不断调用MessageQueue的next方法取出一个msg，并通过msg对应的Handler来处理此msg。
-
-## 消息循环
-
-1.   Handler post一个runnable或send一个message（post最终是通过send完成的）。
-2.   这个message会带上当前的时间戳，如果是delay消息，则加上delay。
-3.   调用MessageQueue的enqueueMessage方法将消息放入消息队列中，msg是按照时间戳（when）排序的。
-4.   最后Looper处理，不断的获取消息，并通过msg对应的Handler来处理此msg。
-5.   如果msg有callback，那么执行callback。如果没有callback，但是Handler设置了callback，那么交给callback的handleMessage来处理。如果callback的handleMessage返回false，那么Handler自己处理（handleMessage）。
-
-## 细节
-
-1.   创建一个Message。用obtain方法是为了复用Message，因为Handler的消息循环是很频繁的。
-2.   Handler的sendMessage系列方法和post系列方法（post内部创建一个msg，然后将runnable设置给msg），最终调用enqueueMessage方法调给messageQueue。
-3.   如果当前MessageQueue阻塞了，并且这个msg被放在MessageQueue的开头，那么就唤醒当前线程（nativeWake）。
-4.   Looper内部是一个死循环，通过MessageQueue的next方法找到新msg，交给由Handler的dispatchMessage方法来处理。
-     如果头msg还没到执行时间（now < when），那么就阻塞当前线程一段时间（nativePollOnce）。
-5.   如果这个message内部有个runnable，就执行runnable。
-     如果Handler有Callback，就执行Callback的handleMessage方法，这个方法有个boolean返回值，如果返回false，就执行Handler中的handleMessage方法，如果为true，那么消息处理完毕。
-
-```java
-public void dispatchMessage(@NonNull Message msg) {
-    if (msg.callback != null) {
-        handleCallback(msg);
-    } else {
-        if (mCallback != null) {
-            if (mCallback.handleMessage(msg)) {
-                return;
-            }
-        }
-        handleMessage(msg);
-    }
-}
-```
-
-## IdleHandler**总结**
-
-1.   如果MessageQueue注册了IdleHandler，那么在没有msg执行的空档期会回调IdleHandler的queueIdle方法。如果返回false，则该IdleHandler被移除出MessageQueue；如果返回true，则继续保留该IdleHandler。一个next方法只会回调一次IdleHandler。如果回调完IdleHandler还没到msg的执行时间，那么依然调用nativePollOnce进行阻塞。
-
-## 异步消息总结
-
-1.   异步消息常见用途：ViewRootImpl在进行view的刷新时，放置了一个Barrier，紧接着post了一个异步消息，该消息用于主线程渲染。
-2.   Barrier消息入列时，如果Barrier是第一个消息，那么会唤醒线程。
-3.   消息队列循环时，当首个消息为Barrier时，会去寻找第一个异步消息。
-4.   异步消息必须结合Barrier使用，如果没有设置Barrier，也是没效果的。
-5.   设置了Barrier，要对应的移除掉它，否则同步消息再也不会被处理。
 
 # 几个问题
 
