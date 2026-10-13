@@ -22,6 +22,7 @@
   - [01 Android编译打包流程](<./02 Android编译打包/01 Android编译打包流程.md>)
   - [02 Android编译产物基础](<./02 Android编译打包/02 Android编译产物基础.md>)
   - [03 Google DF插件](<./02 Android编译打包/03 Google DF插件.md>)
+  - [04 渠道包分发](<./02 Android编译打包/04 渠道包分发.md>)
 - [02 JNI](<./02 JNI.md>)
 - [03 性能优化](<./03 性能优化.md>)
 - [03 视图组件](<./03 视图组件/README.md>)
