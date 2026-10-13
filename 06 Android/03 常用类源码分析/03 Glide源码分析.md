@@ -1,482 +1,329 @@
-# 总结
+# Bitmap
 
-Glide的源码分析主要针对它的缓存策略。
-
-1.   Glide根据传入的Context来决定图片的生命周期，Glide是添加一个隐形的Fragment来监听Activity的生命周期。
-2.   Glide先从弱引用中获取缓存。
-3.   如果没有拿到弱引用缓存就从LruCache中获取。如果拿到了Lru缓存，那么从Lru缓存中移除并重新放入到弱引用缓存中。
-4.   Glide利用引用计数法来判断弱引用是否需要放入LruCache中。使用的时候加1，释放的时候减1，释放是根据Activity的生命周期来判断的。
-5.   当内存缓存中获取不到图片的时候，会开启线程，尝试从硬盘中获取缓存。
-6.   Glide默认硬盘缓存策略是只找转换过的图片缓存。
-7.   硬盘缓存逻辑：先寻找转换过的图片缓存，如果没有找到，再找原始图片缓存，找到后放入转换过的图片缓存和弱引用缓存中。
-8.   在没有缓存的情况下，会网络请求图片数据，将其放入原始图片缓存。再进行转换，最后放入转换过的图片缓存和弱引用缓存中。
-
-# 参考
-
-[Android图片加载框架最全解析](https://blog.csdn.net/guolin_blog/article/details/53759439)，作者郭霖。
-
-以下源码分析基于Glide tag：`v4.9.0`
-
-# 基本使用
-
-```java
-Glide.with(context).load("https://goo.gl/gEgYUd").into(imageView);
-```
-
-with一个context，load一个资源，into一个target，一般是imageView，也可以自定义target。
-
-# with
-
-```java
-public static RequestManager with(@NonNull Context context) {
-  return getRetriever(context).get(context);
-}
-```
-
-with方法得到一个RequestManager对象。
-
-```java
-@NonNull
-public RequestManager get(@NonNull Context context) {
-  if (context == null) {
-    throw new IllegalArgumentException("You cannot start a load on a null Context");
-  } else if (Util.isOnMainThread() && !(context instanceof Application)) {
-    if (context instanceof FragmentActivity) {
-      return get((FragmentActivity) context);
-    } else if (context instanceof Activity) {
-      return get((Activity) context);
-    } else if (context instanceof ContextWrapper) {
-      return get(((ContextWrapper) context).getBaseContext());
-    }
-  }
-
-  return getApplicationManager(context);
-}
-```
-
-Glide会根据传入with方法的参数来确定图片加载的生命周期。
-
-```java
-@NonNull
-private RequestManager getApplicationManager(@NonNull Context context) {
-  if (applicationManager == null) {
-    synchronized (this) {
-      if (applicationManager == null) {
-        Glide glide = Glide.get(context.getApplicationContext());
-        applicationManager =
-            factory.build(
-                glide,
-                new ApplicationLifecycle(),
-                new EmptyRequestManagerTreeNode(),
-                context.getApplicationContext());
-      }
-    }
-  }
-
-  return applicationManager;
-}
-```
-
-如果在with方法中传入的是一个Application对象，Glide并不需要做什么特殊的处理，它自动就是和应用程序的生命周期是同步的，如果应用程序关闭的话，Glide的加载也会同时终止。
-
-```java
-@NonNull
-public RequestManager get(@NonNull Context context) {
-  if (context == null) {
-    throw new IllegalArgumentException("You cannot start a load on a null Context");
-  } else if (Util.isOnMainThread() && !(context instanceof Application)) {
-    if (context instanceof FragmentActivity) {
-      return get((FragmentActivity) context);
-    } else if (context instanceof Activity) {
-      return get((Activity) context);
-    } else if (context instanceof ContextWrapper) {
-      return get(((ContextWrapper) context).getBaseContext());
-    }
-  }
-
-  return getApplicationManager(context);
-}
-```
-
-```java
-@NonNull
-public RequestManager get(@NonNull Activity activity) {
-  if (Util.isOnBackgroundThread()) {
-    return get(activity.getApplicationContext());
-  } else {
-    assertNotDestroyed(activity);
-    android.app.FragmentManager fm = activity.getFragmentManager();
-    return fragmentGet(
-        activity, fm, /*parentHint=*/ null, isActivityVisible(activity));
-  }
-}
-```
-
-```java
-@Deprecated
-@NonNull
-private RequestManager fragmentGet(@NonNull Context context,
-    @NonNull android.app.FragmentManager fm,
-    @Nullable android.app.Fragment parentHint,
-    boolean isParentVisible) {
-  RequestManagerFragment current = getRequestManagerFragment(fm, parentHint, isParentVisible);
-  RequestManager requestManager = current.getRequestManager();
-  if (requestManager == null) {
-    // TODO(b/27524013): Factor out this Glide.get() call.
-    Glide glide = Glide.get(context);
-    requestManager =
-        factory.build(
-            glide, current.getGlideLifecycle(), current.getRequestManagerTreeNode(), context);
-    current.setRequestManager(requestManager);
-  }
-  return requestManager;
-}
-```
-
-```java
-@NonNull
-private RequestManagerFragment getRequestManagerFragment(
-    @NonNull final android.app.FragmentManager fm,
-    @Nullable android.app.Fragment parentHint,
-    boolean isParentVisible) {
-  RequestManagerFragment current = (RequestManagerFragment) fm.findFragmentByTag(FRAGMENT_TAG);
-  if (current == null) {
-    current = pendingRequestManagerFragments.get(fm);
-    if (current == null) {
-      current = new RequestManagerFragment();
-      current.setParentFragmentHint(parentHint);
-      if (isParentVisible) {
-        current.getGlideLifecycle().onStart();
-      }
-      pendingRequestManagerFragments.put(fm, current);
-      fm.beginTransaction().add(current, FRAGMENT_TAG).commitAllowingStateLoss();
-      handler.obtainMessage(ID_REMOVE_FRAGMENT_MANAGER, fm).sendToTarget();
-    }
-  }
-  return current;
-}
-```
-
-如果传入非Application参数。不管传入的是什么，都会向当前的Activity当中添加一个隐藏的Fragment。因为Glide需要知道加载的生命周期。如果在某个Activity上正在加载着一张图片，结果图片还没加载出来，Activity就被用户关掉了，那么图片就应该停止加载。通过添加隐藏Fragment的这种小技巧，Glide可以监听Activity的生命周期。
-
-## 小结
-
-with就是为了得到一个RequestManager对象，并根据传入的参数来确定图片加载的生命周期。
-
-# load
-
-load方法就是封装了传入的参数，并没有做实际的加载。返回的是一个`RequestBuilder<Drawable>`对象。
-
-# into
-
-into方法先是创建了一个Request对象。Request是用来发出加载图片请求的。
-
-如果在load传入的参数有误，比如：Url为null，就显示错误占位图。
-
-然后根据缓存策略进行加载，在子线程中加载，然后回调到主线程。
-
-简单理一下into的流程：
+可以先理解成：JPG、PNG 是图片存储和传输时的格式，Bitmap 是图片解码后在内存中的像素表示。
 
 ```
-RequestBuilder#into
-RequestManager#track
-SingleRequest#begin
-SingleRequest#onSizeReady
-Engine#load
+JPG / PNG 数据 ──解码──→ Bitmap ──绘制──→ 屏幕
+JPG / PNG 数据 ←──编码── Bitmap
 ```
 
-# 缓存机制
 
-主要看Engine类的load方法。
 
-```java
-public synchronized <R> LoadStatus load(
-    GlideContext glideContext,
-    Object model,
-    Key signature,
-    int width,
-    int height,
-    Class<?> resourceClass,
-    Class<R> transcodeClass,
-    Priority priority,
-    DiskCacheStrategy diskCacheStrategy,
-    Map<Class<?>, Transformation<?>> transformations,
-    boolean isTransformationRequired,
-    boolean isScaleOnlyOrNoTransform,
-    Options options,
-    boolean isMemoryCacheable,
-    boolean useUnlimitedSourceExecutorPool,
-    boolean useAnimationPool,
-    boolean onlyRetrieveFromCache,
-    ResourceCallback cb,
-    Executor callbackExecutor) {
-  long startTime = VERBOSE_IS_LOGGABLE ? LogTime.getLogTime() : 0;
+**1. Bitmap 里是什么？**
 
-  EngineKey key = keyFactory.buildKey(model, signature, width, height, transformations,
-      resourceClass, transcodeClass, options);
+可以把它想象成一张二维像素表，每个位置记录颜色：
 
-  EngineResource<?> active = loadFromActiveResources(key, isMemoryCacheable);
-  if (active != null) {
-    cb.onResourceReady(active, DataSource.MEMORY_CACHE);
-    if (VERBOSE_IS_LOGGABLE) {
-      logWithTimeAndKey("Loaded resource from active resources", startTime, key);
-    }
-    return null;
-  }
-
-  EngineResource<?> cached = loadFromCache(key, isMemoryCacheable);
-  if (cached != null) {
-    cb.onResourceReady(cached, DataSource.MEMORY_CACHE);
-    if (VERBOSE_IS_LOGGABLE) {
-      logWithTimeAndKey("Loaded resource from cache", startTime, key);
-    }
-    return null;
-  }
-
-  EngineJob<?> current = jobs.get(key, onlyRetrieveFromCache);
-  if (current != null) {
-    current.addCallback(cb, callbackExecutor);
-    if (VERBOSE_IS_LOGGABLE) {
-      logWithTimeAndKey("Added to existing load", startTime, key);
-    }
-    return new LoadStatus(cb, current);
-  }
-
-  EngineJob<R> engineJob =
-      engineJobFactory.build(
-          key,
-          isMemoryCacheable,
-          useUnlimitedSourceExecutorPool,
-          useAnimationPool,
-          onlyRetrieveFromCache);
-
-  DecodeJob<R> decodeJob =
-      decodeJobFactory.build(
-          glideContext,
-          model,
-          key,
-          signature,
-          width,
-          height,
-          resourceClass,
-          transcodeClass,
-          priority,
-          diskCacheStrategy,
-          transformations,
-          isTransformationRequired,
-          isScaleOnlyOrNoTransform,
-          onlyRetrieveFromCache,
-          options,
-          engineJob);
-
-  jobs.put(key, engineJob);
-
-  engineJob.addCallback(cb, callbackExecutor);
-  engineJob.start(decodeJob);
-
-  if (VERBOSE_IS_LOGGABLE) {
-    logWithTimeAndKey("Started new load", startTime, key);
-  }
-  return new LoadStatus(cb, engineJob);
-}
+```
+红色  红色  蓝色
+绿色  白色  蓝色
 ```
 
-主要分为这么几步：
+真实图片可能有几百万个像素。例如 `ARGB_8888` 每个像素用 4 字节记录透明度和红、绿、蓝分量。
 
-1. buildKey
-2. loadFromActiveResources
-3. loadFromCache
-4. start decodeJob
+所以，一张 `1000 × 1000` 的图片，像素数据大约占：
 
-## buildKey
-
-```java
-EngineKey key = keyFactory.buildKey(model, signature, width, height, transformations, resourceClass, transcodeClass, options);
+```
+1000 × 1000 × 4 = 4,000,000 字节 ≈ 3.8 MiB
 ```
 
-决定缓存Key的条件非常多，即使用override方法改变了一下图片的width或者height，也会生成一个完全不同的缓存Key。
+即使它的 JPG 文件只有 200 KB，完整解码后的 Bitmap 也可能占约 3.8 MiB。
 
-## 加载内存缓存
 
-### loadFromActiveResources
 
-```java
-@Nullable
-private EngineResource<?> loadFromActiveResources(Key key, boolean isMemoryCacheable) {
-  if (!isMemoryCacheable) {
-    return null;
-  }
-  EngineResource<?> active = activeResources.get(key);
-  if (active != null) {
-    active.acquire();
-  }
+**2. 编码：把像素变成适合保存的图片数据**
 
-  return active;
-}
+直接保存所有像素通常比较大，所以会使用图片编码器，将像素按特定格式组织、压缩成字节数据。
+
+| 格式        | 常见特点                                                     |
+| ----------- | ------------------------------------------------------------ |
+| JPG（JPEG） | 通常采用有损压缩，舍弃部分细节来减少体积，适合照片，不支持透明像素 |
+| PNG         | 无损压缩，保留编码前的像素信息，支持透明，常用于图标、截图   |
+
+比如 Android 中：
+
+```
+// 将 Bitmap 编码成 JPEG，写入输出流
+bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream);
 ```
 
-```java
-@Nullable
-synchronized EngineResource<?> get(Key key) {
-  ResourceWeakReference activeRef = activeEngineResources.get(key);
-  if (activeRef == null) {
-    return null;
-  }
+这里 `90` 是 JPEG 的质量参数，不表示“文件压缩到原来的 90%”。PNG 是无损格式，Android 的 PNG 编码会忽略这个质量参数。
 
-  EngineResource<?> active = activeRef.get();
-  if (active == null) {
-    cleanupActiveReference(activeRef);
-  }
-  return active;
-}
+
+
+**3. 解码：根据格式规则，把图片数据还原成像素**
+
+加载 JPG、PNG 时，大致经过：
+
+```
+读取图片字节
+    → 识别格式、尺寸等信息
+    → 使用对应的解码器
+    → 解压缩并重建像素
+    → 得到 Bitmap
 ```
 
-```java
-final Map<Key, ResourceWeakReference> activeEngineResources = new HashMap<>();
+JPG 和 PNG 的解码算法不同，但最终都能输出供绘制使用的像素数据。注意，JPG 解码不能找回编码时已经丢失的细节；它只能根据文件里保留下来的信息重建图像。
+
+# Glide
+
+## 🌟总结
+
+```
+Glide.with(fragment)
+    .load(url)
+    .into(imageView);
 ```
 
-默认情况下，Glide是开启内存缓存的。
+1.   根据传入的Context来决定图片的生命周期。
 
-在Engine的load方法中，获取到key之后，先调用loadFromActiveResources方法，而这个方法是从弱引用中获取缓存。
+2.   根据图片请求生成的 key
 
-如果获取到缓存，那么调用acquire增加引用计数。
+3.   先从Map里查找弱引用中获取缓存。
 
-### loadFromCache
+     - 命中后增加资源的引用计数
 
-```java
-private EngineResource<?> loadFromCache(Key key, boolean isMemoryCacheable) {
-  if (!isMemoryCacheable) {
-    return null;
-  }
+     - 不存在或已被 GC 回收，则继续查 LRU 内存缓存。
 
-  EngineResource<?> cached = getEngineResourceFromCache(key);
-  if (cached != null) {
-    cached.acquire();
-    activeResources.activate(key, cached);
-  }
-  return cached;
-}
+4.   如果拿到了Lru缓存，那么从Lru缓存中移除并重新放入到弱引用缓存中。
+
+     - Glide利用引用计数法来判断弱引用是否需要放入LruCache中。使用的时候加1，释放的时候减1，释放一般是根据Activity的生命周期来判断的。
+
+5.   内存缓存未命中且没有可复用的加载任务时，在线程池先查转换后资源磁盘缓存，再查原始数据磁盘缓存。
+
+     - 查询内存缓存是同步操作，本身不会切换线程。
+     - 命中转换后资源缓存，则读取并解码；命中原始数据缓存，则读取、解码并执行需要的变换。
+
+6.   在没有缓存的情况下，会网络请求图片数据，将其放入原始图片磁盘缓存。再进行转换，最后放入转换过的图片磁盘缓存和弱引用缓存中。
+
+
+
+补充：转换后的磁盘缓存是什么格式？
+
+如果显式指定了编码格式，则优先使用指定值。所以，缓存格式不一定与原图片格式相同，流程是：
+
+```
+原图片 → 解码成 Bitmap → 缩放、裁剪 → 重新编码为 PNG/JPEG → 写入磁盘
 ```
 
-```java
-private EngineResource<?> getEngineResourceFromCache(Key key) {
-  Resource<?> cached = cache.remove(key);
+## with和load
 
-  final EngineResource<?> result;
-  if (cached == null) {
-    result = null;
-  } else if (cached instanceof EngineResource) {
-    // Save an object allocation if we've cached an EngineResource (the typical case).
-    result = (EngineResource<?>) cached;
-  } else {
-    result = new EngineResource<>(cached, true /*isMemoryCacheable*/, true /*isRecyclable*/);
-  }
-  return result;
-}
+- with(fragment)` 获取与相应生命周期关联的 `RequestManager`，负责管理请求。
+- `load(url)` 把 URL 保存到 `RequestBuilder` 中。尺寸、裁剪方式、缓存策略、占位图等配置也保存在请求选项中。
+
+真正启动面向这个 `ImageView` 的加载，是后面的 `into()`。
+
+## into
+
+如果这个 View 已经有等价请求，可能直接复用；否则清除旧请求，关联新请求，再由 `RequestManager` 跟踪并启动它。
+
+尺寸必须先确定，因为同一个 URL 加载成不同尺寸，可能对应不同的缓存 Key。
+
+key的生成：内存 Key 包含 model（这里是 URL）、尺寸、变换、类型、signature、选项等，并非只有 URL。
+
+### 缓存查询
+
+先查 `ActiveResources`：
+
+- 命中：说明有尚未释放的资源可以复用，增加其使用计数，直接交给请求。
+- 未命中：继续查 LRU 内存缓存。
+
+这里复用的是已经解码好的资源，不需要再次下载、读取磁盘或解码。
+
+
+
+再查 LRU 内存缓存，命中 `LruResourceCache` 后：
+
+```
+从 LRU 移除资源
+    → 增加使用计数
+    → 放入 ActiveResources
+    → 交给请求显示
 ```
 
-如果在弱引用缓存中没有获取到，那么再从LruCache中获取。LruCache算法（Least Recently Used），也叫近期最少使用算法。它的主要算法原理就是把最近使用的对象用强引用存储在LinkedHashMap中，并且把最近最少使用的对象在缓存值达到预设定值之前从内存中移除。
 
-如果从Lru缓存拿到了数据，那么再放入弱引用缓存。
 
-### 小结
+内存都没命中，检查有没有相同的加载任务，避免重复加载。如果不存在可复用的任务，才创建加载任务。
 
-Glide先从弱引用中获取。如果没有拿到弱引用缓存就从LruCache中获取。如果拿到了Lru缓存，那么从Lru缓存中移除并重新放入到弱引用缓存中。
 
-这个弱引用策略是利用一个Map，值是弱引用。
 
-## 缓存引用计数
+查磁盘缓存
 
-EngineResource用一个acquired变量用来记录图片被引用的次数，调用acquire()方法会让变量加1，调用release()方法会让变量减1，当acquired变量大于0的时候，说明图片正在使用中，也就应该放到activeResources弱引用缓存当中。而经过release()之后，如果acquired变量等于0了，说明图片已经不再被使用了。然后将它put到LruResourceCache当中。这样也就实现了正在使用中的图片使用弱引用来进行缓存，不在使用中的图片使用LruCache来进行缓存的功能。
-
->   acquired调用很容易找到，就是在获取图片的时候。而release的调用比较难找，这里参考了[Glide如何通过引用计数复用Bitmap](https://www.jianshu.com/p/00540c9a4de9)。
->
->   调用栈：
->
->   ```
->   1.AcitivityFragmentLifecycle#onDestory//在Activity onDestory
->   2.RequestManager#onDestroy -> clear -> untrackOrDelegate
->   3.Glide#removeFromManagers
->   4.RequestManager#untrack
->   5.RequestTracker#clearRemoveAndRecycle
->   6.SingleRequest#clear releaseResource
->   7.Engine#release
->   8.EngineResource#release：当引用计数为0时，触发listener.onResourceReleased(key, this)
->   9.ResourceListener#onResourceReleased
->   10.Engine#onResourceReleased：如果Recourse能被缓存，则加入MemeoryCache，否则释放资源。
->   11.ResourceRecycler#recycle
->   12.BitmapResource#recycle：（将Bitmap放入回收池）
->   ```
->
-
-除了applicationManager管理的请求，所有的请求都会随着页面的Destroy调用一次`EngineResource#release`，从而能确保被回收的资源不被任何页面使用。这里看到放入MemoryCache的资源，都是页面不再使用的资源。页面从MemoryCache获取缓存的同时，会将Resouce从MemoryCache中删除。
-
-## 加载硬盘缓存
-
-```java
-Glide.with(this)
-     .load(url)
-     .diskCacheStrategy(DiskCacheStrategy.NONE)//禁止Glide对图片进行硬盘缓存
-     .into(imageView);
+```
+RESOURCE_CACHE：转换后资源磁盘缓存
+        ↓ 未命中
+DATA_CACHE：原始数据磁盘缓存
+        ↓ 未命中
+SOURCE：原始数据源，本例是网络
 ```
 
-这个diskCacheStrategy()方法基本上就是Glide硬盘缓存功能的一切，它可以接收四种参数：
+具体是否经过某个缓存阶段，由 `DiskCacheStrategy` 决定。
 
-- `DiskCacheStrategy.NONE`： 表示不缓存任何内容。
-- `DiskCacheStrategy.SOURCE`： 表示只缓存原始图片。
-- `DiskCacheStrategy.RESULT`： 表示只缓存转换过后的图片（默认选项）。
-- `DiskCacheStrategy.ALL` ： 表示既缓存原始图片，也缓存转换过后的图片。
+两种磁盘命中的区别是：
 
-当使用Glide去加载一张图片的时候，Glide默认并不会将原始图片展示出来，而是会对图片进行压缩和转换。而Glide默认情况下在硬盘缓存的就是转换过后的图片（`DiskCacheStrategy.RESULT`），通过调用diskCacheStrategy()方法则可以改变这一默认行为。
+| 命中位置       | 后续工作                                 |
+| -------------- | ---------------------------------------- |
+| 转换后资源缓存 | 读取并解码，通常无需重复同样的缩放、裁剪 |
+| 原始数据缓存   | 读取、解码，再执行当前请求要求的变换     |
 
-和内存缓存类似，硬盘缓存的实现也是使用的LruCache算法，而且Google还提供了一个现成的工具类DiskLruCache。当然Glide是使用的自己编写的DiskLruCache工具类，但是基本的实现原理都是差不多的。
+磁盘里保存的是编码后的文件数据，因此即使命中磁盘缓存，也不能直接把文件字节当成 Bitmap 显示。
 
-### 状态机
 
-```java
-private Stage getNextStage(Stage current) {
-  switch (current) {
-    case INITIALIZE:
-      return diskCacheStrategy.decodeCachedResource()
-          ? Stage.RESOURCE_CACHE : getNextStage(Stage.RESOURCE_CACHE);
-    case RESOURCE_CACHE:
-      return diskCacheStrategy.decodeCachedData()
-          ? Stage.DATA_CACHE : getNextStage(Stage.DATA_CACHE);
-    case DATA_CACHE:
-      // Skip loading from source if the user opted to only retrieve the resource from cache.
-      return onlyRetrieveFromCache ? Stage.FINISHED : Stage.SOURCE;
-    case SOURCE:
-    case FINISHED:
-      return Stage.FINISHED;
-    default:
-      throw new IllegalArgumentException("Unrecognized stage: " + current);
-  }
-}
+
+所有缓存未命中，才真正发起网络请求。
+
+### 缓存设置
+
+网络数据回来后，解码、缓存并显示。
+
+在允许缓存原始数据且写入成功时，Glide 的 `SourceGenerator` 会先把数据写入磁盘，再通过缓存读取路径继续解码。转换结果是否另外写入磁盘，也由策略决定。
+
+登记到活动资源中；使用方全部释放后，再转入 LRU。
+
+# Fresco
+
+## 简单用法
+
+在布局中添加图片控件
+
+```xml
+<com.facebook.drawee.view.SimpleDraweeView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/photo"
+    android:layout_width="200dp"
+    android:layout_height="200dp"
+    fresco:actualImageScaleType="centerCrop" />
 ```
 
-```java
-private DataFetcherGenerator getNextGenerator() {
-  switch (stage) {
-    case RESOURCE_CACHE:
-      return new ResourceCacheGenerator(decodeHelper, this);
-    case DATA_CACHE:
-      return new DataCacheGenerator(decodeHelper, this);
-    case SOURCE:
-      return new SourceGenerator(decodeHelper, this);
-    case FINISHED:
-      return null;
-    default:
-      throw new IllegalStateException("Unrecognized stage: " + stage);
-  }
-}
+设置图片地址
+
+在 Activity 的 `setContentView()` 之后：
+
+```
+import com.facebook.drawee.view.SimpleDraweeView;
+
+SimpleDraweeView photo = findViewById(R.id.photo);
+
+// 替换成真实图片地址
+photo.setImageURI("https://example.com/photo.jpg");
 ```
 
-初始状态为`INITIALIZE`，下一个状态为`RESOURCE_CACHE`，使用ResourceCacheGenerator。主要是从磁盘缓存中获取经过转化过的资源。（loader为ByteBufferFileLoader，fetcher为ByteBufferFetcher）
+调用 `setImageURI()` 后，Fresco 会负责缓存查询、下载、解码和显示。
 
-如果没有获取到，状态改为`DATA_CACHE`，使用DataCacheGenerator，用于获取原始图片数据。（loader为ByteBufferFileLoader，fetcher为ByteBufferFetcher）。如果获取到了原始图片数据缓存，那么会转换，并放入ResourceCache。
+## 图片加载
 
-如果在ResourceCache或者DataCache拿到了缓存，那么会将转换后的图片放入弱引用缓存。
+```
+photo.setImageURI("https://example.com/photo.jpg");
+```
 
-如果在硬盘缓存里没有拿到，那么状态改为`SOURCE`，使用SourceGenerator，从网络获取图片，（fetcher为HttpUrlFetcher）。
+主要流程：
 
-下载成功后，硬盘缓存原始数据。放入硬盘ResourceCache，最后放入弱引用缓存。
+```
+创建图片请求
+    ↓
+Bitmap 内存缓存
+    ↓ 未命中
+编码数据内存缓存
+    ↓ 未命中
+磁盘缓存
+    ↓ 未命中
+网络下载
+```
+
+1. 创建并提交请求
+
+   `setImageURI()` 内部构建图片请求和 Controller。视图准备加载时，由 Controller 提交到 `ImagePipeline`，开始查缓存。
+
+2. 查 Bitmap 内存缓存
+
+   保存的是已经解码好的图片资源。强引用 + 引用计数管理。
+
+3. 查编码数据内存缓存
+   也是强引用 + 引用计数管理。
+
+   保存的是 JPG、PNG 等压缩格式的字节数据。
+
+   命中后，虽然不用读磁盘或下载，但仍需要解码成 Bitmap，再显示，并将解码结果缓存起来。
+
+4. 查磁盘缓存
+
+   保存的同样是编码后的图片数据。
+
+   命中后，读取文件，解码并显示；同时可以补充编码数据内存缓存和 Bitmap 内存缓存。
+
+5. 缓存都没命中，才请求网络
+
+   网络拿到图片数据后，大致按下面的路径处理：
+
+   ```
+   下载到 JPG / PNG 字节
+       → 安排写入磁盘缓存
+       → 存入编码数据内存缓存
+       → 解码、按需处理
+       → 存入 Bitmap 内存缓存
+       → 通知 Controller 显示
+   ```
+
+   磁盘写入可以异步进行，不需要等待落盘完成才能显示。
+
+### 内存图片管理方式
+
+Fresco 使用强引用 + 引用计数 + LRU，流程可以理解为：
+
+1. 图片正在使用：缓存持有强引用，记录客户端使用情况，不参与正常的 LRU 淘汰。
+2. 所有客户端释放图片：缓存仍持有强引用，图片进入可淘汰队列。
+3. 再次请求该图片：直接复用，从可淘汰队列移出，增加客户端引用计数。
+4. 缓存超限：从可淘汰队列中，按 LRU 移除图片并释放缓存引用。
+
+### 计数减少时机
+
+#### 转换后的bitmap
+
+常见场景：
+
+- View 从窗口移除：例如页面退出、列表项滑出后被移除，触发 `onDetach()`，随后释放图片。这里会延迟释放，短时间内重新 attach 可以取消。
+- 同一个 View 更换图片：再次调用 `setImageURI()` 发起新请求，旧图片的引用被释放。
+- 新结果替换旧结果：例如清晰图替换渐进加载的模糊图，释放旧结果。
+- 主动释放：手动调用 `CloseableReference.close()`，或关闭持有图片结果的 `DataSource`。
+
+#### 编码数据
+
+解码任务用完编码数据，释放自己持有的引用时，计数减少。
+
+具体包括：
+
+- 解码、缩放或转码完成：任务不再需要输入的编码数据，关闭对应的 `EncodedImage` 或 `CloseableReference`。
+- 请求取消、失败，或旧的中间数据被替换：相关任务清理时，释放持有的编码数据引用。
+- 业务代码直接获取编码数据：使用结束后，主动关闭自己持有的引用。
+
+因此，普通静态图片可能出现：
+
+```
+解码完成 → 编码数据的客户端使用计数已归 0
+View 仍在显示 → Bitmap 仍有客户端使用
+```
+
+编码数据不需要等 View 销毁才释放使用引用；计数归零后，缓存仍可保留它，等待后续复用或 LRU 淘汰。
+
+## 🌟与Glide的区别
+
+### 缓存机制对比
+
+**内存缓存**
+
+- Glide
+  - 通过「弱引用 + LRU」管理
+  - 按请求参数解码、转换后的 Bitmap
+- Fresco
+  - 通过「强引用 + LRU」管理
+  - 按请求参数解码、处理后的 Bitmap（可以基于参数缩放图像，但是需要手动设置，不会像glide自动设置）
+  - 编码数据
+
+**磁盘缓存**
+
+- Glide
+  - 转换后的图像数据（也是编码后的数据）
+  - 原始编码数据
+- Fresco
+  - 原始编码数据
+

@@ -308,7 +308,8 @@ ART 中主要由 native 层的 **`ClassLinker`** 负责：**结合类描述符�
 以下以标准 `PathClassLoader`、`DexClassLoader` 为例，假设目标普通类尚未加载，且最终能从 DEX 成功加载。
 
 1. `Class.forName("X")` 通过 native 方法进入 ART 的 `FindClass()`；`new X()`、`X.class` 在解析目标类型时，也会进入该查找流程。ART 在 native 层遵循父加载器优先的规则，父加载器找不到时，再查找当前加载器自己的 DEX。
-2. `classLoader.loadClass("X")` 先在 Java 层执行双亲委派。轮到应用加载器查找自己的 DEX 时，通过 `DexFile.defineClassNative()` 找到类定义并直接调用 `DefineClass()`，这一步不会再为目标类重复执行双亲委派。但不能据此认为整个 `loadClass()` 流程都不会调用 `FindClass()`，例如委派到 `BootClassLoader` 时仍会进入它。
+   - 遇到不能识别的自定义加载器时，调用其 Java `loadClass()`，让自定义逻辑决定如何加载；部分查找失败路径也会回到 Java。
+2. `classLoader.loadClass("X")` 先在 Java 层执行双亲委派。轮到应用加载器查找自己的 DEX 时，通过 `DexFile.defineClassNative()` 找到类定义并直接调用 `DefineClass()`。
 3. 两条路径最终都会通过 `DefineClass()`，将 DEX 类定义转换为运行时结构。`DefineClass()` 成功返回后，就有了完成必要链接的 `Class` 对象，但不代表已经完成静态初始化。
 
 下图展示父加载器未找到 `X`、最终从当前应用加载器的 DEX 定义 `X` 的主流程：
@@ -350,6 +351,27 @@ flowchart TB
 4. **必要时回调 Java。** 遇到不能识别的自定义加载器时，调用其 Java `loadClass()`，让自定义逻辑决定如何加载；部分查找失败路径也会回到 Java。
 
 所以，**没有经过 Java `loadClass()` 方法体，不代表跳过了 ClassLoader 的查找范围和委派规则**。ART 可以直接实现已知加载器的查找流程。
+
+
+
+**⚠️注意**
+
+> 个人思考：既然native和java层都会执行双亲委托，那么java层还有必要吗？
+
+`FindClass()` 及其调用的辅助方法，会直接读取 Java 层 ClassLoader 对象的成员变量。
+
+对于标准加载器，主要包括：
+
+```
+ClassLoader.parent                → 确定父加载器
+BaseDexClassLoader.pathList        → 获取类路径
+DexPathList.dexElements            → 确定 DEX 查找顺序
+Element.dexFile                   → 获取对应 DEX
+```
+
+这些是同一批对象的字段，ART 可以通过运行时的对象访问机制直接读取，无须调用 Java 方法。
+
+因此，“在 native 层执行双亲委派”描述的是逻辑在哪里执行；加载器关系和 DEX 路径仍来自这些 Java 对象。
 
 ### DefineClass：把 DEX 类定义变成运行时结构
 
