@@ -1,7 +1,3 @@
-本文聚焦 Android Gradle Plugin 提供的 `com.android.dynamic-feature` 插件，以及与它配套的 Google Play Feature Delivery。示例使用 Kotlin DSL；Groovy DSL 的配置含义相同。
-
-> 文档核对日期：2026-08-29。Play Feature Delivery、Android Gradle Plugin 和 Play Console 的规则会继续演进，落地前应再次检查文中官方资料。
-
 # Android 编译产物基础
 
 详见 [Android 编译产物基础](<02 Android编译产物基础.md>)。
@@ -19,8 +15,6 @@ DF 是 Android 的动态功能模块，可以随base一起安装也可以在运�
 `com.android.dynamic-feature` 是 Android Gradle Plugin（AGP）提供的插件，用于将 Gradle 模块声明为动态功能模块（Dynamic Feature Module）。它将模块的代码、资源和 Manifest 与基础应用打入同一个 AAB，并生成安装时、按需或条件交付的元数据，供 Google Play 按规则和设备配置生成、下发 APK。
 
 ## DF特点
-
-Dynamic Feature 不是传统意义上的插件化框架，也不是热修复方案：
 
 - 动态模块必须随基础应用放在同一个 AAB 中发布，不能从任意服务器下载未发布的可执行代码；
 - 模块与基础应用共享应用身份、签名和版本生命周期，不能独立更新；
@@ -183,9 +177,7 @@ dependencies {
 | 单独卸载功能            | 不支持                             | 设置 `removable=true` 后支持                      |
 | 后续改成按需交付        | 需要改造成 DF                      | 可调整交付配置，但仍需实现下载和状态管理          |
 
-**即使 install-time DF 最终融合进 Base APK，编译依赖方向也不会改变。** Base 仍不能因此直接 `import` DF 的实现类。
-
-如果只是拆分代码、复用功能，通常选择 **Library**；如果需要功能卸载，或准备逐步迁移到按需交付，可以选择 **install-time DF**。[安装时交付说明](https://developer.android.com/guide/playcore/feature-delivery/install-time)
+如果只是拆分代码、复用功能，通常选择 Library；如果需要功能卸载，或准备逐步迁移到按需交付，可以选择 install-time DF。
 
 ```xml
 <dist:delivery>
@@ -215,19 +207,6 @@ dependencies {
 
 多个条件同时存在时，设备必须满足全部条件，模块才会在安装时下发。
 
-按 Play 账户对应的用户国家或地区筛选：
-
-```xml
-<dist:conditions>
-    <dist:user-countries dist:exclude="false">
-        <dist:country dist:code="US" />
-        <dist:country dist:code="CA" />
-    </dist:user-countries>
-</dist:conditions>
-```
-
-这里的国家通常由 Google Play 账户的账单地址确定，不等同于当前 IP、SIM 卡国家或系统语言。
-
 设备不满足安装时条件时，默认仍可在之后按需请求。需要明确保留按需入口时，可按官方条件交付格式同时声明：
 
 ```xml
@@ -242,9 +221,7 @@ dependencies {
 </dist:delivery>
 ```
 
-条件交付不应该替代运行时能力检查。即使 Play 已按条件下发模块，使用相机、蓝牙、传感器或新 API 前仍应再次检查硬件、系统版本和权限。
-
-### on-demand、install-time、fuse共存关系
+## 🌟on-demand、install-time、fuse共存关系
 
 所以dist:on-demand、dist:install-time、dist:fuse可以共存。
 
@@ -600,8 +577,6 @@ ClassLoader、AssetManager、Resources 已经创建
 
 普通启动由系统使用完整代码路径创建 ClassLoader；运行中安装时，应用 `PathClassLoader` 已经存在，其 `dexElements` 中没有新 Feature。当前进程若要立即使用 Feature，就必须安全地扩展现有 DEX 查找路径。
 
-这项操作依赖 Android 不同版本的内部实现，而且已经加载过的类不会因为路径变化而重新定义。Dynamic Feature 只能增加新类来源，不能作为覆盖 Base 类的热修复机制。
-
 ### 代码和资源不是同一套加载系统
 
 Feature DEX 可见后，只能说明 ClassLoader 可以查找类。Feature 资源还需要进入 `AssetManager`；已经创建的 Activity 又可能继续持有旧的 `Resources`。
@@ -613,8 +588,6 @@ Feature DEX 可见后，只能说明 ClassLoader 可以查找类。Feature 资�
 新的 DEX 可以加入 ClassLoader，但当前进程没有对等、可靠的“移除 DEX 并卸载所有类”操作。已经创建的 `Class`、对象和资源引用也可能继续存活。因此延迟卸载主要影响后续进程，不能被理解为当前进程中的代码立刻消失。
 
 ## 🌟代码层面上的原理
-
-以下依据本机 [Play Feature Delivery 2.1.0 发布包](https://dl.google.com/dl/android/maven2/com/google/android/play/feature-delivery/2.1.0/feature-delivery-2.1.0.aar) 的字节码还原调用关系。代码采用 **Java 风格伪代码**：保留关键分支和数据流，用可读名称替代部分混淆名，省略日志、统计、语言请求和部分异常处理；文中同时标出对应的真实方法，便于对照实现。
 
 ### SplitCompat.install：保存实例，并注册后续加载入口
 
@@ -631,13 +604,17 @@ Feature DEX 可见后，只能说明 ClassLoader 可以查找类。Feature 资�
 
 ### 下载完成后，代码如何回到 SplitCompat
 
-- SplitCompat内部接收安装状态广播，安装完成后会触发SplitCompat.install核心逻辑进行加载。
+SplitCompat内部接收安装状态广播，安装完成后会触发SplitCompat.install核心逻辑进行加载。
 
 业务不需要在下载回调中自己反射修改 ClassLoader：启动时保存处理器，下载完成时调用处理器，处理器再进入 SplitCompat 的加载函数。
 
-### SplitCompat.install 是如何将 split 加载到 ClassLoader 中的，以 DEX 为例
+### 🌟SplitCompat.install 是如何将 split 加载到 ClassLoader 中的，以 DEX 为例
 
-核心操作是：**把 split APK 转换为 `DexPathList.Element`，追加到现有应用 ClassLoader 的 `dexElements` 数组中。** 以下以默认的非 isolated split 模式为例。
+核心操作是：把 split APK 转换为 `DexPathList.Element`，追加到现有应用 ClassLoader 的 `dexElements` 数组中。 
+
+具体：系统方法会打开 APK 内的 DEX，创建持有 `DexFile` 的 `Element`。追加后，查找范围从 `[Base, 已有 split]` 变成 `[Base, 已有 split, 新 split]`。后续需要加载 DF 中的类时，ClassLoader 沿着 `DexPathList.findClass()` 遍历元素，命中新 split 的 `DexFile` 后，再交给 ART 定义类。因此，这一步主要建立新的类查找来源，并不会立即初始化 DF 中所有类。
+
+
 
 `SplitCompat.install()` 最终进入内部的 `zzh()` 加载逻辑。它找到已校验且需要加载的 split，检查其中是否包含 `classes.dex`，再取得 `context.getClassLoader()`，交给对应 Android 版本的适配实现。核心过程可简化为：
 
@@ -663,12 +640,6 @@ System.arraycopy(newElements, 0, combined, oldElements.length, newElements.lengt
 writeField(pathList, "dexElements", combined);
 ```
 
-`readField()`、`writeField()` 和 `invokeHidden()` 表示反射读写字段、调用方法。2.1.0 中，读取 `pathList`、处理 `dexElements` 的逻辑位于 `internal.zzat`，数组追加位于 `internal.zzbi.zza()`；部分版本通过适配器反射调用 `makePathElements()`，其他版本使用 `makeDexElements()`。
-
-系统方法会打开 APK 内的 DEX，创建持有 `DexFile` 的 `Element`。追加后，查找范围从 `[Base, 已有 split]` 变成 `[Base, 已有 split, 新 split]`。后续需要加载 DF 中的类时，ClassLoader 沿着 `DexPathList.findClass()` 遍历元素，命中新 split 的 `DexFile` 后，再交给 ART 定义类。因此，这一步主要建立新的类查找来源，并不会立即初始化 DF 中所有类。[DexPathList 源码](https://android.googlesource.com/platform/libcore/+/refs/heads/master/dalvik/src/main/java/dalvik/system/DexPathList.java)
-
-
-
 ## 资源如何被发现
 
 ### Resources 与 AssetManager 的关系
@@ -679,7 +650,7 @@ writeField(pathList, "dexElements", combined);
 
 ### SplitCompat 的资源注入过程
 
-Play Feature Delivery 2.1.0 的 SplitCompat 会取得目标 Context 的 `AssetManager`，然后对需要加载的 Feature Split 和配置 Split 逐个执行相当于下面的操作：
+取得目标 Context 的 `AssetManager`，然后对需要加载的 Feature Split 和配置 Split 逐个执行相当于下面的操作：
 
 ```text
 Context.getAssets()
