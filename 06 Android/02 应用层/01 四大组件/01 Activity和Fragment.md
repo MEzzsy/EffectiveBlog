@@ -47,7 +47,7 @@
    **standard和singleTop启动模式都是在原任务栈中新建Activity实例，不会启动新的Task，即使你指定了taskAffinity属性。自己实验显示确实如此，而且taskAffinity的值是自己设的值。**
 
 3. **singleTask**，栈内复用模式。
-   如果Activity在一个栈中存在，那么启动此Activity不会创建实例，和singleTop一样会调用其onNewIntent方法。**app首页基本是用这个**，几个例子：
+   如果Activity在一个栈中存在，那么启动此Activity不会创建实例，和singleTop一样会调用其onNewIntent方法。app首页基本是用这个，几个例子：
 
    - A以singleTask的模式启动，而其所需的任务栈是s1，s1和A都没有，那么就会先创建s1然后创建A再压入s1中。
 

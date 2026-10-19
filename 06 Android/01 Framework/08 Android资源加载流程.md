@@ -5,7 +5,7 @@
 1. **构建打包**：生成资源 ID，通过 `R` 类供代码引用。`resources.arsc` 保存资源值、字符串池、配置及文件路径等；图片、编译后的布局 XML 等作为独立文件打包进 APK。
 2. 运行时，通过context获取资源，底层则通过AssetManager的getResourceValue方法。
 3. getResourceValue方法进入native层，根据资源 ID 和当前配置查询资源表，取得资源值或打开对应文件，再由上层完成解析、解码。
-   - 由于应用可能由Base加多个Spilt Apk组成，资源来源于多个Apk，AssetManager通过`ApkAssets[] mApkAssets`来保存已加载的资源来源。
+   - 由于应用可能由Base加多个Spilt Apk组成，资源来源于多个Apk，AssetManager通过`ApkAssets[] mApkAssets`来保存已加载的资源来源（native也会有对应的ApkAsset）。
 4. 对于assets下的资源，则通过AssetManager以文件流的方式读取。
 
 ```
@@ -22,22 +22,50 @@ AssetManager
 查询 resources.arsc、读取 APK 内的文件
 ```
 
-
-
-1. **加载并注册资源来源**：系统资源、应用 Base APK 和相关 Split APK 等被加载为 `ApkAssets`，关联各自的 Native 资源对象。`AssetManager` 在 Java 层通过 `ApkAssets[] mApkAssets` 持有这些来源，并调用 `nativeSetApkAssets()`，将对应的 Native 对象按相同顺序注册到 Native `AssetManager2`，供后续查询使用。
-2. **进入 Native 查表**：应用通过 `Context`、`Resources` 等入口访问资源。以字符串等资源值查询为例，`AssetManager.getResourceValue()` 调用 `nativeGetResourceValue()`，根据资源 ID 和当前配置查询已注册的资源表、按需解析引用，填充 `TypedValue`，并返回标识资源来源的 `cookie`。
-3. **Java 层取得字符串或文件路径**：若查询结果为 `TYPE_STRING`，Java 层通过 `mApkAssets[cookie - 1]` 定位资源来源，再用 `TypedValue.data` 作为字符串池索引取得内容，写入 `TypedValue.string`。取得的内容可能是字符串文本，也可能是布局、图片等资源的文件路径。
-4. **继续加载文件并解析**：对于文件资源，Java 层根据 `cookie` 和路径请求 Native 打开对应文件，再调用解析器或解码器加载内容；布局还需由 `LayoutInflater` 创建 View。具体的解析、解码过程也可能包含 Native 实现，`getResourceValue()` 本身只负责取得资源值及相关信息。
-5. **直接读取 assets**：`assets/` 下的文件不生成资源 ID，通过 `AssetManager.open()` 按路径请求 Native 打开，再以文件流读取，不走资源 ID 查表流程。
-
-
-
 **缓存机制**
 
 1. Drawable 缓存：主要缓存 `ConstantState`。命中后通过 `newDrawable()` 创建实例，复用底层数据，减少重复解析和解码。缓存还会考虑主题，并在相关配置变化时失效。
    - 没有固定数量上限，弱引用保存 `ConstantState`。状态被 GC 回收；影响该资源的配置发生变化时清理
 2. XML 缓存：缓存已加载的二进制 XML 数据块，命中后创建新的解析器。缓存的不是 View 树，每次 inflate 仍需要创建 View。
    - 每个 `ResourcesImpl` 最多 4 个。新条目循环覆盖旧条目；配置更新时清空
+
+# 资源相关类初始化
+
+持有关系：
+
+```
+ContextImpl
+    → Resources       对外提供 getString、getDrawable 等接口
+        → ResourcesImpl   负责资源访问的主要实现、配置和缓存
+            → AssetManager   管理 APK 资源，提供底层查找和读取能力
+```
+
+创建过程可以分成四步：
+
+1. 创建Application或者Activity前先创建 `ContextImpl`，确定需要哪套资源。
+
+2. 获取 `Resources`。
+
+   - Application 通过 `LoadedApk.getResources()` 获取，已有缓存就直接返回，否则向 `ResourcesManager` 请求。
+   - Activity 则由 `createActivityContext()` 向 `ResourcesManager` 请求适合自己的资源。
+
+3. `ResourcesManager` 优先复用，必要时创建。
+   它根据 APK 路径、split 路径、配置等生成 `ResourcesKey`，查询缓存：
+
+   ```
+   命中有效缓存 → 复用 ResourcesImpl 和它的 AssetManager
+   
+   未命中 → 创建 AssetManager，装入对应 APK 资源
+          → 创建 ResourcesImpl，持有 AssetManager
+          → 放入缓存
+   ```
+
+   再让获取或创建的 `Resources` 指向这个 `ResourcesImpl`。
+
+4. 把资源关联到 Context。
+   调用 `ContextImpl.setResources(resources)`。随后 Application / Activity 通过 `attachBaseContext()` 关联这个 Context，便能访问资源。
+
+
 
 # 构建时：资源如何存进 APK
 

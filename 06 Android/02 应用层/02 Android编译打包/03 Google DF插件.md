@@ -2,11 +2,44 @@
 
 详见 [Android 编译产物基础](<02 Android编译产物基础.md>)。
 
-# 🌟🌟🌟总结
+# 🌟总结
 
 DF 是 Android 的动态功能模块，可以随base一起安装也可以在运行时安装。
 
-运行时安装依赖google play的能力，流程主要分为三部分。第一个是静态构建，与基础模块一起打包进同一个 AAB；第二个是运行时安装，通过service向google play提交安装请求以及通过broadcast接收状态；第三个就是运行时加载，下载并校验完成后，将 split APK 转为`DexPathList.Element`，再通过反射追加到 ClassLoader 的 `pathList.dexElements` 中，让后续类查找能够找到 DF 的代码；同时把资源路径加入对应 Context 的 `AssetManager`。模块可用后，再通知业务安装完成。
+以下是on-demand模块的整体流程：
+
+1. 静态构建
+   与基础模块一起打包进同一个 AAB。
+2. 运行时安装
+   在Application中调用`SplitCompat.install`。初始化SplitCompat，比如注册下载完成时的处理逻辑，以及加载已有的split（代码和资源）。（也可以继承SplitCompatApplication）
+   调用`SplitInstallManager.startInstall`请求下载插件。通过service向google play提交安装请求以及通过broadcast接收状态。
+3. 运行时加载
+   下载完成后
+   对于代码：把 split APK 转换为 `DexPathList.Element`，追加到现有应用 ClassLoader 的 `dexElements` 数组中。 
+   对于资源：取得目标 Context 的 `AssetManager`，反射调用`addAssetPath()` 。调用成功后，当前 `AssetManager` 的查找范围中就多了 Feature APK。
+   模块可用后，再通知业务安装完成。
+   动态模块的 Activity 还应在 `attachBaseContext()` 中调用 `SplitCompat.installActivity(this)`，其主要作用就是为该 Activity 补齐资源访问路径。
+
+
+
+为什么动态Activity还要调用`SplitCompat.installActivity`？
+
+资源相关类的持有关系：
+
+```
+ContextImpl
+    → Resources       对外提供 getString、getDrawable 等接口
+        → ResourcesImpl   负责资源访问的主要实现、配置和缓存
+            → AssetManager   管理 APK 资源，提供底层查找和读取能力
+```
+
+其主要作用就是为该 Activity 补齐资源访问路径。
+
+因为Activity 初始化时，会向 `ResourcesManager` 请求适合自己的资源。`ResourcesManager` 根据 一些参数等生成 `ResourcesKey`，查询并复用对应的 `ResourcesImpl`；缓存未命中时，会创建新的 `ResourcesImpl` 和 `AssetManager`。
+
+在 SplitCompat 兼容加载阶段，动态模块的资源路径可能只被注入到 Application 使用的 `AssetManager` 中，尚未包含在系统创建其他资源对象时使用的路径信息里。因此，Activity 如果没有复用已注入的 `AssetManager`，就可能无法访问动态模块资源。
+
+`SplitCompat.installActivity(this)` 的作用，就是确保当前 Activity 实际使用的 `AssetManager` 包含动态模块的资源路径。
 
 # DF 基础
 
@@ -547,7 +580,7 @@ bundletool dump manifest \
 
 重点确认最终 `split` 名、`dist:on-demand`、`dist:title`、`dist:fusing` 和组件合并结果是否符合预期。也可以使用 Android Studio 的 APK Analyzer 查看各模块的代码、资源和体积分布。
 
-# 🌟Dynamic Feature 安装后的运行时加载机制
+# Dynamic Feature 安装后的运行时加载机制
 
 ## 与普通 App 类加载相比多了什么问题
 
@@ -664,21 +697,4 @@ Context.getAssets()
 
 ### 资源查找过程
 
-代码访问 Feature 资源时，流程可以简化为：
-
-```text
-资源 ID
-  ↓
-Resources
-  ↓
-AssetManager 中已挂载的资源表
-  ├── Base APK
-  ├── Feature Split APK
-  └── Feature 配置 Split APK
-  ↓
-根据语言、密度等配置选出最终资源
-```
-
-Feature 主 split 提供资源定义，配置 split 提供匹配当前设备的具体变体。只有相关路径都进入 `AssetManager`，资源 ID 才能解析到正确内容。
-
-`Resources` 和 `AssetManager` 依附于具体 Context。进程运行期间安装 Feature 时，已经创建的 Activity 可能仍持有旧的资源对象，因此代码路径已经可见，并不代表所有旧 Context 都自动获得了新的资源路径。SplitCompat 对 Activity Context 的处理，本质上就是让该 Context 使用包含新 split 的资源查找范围。
+见 [08 Android资源加载流程.md](../../01 Framework/08 Android资源加载流程.md) 
