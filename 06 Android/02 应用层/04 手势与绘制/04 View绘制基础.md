@@ -156,7 +156,7 @@ resolveSize的处理规则是：
 
 ### 获取宽高的方法
 
-在onCreate、onStart、onResume无法获取正确宽高，因为View的measure和Activity的生命周期不是同步的。**四个获取宽高的方法**：
+在onCreate、onStart、onResume无法获取正确宽高，因为View的measure和Activity的生命周期不是同步的。四个获取宽高的方法：
 
 1. **Activity/View#onWindowFocusChanged**
     这个方法的含义是View已经初始化完毕了，宽高已经准备好了。当Activity获得焦点和失去焦点的时候会调用一次，具体的说，是当onResume和onPause的时候会被调用。

@@ -59,7 +59,7 @@ public void dispatchMessage(@NonNull Message msg) {
 
 ## IdleHandler**总结**
 
-1.   如果MessageQueue注册了IdleHandler，那么在没有msg执行的空档期会回调IdleHandler的queueIdle方法。如果返回false，则该IdleHandler被移除出MessageQueue；如果返回true，则继续保留该IdleHandler。一个next方法只会回调一次IdleHandler。如果回调完IdleHandler还没到msg的执行时间，那么依然调用nativePollOnce进行阻塞。
+如果MessageQueue注册了IdleHandler，那么在没有msg执行的空档期会回调IdleHandler的queueIdle方法。如果返回false，则该IdleHandler被移除出MessageQueue；如果返回true，则继续保留该IdleHandler。一个next方法只会回调一次IdleHandler。如果回调完IdleHandler还没到msg的执行时间，那么依然调用nativePollOnce进行阻塞。
 
 ## 异步消息总结
 
