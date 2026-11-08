@@ -1,6 +1,6 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { topLevelPaths, canMovePaths, titleWithoutNumber, visibleRows, remapPath, reorderProposal, rowDropIntent } = require("../ui/app.js");
+const { topLevelPaths, canMovePaths, titleWithoutNumber, renumberTarget, visibleRows, remapPath, reorderProposal, rowDropIntent } = require("../ui/app.js");
 
 test("批量移动折叠父子选择并排除自身、后代和原目录", () => {
   assert.deepEqual(topLevelPaths(["a", "a/one.md", "a/inner/two.md", "b.md", "a"]), ["a", "b.md"]);
@@ -31,6 +31,17 @@ const outlineEntries = [
   { path: "01 目录", parent: "", name: "01 目录", kind: "directory" },
   { path: "02 目录/README.md", parent: "02 目录", name: "README.md", kind: "file" },
 ];
+
+test("重排文件编号使用选中的文件夹或打开的目录，多选和无定位的搜索隐藏入口", () => {
+  const target = (paths, current = "", query = "") => renumberTarget(outlineEntries, new Set(paths), current, query);
+  assert.equal(target([]), "");
+  assert.equal(target([], "01 目录"), "01 目录");
+  assert.equal(target(["01 目录/01 子目录"], "01 目录"), "01 目录/01 子目录");
+  assert.equal(target(["02 目录"], "01 目录", "目录"), "02 目录");
+  assert.equal(target([], "01 目录", "目录"), null);
+  assert.equal(target(["01 根文档.md"]), null);
+  assert.equal(target(["01 目录", "02 目录"]), null);
+});
 
 test("列表按目录层级展开，折叠时隐藏所有后代并保留相邻项目", () => {
   assert.deepEqual(visibleRows(outlineEntries, "", new Set()).map(row => row.path),

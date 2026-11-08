@@ -1542,6 +1542,7 @@ class FileManager:
             for relative, info in snapshot.items() if self._visible(relative, info[0])
         }
         affected = set()
+        kinds = ("directory", "file")
         reordering = None
         if action == "rename":
             source = self._path(payload.get("path"), snapshot)
@@ -1600,6 +1601,14 @@ class FileManager:
             affected.add(reference.parent)
             focus = sorted(sources)
             label = f"调整 {len(sources)} 项顺序"
+        elif action == "renumber":
+            parent = self._path(payload.get("parent"), snapshot, allow_root=True)
+            if not parent.is_dir():
+                raise ValueError("请选择需要重排文件编号的目录")
+            affected.add(parent)
+            kinds = ("file",)
+            focus = []
+            label = f"重排「{parent.name}」的文件编号"
         elif action == "mkdir":
             parent = self._path(payload.get("parent"), snapshot, allow_root=True)
             if not parent.is_dir():
@@ -1638,14 +1647,15 @@ class FileManager:
             focus = block
 
         for parent in affected:
-            for kind in ("directory", "file"):
+            for kind in kinds:
                 children = [key for key, node in nodes.items()
                             if node["parent"] == parent and node["kind"] == kind]
                 numbered = []
                 for key in children:
                     title = unnumbered_name(nodes[key]["name"], kind)
                     if kind == "file" and title == "README.md":
-                        nodes[key]["name"] = title
+                        if action != "renumber":
+                            nodes[key]["name"] = title
                     else:
                         numbered.append((key, title))
                 if len(numbered) > 99:
@@ -1664,7 +1674,7 @@ class FileManager:
         moves = [(source, final_path(source)) for source, node in nodes.items()
                  if source is not None and (node["name"] != source.name or node["parent"] != source.parent)]
         create = final_path(None) if None in nodes else None
-        if not moves and create is None:
+        if not moves and create is None and action != "renumber":
             raise OperationConflict("项目名称和编号没有变化")
         if create:
             label = f"新建「{create.name}」"
@@ -1950,6 +1960,12 @@ class FileManager:
             if action == "undo":
                 return self._undo(before)
             moves, create, focus, label, originals = self._plan(action, payload, before)
+            if not moves and create is None:
+                return {
+                    **self._state(before), "focusPaths": [], "pathMappings": [],
+                    "summary": {"message": "此目录没有需要重新编号的文件", "updatedReferences": 0,
+                                "changedFiles": 0, "movedItems": 0, "renumberedItems": 0},
+                }
             self._validate_moves(moves, create=create, snapshot=before)
             source_signatures = {source: self._tree_signature(source) for source, _ in moves}
             changes, references = self._prepare_references(before, moves, include_summary=not regenerate) if moves else ({}, 0)
@@ -2083,7 +2099,7 @@ def create_ui_server(root: Path, config: dict[str, list[str]], port: int = 8765)
             if not self._authorized(api=True, write=True):
                 return
             path = urlsplit(self.path).path
-            if path not in {"/api/rename", "/api/move", "/api/reorder", "/api/mkdir", "/api/undo"}:
+            if path not in {"/api/rename", "/api/move", "/api/reorder", "/api/renumber", "/api/mkdir", "/api/undo"}:
                 self._json(404, {"error": "操作不存在"})
                 return
             try:

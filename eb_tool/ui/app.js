@@ -16,6 +16,13 @@ function titleWithoutNumber(name) {
   return name.replace(/^[0-9]{1,2}[ -]+/u, "");
 }
 
+function renumberTarget(entries, selected, current, query) {
+  if (!selected.size) return query ? null : current;
+  if (selected.size !== 1) return null;
+  const [path] = selected;
+  return entries.some(entry => entry.path === path && entry.kind === "directory") ? path : null;
+}
+
 const nameCollator = new Intl.Collator("zh-CN", { numeric: true, sensitivity: "base" });
 function sortEntries(entries) {
   return [...entries].sort((a, b) => (a.kind === b.kind ? 0 : a.kind === "directory" ? -1 : 1)
@@ -78,7 +85,7 @@ function rowDropIntent(entries, paths, anchor, fraction, allowReorder = true) {
   return payload ? { action: "reorder", payload } : null;
 }
 
-if (typeof module !== "undefined") module.exports = { topLevelPaths, canMovePaths, titleWithoutNumber, visibleRows, remapPath, reorderProposal, rowDropIntent };
+if (typeof module !== "undefined") module.exports = { topLevelPaths, canMovePaths, titleWithoutNumber, renumberTarget, visibleRows, remapPath, reorderProposal, rowDropIntent };
 if (typeof document !== "undefined") initializeApp();
 
 function initializeApp() {
@@ -115,10 +122,10 @@ function initializeApp() {
     else $(target).textContent = message;
     $(target).hidden = false;
   }
-  function toast(message) {
+  function toast(message, canUndo) {
     clearTimeout(toastTimeout);
     $("toast-message").textContent = message;
-    $("toast-undo").hidden = !state.undo.available;
+    $("toast-undo").hidden = !canUndo;
     $("toast").hidden = false;
     toastTimeout = setTimeout(() => { $("toast").hidden = true; }, 9000);
   }
@@ -191,11 +198,12 @@ function initializeApp() {
     setBusy(true);
     try {
       const next = await request("/api/" + action, { ...payload, revision: state.revision });
+      const canUndo = next.undo.available && next.revision !== state.revision;
       for (const dialog of document.querySelectorAll("dialog[open]")) dialog.close();
       acceptState(next, true);
       const info = next.summary;
       toast(info.message + (info.renumberedItems ? " · 同级改号 " + info.renumberedItems + " 项" : "")
-        + (info.updatedReferences ? " · 更新 " + info.updatedReferences + " 处引用" : ""));
+        + (info.updatedReferences ? " · 更新 " + info.updatedReferences + " 处引用" : ""), canUndo);
       return { ok: true, summary: info, focusPaths: next.focusPaths, revision: next.revision };
     } catch (error) {
       showError(error.message, errorTarget);
@@ -384,6 +392,10 @@ function initializeApp() {
   function updateToolbar() {
     $("selection-count").textContent = selected.size ? "已选 " + selected.size + " 项" : query ? "搜索结果" : "当前目录";
     $("item-count").textContent = rows.length + (query ? " 个结果" : " 个可见项目");
+    const target = renumberTarget(state.entries, selected, current, query);
+    $("renumber").hidden = target === null || !state.revision;
+    $("renumber").disabled = busy;
+    $("renumber").title = "按现有顺序，从 01 连续编号「" + (target || state.rootName) + "」下的 Markdown 文件";
     $("rename").disabled = busy || selected.size !== 1;
     $("move").disabled = busy || !selected.size;
     $("mkdir").disabled = busy || !state.revision;
@@ -513,6 +525,12 @@ function initializeApp() {
   $("up").addEventListener("click", () => navigate(query ? current : parentOf(current)));
   $("mkdir").addEventListener("click", () => openName("mkdir"));
   $("rename").addEventListener("click", () => openName("rename"));
+  $("renumber").addEventListener("click", async () => {
+    const parent = renumberTarget(state.entries, selected, current, query);
+    if (parent === null) return;
+    const result = await mutate("renumber", { parent });
+    if (result.ok) navigate(parent);
+  });
   $("undo").addEventListener("click", () => mutate("undo", {}));
   $("toast-undo").addEventListener("click", () => mutate("undo", {}));
   $("dismiss-error").addEventListener("click", () => { $("error").hidden = true; });
@@ -557,6 +575,7 @@ function initializeApp() {
       ["eb_rename_entry", "重命名项目", "重命名并将同级项目从 01 连续编号、维护链接。Markdown 名称须含 .md 扩展名。README.md 不编号。", "rename", { path: string, name: string }],
       ["eb_move_entries", "移动所选项目", "移动多个项目到目标末尾，源目录和目标目录分别从 01 连续编号并维护链接。README.md 不编号。target 为空字符串表示根目录。", "move", { paths: { type: "array", items: string, minItems: 1 }, target: string }],
       ["eb_reorder_entries", "调整同级顺序", "将同目录、同类型的所选项目放到 anchor 项目之前或之后，再从 01 连续编号并维护链接。README.md 不参与排序。", "reorder", { paths: { type: "array", items: string, minItems: 1 }, anchor: string, position: { type: "string", enum: ["before", "after"] } }],
+      ["eb_renumber_files", "重排文件编号", "按现有顺序将 parent 直属的 Markdown 文件从 01 连续编号，跳过 README.md。parent 为空字符串表示根目录。", "renumber", { parent: string }],
       ["eb_create_directory", "新建目录", "在 parent 下新建目录，自动创建章节目录 README.md，同级项目从 01 连续编号；parent 为空字符串表示根目录。", "mkdir", { parent: string, name: string }],
       ["eb_undo_last_operation", "撤销最近操作", "恢复最近一次成功操作的文件位置、引用和目录；外部修改可能使撤销失败。", "undo", {}]
     ];

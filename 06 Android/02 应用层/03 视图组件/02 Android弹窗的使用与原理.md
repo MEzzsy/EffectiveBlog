@@ -1,3 +1,20 @@
+# 🌟Dialog、PopupWindow与Activity之间的关系
+
+三者都有独立的DecorView以及独立的ViewRootImpl，而PopupWindow没有PhoneWindow。
+
+PhoneWindow会创建 DecorView、管理页面内容、连接 Activity/Dialog 与 View 树的事件处理。而PopupWindow没有PhoneWindow是因为它自己完成了内容包装、参数配置和交互处理。
+
+| 对象            | 窗口实现                                                     | 与 Activity 的关系                                           |
+| --------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| **Activity**    | `PhoneWindow` + `DecorView`，显示时关联 `ViewRootImpl`       | 自身的主窗口                                                 |
+| **Dialog**      | 自己的 `PhoneWindow`、`DecorView` 和独立 `ViewRootImpl`      | 普通 Dialog 通常通过 Activity 的 token 关联，内容不在 Activity 的 View 树中 |
+| **PopupWindow** | 自己的 `PopupDecorView`，直接通过 `WindowManager.addView()` 添加，拥有独立 `ViewRootImpl` | 默认是 `TYPE_APPLICATION_PANEL` 子窗口，通过 token 关联宿主窗口；anchor 用于定位 |
+
+PopupWindow和Dialog如何选择？
+
+- 一般居中/底部弹窗选择Dialog/BottomSheetDialogFragment。
+- 需要锚定某个 View的用PopupWindow。
+
 # 整体认识
 
 ## 常见弹窗与使用场景

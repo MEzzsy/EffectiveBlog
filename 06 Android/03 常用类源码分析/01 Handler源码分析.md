@@ -17,6 +17,21 @@
 4.   在Looper.loop方法中，不断调用MessageQueue的next获取一个消息，并通过msg对应的Handler来处理此msg。
 5.   如果msg有callback，那么执行callback。如果没有callback，但是Handler设置了callback，那么交给callback的handleMessage来处理。如果callback的handleMessage返回false，那么Handler自己处理（handleMessage）。
 
+```kotlin
+public void dispatchMessage(@NonNull Message msg) {
+    if (msg.callback != null) {
+        handleCallback(msg);
+    } else {
+        if (mCallback != null) {
+            if (mCallback.handleMessage(msg)) {
+                return;
+            }
+        }
+        handleMessage(msg);
+    }
+}
+```
+
 ### 消息获取
 
 MessageQueue.next也是一个循环

@@ -260,6 +260,45 @@ class FileManagerTests(unittest.TestCase):
                 readme.unlink()
                 readme.mkdir()
 
+    def test_renumber_only_direct_articles_updates_links_and_undo(self):
+        parent = "02 目标"
+        self.put(parent + "/README.md", "# 目标\n")
+        self.put(parent + "/02 XXX.md", "[YYY](<04 YYY.md#标题>)")
+        self.put(parent + "/04 YYY.md", "YYY")
+        self.put(parent + "/05 ZZZ.MD", "ZZZ")
+        self.put(parent + "/09 子目录/07 内页.md", "[XXX](<../02 XXX.md>)")
+        self.put(parent + "/06 附件.txt", "附件")
+        self.put("03 引用/07 参考.md", "[ZZZ](<../02 目标/05 ZZZ.MD>)")
+        before = self.contents()
+
+        result = self.operate("renumber", parent=parent)
+        self.assertEqual({item["from"]: item["to"] for item in result["pathMappings"]}, {
+            parent + "/02 XXX.md": parent + "/01 XXX.md",
+            parent + "/04 YYY.md": parent + "/02 YYY.md",
+            parent + "/05 ZZZ.MD": parent + "/03 ZZZ.MD",
+        })
+        self.assertEqual(result["summary"]["renumberedItems"], 3)
+        self.assertEqual(self.read(parent + "/01 XXX.md"), "[YYY](<02 YYY.md#标题>)")
+        self.assertEqual(self.read(parent + "/09 子目录/07 内页.md"), "[XXX](<../01 XXX.md>)")
+        self.assertEqual(self.read("03 引用/07 参考.md"), "[ZZZ](<../02 目标/03 ZZZ.MD>)")
+        self.assertEqual(self.read(parent + "/06 附件.txt"), "附件")
+        self.assertIn("03 ZZZ.MD", self.read(parent + "/README.md"))
+        self.assertIn("03 ZZZ.MD", self.read("SUMMARY.md"))
+
+        again = self.operate("renumber", parent=parent)
+        self.assertEqual(again["revision"], result["revision"])
+        self.assertEqual(again["undo"], result["undo"])
+        self.assertEqual(again["pathMappings"], [])
+        self.operate("undo")
+        self.assertEqual(self.contents(), before)
+
+    def test_renumber_requires_a_managed_folder(self):
+        before = self.contents()
+        for parent in [None, "../", "assets", "01 基础/01 文档.md", "不存在"]:
+            with self.subTest(parent=parent), self.assertRaises(ValueError):
+                self.operate("renumber", parent=parent)
+        self.assertEqual(self.contents(), before)
+
     def test_reorder_files_updates_numbers_links_summary_and_undo(self):
         before = self.contents()
         result = self.operate("reorder", paths=["01 基础/02 同级.md"], anchor="01 基础/01 文档.md", position="before")
@@ -1015,6 +1054,18 @@ class HTTPTests(unittest.TestCase):
         no_origin.pop("Origin")
         self.assertEqual(self.request("POST", "/api/mkdir", {}, no_origin)[0], 403)
         self.assertFalse((self.root / "SUMMARY.md").exists())
+
+    def test_renumber_api_accepts_root_and_checks_revision(self):
+        (self.root / "7-补充.md").write_text("补充")
+        status, body = self.request("GET", "/api/state", headers=self.auth())
+        self.assertEqual(status, 200)
+        payload = {"parent": "", "revision": json.loads(body)["revision"]}
+        self.assertEqual(self.request("POST", "/api/renumber", payload)[0], 403)
+        status, body = self.request("POST", "/api/renumber", payload, self.auth())
+        self.assertEqual(status, 200, body)
+        self.assertEqual(json.loads(body)["summary"]["renumberedItems"], 1)
+        self.assertEqual((self.root / "02 补充.md").read_text(), "补充")
+        self.assertEqual(self.request("POST", "/api/renumber", payload, self.auth())[0], 409)
 
     def test_reorder_api_requires_session_and_returns_updated_order(self):
         (self.root / "02 第二篇.md").write_text("second")

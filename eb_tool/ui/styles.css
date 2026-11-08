@@ -166,7 +166,7 @@ body.dragging, body.dragging * { cursor: grabbing !important; user-select: none 
   .window-title { flex: 1; }
   .search-box { flex: 0 1 150px; }
   .top-actions { flex-basis: 100%; justify-content: flex-end; }
-  .file-toolbar { padding-inline: 10px; }
+  .file-toolbar { padding-inline: 10px; flex-wrap: wrap; row-gap: 2px; }
   .toolbar-status > span { display: none; }
   .list-footer { padding-inline: 12px; font-size: 9px; }
   .list-footer > span:first-child { max-width: 65%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
